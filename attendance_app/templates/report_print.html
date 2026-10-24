@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ report.title|t }} — {{ report.school_name }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/report_print.css') }}">
+</head>
+{% set status_ar = {"PRESENT": "حاضر", "LATE": "متأخر", "ABSENT": "غائب", "EXCUSED": "غياب مبرر"} %}
+<body data-autoprint="{{ '1' if request.args.get('print') == '1' else '0' }}">
+  {% include "partials/sprite.html" %}
+
+  <header class="print-toolbar screen-only">
+    <div class="toolbar-brand">
+      <span class="toolbar-icon"><svg class="ico"><use href="#i-chart"></use></svg></span>
+      <div>
+        <strong>{{ report.title|t }} · {{ report.school_name }}</strong>
+        <span>{{ report.period_label }} — {{ report.class_label }} — ورق A4</span>
+      </div>
+    </div>
+    <div class="toolbar-actions">
+      <span class="toolbar-hint">اختر «حفظ كملف PDF» من نافذة الطباعة للتصدير.</span>
+      <a class="toolbar-btn is-ghost" href="{{ url_for('views.reports_page') }}?{% if report.kind == 'monthly' %}kind=monthly&month={{ report.month }}&{% else %}date={{ report.date }}&{% endif %}{% if report.status_filter %}status={{ report.status_filter }}&{% endif %}">العودة للتقارير</a>
+      <button class="toolbar-btn is-primary" type="button" id="print-now">طباعة الآن</button>
+    </div>
+  </header>
+
+  <main class="report-paper">
+    <header class="report-header">
+      <div class="report-identity">
+        {% if logo_url %}
+          <img class="report-logo" src="{{ logo_url }}" alt="شعار المؤسسة">
+        {% endif %}
+        <div class="report-school">
+          <strong>{{ report.school_name or school_name }}</strong>
+          <span class="report-header-text">{{ report.header_text or header_text }}</span>
+        </div>
+      </div>
+      <div class="report-id">
+        <span>السنة الدراسية</span>
+        <strong>{{ report.academic_year }}</strong>
+      </div>
+    </header>
+
+    <div class="report-doc-head">
+      <h1>{{ report.title }}</h1>
+      <p>
+        {% if report.kind == "monthly" %}
+          {{ report.month_display }} · الفترة: {{ report.period_label }} · القسم: {{ report.class_label }}
+        {% else %}
+          {{ report.date_display }} · الفترة: {{ report.period_label }} · القسم: {{ report.class_label }}
+          {% if report.status_filter %} · الحالة: {{ status_ar.get(report.status_filter, report.status_filter) }}{% endif %}
+        {% endif %}
+      </p>
+    </div>
+
+    <section class="report-stats">
+      {% if report.kind == "monthly" %}
+        {% set s_present = report.totals.present %}
+        {% set s_late = report.totals.late %}
+        {% set s_absent = report.totals.absent %}
+        {% set s_excused = report.totals.excused %}
+        {% set s_total = report.totals.total %}
+      {% else %}
+        {% set s_present = report.summary.PRESENT %}
+        {% set s_late = report.summary.LATE %}
+        {% set s_absent = report.summary.ABSENT %}
+        {% set s_excused = report.summary.EXCUSED %}
+        {% set s_total = report.total %}
+      {% endif %}
+      <div class="report-stat is-present"><strong>{{ s_present }}</strong><span>حاضر</span></div>
+      <div class="report-stat is-late"><strong>{{ s_late }}</strong><span>متأخر</span></div>
+      <div class="report-stat is-absent"><strong>{{ s_absent }}</strong><span>غائب</span></div>
+      <div class="report-stat is-excused"><strong>{{ s_excused }}</strong><span>غياب مبرر</span></div>
+      <div class="report-stat is-total"><strong>{{ s_total }}</strong><span>{{ "سجل" if report.kind == "daily" else "إجمالي السجلات" }}</span></div>
+    </section>
+
+    {% if report.kind == "monthly" %}
+      <table class="report-table report-table--monthly">
+        <thead>
+          <tr>
+            <th style="width:5mm">#</th>
+            <th>التلميذ</th>
+            <th style="width:16mm">القسم</th>
+            <th style="width:14mm">حاضر</th>
+            <th style="width:14mm">متأخر</th>
+            <th style="width:14mm">غائب</th>
+            <th style="width:14mm">مبرر</th>
+            <th style="width:16mm">السجلات</th>
+            <th style="width:20mm">نسبة الغياب</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in report["items"] %}
+            <tr>
+              <td class="is-num">{{ loop.index }}</td>
+              <td>
+                <strong>{{ item.full_name }}</strong>
+                <span class="report-nin">{{ item.student_nin }}</span>
+              </td>
+              <td>{{ item.class_group }}</td>
+              <td class="is-num">{{ item.present }}</td>
+              <td class="is-num">{{ item.late }}</td>
+              <td class="is-num">{{ item.absent }}</td>
+              <td class="is-num">{{ item.excused }}</td>
+              <td class="is-num">{{ item.total }}</td>
+              <td class="is-num">{{ (item.absent / item.total * 100) | round(1) if item.total else 0 }}%</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="9" class="report-empty">لا توجد بيانات مسجلة خلال هذا الشهر للفلاتر المحددة.</td></tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">الإجمالي — {{ report.total_students }} تلميذًا</td>
+            <td class="is-num">{{ report.totals.present }}</td>
+            <td class="is-num">{{ report.totals.late }}</td>
+            <td class="is-num">{{ report.totals.absent }}</td>
+            <td class="is-num">{{ report.totals.excused }}</td>
+            <td class="is-num">{{ report.totals.total }}</td>
+            <td class="is-num">{{ (report.totals.absent / report.totals.total * 100) | round(1) if report.totals.total else 0 }}%</td>
+          </tr>
+        </tfoot>
+      </table>
+      <p class="report-range">الفترة المشمولة: من {{ report.start }} إلى {{ report.end }} — {{ report.period_label }} — {{ report.class_label }}</p>
+    {% else %}
+      <table class="report-table report-table--daily">
+        <thead>
+          <tr>
+            <th style="width:5mm">#</th>
+            <th>التلميذ</th>
+            <th style="width:15mm">القسم</th>
+            <th style="width:19mm">الفترة</th>
+            <th style="width:13mm">الوقت</th>
+            <th style="width:17mm">الحالة</th>
+            <th style="width:17mm">SMS</th>
+            <th style="width:30mm">ملاحظة</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in report["items"] %}
+            <tr>
+              <td class="is-num">{{ loop.index }}</td>
+              <td>
+                <strong>{{ item.full_name }}</strong>
+                <span class="report-nin">{{ item.student_nin }}</span>
+              </td>
+              <td>{{ item.class_group }}</td>
+              <td>{{ item.period_name }}</td>
+              <td class="is-num">{{ item.scan_time or "—" }}</td>
+              <td><span class="report-status is-{{ item.status|lower }}">{{ item.status_label }}</span></td>
+              <td>{{ item.sms_status_label }}</td>
+              <td class="report-note">{{ item.note or "—" }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="8" class="report-empty">لا توجد سجلات حضور أو غياب لهذا اليوم للفلاتر المحددة.</td></tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">الإجمالي — {{ report.total }} سجل</td>
+            <td>{{ report.summary.PRESENT }} حاضر · {{ report.summary.LATE }} متأخر</td>
+            <td colspan="2">{{ report.summary.ABSENT }} غائب · {{ report.summary.EXCUSED }} مبرر</td>
+          </tr>
+        </tfoot>
+      </table>
+    {% endif %}
+
+    <footer class="report-footer">
+      <div class="report-generated">
+        <span>تم توليد التقرير آليًا</span>
+        <strong>{{ report.generated_at }}</strong>
+        <span>{{ report.school_name }} — {{ report.academic_year }}</span>
+      </div>
+      <div class="report-sign">
+        {% if stamp_url %}<img src="{{ stamp_url }}" alt="خاتم المؤسسة">{% endif %}
+        <span>مدير(ة) المؤسسة</span>
+        <strong>{{ principal_name or report.principal_name }}</strong>
+      </div>
+    </footer>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/print-sheet.js') }}"></script>
+</body>
+</html>

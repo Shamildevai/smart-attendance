@@ -1,0 +1,41 @@
+# Runtime data — never publish student records, photos, logs, or databases
+data/
+data_*/
+.qa*/
+*.db
+*.db-wal
+*.db-shm
+
+# Local builds and rollback copies
+.venv/
+build/
+build_*/
+dist/
+dist_*/
+backup/
+backups/
+tmp/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+htmlcov/
+.coverage
+*.log
+
+# Secrets and signing material
+secrets/
+.env
+.env.*
+*.pem
+*.key
+
+# Tutorial renders (keep scripts/subtitles)
+tutorial/*.mp4
+tutorial/*.webm
+tutorial/frames/
+
+# Editors and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.students_page') }}">
+    <svg class="ico"><use href="#i-users"></use></svg>
+    <span>إدارة التلاميذ</span>
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div id="studio-bootstrap" hidden
+       data-school="{{ school_name }}"
+       data-year="{{ academic_year }}"
+       data-principal="{{ settings.principal_name }}"
+       data-logo="{{ settings.logo_path }}"
+       data-stamp="{{ settings.stamp_path }}"></div>
+
+  <div class="studio-layout">
+    <div class="studio-controls">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-printer"></use></svg> تصميم ورقة الطباعة</h2>
+            <p>بطاقات تعريف CR80 أو ملصقات باركود بمقاسات دقيقة على ورق A4.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="studio-tabs" role="tablist" aria-label="نوع الطباعة">
+            <button class="studio-tab is-active" type="button" data-studio-mode="cards">
+              <svg class="ico"><use href="#i-id-card"></use></svg>
+              بطاقات التلاميذ
+            </button>
+            <button class="studio-tab" type="button" data-studio-mode="stickers">
+              <svg class="ico"><use href="#i-barcode"></use></svg>
+              ملصقات الباركود
+            </button>
+          </div>
+
+          <div class="studio-group">
+            <div class="studio-group-title"><svg class="ico"><use href="#i-filter"></use></svg> نطاق التلاميذ</div>
+            <div class="segmented" id="studio-scope" role="group" aria-label="نطاق الطباعة">
+              <button type="button" data-scope="all" class="is-active">
+                <svg class="ico"><use href="#i-users"></use></svg> الكل
+              </button>
+              <button type="button" data-scope="class">
+                <svg class="ico"><use href="#i-school"></use></svg> قسم
+              </button>
+              <button type="button" data-scope="student">
+                <svg class="ico"><use href="#i-user"></use></svg> تلميذ
+              </button>
+            </div>
+
+            <div class="studio-scope-extra hidden" id="studio-class-wrap">
+              <label class="field-label" for="studio-class">القسم المطلوب</label>
+              <select class="select" id="studio-class">
+                <option value="">اختر القسم…</option>
+                {% for class in classes %}
+                  <option value="{{ class.value }}">{{ class.label }} — {{ class.active }} نشط</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="studio-scope-extra hidden" id="studio-student-wrap">
+              <label class="field-label" for="studio-student-search">البحث عن تلميذ</label>
+              <div class="search-box" style="max-width:none;width:100%">
+                <svg class="ico"><use href="#i-search"></use></svg>
+                <input class="input" type="search" id="studio-student-search" placeholder="الاسم، اللقب، أو رقم التعريف…" autocomplete="off">
+              </div>
+              <label class="sr-only" for="studio-student-select">اختيار التلميذ</label>
+              <select class="select" id="studio-student-select">
+                <option value="">— اختر تلميذًا —</option>
+              </select>
+            </div>
+
+            <div class="studio-count" id="studio-count" aria-live="polite">
+              <svg class="ico"><use href="#i-users"></use></svg>
+              <span>جارٍ حساب التلاميذ…</span>
+            </div>
+          </div>
+
+          <div class="studio-group" id="studio-card-options">
+            <div class="studio-group-title"><svg class="ico"><use href="#i-id-card"></use></svg> توزيع البطاقات</div>
+            <div class="layout-choice">
+              <label class="layout-option">
+                <input type="radio" name="card_layout" value="10" {% if print_config.card_layout == 10 %}checked{% endif %}>
+                <span class="layout-option-inner">
+                  <span class="layout-diagram" data-layout="10" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                  <span><strong>10 بطاقات</strong><span>2 × 5 في الصفحة</span></span>
+                </span>
+              </label>
+              <label class="layout-option">
+                <input type="radio" name="card_layout" value="8" {% if print_config.card_layout == 8 %}checked{% endif %}>
+                <span class="layout-option-inner">
+                  <span class="layout-diagram" data-layout="8" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                  <span><strong>8 بطاقات</strong><span>2 × 4 مع فراغات</span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="studio-group hidden" id="studio-sticker-options">
+            <div class="studio-group-title"><svg class="ico"><use href="#i-barcode"></use></svg> توزيع الملصقات</div>
+            <div class="layout-choice">
+              <label class="layout-option">
+                <input type="radio" name="sticker_layout" value="30" {% if print_config.sticker_layout == 30 %}checked{% endif %}>
+                <span class="layout-option-inner">
+                  <span class="layout-diagram" data-layout="30" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                  <span><strong>30 ملصقًا</strong><span>3 × 10 — 65 × 27 مم</span></span>
+                </span>
+              </label>
+              <label class="layout-option">
+                <input type="radio" name="sticker_layout" value="24" {% if print_config.sticker_layout == 24 %}checked{% endif %}>
+                <span class="layout-option-inner">
+                  <span class="layout-diagram" data-layout="24" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                  <span><strong>24 ملصقًا</strong><span>3 × 8 — 65 × 34 مم</span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="studio-group" id="studio-card-elements">
+            <div class="studio-group-title"><svg class="ico"><use href="#i-sparkle"></use></svg> عناصر البطاقة</div>
+            <div class="studio-toggles">
+              <label class="switch">
+                <input type="checkbox" id="pc-show-header" {% if print_config.show_header %}checked{% endif %}>
+                <span class="switch-track"></span>
+                <span class="switch-text"><strong>الترويسة</strong><span>شعار المؤسسة والاسم والسنة</span></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="pc-show-logo" {% if print_config.show_logo %}checked{% endif %}>
+                <span class="switch-track"></span>
+                <span class="switch-text"><strong>الشعار</strong><span>شعار المؤسسة في الترويسة</span></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="pc-show-photo" {% if print_config.show_photo %}checked{% endif %}>
+                <span class="switch-track"></span>
+                <span class="switch-text"><strong>الصورة الشخصية</strong><span>أو الأحرف الأولى عند غيابها</span></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="pc-show-birth" {% if print_config.show_birth_date %}checked{% endif %}>
+                <span class="switch-track"></span>
+                <span class="switch-text"><strong>تاريخ الميلاد</strong><span>يظهر ضمن بيانات التلميذ</span></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="pc-show-qr" {% if print_config.show_qr %}checked{% endif %}>
+                <span class="switch-track"></span>
+                <span class="switch-text"><strong>رمز QR</strong><span>إضافة مربع QR بجانب الباركود</span></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="pc-show-stamp" {% if print_config.show_stamp %}checked{% endif %}>
+                <span class="switch-track"></span>
+                <span class="switch-text"><strong>التوقيع والخاتم</strong><span>صورة الخاتم المرفوعة في الإعدادات</span></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="studio-group">
+            <div class="studio-group-title"><svg class="ico"><use href="#i-edit"></use></svg> الألوان والانحناء</div>
+            <div class="studio-colors">
+              <div class="field">
+                <label for="pc-accent">اللون الرئيسي</label>
+                <div class="color-input">
+                  <input type="color" id="pc-accent" value="{{ print_config.accent_color }}" aria-label="اللون الرئيسي">
+                  <input class="input input-sm" type="text" id="pc-accent-hex" value="{{ print_config.accent_color }}" maxlength="7" spellcheck="false" aria-label="رمز اللون الرئيسي">
+                </div>
+              </div>
+              <div class="field">
+                <label for="pc-header">لون الترويسة</label>
+                <div class="color-input">
+                  <input type="color" id="pc-header" value="{{ print_config.header_color }}" aria-label="لون الترويسة">
+                  <input class="input input-sm" type="text" id="pc-header-hex" value="{{ print_config.header_color }}" maxlength="7" spellcheck="false" aria-label="رمز لون الترويسة">
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="pc-radius">انحناء الزوايا <output id="pc-radius-value">{{ print_config.border_radius }}</output> مم</label>
+              <input class="range" type="range" id="pc-radius" min="0" max="6" step="1" value="{{ print_config.border_radius }}">
+            </div>
+          </div>
+
+          <div class="studio-footer">
+            <button class="btn btn-secondary" type="button" id="studio-save">
+              <svg class="ico"><use href="#i-shield-check"></use></svg>
+              <span>حفظ كافتراضي</span>
+            </button>
+            <button class="btn btn-primary" type="button" id="studio-print" disabled>
+              <svg class="ico"><use href="#i-printer"></use></svg>
+              <span id="studio-print-label">معاينة وطباعة</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="studio-preview-panel">
+      <div class="studio-preview-head">
+        <h2><svg class="ico"><use href="#i-eye"></use></svg> المعاينة المباشرة</h2>
+        <div class="flex flex-wrap">
+          <span class="chip is-accent" id="studio-mode-label">
+            <svg class="ico"><use href="#i-id-card"></use></svg>
+            بطاقة CR80
+          </span>
+          <span class="chip" id="studio-preview-count">—</span>
+        </div>
+      </div>
+      <div class="studio-preview-surface" id="studio-preview-surface">
+        <div class="studio-preview-content" id="studio-preview"></div>
+        <div class="preview-label" id="studio-preview-label">بطاقة CR80 — 85.6 × 54 مم</div>
+      </div>
+      <div class="info-banner">
+        <svg class="ico"><use href="#i-printer"></use></svg>
+        <div>تُفتح ورقة الطباعة في تبويب جديد بمقاس A4 دقيق (210 × 297 مم). عند الطباعة اختر <strong>الهوامش: بلا</strong> وفعّل <strong>طباعة خلفيات الرسوم</strong> للحصول على الألوان والشعار.</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/print-studio.js') }}"></script>
+{% endblock %}

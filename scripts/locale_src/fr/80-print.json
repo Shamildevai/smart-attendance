@@ -1,0 +1,208 @@
+{
+  "strings": {
+    "تصميم ورقة الطباعة": "Conception de la feuille d'impression",
+    "بطاقات تعريف CR80 أو ملصقات باركود بمقاسات دقيقة على ورق A4.": "Cartes d'identité CR80 ou étiquettes de code-barres aux dimensions exactes sur papier A4.",
+    "نوع الطباعة": "Type d'impression",
+    "بطاقات التلاميذ": "Cartes des élèves",
+    "ملصقات الباركود": "Étiquettes de code-barres",
+    "نطاق التلاميذ": "Portée des élèves",
+    "نطاق الطباعة": "Portée d'impression",
+    "كل التلاميذ النشطين": "Tous les élèves actifs",
+    "اختيار محدد": "Sélection spécifique",
+    "قسم": "Classe",
+    "تلميذ": "Élève",
+    "القسم المطلوب": "Classe souhaitée",
+    "اختر القسم…": "Choisir une classe…",
+    "البحث عن تلميذ": "Rechercher un élève",
+    "الاسم، اللقب، أو رقم التعريف…": "Nom, prénom ou numéro d'identification…",
+    "اختيار التلميذ": "Sélectionner l'élève",
+    "— اختر تلميذًا —": "— Choisir un élève —",
+    "توزيع البطاقات": "Disposition des cartes",
+    "10 بطاقات": "10 cartes",
+    "2 × 5 في الصفحة": "2 × 5 par page",
+    "8 بطاقات": "8 cartes",
+    "2 × 4 مع فراغات": "2 × 4 avec espacements",
+    "توزيع الملصقات": "Disposition des étiquettes",
+    "30 ملصقًا": "30 étiquettes",
+    "3 × 10 — 65 × 27 مم": "3 × 10 — 65 × 27 mm",
+    "24 ملصقًا": "24 étiquettes",
+    "3 × 8 — 65 × 34 مم": "3 × 8 — 65 × 34 mm",
+    "عناصر البطاقة": "Éléments de la carte",
+    "شعار المؤسسة والاسم والسنة": "Logo, nom et année de l'établissement",
+    "شعار المؤسسة في الترويسة": "Logo de l'établissement dans l'en-tête",
+    "أو الأحرف الأولى عند غيابها": "Ou les initiales en l'absence de photo",
+    "يظهر ضمن بيانات التلميذ": "Affiché dans les informations de l'élève",
+    "رمز QR": "Code QR",
+    "إضافة مربع QR بجانب الباركود": "Ajouter un carré QR à côté du code-barres",
+    "التوقيع والخاتم": "Signature et cachet",
+    "صورة الخاتم المرفوعة في الإعدادات": "L'image du cachet téléversée dans les paramètres",
+    "الألوان والانحناء": "Couleurs et arrondis",
+    "اللون الرئيسي": "Couleur principale",
+    "لون الترويسة": "Couleur de l'en-tête",
+    "رمز اللون الرئيسي": "Code hexadécimal de la couleur principale",
+    "رمز لون الترويسة": "Code hexadécimal de la couleur d'en-tête",
+    "مم": "mm",
+    "انحناء الزوايا": "Arrondi des coins",
+    "المعاينة المباشرة": "Aperçu en direct",
+    "بطاقة CR80": "Carte CR80",
+    "بطاقة CR80 — 85.6 × 54 مم": "Carte CR80 — 85,6 × 54 mm",
+    "تُفتح ورقة الطباعة في تبويب جديد بمقاس A4 دقيق (210 × 297 مم). عند الطباعة اختر": "La feuille d'impression s'ouvre dans un nouvel onglet au format A4 exact (210 × 297 mm). À l'impression, choisissez",
+    "الهوامش: بلا": "Marges : Aucune",
+    "وفعّل": "et activez",
+    "طباعة خلفيات الرسوم": "Imprimer les arrière-plans graphiques",
+    "للحصول على الألوان والشعار.": "pour obtenir les couleurs et le logo.",
+    "اسم المؤسسة التعليمية": "Nom de l'établissement",
+    "بطاقة التلميذ": "Carte de l'élève",
+    "تلميذ بدون اسم": "Élève sans nom",
+    "بطاقات CR80": "Cartes CR80",
+    "ملصقات باركود": "Étiquettes de code-barres",
+    "اختر القسم أولًا": "Choisissez d'abord une classe",
+    "اختر تلميذًا أولًا": "Choisissez d'abord un élève",
+    "لا يوجد تلاميذ نشطون في هذا النطاق": "Aucun élève actif dans cette portée",
+    "تم حفظ التصميم": "Conception enregistrée",
+    "سيُستعمل هذا التصميم افتراضيًا في المرات القادمة.": "Cette conception sera utilisée par défaut à l'avenir.",
+    "أضف التلاميذ أو استورد قائمة، ثم عد إلى استوديو الطباعة. لا يمكن إنشاء بطاقات فارغة.": "Ajoutez des élèves ou importez une liste, puis revenez au studio d'impression. Des cartes vides ne peuvent pas être générées.",
+    "الهوامش: بلا · طباعة الخلفيات: مفعّلة": "Marges : Aucune · Impression des arrière-plans : Activée",
+    "العودة للاستوديو": "Retour au studio",
+    "لا يوجد تلاميذ للطباعة": "Aucun élève à imprimer",
+    "ورق A4 دقيق": "Papier A4 exact",
+    "معاينة توضيحية —": "Aperçu de démonstration —",
+    "بطاقة": "carte",
+    "بطاقتان": "cartes",
+    "بطاقات": "cartes",
+    "ملصق": "étiquette",
+    "ملصقان": "étiquettes",
+    "ملصقات": "étiquettes",
+    "ملصقًا": "étiquettes",
+    "بطاقة جاهزة": "carte prête",
+    "بطاقتان جاهزتان": "cartes prêtes",
+    "بطاقات جاهزة": "cartes prêtes",
+    "ملصق جاهز": "étiquette prête",
+    "ملصقان جاهزان": "étiquettes prêtes",
+    "ملصقات جاهزة": "étiquettes prêtes",
+    "ملصقًا جاهزًا": "étiquettes prêtes",
+    "للطباعة": "à imprimer"
+  },
+  "patterns": [
+    {
+      "ar": "{0} — {1} نشط",
+      "tr": "{0} — {1} actifs"
+    },
+    {
+      "ar": "معاينة توضيحية — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "Aperçu de démonstration — CR80 · 85,6 × 54 mm · {0} cartes sur une page A4"
+    },
+    {
+      "ar": "CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "CR80 · 85,6 × 54 mm · {0} cartes sur une page A4"
+    },
+    {
+      "ar": "معاينة توضيحية — ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Aperçu de démonstration — étiquette 65 × {0} mm · {1} étiquettes sur une page A4"
+    },
+    {
+      "ar": "ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Étiquette 65 × {0} mm · {1} étiquettes sur une page A4"
+    },
+    {
+      "ar": "{0} بطاقة",
+      "tr": "{0} cartes"
+    },
+    {
+      "ar": "{0} بطاقتان",
+      "tr": "{0} cartes"
+    },
+    {
+      "ar": "{0} بطاقات",
+      "tr": "{0} cartes"
+    },
+    {
+      "ar": "{0} ملصق",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} ملصقان",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} ملصقات",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} ملصقًا",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} بطاقة جاهزة للطباعة",
+      "tr": "{0} cartes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} بطاقتان جاهزتان للطباعة",
+      "tr": "{0} cartes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} بطاقات جاهزة للطباعة",
+      "tr": "{0} cartes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} ملصق جاهز للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} ملصقان جاهزان للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} ملصقات جاهزة للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} ملصقًا جاهزًا للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "طباعة {0} بطاقة",
+      "tr": "Imprimer {0} cartes"
+    },
+    {
+      "ar": "طباعة {0} بطاقتين",
+      "tr": "Imprimer {0} cartes"
+    },
+    {
+      "ar": "طباعة {0} بطاقات",
+      "tr": "Imprimer {0} cartes"
+    },
+    {
+      "ar": "طباعة {0} ملصق",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "طباعة {0} ملصقين",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "طباعة {0} ملصقات",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "طباعة {0} ملصقًا",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "{0} — {1} تلميذًا — ورق A4 دقيق",
+      "tr": "{0} — {1} élèves — papier A4 exact"
+    },
+    {
+      "ar": "{0} تلميذًا — {1} صفحة — تم التوليد في {2}",
+      "tr": "{0} élèves — {1} pages — généré à {2}"
+    },
+    {
+      "ar": "باركود {0}",
+      "tr": "Code-barres {0}"
+    },
+    {
+      "ar": "انحناء الزوايا {0} مم",
+      "tr": "Arrondi des coins {0} mm"
+    }
+  ]
+}

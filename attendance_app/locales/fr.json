@@ -1,0 +1,1867 @@
+{
+  "strings": {
+    "تجاوز إلى المحتوى": "Aller au contenu",
+    "القائمة الرئيسية": "Menu principal",
+    "نظام الحضور": "Système de présence",
+    "إغلاق القائمة": "Fermer le menu",
+    "لوحة المتابعة": "Tableau de bord",
+    "بوابة المسح": "Portail de scan",
+    "مباشر": "En direct",
+    "إدارة التلاميذ": "Gestion des élèves",
+    "التلاميذ": "Élèves",
+    "الاستيراد الذكي": "Import intelligent",
+    "استوديو الطباعة": "Studio d'impression",
+    "المتابعة والتقارير": "Suivi et rapports",
+    "سجل الحضور": "Journal de présence",
+    "التقارير والإحصاءات": "Rapports et statistiques",
+    "النظام": "Système",
+    "الإعدادات": "Paramètres",
+    "حول التطبيق": "À propos",
+    "الخادم المحلي يعمل": "Serveur local en marche",
+    "البيانات محفوظة على هذا الجهاز": "Données enregistrées sur cet appareil",
+    "البيانات على هذا الجهاز": "Données sur cet appareil",
+    "إغلاق النظام": "Quitter le système",
+    "مسح سريع": "Scan rapide",
+    "اختيار لغة الواجهة": "Choisir la langue de l'interface",
+    "تبديل المظهر": "Changer de thème",
+    "فتح القائمة": "Ouvrir le menu",
+    "يتطلب هذا النظام تفعيل JavaScript لتعمل البوابة ولوحة المتابعة بشكل صحيح.": "Ce système nécessite JavaScript pour que le portail et le tableau de bord fonctionnent correctement.",
+    "العربية": "Arabe",
+    "نظام متابعة الحضور": "Système de suivi de présence",
+    "الحضور بالباركود وإشعار الأولياء": "Présence par code-barres et notifications aux parents",
+    "د. بوزويرة عزيز": "Dr Bouzouira Aziz",
+    "سعيدة، الجزائر": "Saïda, Algérie",
+    "صدقة عن والدي المرحوم بوزويرة قادة": "Une œuvre caritative à la mémoire de mon défunt père, Bouzouira Kada",
+    "نظرة شاملة على حضور اليوم ورسائل الأولياء": "Un aperçu de la présence du jour et des messages aux parents",
+    "تسجيل فوري بحركة باركود سريعة أو كاميرا": "Pointage instantané par scan de code-barres ou caméra",
+    "إدارة قاعدة بيانات التلاميذ وأرقام التعريف والصور": "Gérer les fiches élèves, les identifiants et les photos",
+    "استيراد قوائم التلاميذ من XLS أو XLSX أو HTML": "Importer des listes d'élèves depuis XLS, XLSX ou HTML",
+    "متابعة السجلات وتبرير الغيابات وإدارة رسائل SMS": "Consulter les registres, justifier les absences et gérer les SMS",
+    "تقارير يومية وشهرية قابلة للتصدير والطباعة": "Rapports quotidiens et mensuels exportables et imprimables",
+    "بطاقات تعريف التلاميذ والملصقات بالباركود": "Cartes d'élève et étiquettes code-barres",
+    "بيانات المؤسسة والفترات وبوابة الرسائل": "Établissement, périodes et passerelle SMS",
+    "معلومات الإصدار والمطوّر والإهداء": "Version, développeur et dédicace",
+    "منتج محلي مكتمل": "Produit local complet",
+    "المطوّر": "Développeur",
+    "تصميم وتطوير النظام": "Conception et développement du système",
+    "المكان": "Lieu",
+    "المعرّف": "Identifiant",
+    "العمل": "Travail",
+    "تطوير مستقل — الجزائر": "Développeur indépendant — Algérie",
+    "إهداء": "Dédicace",
+    "صدقة جارية": "Charité continue",
+    "نسأل الله أن يتقبّله ويرحمه ويسكنه فسيح جناته.": "Qu'Allah l'accepte, lui accorde Sa miséricorde et lui réserve une place au Paradis.",
+    "معلومات النظام": "Informations système",
+    "تفاصيل التشغيل والخصوصية": "Détails d'exploitation et de confidentialité",
+    "الإصدار": "Version",
+    "واجهة الاستخدام": "Interface",
+    "عربية RTL · English · Français": "Arabe RTL · English · Français",
+    "التشغيل": "Fonctionnement",
+    "محلي دون إنترنت": "Local, hors ligne",
+    "قاعدة البيانات": "Base de données",
+    "SQLite محلية": "SQLite locale",
+    "رسائل الأولياء": "Messages aux parents",
+    "إرسال بموافقة يدوية": "Envoi avec approbation manuelle",
+    "وضع الاختبار": "Mode test",
+    "مفعّل افتراضيًا": "Activé par défaut",
+    "نظام سطح مكتب يعمل دون اتصال بالإنترنت.": "Un système de bureau qui fonctionne entièrement hors ligne.",
+    "تبقى بيانات المؤسسة على هذا الجهاز، ولا تُرسل أي معلومات إلى خدمات خارجية إلا رسائل SMS التي يوافق عليها المستخدم صراحةً.": "Les données de l'établissement restent sur cet appareil. Aucune information n'est envoyée à des services externes, sauf les SMS que l'utilisateur approuve explicitement.",
+    "ب.ع": "B.A.",
+    "حاضر": "Présent",
+    "متأخر": "En retard",
+    "غائب": "Absent",
+    "غياب مبرر": "Absence justifiée",
+    "مبرر": "Justifié",
+    "في الانتظار": "En attente",
+    "تم الإرسال": "Envoyé",
+    "فشل": "Échec",
+    "ملغاة": "Annulé",
+    "مُرسلة": "Envoyé",
+    "فاشلة": "Échec",
+    "انتظار": "En attente",
+    "نشط": "Actif",
+    "نشطة": "Active",
+    "مؤرشف": "Archivé",
+    "معطّلة": "Désactivée",
+    "مغلقة": "Fermée",
+    "مفتوحة": "Ouverte",
+    "اختبار": "Test",
+    "محاكاة اختبار": "Simulation de test",
+    "تمت العملية": "Terminé",
+    "معلومة": "Info",
+    "تنبيه": "Attention",
+    "إغلاق": "Fermer",
+    "إلغاء": "Annuler",
+    "تأكيد": "Confirmer",
+    "تحديث": "Actualiser",
+    "نافذة": "Fenêtre",
+    "تأكيد العملية": "Confirmer l'action",
+    "هل تريد المتابعة؟": "Voulez-vous continuer ?",
+    "حدث خطأ غير متوقع. أعد المحاولة.": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "تعذر الاتصال بالخادم المحلي. تحقق من أن النظام ما زال يعمل.": "Impossible de joindre le serveur local. Vérifiez que le système fonctionne toujours.",
+    "تعذر الاتصال بالخادم المحلي.": "Impossible de joindre le serveur local.",
+    "حجم الملف كبير جدًا.": "Le fichier est trop volumineux.",
+    "لا توجد بيانات": "Aucune donnée",
+    "تم إيقاف الخادم. يمكنك إغلاق النافذة الآن.": "Le serveur est arrêté. Vous pouvez fermer cette fenêtre.",
+    "إلى اللقاء": "Au revoir",
+    "تم إيقاف النظام": "Système arrêté",
+    "أُغلقت قاعدة البيانات بأمان. يمكنك إغلاق هذه النافذة.": "La base de données a été fermée en toute sécurité. Vous pouvez fermer cette fenêtre.",
+    "إجمالي": "Total",
+    "الكل": "Tous",
+    "الترويسة": "En-tête",
+    "الشعار": "Logo",
+    "الشعار والختم": "Logo et cachet",
+    "خاتم المؤسسة": "Cachet de l'établissement",
+    "ختم المؤسسة": "Cachet de l'établissement",
+    "شعار المؤسسة": "Logo de l'établissement",
+    "الصورة الشخصية": "Photo",
+    "إدارة": "Gérer",
+    "حفظ": "Enregistrer",
+    "حفظ التعديلات": "Enregistrer les modifications",
+    "مثال": "Exemple",
+    "الاسم": "Prénom",
+    "اللقب": "Nom",
+    "الاسم واللقب": "Nom complet",
+    "اسم التلميذ": "Nom de l'élève",
+    "لقب التلميذ": "Nom de famille de l'élève",
+    "القسم": "Classe",
+    "الفترة": "Période",
+    "التاريخ": "Date",
+    "الوقت": "Heure",
+    "الحالة": "Statut",
+    "ملاحظة": "Remarque",
+    "إجراءات": "Actions",
+    "الإجراء": "Action",
+    "الرسالة": "Message",
+    "هاتف الولي": "Téléphone du parent",
+    "رقم التعريف": "Numéro d'identification",
+    "رقم التعريف الوطني": "Numéro d'identification national",
+    "المحاولات": "Tentatives",
+    "السجلات": "Enregistrements",
+    "إجمالي التلاميذ": "Total des élèves",
+    "تلميذ نشط": "Élève actif",
+    "فترة دراسية": "Période scolaire",
+    "حجم قاعدة البيانات": "Taille de la base de données",
+    "البداية": "Début",
+    "حد الحضور": "Limite de présence",
+    "حد الغياب": "Limite d'absence",
+    "وقت البداية": "Heure de début",
+    "ترتيب العرض": "Ordre d'affichage",
+    "اسم الفترة": "Nom de la période",
+    "الفترة الدراسية": "Période scolaire",
+    "الفترات الدراسية": "Périodes scolaires",
+    "إضافة فترة": "Ajouter une période",
+    "تعديل الفترة": "Modifier la période",
+    "حذف الفترة": "Supprimer la période",
+    "فترة نشطة": "Période active",
+    "موافقة صريحة على الإرسال": "Approbation explicite de l'envoi",
+    "أوافق على إرسال الرسائل المعلّقة الآن إلى أولياء التلاميذ المعنيين.": "J'accepte l'envoi immédiat des messages en attente aux parents des élèves concernés.",
+    "تأكيد الإرسال": "Confirmer l'envoi",
+    "تم": "Terminé",
+    "أرشفة": "Archiver",
+    "تنشيط": "Activer",
+    "تمت الأرشفة": "Archivé",
+    "حفظ كافتراضي": "Enregistrer par défaut",
+    "معاينة وطباعة": "Aperçu et impression",
+    "جارٍ التحميل…": "Chargement…",
+    "جارٍ التحضير…": "Préparation…",
+    "جارٍ المعالجة…": "Traitement…",
+    "جارٍ حساب التلاميذ…": "Calcul des élèves…",
+    "لا توجد نتائج": "Aucun résultat",
+    "أعد المحاولة.": "Réessayez.",
+    "إعادة المحاولة": "Réessayer",
+    "الأحد": "Dimanche",
+    "الاثنين": "Lundi",
+    "الثلاثاء": "Mardi",
+    "الأربعاء": "Mercredi",
+    "الخميس": "Jeudi",
+    "الجمعة": "Vendredi",
+    "السبت": "Samedi",
+    "جانفي": "Janvier",
+    "فيفري": "Février",
+    "مارس": "Mars",
+    "أفريل": "Avril",
+    "ماي": "Mai",
+    "جوان": "Juin",
+    "جويلية": "Juillet",
+    "أوت": "Août",
+    "سبتمبر": "Septembre",
+    "أكتوبر": "Octobre",
+    "نوفمبر": "Novembre",
+    "ديسمبر": "Décembre",
+    "الجمهورية الجزائرية الديمقراطية الشعبية": "République algérienne démocratique et populaire",
+    "وزارة التربية الوطنية": "Ministère de l'Éducation nationale",
+    "تم توليد التقرير آليًا": "Rapport généré automatiquement",
+    "خطأ": "Erreur",
+    "غير معروف": "Inconnu",
+    "بدون اسم": "Sans nom",
+    "بدون قسم": "Sans classe",
+    "بدون هاتف": "Sans téléphone",
+    "بدون هاتف ولي": "Sans téléphone du parent",
+    "بدون هاتف صالح": "Sans numéro valide",
+    "تم حفظ الإعدادات.": "Paramètres enregistrés.",
+    "تم حفظ الإعدادات بنجاح.": "Paramètres enregistrés avec succès.",
+    "تم حفظ إعدادات التصميم.": "Paramètres de conception enregistrés.",
+    "تم تحديث البيانات.": "Données mises à jour.",
+    "تم تحديث بيانات التلميذ.": "Fiche de l'élève mise à jour.",
+    "تمت إضافة التلميذ.": "Élève ajouté.",
+    "تمت إضافة الفترة.": "Période ajoutée.",
+    "تم تحديث الفترة.": "Période mise à jour.",
+    "تم حذف الفترة.": "Période supprimée.",
+    "تم حذف الصورة.": "Image supprimée.",
+    "تم رفع الصورة بنجاح.": "Image téléversée avec succès.",
+    "تمت جدولة إعادة المحاولة.": "Nouvelle tentative planifiée.",
+    "تعذر حفظ البيانات بسبب قيد في قاعدة البيانات.": "Impossible d'enregistrer les données en raison d'une contrainte de la base.",
+    "تعذر توليد الباركود لهذا الرقم.": "Impossible de générer un code-barres pour ce numéro.",
+    "تعذر توليد رمز QR.": "Impossible de générer le code QR.",
+    "صيغة الصورة غير مدعومة (JPG، PNG، WEBP فقط).": "Format d'image non pris en charge (JPG, PNG, WEBP uniquement).",
+    "الملف لا يبدو صورة صالحة.": "Le fichier ne semble pas être une image valide.",
+    "الملف فارغ.": "Le fichier est vide.",
+    "انتهت صلاحية جلسة الاستيراد. أعد رفع الملف.": "La session d'import a expiré. Téléversez à nouveau le fichier.",
+    "جلسة استيراد غير صالحة. أعد رفع الملف.": "Session d'import invalide. Téléversez à nouveau le fichier.",
+    "تعذر قراءة جلسة الاستيراد. أعد رفع الملف.": "Impossible de lire la session d'import. Téléversez à nouveau le fichier.",
+    "الفترة غير موجودة.": "Période introuvable.",
+    "الفترة المحددة غير موجودة.": "La période sélectionnée est introuvable.",
+    "الفترة المحددة معطّلة. اختر فترة نشطة.": "La période sélectionnée est désactivée. Choisissez une période active.",
+    "التلميذ غير موجود.": "Élève introuvable.",
+    "سجل الحضور غير موجود.": "Enregistrement de présence introuvable.",
+    "رسالة SMS غير موجودة.": "Message SMS introuvable.",
+    "مهمة الإرسال غير موجودة.": "Tâche d'envoi introuvable.",
+    "المسار غير موجود.": "Chemin introuvable.",
+    "الصفحة غير موجودة.": "Page introuvable.",
+    "الصفحة غير موجودة": "Page introuvable",
+    "حجم الطلب كبير جدًا": "Requête trop volumineuse",
+    "حدث خطأ داخلي": "Erreur interne",
+    "تعذر إتمام العملية": "Opération impossible",
+    "العودة إلى لوحة المتابعة": "Retour au tableau de bord",
+    "فتح بوابة المسح": "Ouvrir le portail de scan",
+    "إذا تكرر هذا الخطأ، راجع ملف السجل في مجلد البيانات ثم أعد تشغيل النظام.": "Si cette erreur persiste, consultez le fichier journal du dossier de données puis redémarrez le système.",
+    "حدث خطأ داخلي غير متوقع. راجع سجل التطبيق.": "Une erreur interne inattendue s'est produite. Consultez le journal de l'application.",
+    "حدث خطأ غير متوقع. راجع سجل التطبيق.": "Une erreur inattendue s'est produite. Consultez le journal de l'application.",
+    "حدث خطأ داخلي غير متوقع.": "Une erreur interne inattendue s'est produite.",
+    "طلب غير مصرح به. أعد تحميل الصفحة.": "Requête non autorisée. Rechargez la page.",
+    "لا يمكن تنفيذ العملية لارتباط السجل ببيانات أخرى.": "L'opération est impossible car l'enregistrement est lié à d'autres données.",
+    "هذه العملية متاحة من نفس جهاز الخادم فقط.": "Cette opération n'est disponible que depuis la machine serveur.",
+    "إغلاق الخادم غير متاح في وضع التشغيل الحالي.": "L'arrêt du serveur n'est pas disponible dans le mode d'exécution actuel.",
+    "فشلت المحاولة": "Tentative échouée",
+    "تاريخ المتابعة": "Date de suivi",
+    "تقرير اليوم": "Rapport du jour",
+    "متابعة حضور اليوم في لمحة واحدة": "La présence du jour en un coup d'œil",
+    "— راقب الوصول، عالج الغيابات، وأشعر الأولياء بسرعة من لوحة واحدة.": "— Suivez les arrivées, traitez les absences et informez les parents rapidement depuis un seul tableau de bord.",
+    "مؤشرات الحضور": "Indicateurs de présence",
+    "في الوقت": "À l'heure",
+    "بعد الحد": "Après la limite",
+    "الحاضرون": "Présents",
+    "المتأخرون": "En retard",
+    "الغائبون": "Absents",
+    "الغياب المبرر": "Absence justifiée",
+    "نظرة على الفترة": "Aperçu de la période",
+    "نسبة الحضور الإجمالية ومؤشرات المسح": "Taux de présence global et indicateurs de scan",
+    "نسبة الحضور": "Taux de présence",
+    "لم يُمسح بعد": "Pas encore scanné",
+    "حالة الفترة": "Statut de la période",
+    "اكتمال المسح": "Avancement du scan",
+    "رسائل الغياب": "Messages d'absence",
+    "الحضور حسب الأقسام": "Présence par classe",
+    "مقارنة سريعة بين الأقسام في الفترة المحددة": "Comparaison rapide entre les classes de la période sélectionnée",
+    "عرض السجل": "Voir le journal",
+    "جارٍ تحميل إحصاءات الأقسام…": "Chargement des statistiques par classe…",
+    "آخر عمليات المسح": "Derniers scans",
+    "أحدث التلاميذ الذين سُجّل وصولهم في هذه الفترة": "Les derniers élèves pointés durant cette période",
+    "البوابة": "Portail",
+    "إجراءات سريعة": "Actions rapides",
+    "إضافة تلميذ": "Ajouter un élève",
+    "تسجيل فردي": "Saisie individuelle",
+    "استيراد قائمة": "Importer une liste",
+    "طباعة البطاقات": "Imprimer les cartes",
+    "باركود CR80": "Code-barres CR80",
+    "تقارير اليوم": "Rapports du jour",
+    "غيابات تحتاج متابعة": "Absences à suivre",
+    "آخر الحالات غير المعالجة": "Derniers cas non traités",
+    "معالجة الغياب": "Traiter les absences",
+    "يتطلب الإرسال موافقة صريحة": "L'envoi nécessite une approbation explicite",
+    "حالة إشعارات الأولياء": "État des notifications aux parents",
+    "سجل الرسائل": "Journal des messages",
+    "لا تُرسل أي رسالة تلقائيًا من لوحة المتابعة. تتم العملية بعد موافقتك الصريحة.": "Aucun message n'est envoyé automatiquement depuis le tableau de bord. L'envoi a lieu après votre approbation explicite.",
+    "تلقائي": "Automatique",
+    "لا رسائل": "Aucun message",
+    "لا توجد أقسام بعد": "Aucune classe pour l'instant",
+    "أضف التلاميذ أو استورد قائمة لحساب الإحصاءات حسب القسم.": "Ajoutez des élèves ou importez une liste pour calculer les statistiques par classe.",
+    "لا عمليات مسح بعد": "Aucun scan pour l'instant",
+    "افتح بوابة المسح ومرر بطاقة تلميذ لتظهر أحدث العمليات هنا مباشرة.": "Ouvrez le portail de scan et passez une carte d'élève pour afficher les derniers scans ici.",
+    "فتح البوابة": "Ouvrir le portail",
+    "لا غياب مسجل في هذه الفترة": "Aucune absence enregistrée pour cette période",
+    "لم تُغلق الفترة بعد": "La période n'est pas encore fermée",
+    "كل التلاميذ النشطين لديهم سجلات حضور أو تبرير.": "Tous les élèves actifs ont un enregistrement de présence ou une justification.",
+    "عند إغلاق الفترة سيُسجَّل التلاميذ غير الممسوحين كغائبين، ويمكنك إشعار الأولياء بعد الموافقة.": "À la fermeture de la période, les élèves non scannés seront marqués absents ; vous pourrez informer les parents après approbation.",
+    "إغلاق الفترة": "Fermer la période",
+    "كل الحالات معالجة": "Tous les cas sont traités",
+    "تبرير الغياب": "Justifier l'absence",
+    "كل حالات الغياب": "Tous les cas d'absence",
+    "لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.": "Aucune période active. Ajoutez d'abord une période depuis les paramètres.",
+    "صباح الخير — إليك ملخص الحضور": "Bonjour — voici le résumé de présence",
+    "نهارك سعيد — إليك ملخص الحضور": "Bon après-midi — voici le résumé de présence",
+    "مساء الخير — إليك ملخص الحضور": "Bonsoir — voici le résumé de présence",
+    "رسائل قيد الانتظار": "Messages en attente",
+    "تعذر تحميل البيانات": "Impossible de charger les données",
+    "لا يمكن عرض إحصاءات تاريخ مستقبلي.": "Les statistiques d'une date future ne peuvent pas être affichées.",
+    "ملء الشاشة": "Plein écran",
+    "جاهز للمسح": "Prêt à scanner",
+    "مرّر بطاقة التلميذ الآن": "Passez la carte de l'élève maintenant",
+    "يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال الكاميرا.": "Le lecteur de code-barres fonctionne comme un périphérique de saisie automatique — aucun champ à cliquer. Vous pouvez aussi utiliser la caméra.",
+    "قارئ USB": "Lecteur USB",
+    "تأكيد تلقائي": "Validation automatique",
+    "حرف مستلم": "caractères reçus",
+    "إغلاق الكاميرا": "Fermer la caméra",
+    "وجّه الباركود داخل الإطار. توقف الكاميرا عند إخفاء هذه النافذة.": "Placez le code-barres dans le cadre. La caméra s'arrête lorsque cette fenêtre est masquée.",
+    "تشغيل الكاميرا": "Démarrer la caméra",
+    "تفريغ الذاكرة": "Vider la mémoire",
+    "بانتظار أول عملية مسح": "En attente du premier scan",
+    "ستظهر هنا بطاقة التلميذ مع الاسم، القسم، وقت التسجيل، وحصيلة اليوم مباشرةً بعد المسح.": "La fiche de l'élève apparaîtra ici avec le nom, la classe, l'heure de pointage et le bilan du jour dès le scan.",
+    "فترة التسجيل": "Période de pointage",
+    "اختيار يدوي أو كشف تلقائي حسب الوقت": "Sélection manuelle ou détection automatique selon l'heure",
+    "تحديث البيانات": "Actualiser les données",
+    "تلقائي حسب الوقت الحالي": "Automatique selon l'heure actuelle",
+    "سيُختار الوقت الأنسب تلقائيًا.": "La période la plus adaptée sera sélectionnée automatiquement.",
+    "لم يُمسح": "Non scanné",
+    "آخر الوصولات": "Dernières arrivées",
+    "يُحدَّث تلقائيًا مع كل مسح": "Mis à jour automatiquement à chaque scan",
+    "لا توجد فترات نشطة": "Aucune période active",
+    "أضف فترة من الإعدادات": "Ajoutez une période dans les paramètres",
+    "لا توجد فترة نشطة. أضف فترة من صفحة الإعدادات.": "Aucune période active. Ajoutez une période depuis la page Paramètres.",
+    "لا توجد فترة نشطة. أضف فترة من الإعدادات لتسجيل الحضور.": "Aucune période active. Ajoutez une période dans les paramètres pour enregistrer la présence.",
+    "الفترة مغلقة — المسح يحدّث الحالات": "Période fermée — le scan met à jour les statuts",
+    "تعذر تحميل بيانات البوابة.": "Impossible de charger les données du portail.",
+    "لا توجد فترة نشطة.": "Aucune période active.",
+    "أُغلقت هذه الفترة اليوم": "Cette période a été fermée aujourd'hui",
+    "على الساعة": "à",
+    "أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا": "Tout nouveau scan convertira automatiquement l'absence en présence ou en retard",
+    "، ورسائل الغياب في قائمة الانتظار.": ", et les messages d'absence sont en file d'attente.",
+    "لا توجد عمليات مسح مسجلة في هذه الفترة بعد.": "Aucun scan enregistré pour cette période.",
+    "جارٍ التحقق من الباركود…": "Vérification du code-barres…",
+    "جارٍ تسجيل الحضور…": "Enregistrement de la présence…",
+    "تعذر تسجيل المسح.": "Impossible d'enregistrer le scan.",
+    "الكاميرا مفعّلة — وجّه الباركود": "Caméra active — visez le code-barres",
+    "مسح مكرر": "Scan en double",
+    "مسجل مسبقًا": "Déjà enregistré",
+    "غير نشط": "Inactif",
+    "باركود غير مسجل": "Code-barres non enregistré",
+    "وقت التسجيل": "Heure de pointage",
+    "حضور اليوم": "Présence du jour",
+    "مسح تالٍ": "Scan suivant",
+    "سجل الفترة": "Journal de la période",
+    "ملف التلميذ": "Fiche de l'élève",
+    "إضافة التلميذ": "Ajouter l'élève",
+    "تعذر تسجيل المسح": "Impossible d'enregistrer le scan",
+    "خطأ في الاتصال أو في البيانات المرسلة": "Erreur de connexion ou données invalides",
+    "إخفاء الرسالة": "Masquer le message",
+    "هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome الحديث.": "Ce navigateur ne prend pas en charge la lecture de code-barres par caméra. Utilisez un lecteur USB ou un navigateur Edge/Chrome récent.",
+    "قراءة الباركود بالكاميرا غير مدعومة في هذا المتصفح. استعمل قارئ USB.": "La lecture de code-barres par caméra n'est pas prise en charge par ce navigateur. Utilisez un lecteur USB.",
+    "لا يمكن الوصول إلى الكاميرا. تأكد من تشغيل النظام على localhost ومنح الإذن.": "Impossible d'accéder à la caméra. Vérifiez que le système fonctionne sur localhost et accordez l'autorisation.",
+    "لا توجد صيغ باركود مدعومة في هذا المتصفح.": "Aucun format de code-barres pris en charge dans ce navigateur.",
+    "إيقاف الكاميرا": "Arrêter la caméra",
+    "وجّه الباركود داخل الإطار. تبقى الكاميرا تعمل حتى توقفها أو تصغّر النافذة.": "Placez le code-barres dans le cadre. La caméra reste active jusqu'à son arrêt ou la réduction de la fenêtre.",
+    "تعذر تشغيل الكاميرا.": "Impossible de démarrer la caméra.",
+    "تم رفض إذن الكاميرا. اسمح بالوصول من إعدادات المتصفح ثم أعد المحاولة.": "L'autorisation caméra a été refusée. Autorisez l'accès dans les paramètres du navigateur puis réessayez.",
+    "لا توجد كاميرا متصلة بهذا الجهاز.": "Aucune caméra connectée à cet appareil.",
+    "الكاميرا مستعملة من طرف تطبيق آخر. أغلق التطبيق الآخر ثم أعد المحاولة.": "La caméra est utilisée par une autre application. Fermez-la puis réessayez.",
+    "إنهاء ملء الشاشة": "Quitter le plein écran",
+    "تعذر تفعيل ملء الشاشة في هذا المتصفح.": "Le plein écran n'a pas pu être activé dans ce navigateur.",
+    "تم تفريغ ذاكرة المسح والبطاقة الحالية.": "La mémoire de scan et la fiche actuelle ont été vidées.",
+    "ابحث بالاسم، رقم التعريف، أو هاتف الولي…": "Rechercher par nom, identifiant ou téléphone du parent…",
+    "تصفية حسب القسم": "Filtrer par classe",
+    "كل الأقسام": "Toutes les classes",
+    "تصفية حسب الحالة": "Filtrer par statut",
+    "كل الحالات": "Tous les statuts",
+    "النشطون": "Actifs",
+    "المؤرشفون": "Archivés",
+    "عدد الصفوف": "Lignes par page",
+    "عدد الصفوف في الصفحة": "Lignes par page",
+    "بحث عن تلميذ": "Rechercher un élève",
+    "10 صفوف": "10 lignes",
+    "20 صفوف": "20 lignes",
+    "50 صفوف": "50 lignes",
+    "100 صفوف": "100 lignes",
+    "قاعدة بيانات التلاميذ": "Base de données des élèves",
+    "جارٍ تحميل القائمة…": "Chargement de la liste…",
+    "تحديث القائمة": "Actualiser la liste",
+    "تاريخ الميلاد": "Date de naissance",
+    "جارٍ تحميل التلاميذ…": "Chargement des élèves…",
+    "تعذر تحميل قائمة التلاميذ": "Impossible de charger la liste des élèves",
+    "تعذر تحميل البيانات.": "Impossible de charger les données.",
+    "تعذر تحميل القائمة.": "Impossible de charger la liste.",
+    "النشطون فقط": "Actifs uniquement",
+    "المؤرشفون فقط": "Archivés uniquement",
+    "لا توجد نتائج مطابقة للمعايير المحددة. جرّب تغيير البحث أو الفلاتر.": "Aucun résultat ne correspond aux critères sélectionnés. Modifiez la recherche ou les filtres.",
+    "لم تُضف أي تلميذ بعد. ابدأ بإضافة تلميذ يدويًا أو استيراد قائمة من Excel.": "Aucun élève n'a encore été ajouté. Ajoutez-en un manuellement ou importez une liste Excel.",
+    "مسح الفلاتر": "Effacer les filtres",
+    "إضافة أول تلميذ": "Ajouter le premier élève",
+    "لا يوجد تلاميذ": "Aucun élève",
+    "أرشفة التلميذ": "Archiver l'élève",
+    "تنشيط التلميذ": "Activer l'élève",
+    "تعديل البيانات": "Modifier les données",
+    "طباعة بطاقة التعريف": "Imprimer la carte d'élève",
+    "رقم التعريف غير قابل للتعديل لأنه مرتبط بسجلات الحضور والباركود المطبوع.": "L'identifiant ne peut pas être modifié car il est lié aux enregistrements de présence et au code-barres imprimé.",
+    "هذا هو الرمز الذي سيُقرأ من بطاقة التلميذ. يجب أن يكون فريدًا.": "C'est le code qui sera lu sur la carte de l'élève. Il doit être unique.",
+    "القسم / الفوج": "Classe / Groupe",
+    "يُستعمل لإرسال إشعارات الغياب عبر SMS.": "Utilisé pour envoyer les notifications d'absence par SMS.",
+    "حالة التلميذ": "Statut de l'élève",
+    "يظهر في المسح والاستيراد والتقارير.": "Visible lors du scan, de l'import et dans les rapports.",
+    "تعديل بيانات التلميذ": "Modifier la fiche de l'élève",
+    "إضافة تلميذ جديد": "Ajouter un nouvel élève",
+    "عدّل المعلومات الشخصية وبيانات الاتصال.": "Modifiez les informations personnelles et les coordonnées.",
+    "أدخل بيانات التلميذ يدويًا. يمكنك إضافة الصورة بعد الحفظ.": "Saisissez les données de l'élève manuellement. Vous pourrez ajouter une photo après l'enregistrement.",
+    "أدخل رقم التعريف الوطني أولًا.": "Saisissez d'abord le numéro d'identification national.",
+    "أدخل الاسم أو اللقب على الأقل.": "Saisissez au moins un prénom ou un nom.",
+    "تم حفظ بيانات التلميذ.": "Fiche de l'élève enregistrée.",
+    "تعذر حفظ بيانات التلميذ.": "Impossible d'enregistrer la fiche de l'élève.",
+    "تعذر تحميل ملف التلميذ.": "Impossible de charger la fiche de l'élève.",
+    "أضف فترات من الإعدادات لعرض حضور اليوم.": "Ajoutez des périodes dans les paramètres pour afficher la présence du jour.",
+    "بيانات الاتصال وحضور اليوم": "Coordonnées et présence du jour",
+    "فترات حضور اليوم": "Périodes de présence du jour",
+    "غياب اليوم": "Absences du jour",
+    "لم تُسجل بعد": "Non enregistré",
+    "صورة التلميذ": "Photo de l'élève",
+    "تُستعمل في بطاقة التعريف وشاشة البوابة. الحد الأقصى 5 ميغابايت.": "Utilisée sur la carte d'élève et l'écran du portail. Maximum 5 Mo.",
+    "رفع صورة": "Téléverser une photo",
+    "غير مسجل": "Non enregistré",
+    "فترات اليوم": "Périodes du jour",
+    "طباعة البطاقة": "Imprimer la carte",
+    "حجم الصورة يتجاوز 5 ميغابايت.": "L'image dépasse 5 Mo.",
+    "تم تحديث صورة التلميذ.": "Photo de l'élève mise à jour.",
+    "تعذر رفع صورة التلميذ.": "Impossible de téléverser la photo de l'élève.",
+    "تعذر تحديث حالة التلميذ.": "Impossible de mettre à jour le statut de l'élève.",
+    "تم تنشيط التلميذ.": "Élève activé.",
+    "تمت أرشفة التلميذ.": "Élève archivé.",
+    "قائمة التلاميذ": "Liste des élèves",
+    "مراحل الاستيراد": "Étapes de l'import",
+    "اختيار الملف": "Choisir le fichier",
+    "ربط الأعمدة": "Mapper les colonnes",
+    "المراجعة والاستيراد": "Vérification et import",
+    "النتيجة": "Résultat",
+    "رفع ملف قائمة التلاميذ": "Téléverser un fichier de liste d'élèves",
+    "استيراد ذكي يتعرّف على صيغة الملف وأعمدة الجدول تلقائيًا.": "Import intelligent qui détecte automatiquement le format du fichier et les colonnes du tableau.",
+    "معالجة محلية آمنة": "Traitement local sécurisé",
+    "اختيار ملف الاستيراد": "Choisir le fichier d'import",
+    "اسحب الملف هنا أو اضغط للاختيار": "Glissez le fichier ici ou cliquez pour le choisir",
+    "ملفات Excel الحقيقية بصيغة XLS أو XLSX، وكذلك ملفات الجداول التي تصدّرها الأنظمة بصيغة HTML بامتداد XLS.": "Fichiers Excel réels au format XLS ou XLSX, ainsi que les tableaux HTML exportés par d'autres systèmes avec l'extension XLS.",
+    "جارٍ تحليل الملف وقراءة الأعمدة…": "Analyse du fichier et lecture des colonnes…",
+    "كيف يعمل الاستيراد؟": "Comment fonctionne l'import ?",
+    "تعرّف تلقائي على الأعمدة": "Détection automatique des colonnes",
+    "يحاول النظام مطابقة عناوين الأعمدة العربية والفرنسية تلقائيًا، ويمكنك تعديلها.": "Le système tente de faire correspondre automatiquement les en-têtes de colonnes arabes et français ; vous pouvez les ajuster.",
+    "تحديث دون فقدان السجلات": "Mise à jour sans perte de données",
+    "التلميذ الموجود يُحدَّث برقم التعريف الوطني، وتبقى سجلات حضوره ورسائله محفوظة.": "L'élève existant est mis à jour par son numéro d'identification national, et son historique de présence et de messages est conservé.",
+    "تحقق قبل الحفظ": "Vérifier avant d'enregistrer",
+    "لن تُحفظ أي بيانات قبل مراجعة الصفوف والأخطاء والتنبيهات والموافقة على الاستيراد.": "Aucune donnée n'est enregistrée avant la vérification des lignes, erreurs et avertissements, et votre approbation de l'import.",
+    "رقم التعريف الوطني إلزامي.": "Le numéro d'identification national est obligatoire.",
+    "هو الرقم الذي يُطبع داخل الباركود، لذلك يجب أن يكون عمودًا نصيًا واضحًا في الملف وخاليًا من الأرقام المكررة.": "C'est le numéro imprimé dans le code-barres ; il doit donc être une colonne texte claire dans le fichier, sans numéros en double.",
+    "نماذج جاهزة للتجربة:": "Modèles prêts à essayer :",
+    "نموذج XLSX": "Modèle XLSX",
+    "نموذج XLS بصيغة HTML": "Modèle XLS (HTML)",
+    "ربط أعمدة الملف بحقول التلميذ": "Mapper les colonnes du fichier aux champs de l'élève",
+    "اختر العمود المقابل لكل معلومة. يُبرز الجدول الأعمدة التي اخترتها.": "Choisissez la colonne correspondant à chaque information. Le tableau met en évidence les colonnes sélectionnées.",
+    "تغيير الملف": "Changer de fichier",
+    "مطابقة الحقول": "Correspondance des champs",
+    "الحقول غير المربوطة تُترك فارغة، وتُحدَّث البيانات الحالية فقط بالحقول المربوطة.": "Les champs non mappés restent vides ; les données existantes ne sont mises à jour qu'avec les champs mappés.",
+    "معاينة الصفوف الأولى": "Aperçu des premières lignes",
+    "للتأكد من أن صف العناوين والأعمدة صحيحة قبل التحليل الكامل.": "Pour vérifier que la ligne d'en-tête et les colonnes sont correctes avant l'analyse complète.",
+    "رقم التعريف الوطني مطلوب للمتابعة.": "Le numéro d'identification national est requis pour continuer.",
+    "تحليل ومطابقة البيانات": "Analyser et faire correspondre les données",
+    "مراجعة الاستيراد": "Vérification de l'import",
+    "تحقق من الأعداد والصفوف والأخطاء، ثم أكّد الاستيراد.": "Vérifiez les totaux, les lignes et les erreurs, puis confirmez l'import.",
+    "تعديل المطابقة": "Modifier le mapping",
+    "عينة من البيانات المعالجة": "Échantillon des données traitées",
+    "أول الصفوف الصالحة بعد التحقق من الأرقام والتواريخ والهواتف.": "Les premières lignes valides après vérification des numéros, dates et téléphones.",
+    "الأخطاء والتنبيهات": "Erreurs et avertissements",
+    "الصفوف غير الصالحة لن تُستورد، ويمكن تصحيحها في الملف وإعادة المحاولة.": "Les lignes invalides ne seront pas importées ; vous pouvez les corriger dans le fichier et réessayer.",
+    "الأخطاء": "Erreurs",
+    "التنبيهات": "Avertissements",
+    "لن يتم حفظ أي تغيير قبل التأكيد.": "Aucune modification n'est enregistrée avant confirmation.",
+    "تأكيد الاستيراد": "Confirmer l'import",
+    "تم استيراد القائمة بنجاح": "Liste importée avec succès",
+    "أُضيفت بيانات التلاميذ إلى قاعدة البيانات المحلية.": "Les données des élèves ont été ajoutées à la base locale.",
+    "عرض قائمة التلاميذ": "Voir la liste des élèves",
+    "استيراد ملف آخر": "Importer un autre fichier",
+    "تصنيف الأخطاء والتنبيهات": "Catégories d'erreurs et d'avertissements",
+    "حجم الملف يتجاوز 25 ميغابايت. قسّم القائمة إلى ملفات أصغر.": "Le fichier dépasse 25 Mo. Divisez la liste en fichiers plus petits.",
+    "الملف جاهز للمطابقة": "Fichier prêt pour le mapping",
+    "— غير مربوط —": "— Non mappé —",
+    "رقم التعريف الوطني مربوط. يمكنك متابعة التحليل.": "La colonne d'identification nationale est mappée. Vous pouvez lancer l'analyse.",
+    "اربط عمود رقم التعريف الوطني للمتابعة.": "Mappez la colonne d'identification nationale pour continuer.",
+    "يجب ربط عمود رقم التعريف الوطني قبل التحليل.": "La colonne d'identification nationale doit être mappée avant l'analyse.",
+    "صفوف الملف": "Lignes du fichier",
+    "صالح للاستيراد": "Prêt à importer",
+    "تلميذ جديد": "Nouvel élève",
+    "سيُضاف": "Sera ajouté",
+    "تلميذ موجود": "Élève existant",
+    "سيُحدَّث": "Sera mis à jour",
+    "صفوف مرفوضة": "Lignes rejetées",
+    "لا يوجد أي صف صالح للاستيراد. صحح الأخطاء في الملف أو أعد ربط الأعمدة ثم كرر التحليل.": "Aucune ligne valide à importer. Corrigez les erreurs du fichier ou remappez les colonnes puis relancez l'analyse.",
+    "كل الصفوف صالحة ولم تُكتشف أخطاء. راجع العينة ثم أكّد الاستيراد.": "Toutes les lignes sont valides et aucune erreur n'a été détectée. Vérifiez l'échantillon puis confirmez l'import.",
+    "لا يمكن الاستيراد قبل وجود صفوف صالحة.": "L'import est impossible tant qu'il n'y a pas de lignes valides.",
+    "لا توجد أخطاء تمنع الاستيراد.": "Aucune erreur n'empêche l'import.",
+    "لا توجد تنبيهات مسجلة.": "Aucun avertissement enregistré.",
+    "لا توجد صفوف صالحة لعرضها.": "Aucune ligne valide à afficher.",
+    "إلغاء الاستيراد": "Annuler l'import",
+    "سيتم تجاهل الملف الحالي ومسح المعاينة. لم تُحفظ أي بيانات بعد. هل تريد المتابعة؟": "Le fichier actuel sera ignoré et l'aperçu effacé. Aucune donnée n'a été enregistrée. Voulez-vous continuer ?",
+    "تأكيد استيراد القائمة": "Confirmer l'import de la liste",
+    "بدء الاستيراد": "Démarrer l'import",
+    "اكتمل الاستيراد": "Import terminé",
+    "تلميذ محدَّث": "Élève mis à jour",
+    "صورة منسوخة": "Photo copiée",
+    "اكتملت العملية دون أخطاء أو تنبيهات. يمكنك الآن طباعة بطاقات التلاميذ أو بدء المسح.": "L'opération s'est terminée sans erreur ni avertissement. Vous pouvez maintenant imprimer les cartes d'élève ou commencer le scan.",
+    "الرقم التعريفي المستعمل في الباركود (إلزامي)": "Le numéro d'identification utilisé dans le code-barres (obligatoire)",
+    "يوم/شهر/سنة أو Excel date": "Jour/mois/année ou date Excel",
+    "رقم هاتف الولي": "Numéro de téléphone du parent",
+    "رقم جزائري يبدأ بـ 0": "Numéro algérien commençant par 0",
+    "مسار صورة التلميذ": "Chemin de la photo de l'élève",
+    "مسار ملف محلي على هذا الحاسوب (اختياري)": "Chemin d'un fichier local sur cet ordinateur (facultatif)",
+    "جارٍ تحميل حالة الفترة…": "Chargement de l'état de la période…",
+    "يتم التحقق من سجلات الحضور وحالة الإغلاق لهذا اليوم.": "Vérification des présences et de l'état de clôture du jour.",
+    "لا توجد فترات": "Aucune période",
+    "إغلاق الفترة ومعالجة الغياب": "Clôturer la période et traiter les absences",
+    "جارٍ إرسال الرسائل…": "Envoi des messages…",
+    "يتم تجهيز قائمة الرسائل المعلّقة.": "Préparation de la liste des messages en attente.",
+    "أقسام المتابعة": "Sections de suivi",
+    "ابحث بالاسم أو رقم التعريف…": "Rechercher par nom ou numéro d'identification…",
+    "25 صفًا": "25 lignes",
+    "50 صفًا": "50 lignes",
+    "100 صف": "100 lignes",
+    "سجلات الحضور": "Registres de présence",
+    "جارٍ تحميل السجلات…": "Chargement des registres…",
+    "القسم والفترة": "Classe et période",
+    "وقت المسح": "Heure du scan",
+    "رسالة SMS": "Message SMS",
+    "صندوق رسائل الغياب": "Boîte des messages d'absence",
+    "جارٍ تحميل الرسائل…": "Chargement des messages…",
+    "إرسال الرسائل المعلّقة": "Envoyer les messages en attente",
+    "بحث في رسائل الأولياء": "Rechercher dans les messages des parents",
+    "تصفية حسب حالة الإرسال": "Filtrer par état d'envoi",
+    "20 صفًا": "20 lignes",
+    "تعذر تحميل الفترات": "Impossible de charger les périodes",
+    "لا توجد فترة محددة": "Aucune période sélectionnée",
+    "أضف فترة دراسية من الإعدادات لبدء متابعة الحضور وإغلاق الغياب.": "Ajoutez une période scolaire dans les paramètres pour commencer le suivi et clôturer les absences.",
+    "إعداد الفترات": "Paramètres des périodes",
+    "بانتظار الإغلاق": "En attente de clôture",
+    "متابعة الغياب والرسائل": "Suivre les absences et les messages",
+    "تعذر تحميل حالة الفترة": "Impossible de charger l'état de la période",
+    "كل الفترات": "Toutes les périodes",
+    "لا توجد سجلات مطابقة للفلاتر الحالية. جرّب تغيير الحالة أو القسم.": "Aucun enregistrement ne correspond aux filtres actuels. Essayez de changer l'état ou la classe.",
+    "لم يُسجَّل أي حضور بعد لهذا اليوم. افتح بوابة المسح لتسجيل الوصول، أو أغلق الفترة لرصد الغياب.": "Aucune présence n'a encore été enregistrée aujourd'hui. Ouvrez la porte de scan pour pointer les arrivées, ou clôturez la période pour marquer les absences.",
+    "لا توجد سجلات بعد": "Aucun enregistrement pour le moment",
+    "تعذر تحميل سجل الحضور": "Impossible de charger le registre de présence",
+    "تعذر تحميل السجلات.": "Impossible de charger les registres.",
+    "بوابة سحابية": "Passerelle cloud",
+    "بوابة محلية": "Passerelle locale",
+    "لا توجد رسائل معلّقة": "Aucun message en attente",
+    "عرض الرسالة": "Voir le message",
+    "إرسال عبر واتساب": "Envoyer via WhatsApp",
+    "صندوق الرسائل فارغ": "La boîte de messages est vide",
+    "لم تُنشأ رسائل غياب بعد. أغلق الفترة من الأعلى ثم وافق على إشعار الأولياء.": "Aucun message d'absence n'a encore été créé. Clôturez la période ci-dessus, puis approuvez la notification des parents.",
+    "تعذر تحميل صندوق الرسائل": "Impossible de charger la boîte de messages",
+    "تعذر تحميل الرسائل.": "Impossible de charger les messages.",
+    "اكتملت معالجة الرسائل": "Traitement des messages terminé",
+    "اكتملت معالجة الرسائل.": "Traitement des messages terminé.",
+    "جارٍ إرسال الرسائل إلى الأولياء": "Envoi des messages aux parents",
+    "لا توجد رسائل معلّقة لهذا التاريخ وهذه الفترة.": "Aucun message en attente pour cette date et cette période.",
+    "الفترة المحددة": "Période sélectionnée",
+    "إرسال رسائل الغياب المعلّقة": "Envoyer les messages d'absence en attente",
+    "وضع الاختبار مفعّل: ستُسجَّل الرسائل كمحاكاة ناجحة دون إرسال حقيقي أو استهلاك رصيد.": "Le mode test est activé : les messages seront enregistrés comme des simulations réussies, sans envoi réel ni consommation de crédit.",
+    "وضع الإرسال الحقيقي مفعّل. تأكد من صحة أرقام الأولياء وبوابة SMS قبل المتابعة.": "Le mode d'envoi réel est activé. Vérifiez les numéros des parents et la passerelle SMS avant de continuer.",
+    "تاريخ الإنشاء": "Créé le",
+    "وقت الإرسال": "Envoyé le",
+    "ملاحظة النظام:": "Note du système :",
+    "المراسلة عبر واتساب:": "Messagerie WhatsApp :",
+    "فتح واتساب": "Ouvrir WhatsApp",
+    "إعادة محاولة إرسال الرسالة": "Réessayer l'envoi du message",
+    "تم تحديث بيانات المتابعة.": "Les données de suivi ont été mises à jour.",
+    "عرض الملاحظة": "Voir la note",
+    "إغلاق آلي": "Clôture automatique",
+    "إغلاق يدوي": "Clôture manuelle",
+    "الفترة مفتوحة ولم تُغلق بعد": "La période est ouverte et pas encore clôturée",
+    "غائب مسجل": "Absent enregistré",
+    "غائب متوقع": "Absent attendu",
+    "ولي له هاتف": "Parent avec téléphone",
+    "تلميذًا غائبًا بدون رقم هاتف صالح. لن تصلهم رسائل SMS، ويمكن متابعتهم عبر التقرير اليومي.": "élèves absents n'ont pas de numéro de téléphone valide. Ils ne recevront pas de SMS ; suivez-les via le rapport quotidien.",
+    "موافقة صريحة على إرسال رسائل SMS": "Approbation explicite pour l'envoi de SMS",
+    "أوافق على إرسال رسائل SMS إلى أولياء التلاميذ الغائبين بعد إغلاق الفترة.": "J'accepte l'envoi de SMS aux parents des élèves absents après la clôture de la période.",
+    "وضع الاختبار مفعّل: ستُسجَّل الرسائل كمحاكاة ناجحة دون إرسال حقيقي أو استهلاك رصيد. يمكن تعطيله من الإعدادات.": "Le mode test est activé : les messages seront enregistrés comme des simulations réussies, sans envoi réel ni consommation de crédit. Vous pouvez le désactiver dans les paramètres.",
+    "عينة من التلاميذ المعنيين": "Échantillon des élèves concernés",
+    "وقت الإغلاق": "Heure de clôture",
+    "رسائل مُرسلة سابقًا": "Messages déjà envoyés",
+    "تعذر متابعة تقدم الإرسال. حدّث الصفحة لعرض النتيجة.": "Impossible de suivre la progression de l'envoi. Actualisez la page pour voir le résultat.",
+    "اختر فترة نشطة أولًا لمعالجة الغياب.": "Sélectionnez d'abord une période active pour traiter les absences.",
+    "إرسال الرسائل المعلقة": "Envoyer les messages en attente",
+    "إغلاق وإرسال SMS": "Clôturer et envoyer les SMS",
+    "متابعة غياب الفترة": "Suivre les absences de la période",
+    "تمت العملية بنجاح.": "Opération réussie.",
+    "تم إغلاق الفترة، لكن تعذر تجهيز الإرسال:": "La période a été clôturée, mais l'envoi n'a pas pu être préparé :",
+    "وضع الاختبار: سيتم تسجيل الإرسال كمحاكاة ناجحة دون شبكة.": "Mode test : l'envoi sera enregistré comme une simulation réussie, sans réseau.",
+    "سبب التبرير": "Motif de la justification",
+    "مثال: شهادة طبية مسلمة للإدارة بتاريخ اليوم…": "Exemple : certificat médical remis à l'administration aujourd'hui…",
+    "سيُسجل السبب في ملاحظات السجل ويظهر في التقارير.": "Le motif sera enregistré dans les notes du registre et affiché dans les rapports.",
+    "تأكيد التبرير": "Confirmer la justification",
+    "يرجى كتابة سبب التبرير (حرفان على الأقل).": "Veuillez saisir le motif de la justification (au moins deux caractères).",
+    "تم تبرير الغياب.": "Absence justifiée.",
+    "يعتبر التبرير الغياب «مبررًا» ويمنع إرسال رسالة SMS إن لم تُرسل بعد. لا يمكن تبرير سجل حضور أو تأخر.": "La justification marque l'absence comme « justifiée » et empêche l'envoi d'un SMS s'il n'a pas encore été envoyé. Un enregistrement de présence ou de retard ne peut pas être justifié.",
+    "لا توجد فترات نشطة. أضف فترة من الإعدادات أولًا.": "Aucune période active. Ajoutez d'abord une période dans les paramètres.",
+    "بحث في سجل الحضور": "Rechercher dans le registre de présence",
+    "تم تثبيت سجلات الغياب. لا توجد رسائل SMS معلقة لهذه الفترة.": "Les absences ont été enregistrées. Aucun SMS n'est en attente pour cette période.",
+    "نوع التقرير": "Type de rapport",
+    "تقرير يومي": "Rapport quotidien",
+    "تقرير شهري": "Rapport mensuel",
+    "تاريخ التقرير": "Date du rapport",
+    "شهر التقرير": "Mois du rapport",
+    "حالة الحضور": "État de présence",
+    "تقرير الحضور والغياب اليومي": "Rapport quotidien de présence et d'absence",
+    "تقرير الغياب الشهري": "Rapport mensuel des absences",
+    "تقرير الحضور اليومي": "Rapport de présence quotidien",
+    "طباعة التقرير": "Imprimer le rapport",
+    "طباعة / PDF": "Imprimer / PDF",
+    "تصدير Excel": "Exporter Excel",
+    "سجلات اليوم": "Registres du jour",
+    "سجلات الحضور اليومية": "Registres de présence quotidiens",
+    "ملخص الغياب الشهري لكل تلميذ": "Résumé mensuel des absences par élève",
+    "التلميذ": "Élève",
+    "نسبة الغياب": "Taux d'absence",
+    "إجمالي السجلات": "Total des registres",
+    "سجل": "enregistrement",
+    "جارٍ تحميل التقرير…": "Chargement du rapport…",
+    "تعذر تحميل التقرير": "Impossible de charger le rapport",
+    "تحقق من الفلاتر أو أعد المحاولة.": "Vérifiez les filtres ou réessayez.",
+    "تعذر تحميل التقرير.": "Impossible de charger le rapport.",
+    "جارٍ تجهيز ملف Excel…": "Préparation du fichier Excel…",
+    "منع المتصفح فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم أعد المحاولة.": "Le navigateur a bloqué la fenêtre d'impression. Autorisez les fenêtres pop-up puis réessayez.",
+    "فتح سجل الحضور": "Ouvrir le registre de présence",
+    "لا توجد سجلات لهذا اليوم": "Aucun registre pour ce jour",
+    "لا توجد بيانات لهذا الشهر": "Aucune donnée pour ce mois",
+    "لم تُسجَّل أي حالة حضور أو غياب مطابقة للفلاتر. جرّب تغيير التاريخ أو الفترة.": "Aucun enregistrement de présence ou d'absence ne correspond aux filtres. Essayez de changer la date ou la période.",
+    "لم تُسجَّل أي حالة خلال هذا الشهر للفلاتر المحددة. جرّب تغيير الشهر أو القسم.": "Aucun enregistrement ce mois-ci pour les filtres sélectionnés. Essayez de changer le mois ou la classe.",
+    "يمكن تصدير التقرير إلى Excel أو طباعته كملف PDF من نافذة الطباعة.": "Vous pouvez exporter le rapport vers Excel ou l'imprimer en PDF depuis la boîte d'impression.",
+    "ورق A4": "Papier A4",
+    "اختر «حفظ كملف PDF» من نافذة الطباعة للتصدير.": "Choisissez « Enregistrer au format PDF » dans la boîte d'impression pour exporter.",
+    "العودة للتقارير": "Retour aux rapports",
+    "طباعة الآن": "Imprimer maintenant",
+    "لا توجد بيانات مسجلة خلال هذا الشهر للفلاتر المحددة.": "Aucune donnée enregistrée ce mois-ci pour les filtres sélectionnés.",
+    "لا توجد سجلات حضور أو غياب لهذا اليوم للفلاتر المحددة.": "Aucun registre de présence ou d'absence pour ce jour ne correspond aux filtres sélectionnés.",
+    "مدير(ة) المؤسسة": "Directeur/Directrice de l'établissement",
+    "المؤسسة التعليمية": "Établissement scolaire",
+    "الرقم": "N°",
+    "حالة SMS": "État du SMS",
+    "الملخص": "Résumé",
+    "المجموع": "Total",
+    "مجموع السجلات": "Total des registres",
+    "تقرير": "Rapport",
+    "محفوظ": "Enregistré",
+    "أقسام الإعدادات": "Sections des paramètres",
+    "بيانات المؤسسة": "Informations de l'établissement",
+    "الدوام والسلوك": "Horaires et comportement",
+    "رسائل SMS": "Messages SMS",
+    "البيانات والنظام": "Données et système",
+    "تظهر هذه المعلومات في ترويسة المطبوعات ورسائل الأولياء.": "Ces informations apparaissent dans l'en-tête des impressions et les messages aux parents.",
+    "ترويسة رسمية": "En-tête officiel",
+    "اسم المؤسسة": "Nom de l'établissement",
+    "اسم المؤسسة كما يظهر في الوثائق الرسمية.": "Le nom de l'établissement tel qu'il apparaît dans les documents officiels.",
+    "السنة الدراسية": "Année scolaire",
+    "اسم مدير المؤسسة": "Nom du directeur de l'établissement",
+    "مدير المؤسسة": "Directeur de l'établissement",
+    "نص الترويسة": "Texte de l'en-tête",
+    "سطران أو ثلاثة تظهر أعلى بطاقات التعريف والتقارير المطبوعة.": "Deux ou trois lignes affichées en haut des cartes d'identité et des rapports imprimés.",
+    "حفظ بيانات المؤسسة": "Enregistrer les informations",
+    "صور شفافة بصيغة PNG أو WEBP تعطي مظهرًا رسميًا للبطاقات والتقارير.": "Des images transparentes PNG ou WEBP donnent un aspect officiel aux cartes et aux rapports.",
+    "PNG أو JPG أو WEBP — بحد أقصى 3 ميغابايت.": "PNG, JPG ou WEBP — 3 Mo maximum.",
+    "رفع الشعار": "Téléverser le logo",
+    "إزالة": "Supprimer",
+    "يظهر أسفل الشهادات والتقارير المطبوعة.": "Apparaît en bas des certificats et des rapports imprimés.",
+    "رفع الختم": "Téléverser le cachet",
+    "تُحفظ الصور داخل مجلد بيانات النظام على هذا الجهاز، ولا تُرسل إلى أي خدمة خارجية. استعمل خلفية شفافة لنتيجة طباعة أفضل.": "Les images sont stockées dans le dossier de données du système sur cet appareil et ne sont jamais envoyées à un service externe. Utilisez un fond transparent pour une meilleure impression.",
+    "أيام الدراسة وتفعيل الرصد التلقائي وحماية البوابة من التكرار.": "Jours scolaires, suivi automatique et protection de la porte contre les doublons.",
+    "أيام الدراسة": "Jours scolaires",
+    "تُستعمل لتخطي الرصد التلقائي في أيام العطل الأسبوعية.": "Utilisé pour ignorer le suivi automatique pendant les jours de congé hebdomadaire.",
+    "الرصد التلقائي للغياب": "Suivi automatique des absences",
+    "عند تجاوز حد الغياب، تُسجَّل الغيابات وتُجهَّز رسائل الأولياء في الانتظار دون إرسال تلقائي.": "Lorsque le seuil d'absence est dépassé, les absences sont enregistrées et les messages aux parents sont mis en attente sans envoi automatique.",
+    "منع تكرار المسح (بالدقائق)": "Anti-doublon de scan (minutes)",
+    "إذا أعاد التلميذ مسح بطاقته خلال هذه المدة، يُحتسب حضوره دون إنشاء سجل مكرر.": "Si l'élève scanne à nouveau sa carte pendant ce délai, sa présence est comptée sans créer de doublon.",
+    "حفظ إعدادات الدوام": "Enregistrer les horaires",
+    "اضبط أوقات البداية وحدود الحضور والغياب لكل فترة.": "Définissez l'heure de début et les seuils de présence et d'absence pour chaque période.",
+    "لا توجد فترات بعد. أضف فترة لبدء تسجيل الحضور.": "Aucune période pour le moment. Ajoutez une période pour commencer à enregistrer les présences.",
+    "لا يمكن حذف فترة مرتبطة بسجلات حضور أو إغلاقات سابقة. عطّلها بدل حذفها للحفاظ على الأرشيف.": "Une période liée à des registres de présence ou à des clôtures antérieures ne peut pas être supprimée. Désactivez-la plutôt pour préserver les archives.",
+    "رسائل الأولياء (SMS وواتساب)": "Messages aux parents (SMS et WhatsApp)",
+    "قالب الرسالة وبوابة الإرسال وإعدادات المحاولات والمشاركة اليدوية عبر واتساب.": "Modèle de message, passerelle d'envoi, paramètres de nouvelle tentative et partage manuel via WhatsApp.",
+    "وضع الاختبار مفعّل: تُحاكى عمليات الإرسال دون استخدام الشبكة أو استهلاك رصيد.": "Le mode test est activé : les envois sont simulés sans réseau ni consommation de crédit.",
+    "أبقِه مفعّلًا أثناء التجارب. عند تعطيله ستحتاج إلى رابط بوابة صالح في الإعدادات. لا يؤثر على روابط واتساب اليدوية.": "Gardez-le activé pendant les essais. Si vous le désactivez, vous aurez besoin d'une URL de passerelle valide dans les paramètres. Cela n'affecte pas les liens WhatsApp manuels.",
+    "إظهار أزرار واتساب": "Afficher les boutons WhatsApp",
+    "تظهر في سجل الغياب وصندوق الرسائل. الضغط يفتح واتساب بنص الرسالة جاهزًا، ثم تراجع النص وتضغط «إرسال» داخل واتساب.": "Affichés dans le registre des absences et la boîte de messages. Un clic ouvre WhatsApp avec le texte prêt ; vérifiez-le puis appuyez sur « Envoyer » dans WhatsApp.",
+    "رمز الدولة الافتراضي": "Indicatif pays par défaut",
+    "يُضاف تلقائيًا للأرقام المحلية التي تبدأ بـ 0 (الجزائر: 213).": "Ajouté automatiquement aux numéros locaux commençant par 0 (Algérie : 213).",
+    "روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. تحتاج تطبيق واتساب أو متصفحًا متصلًا بالإنترنت، ولا يرسل النظام أي رسالة دون تأكيدك داخل واتساب.": "Les liens officiels wa.me ne nécessitent ni passerelle ni crédit. Ils requièrent l'application WhatsApp ou un navigateur connecté, et le système n'envoie rien sans votre confirmation dans WhatsApp.",
+    "قالب رسالة الغياب": "Modèle de message d'absence",
+    "إدراج متغير:": "Insérer une variable :",
+    "إدراج متغير": "Insérer une variable",
+    "المتغيرات تُستبدل تلقائيًا لكل تلميذ عند تجهيز الرسائل.": "Les variables sont remplacées automatiquement pour chaque élève lors de la préparation des messages.",
+    "معاينة:": "Aperçu :",
+    "نوع بوابة الإرسال": "Type de passerelle d'envoi",
+    "بوابة أندرويد محلية (HTTP)": "Passerelle Android locale (HTTP)",
+    "واجهة سحابية قابلة للضبط": "API cloud configurable",
+    "البوابة المحلية تستقبل JSON بالحقول phone و message.": "La passerelle locale reçoit du JSON avec les champs phone et message.",
+    "رابط بوابة SMS": "URL de la passerelle SMS",
+    "عنوان الخدمة التي ستستقبل طلبات الإرسال.": "Adresse du service qui recevra les demandes d'envoi.",
+    "مفتاح API (اختياري)": "Clé API (facultative)",
+    "إظهار المفتاح": "Afficher la clé",
+    "إخفاء المفتاح": "Masquer la clé",
+    "يُرسل في ترويسة X-Api-Key للبوابة المحلية.": "Envoyé dans l'en-tête X-Api-Key à la passerelle locale.",
+    "مهلة الاتصال (ثوانٍ)": "Délai de connexion (secondes)",
+    "عدد محاولات الإرسال": "Nombre de tentatives d'envoi",
+    "تُعاد المحاولة تلقائيًا عند فشل الاتصال قبل تسجيل الرسالة كفاشلة.": "Nouvelle tentative automatique en cas d'échec de connexion avant d'enregistrer le message comme échoué.",
+    "عدد اختباري للتحقق": "Numéro de test pour vérification",
+    "إرسال تجريبي": "Envoyer un test",
+    "يحفظ الإعدادات الجديدة أولًا عند إجراء الاختبار. في وضع الاختبار تُحاكى العملية فقط.": "Enregistre d'abord les nouveaux paramètres lors du test. En mode test, l'opération est seulement simulée.",
+    "إعدادات متقدمة للواجهة السحابية": "Paramètres avancés de l'API cloud",
+    "ترويسات HTTP (JSON)": "En-têtes HTTP (JSON)",
+    "يمكن استخدام {{api_key}} داخل الترويسات.": "Vous pouvez utiliser {{api_key}} dans les en-têtes.",
+    "قالب JSON للطلب": "Modèle JSON de la requête",
+    "الحقول المتاحة: {{phone}} و {{message}} و {{api_key}}. يُستبدل الرابط أيضًا بنفس الحقول.": "Champs disponibles : {{phone}}, {{message}} et {{api_key}}. L'URL est également remplacée avec les mêmes champs.",
+    "هذه الإعدادات تُستعمل فقط عند اختيار «واجهة سحابية». تأكد من صيغة JSON صالحة قبل الحفظ.": "Ces paramètres ne sont utilisés que si « API cloud » est sélectionnée. Vérifiez que le JSON est valide avant d'enregistrer.",
+    "حفظ إعدادات الرسائل": "Enregistrer les paramètres des messages",
+    "موقع قاعدة البيانات وحجمها والنسخ الاحتياطي وإغلاق الخادم المحلي.": "Emplacement et taille de la base de données, sauvegarde et arrêt du serveur local.",
+    "مجلد البيانات": "Dossier de données",
+    "يحتوي قاعدة SQLite والصور والنسخ المؤقتة.": "Contient la base SQLite, les images et les sauvegardes temporaires.",
+    "جميع البيانات محفوظة محليًا على هذا الجهاز فقط. أنشئ نسخة احتياطية دوريًا واحفظها في مكان آمن.": "Toutes les données sont stockées localement sur cet appareil uniquement. Créez régulièrement des sauvegardes et conservez-les en lieu sûr.",
+    "تنزيل نسخة احتياطية": "Télécharger une sauvegarde",
+    "استيراد قائمة تلاميذ": "Importer une liste d'élèves",
+    "يوقف الخادم المحلي ويغلق قاعدة البيانات بأمان. لا تفقد أي بيانات محفوظة.": "Arrête le serveur local et ferme la base de données en toute sécurité. Aucune donnée enregistrée n'est perdue.",
+    "تم تحديث الإعدادات من قاعدة البيانات.": "Paramètres actualisés depuis la base de données.",
+    "تعذر تحميل الإعدادات.": "Impossible de charger les paramètres.",
+    "تعذر تحميل الفترات.": "Impossible de charger les périodes.",
+    "صيغة الصورة غير مدعومة. استعمل PNG أو JPG أو WEBP.": "Format d'image non pris en charge. Utilisez PNG, JPG ou WEBP.",
+    "حجم الصورة يتجاوز 3 ميغابايت.": "L'image dépasse 3 Mo.",
+    "تم رفع شعار المؤسسة.": "Logo de l'établissement téléversé.",
+    "تم رفع ختم المؤسسة.": "Cachet de l'établissement téléversé.",
+    "تعذر رفع الصورة.": "Impossible de téléverser l'image.",
+    "إزالة الصورة": "Supprimer l'image",
+    "سيُحذف شعار المؤسسة من المطبوعات. هل تريد المتابعة؟": "Le logo de l'établissement sera supprimé des impressions. Voulez-vous continuer ?",
+    "سيُحذف ختم المؤسسة من المطبوعات. هل تريد المتابعة؟": "Le cachet de l'établissement sera supprimé des impressions. Voulez-vous continuer ?",
+    "تعذر حذف الصورة.": "Impossible de supprimer l'image.",
+    "تعذر حفظ الإعدادات.": "Impossible d'enregistrer les paramètres.",
+    "اسم المؤسسة مطلوب.": "Le nom de l'établissement est obligatoire.",
+    "تم حفظ بيانات المؤسسة.": "Informations de l'établissement enregistrées.",
+    "اختر يومًا دراسيًا واحدًا على الأقل.": "Sélectionnez au moins un jour scolaire.",
+    "مدة منع التكرار يجب أن تكون بين 1 و60 دقيقة.": "La durée anti-doublon doit être comprise entre 1 et 60 minutes.",
+    "تم حفظ إعدادات الدوام.": "Paramètres des horaires enregistrés.",
+    "اكتب قالب الرسالة لعرض المعاينة.": "Saisissez le modèle de message pour afficher l'aperçu.",
+    "وضع الاختبار معطّل: ستُرسل رسائل حقيقية عبر البوابة المضبوطة. تأكد من صحة الرابط والمفتاح قبل الإرسال.": "Le mode test est désactivé : de vrais messages seront envoyés via la passerelle configurée. Vérifiez l'URL et la clé avant l'envoi.",
+    "قالب رسالة SMS لا يمكن أن يكون فارغًا.": "Le modèle SMS ne peut pas être vide.",
+    "رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.": "L'URL de la passerelle SMS doit commencer par http:// ou https://.",
+    "أدخل رابط بوابة SMS قبل تعطيل وضع الاختبار.": "Saisissez l'URL de la passerelle SMS avant de désactiver le mode test.",
+    "مهلة الاتصال يجب أن تكون بين 3 و120 ثانية.": "Le délai de connexion doit être compris entre 3 et 120 secondes.",
+    "عدد محاولات الإرسال يجب أن يكون بين 1 و10.": "Le nombre de tentatives doit être compris entre 1 et 10.",
+    "رمز الدولة يجب أن يتكون من 1 إلى 4 أرقام.": "L'indicatif pays doit contenir de 1 à 4 chiffres.",
+    "ترويسات HTTP ليست JSON صالحًا.": "Les en-têtes HTTP ne sont pas un JSON valide.",
+    "قالب JSON للطلب غير صالح.": "Le modèle JSON de la requête est invalide.",
+    "تم حفظ إعدادات رسائل SMS.": "Paramètres SMS enregistrés.",
+    "أدخل رقم هاتف لإجراء الاختبار.": "Saisissez un numéro de téléphone pour effectuer le test.",
+    "تم حفظ الإعدادات قبل الاختبار.": "Paramètres enregistrés avant le test.",
+    "اكتمل الاختبار.": "Test terminé.",
+    "اختبار بوابة SMS": "Test de la passerelle SMS",
+    "فشل اختبار بوابة SMS.": "Le test de la passerelle SMS a échoué.",
+    "تعديل الفترة الدراسية": "Modifier la période scolaire",
+    "إضافة فترة دراسية": "Ajouter une période scolaire",
+    "حدد اسم الفترة وأوقات البداية وحدود الحضور والغياب.": "Définissez le nom de la période, l'heure de début et les seuils de présence et d'absence.",
+    "الفترة الصباحية": "Période du matin",
+    "المسح بعد هذا الوقت يُسجّل متأخرًا.": "Les scans après cette heure sont marqués en retard.",
+    "بعد هذا الوقت يصبح التلميذ غائبًا عند الرصد التلقائي.": "Après cette heure, l'élève devient absent lors du suivi automatique.",
+    "تظهر في بوابة المسح وسجل الحضور. عطّل الفترة لإخفائها دون حذف سجلاتها.": "Affichée dans la porte de scan et le registre de présence. Désactivez la période pour la masquer sans supprimer ses registres.",
+    "إضافة الفترة": "Ajouter la période",
+    "اسم الفترة مطلوب.": "Le nom de la période est obligatoire.",
+    "أدخل جميع أوقات الفترة.": "Saisissez toutes les heures de la période.",
+    "يجب أن يكون وقت البداية ≤ حد الحضور ≤ حد الغياب.": "L'heure de début doit être ≤ au seuil de ponctualité ≤ au seuil d'absence.",
+    "تعذر حذف الفترة.": "Impossible de supprimer la période.",
+    "تم حفظ الفترة.": "Période enregistrée.",
+    "تعذر حفظ الفترة.": "Impossible d'enregistrer la période.",
+    "جارٍ تجهيز نسخة احتياطية من قاعدة البيانات.": "Préparation d'une sauvegarde de la base de données.",
+    "نسخ احتياطي": "Sauvegarde",
+    "تعديل": "Modifier",
+    "حذف": "Supprimer",
+    "مؤسسة": "Établissement",
+    "يُرسل في ترويسة": "Envoyé dans l'en-tête",
+    "للبوابة المحلية.": "à la passerelle locale.",
+    "يمكن استخدام": "Vous pouvez utiliser",
+    "داخل الترويسات.": "dans les en-têtes.",
+    "الحقول المتاحة:": "Champs disponibles :",
+    "و": "et",
+    ". يُستبدل الرابط أيضًا بنفس الحقول.": ". L'URL est également remplacée avec les mêmes champs.",
+    "تصميم ورقة الطباعة": "Conception de la feuille d'impression",
+    "بطاقات تعريف CR80 أو ملصقات باركود بمقاسات دقيقة على ورق A4.": "Cartes d'identité CR80 ou étiquettes de code-barres aux dimensions exactes sur papier A4.",
+    "نوع الطباعة": "Type d'impression",
+    "بطاقات التلاميذ": "Cartes des élèves",
+    "ملصقات الباركود": "Étiquettes de code-barres",
+    "نطاق التلاميذ": "Portée des élèves",
+    "نطاق الطباعة": "Portée d'impression",
+    "كل التلاميذ النشطين": "Tous les élèves actifs",
+    "اختيار محدد": "Sélection spécifique",
+    "قسم": "Classe",
+    "تلميذ": "Élève",
+    "القسم المطلوب": "Classe souhaitée",
+    "اختر القسم…": "Choisir une classe…",
+    "البحث عن تلميذ": "Rechercher un élève",
+    "الاسم، اللقب، أو رقم التعريف…": "Nom, prénom ou numéro d'identification…",
+    "اختيار التلميذ": "Sélectionner l'élève",
+    "— اختر تلميذًا —": "— Choisir un élève —",
+    "توزيع البطاقات": "Disposition des cartes",
+    "10 بطاقات": "10 cartes",
+    "2 × 5 في الصفحة": "2 × 5 par page",
+    "8 بطاقات": "8 cartes",
+    "2 × 4 مع فراغات": "2 × 4 avec espacements",
+    "توزيع الملصقات": "Disposition des étiquettes",
+    "30 ملصقًا": "30 étiquettes",
+    "3 × 10 — 65 × 27 مم": "3 × 10 — 65 × 27 mm",
+    "24 ملصقًا": "24 étiquettes",
+    "3 × 8 — 65 × 34 مم": "3 × 8 — 65 × 34 mm",
+    "عناصر البطاقة": "Éléments de la carte",
+    "شعار المؤسسة والاسم والسنة": "Logo, nom et année de l'établissement",
+    "شعار المؤسسة في الترويسة": "Logo de l'établissement dans l'en-tête",
+    "أو الأحرف الأولى عند غيابها": "Ou les initiales en l'absence de photo",
+    "يظهر ضمن بيانات التلميذ": "Affiché dans les informations de l'élève",
+    "رمز QR": "Code QR",
+    "إضافة مربع QR بجانب الباركود": "Ajouter un carré QR à côté du code-barres",
+    "التوقيع والخاتم": "Signature et cachet",
+    "صورة الخاتم المرفوعة في الإعدادات": "L'image du cachet téléversée dans les paramètres",
+    "الألوان والانحناء": "Couleurs et arrondis",
+    "اللون الرئيسي": "Couleur principale",
+    "لون الترويسة": "Couleur de l'en-tête",
+    "رمز اللون الرئيسي": "Code hexadécimal de la couleur principale",
+    "رمز لون الترويسة": "Code hexadécimal de la couleur d'en-tête",
+    "مم": "mm",
+    "انحناء الزوايا": "Arrondi des coins",
+    "المعاينة المباشرة": "Aperçu en direct",
+    "بطاقة CR80": "Carte CR80",
+    "بطاقة CR80 — 85.6 × 54 مم": "Carte CR80 — 85,6 × 54 mm",
+    "تُفتح ورقة الطباعة في تبويب جديد بمقاس A4 دقيق (210 × 297 مم). عند الطباعة اختر": "La feuille d'impression s'ouvre dans un nouvel onglet au format A4 exact (210 × 297 mm). À l'impression, choisissez",
+    "الهوامش: بلا": "Marges : Aucune",
+    "وفعّل": "et activez",
+    "طباعة خلفيات الرسوم": "Imprimer les arrière-plans graphiques",
+    "للحصول على الألوان والشعار.": "pour obtenir les couleurs et le logo.",
+    "اسم المؤسسة التعليمية": "Nom de l'établissement",
+    "بطاقة التلميذ": "Carte de l'élève",
+    "تلميذ بدون اسم": "Élève sans nom",
+    "بطاقات CR80": "Cartes CR80",
+    "ملصقات باركود": "Étiquettes de code-barres",
+    "اختر القسم أولًا": "Choisissez d'abord une classe",
+    "اختر تلميذًا أولًا": "Choisissez d'abord un élève",
+    "لا يوجد تلاميذ نشطون في هذا النطاق": "Aucun élève actif dans cette portée",
+    "تم حفظ التصميم": "Conception enregistrée",
+    "سيُستعمل هذا التصميم افتراضيًا في المرات القادمة.": "Cette conception sera utilisée par défaut à l'avenir.",
+    "أضف التلاميذ أو استورد قائمة، ثم عد إلى استوديو الطباعة. لا يمكن إنشاء بطاقات فارغة.": "Ajoutez des élèves ou importez une liste, puis revenez au studio d'impression. Des cartes vides ne peuvent pas être générées.",
+    "الهوامش: بلا · طباعة الخلفيات: مفعّلة": "Marges : Aucune · Impression des arrière-plans : Activée",
+    "العودة للاستوديو": "Retour au studio",
+    "لا يوجد تلاميذ للطباعة": "Aucun élève à imprimer",
+    "ورق A4 دقيق": "Papier A4 exact",
+    "معاينة توضيحية —": "Aperçu de démonstration —",
+    "بطاقة": "carte",
+    "بطاقتان": "cartes",
+    "بطاقات": "cartes",
+    "ملصق": "étiquette",
+    "ملصقان": "étiquettes",
+    "ملصقات": "étiquettes",
+    "ملصقًا": "étiquettes",
+    "بطاقة جاهزة": "carte prête",
+    "بطاقتان جاهزتان": "cartes prêtes",
+    "بطاقات جاهزة": "cartes prêtes",
+    "ملصق جاهز": "étiquette prête",
+    "ملصقان جاهزان": "étiquettes prêtes",
+    "ملصقات جاهزة": "étiquettes prêtes",
+    "ملصقًا جاهزًا": "étiquettes prêtes",
+    "للطباعة": "à imprimer",
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا.": ". Tout nouveau scan convertira automatiquement l’absence en présence ou en retard.",
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا، ورسائل الغياب في قائمة الانتظار.": ". Tout nouveau scan convertira automatiquement l’absence en présence ou en retard, et les messages d’absence sont en file d’attente.",
+    ". لا يمكن التراجع بعد بدء الإرسال.": ". Cette action est irréversible une fois l’envoi commencé.",
+    "أُغلقت هذه الفترة اليوم على الساعة": "Cette période a été clôturée aujourd’hui à",
+    "أُغلقت هذه الفترة اليوم.": "Cette période a été clôturée aujourd’hui.",
+    "إلى أولياء التلاميذ الغائبين ضمن": "aux parents des élèves absents dans",
+    "الإجمالي": "Total",
+    "الفترة لم تُغلق بعد": "La période n’a pas encore été clôturée",
+    "بايت": "o",
+    "بتاريخ": "le",
+    "بدأ إرسال الرسائل.": "L’envoi des messages a commencé.",
+    "بطاقات جاهزة للطباعة": "cartes prêtes à imprimer",
+    "بطاقة جاهزة للطباعة": "carte prête à imprimer",
+    "بطاقتان جاهزتان للطباعة": "cartes prêtes à imprimer",
+    "تم تثبيت سجلات الغياب.": "Les enregistrements d’absence ont été finalisés.",
+    "حالة أخرى…": "autres cas…",
+    "سيتم إرسال": "Envoi de",
+    "سيتم إيقاف الخادم المحلي. تأكد من عدم وجود عمليات مسح أو إرسال رسائل جارية. هل تريد المتابعة؟": "Le serveur local va être arrêté. Vérifiez qu’aucun scan ni envoi de messages n’est en cours. Voulez-vous continuer ?",
+    "عدد المحاولات": "Nombre de tentatives",
+    "عرض ملف": "Voir la fiche",
+    "غ.ب": "Go",
+    "ك.ب": "Ko",
+    "لا توجد رسائل SMS معلقة لهذه الفترة.": "Aucun SMS en attente pour cette période.",
+    "لا يوجد أي صف صالح للاستيراد.": "Aucune ligne valide à importer.",
+    "م.ب": "Mo",
+    "مثال: 109876543210": "Exemple : 109876543210",
+    "مثال: 1AS1": "Exemple : 1AS1",
+    "مراسلة الولي عبر واتساب": "Contacter le parent via WhatsApp",
+    "مسح": "Scan",
+    "ملصق جاهز للطباعة": "étiquette prête à imprimer",
+    "ملصقات جاهزة للطباعة": "étiquettes prêtes à imprimer",
+    "ملصقان جاهزان للطباعة": "étiquettes prêtes à imprimer",
+    "ملصقًا جاهزًا للطباعة": "étiquettes prêtes à imprimer",
+    "نص الرسالة": "Texte du message",
+    "هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome حديث.": "Ce navigateur ne peut pas lire les codes-barres depuis la caméra. Utilisez un lecteur USB ou un navigateur Edge/Chrome récent.",
+    "واجهة سحابية": "Interface cloud",
+    "مدير": "Administrateur",
+    "مستخدم": "Utilisateur",
+    "معطل": "Désactivé",
+    "ملخص المستخدمين": "Résumé des utilisateurs",
+    "إجمالي المستخدمين": "Total des utilisateurs",
+    "مديرو النظام": "Administrateurs",
+    "حسابات نشطة": "Comptes actifs",
+    "حسابات الدخول": "Comptes de connexion",
+    "الأدوار: المدير يدير الإعدادات والمستخدمين والنسخ الاحتياطي والتحديثات. المستخدم يدير العمليات اليومية دون صفحات النظام.": "Rôles : les administrateurs gèrent les paramètres, les utilisateurs, les sauvegardes et les mises à jour. Les utilisateurs gèrent les opérations quotidiennes sans accès aux pages système.",
+    "المستخدم": "Utilisateur",
+    "الدور": "Rôle",
+    "كلمة المرور": "Mot de passe",
+    "اسم المستخدم": "Nom d'utilisateur",
+    "آخر دخول": "Dernière connexion",
+    "جارٍ تحميل المستخدمين…": "Chargement des utilisateurs…",
+    "كلمة المرور اختيارية.": "Le mot de passe est facultatif.",
+    "عند إضافة مستخدم يمكنك ترك كلمة المرور فارغة؛ سيدخل باختيار اسمه دون كلمة مرور. يمكنك ضبطها أو حذفها لاحقًا من زر التعديل.": "Lors de l'ajout d'un utilisateur, vous pouvez laisser le mot de passe vide ; il se connectera en choisissant son nom, sans mot de passe. Vous pourrez le définir ou le supprimer plus tard depuis le bouton de modification.",
+    "إضافة مستخدم": "Ajouter un utilisateur",
+    "يوجد حساب مدير بدون كلمة مرور.": "Un compte administrateur n'a pas de mot de passe.",
+    "اضبط كلمة مرور قوية لحساب admin قبل أن تشارك الجهاز مع مستخدمين آخرين.": "Définissez un mot de passe fort pour le compte admin avant de partager cet appareil avec d'autres utilisateurs.",
+    "حسابات الدخول والأدوار وكلمات المرور": "Comptes de connexion, rôles et mots de passe",
+    "المستخدمون": "Utilisateurs",
+    "مضبوطة": "Défini",
+    "بدون كلمة مرور": "Sans mot de passe",
+    "لم يدخل بعد": "Jamais connecté",
+    "لا يوجد مستخدمون": "Aucun utilisateur",
+    "أضف أول حساب للدخول إلى النظام.": "Ajoutez le premier compte pour accéder au système.",
+    "حسابك": "Votre compte",
+    "تعذر تحميل المستخدمين": "Impossible de charger les utilisateurs",
+    "3 إلى 32 حرفًا لاتينيًا أو رقمًا أو . _ -": "3 à 32 lettres latines, chiffres ou . _ -",
+    "الاسم المعروض": "Nom affiché",
+    "كلمة المرور (اختيارية)": "Mot de passe (facultatif)",
+    "اتركها فارغة لعدم التغيير": "Laissez vide pour ne pas modifier",
+    "لا تقل عن 6 أحرف عند ضبطها.": "Au moins 6 caractères s'il est défini.",
+    "حذف كلمة المرور الحالية": "Supprimer le mot de passe actuel",
+    "الحساب نشط ويستطيع الدخول": "Le compte est actif et peut se connecter",
+    "لا يمكنك تغيير دور حسابك أو تعطيله من هنا.": "Vous ne pouvez pas modifier votre rôle ni désactiver votre compte ici.",
+    "تعديل المستخدم": "Modifier l'utilisateur",
+    "أنشئ حسابًا جديدًا بصلاحية مدير أو مستخدم.": "Créez un nouveau compte avec des droits administrateur ou utilisateur.",
+    "أدخل الاسم المعروض.": "Saisissez le nom affiché.",
+    "تم تحديث بيانات المستخدم.": "Les informations de l'utilisateur ont été mises à jour.",
+    "تم إنشاء المستخدم بنجاح.": "Utilisateur créé avec succès.",
+    "حذف المستخدم": "Supprimer l'utilisateur",
+    "تم حذف المستخدم.": "Utilisateur supprimé.",
+    "تسجيل الخروج": "Se déconnecter",
+    "تسجيل الدخول": "Connexion",
+    "منصة محلية آمنة": "Plateforme locale sécurisée",
+    "الحضور بالباركود، والرسائل، والتقارير في مكان واحد.": "Présence par code-barres, messages et rapports au même endroit.",
+    "كل البيانات تبقى على جهاز المؤسسة. سجّل الدخول للوصول إلى الأدوات المسموحة لحسابك.": "Toutes les données restent sur l'appareil de l'établissement. Connectez-vous pour accéder aux outils autorisés pour votre compte.",
+    "مسح سريع عبر ماسح HID أو الكاميرا": "Scan rapide avec un lecteur HID ou la caméra",
+    "رسائل SMS وواتساب للأولياء": "Messages SMS et WhatsApp aux parents",
+    "بطاقات وملصقات باركود بدقة A4": "Cartes et étiquettes code-barres A4",
+    "أدوار منفصلة لمدير النظام والمستخدمين": "Rôles distincts pour les administrateurs et les utilisateurs",
+    "أدخل بيانات حسابك للمتابعة.": "Saisissez les informations de votre compte pour continuer.",
+    "اتركها فارغة إن لم تضبط كلمة مرور": "Laissez vide si aucun mot de passe n'est défini",
+    "إظهار كلمة المرور": "Afficher le mot de passe",
+    "كلمة المرور اختيارية. إذا لم يضبطها مدير النظام، اترك الحقل فارغًا.": "Le mot de passe est facultatif. Si l'administrateur n'en a pas défini, laissez le champ vide.",
+    "دخول إلى النظام": "Se connecter au système",
+    "أول تشغيل: الحساب admin بدون كلمة مرور.": "Premier démarrage : le compte admin n'a pas de mot de passe.",
+    "سجّل الدخول ثم افتح صفحة المستخدمين واضبط كلمة مرور قوية لحساب المدير.": "Connectez-vous, ouvrez la page Utilisateurs et définissez un mot de passe fort pour le compte administrateur.",
+    "تحديثات النظام": "Mises à jour du système",
+    "تحديثات موقّعة رقميًا تُحمّل من خادم fetsync وتُثبّت تلقائيًا بعد التحقق.": "Les mises à jour signées numériquement sont téléchargées depuis le serveur fetsync et installées automatiquement après vérification.",
+    "التحديث التلقائي": "Mises à jour automatiques",
+    "فحص التحديثات وتنزيلها والتحقق من توقيعها ثم تثبيتها عند توقف العمليات.": "Rechercher, télécharger et vérifier la signature des mises à jour, puis les installer lorsque le système est inactif.",
+    "رابط خادم التحديثات": "URL du serveur de mises à jour",
+    "يجب أن يبدأ بـ https:// ويشير إلى ملف latest.json الموقّع.": "Doit commencer par https:// et pointer vers le fichier latest.json signé.",
+    "حالة التحديث": "État de la mise à jour",
+    "جارٍ قراءة حالة التحديث…": "Lecture de l'état de la mise à jour…",
+    "الإصدار الحالي": "Version actuelle",
+    "آخر إصدار متاح": "Dernière version disponible",
+    "آخر فحص": "Dernière vérification",
+    "حالة التنزيل": "État du téléchargement",
+    "ملاحظات الإصدار": "Notes de version",
+    "فحص التحديثات الآن": "Vérifier les mises à jour",
+    "تثبيت التحديث": "Installer la mise à jour",
+    "لن يُثبّت النظام أي تحديث إلا بعد التحقق من توقيع Ed25519 المضمّن في التطبيق ومطابقة بصمة SHA-256 للملف. تُرفض التحديثات غير الموقّعة أو المعدّلة.": "Le système n'installera une mise à jour qu'après avoir vérifié sa signature Ed25519 avec la clé intégrée à l'application et confirmé l'empreinte SHA-256 du fichier. Les mises à jour non signées ou modifiées sont refusées.",
+    "حفظ إعدادات التحديث": "Enregistrer les paramètres de mise à jour",
+    "مستودع المشروع": "Dépôt du projet",
+    "مستودع المشروع على GitHub": "Dépôt du projet sur GitHub",
+    "فحص الإصدارات الموقّعة وتثبيتها من fetsync.": "Vérifiez et installez les versions signées depuis fetsync.",
+    "يتوفر تحديث جديد": "Une nouvelle mise à jour est disponible",
+    "سيتم تنزيله والتحقق من توقيعه ثم تثبيته تلقائيًا عند توقف العمليات.": "Elle sera téléchargée, vérifiée et installée automatiquement lorsque le système est inactif.",
+    "تثبيت الآن": "Installer maintenant",
+    "التفاصيل": "Détails",
+    "إخفاء التنبيه": "Masquer l'alerte",
+    "جارٍ تثبيت التحديث وإعادة تشغيل النظام. انتظر قليلًا…": "Installation de la mise à jour et redémarrage du système. Veuillez patienter…",
+    "محدّث": "À jour",
+    "جارٍ التثبيت": "Installation en cours",
+    "جاهز للتثبيت": "Prêt à installer",
+    "يتوفر تحديث": "Mise à jour disponible",
+    "النظام يعمل بأحدث إصدار موقّع.": "Le système utilise la dernière version signée.",
+    "سيُنزّل تلقائيًا": "Sera téléchargée automatiquement",
+    "تعذر قراءة حالة التحديث.": "Impossible de lire l'état de la mise à jour.",
+    "تم فحص التحديثات.": "Mises à jour vérifiées.",
+    "التحديثات": "Mises à jour",
+    "تعذر فحص التحديثات.": "Impossible de vérifier les mises à jour.",
+    "تثبيت وإعادة التشغيل": "Installer et redémarrer",
+    "سيتم تثبيت التحديث الآن.": "La mise à jour va être installée maintenant.",
+    "إعادة التشغيل": "Redémarrage",
+    "تعذر تثبيت التحديث.": "Impossible d'installer la mise à jour.",
+    "تم حفظ إعدادات التحديث.": "Paramètres de mise à jour enregistrés.",
+    "تعذر حفظ إعدادات التحديث.": "Impossible d'enregistrer les paramètres de mise à jour.",
+    "انتهت الجلسة. جارٍ إعادة تسجيل الدخول…": "Votre session a expiré. Redirection vers la connexion…",
+    "ليست لديك صلاحية لتنفيذ هذه العملية.": "Vous n'avez pas l'autorisation d'effectuer cette opération.",
+    "ليست لديك صلاحية الوصول إلى هذه العملية.": "Vous n'avez pas l'autorisation d'accéder à cette opération.",
+    "ليست لديك صلاحية الوصول إلى هذه الصفحة. ارجع إلى مدير النظام.": "Vous n'avez pas accès à cette page. Contactez l'administrateur du système.",
+    "يجب تسجيل الدخول للمتابعة.": "Vous devez vous connecter pour continuer.",
+    "انتهت جلسة الدخول. سجّل الدخول من جديد.": "Votre session a expiré. Reconnectez-vous.",
+    "اسم المستخدم أو كلمة المرور غير صحيحة.": "Nom d'utilisateur ou mot de passe incorrect.",
+    "انتهت صلاحية الجلسة. أعد تحميل الصفحة ثم حاول مجددًا.": "La session a expiré. Rechargez la page et réessayez.",
+    "اسم المستخدم يجب أن يكون بين 3 و32 حرفًا لاتينيًا أو رقمًا أو . _ -": "Le nom d'utilisateur doit contenir de 3 à 32 lettres latines, chiffres ou . _ -",
+    "الاسم المعروض أطول من 80 حرفًا.": "Le nom affiché dépasse 80 caractères.",
+    "الدور المحدد غير صالح.": "Le rôle sélectionné est invalide.",
+    "كلمة المرور يجب ألا تقل عن 6 أحرف.": "Le mot de passe doit contenir au moins 6 caractères.",
+    "كلمة المرور أطول من 128 حرفًا.": "Le mot de passe dépasse 128 caractères.",
+    "المستخدم غير موجود.": "Utilisateur introuvable.",
+    "لا يمكنك إزالة صلاحية مدير النظام عن حسابك أو تعطيله.": "Vous ne pouvez pas retirer les droits d'administrateur de votre compte ni le désactiver.",
+    "يجب أن يبقى مدير نظام واحد نشط على الأقل.": "Au moins un administrateur actif doit rester.",
+    "لا يمكنك حذف حسابك الحالي.": "Vous ne pouvez pas supprimer votre compte actuel.",
+    "اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.": "Ce nom d'utilisateur est déjà utilisé. Choisissez-en un autre.",
+    "ملف التحديث غير صالح.": "Le fichier de mise à jour est invalide.",
+    "التحديث غير موقّع ولن يتم تثبيته.": "La mise à jour n'est pas signée et ne sera pas installée.",
+    "توقيع التحديث مشوّه.": "La signature de la mise à jour est mal formée.",
+    "رقم إصدار التحديث غير صالح.": "Le numéro de version de la mise à jour est invalide.",
+    "وصف التحديث غير صالح.": "La description de la mise à jour est invalide.",
+    "قائمة ملفات التحديث غير صالحة.": "La liste des fichiers de mise à jour est invalide.",
+    "ملف تحديث غير صالح.": "Une entrée de fichier de mise à jour est invalide.",
+    "نوع ملف التحديث غير معروف.": "Le type de fichier de mise à jour est inconnu.",
+    "روابط التحديث يجب أن تكون https.": "Les liens de mise à jour doivent utiliser https.",
+    "بصمة SHA-256 لملف التحديث غير صالحة.": "L'empreinte SHA-256 du fichier de mise à jour est invalide.",
+    "حجم ملف التحديث غير صالح.": "La taille du fichier de mise à jour est invalide.",
+    "إصدار صيغة التحديث غير صالح.": "La version du schéma de mise à jour est invalide.",
+    "توقيع التحديث غير صالح. تم رفض الملف.": "La signature de la mise à jour est invalide. Le fichier a été refusé.",
+    "لا يحتوي التحديث على ملف قابل للتثبيت.": "La mise à jour ne contient aucun fichier installable.",
+    "رابط خادم التحديثات يجب أن يبدأ بـ https://.": "L'URL du serveur de mises à jour doit commencer par https://.",
+    "أعاد خادم التحديثات اتصالًا غير آمن.": "Le serveur de mises à jour a redirigé vers une connexion non sécurisée.",
+    "تعذر الاتصال بخادم التحديثات. تحقق من الاتصال بالإنترنت.": "Impossible de joindre le serveur de mises à jour. Vérifiez la connexion Internet.",
+    "ملف التحديث أكبر من الحد المسموح.": "Le fichier de mise à jour dépasse la taille autorisée.",
+    "ملف التحديث ليس بصيغة JSON صالحة.": "Le fichier de mise à jour n'est pas un JSON valide.",
+    "لا يوجد تحديث متاح للتنزيل.": "Aucune mise à jour n'est disponible au téléchargement.",
+    "لا يوجد تحديث جاهز للتثبيت.": "Aucune mise à jour n'est prête à être installée.",
+    "بيانات التحديث المنزّل غير متطابقة.": "Les informations de la mise à jour téléchargée ne correspondent pas.",
+    "ملف التحديث المنزّل غير موجود.": "Le fichier de mise à jour téléchargé est introuvable.",
+    "تغيّر ملف التحديث بعد تنزيله. تم رفض التثبيت.": "Le fichier de mise à jour a changé après le téléchargement. L'installation a été refusée.",
+    "التثبيت التلقائي متاح فقط في نسخة EXE المبنية من التطبيق.": "L'installation automatique n'est disponible que dans la version EXE compilée de l'application.",
+    "الإصدار المثبت محدّث بالفعل.": "La version installée est déjà à jour.",
+    "تعذر تجهيز إعادة التشغيل التلقائية.": "Impossible de préparer le redémarrage automatique.",
+    "مسار التحديث غير صالح.": "Le chemin de mise à jour est invalide.",
+    "تعذر تنزيل ملف التحديث. أعد المحاولة لاحقًا.": "Impossible de télécharger le fichier de mise à jour. Réessayez plus tard.",
+    "حجم ملف التحديث لا يطابق البيانات الموقّعة.": "La taille du fichier de mise à jour ne correspond pas aux données signées.",
+    "بصمة الملف لا تطابق التوقيع. تم حذف التنزيل.": "L'empreinte du fichier ne correspond pas à la signature. Le téléchargement a été supprimé.",
+    "أنت تستخدم أحدث إصدار متاح.": "Vous utilisez la dernière version disponible.",
+    "سيتم تثبيت التحديث وإعادة تشغيل النظام الآن.": "La mise à jour va être installée et le système redémarré maintenant."
+  },
+  "patterns": [
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل. وسيُستبعد {2} صفًا غير صالح.",
+      "tr": "{0} nouveaux élèves seront ajoutés et {1} élèves existants mis à jour, en conservant les enregistrements de présence et de messages. {2} lignes invalides seront exclues."
+    },
+    {
+      "ar": "سيُخفى {0} من قوائم المسح والاستيراد والتقارير الحالية، لكن سجلات حضوره السابقة تبقى محفوظة. يمكنك تنشيطه لاحقًا.",
+      "tr": "{0} sera masqué du scan, de l'import et des rapports actuels, mais ses anciens enregistrements de présence restent conservés. Vous pourrez le réactiver plus tard."
+    },
+    {
+      "ar": "يفتح واتساب مع نص الرسالة جاهزًا ({0}). راجع النص ثم اضغط «إرسال» داخل واتساب. لا يُرسل شيء تلقائيًا.",
+      "tr": "Ouvre WhatsApp avec le message prêt ({0}). Vérifiez le texte puis appuyez sur « Envoyer » dans WhatsApp. Rien n'est envoyé automatiquement."
+    },
+    {
+      "ar": "سيتم إرسال {0} رسالة SMS إلى أولياء التلاميذ الغائبين ضمن {1} بتاريخ {2}. لا يمكن التراجع بعد بدء الإرسال.",
+      "tr": "{0} SMS seront envoyés aux parents des élèves absents de {1} le {2}. Action irréversible une fois l'envoi commencé."
+    },
+    {
+      "ar": "{0} تلميذًا موجودًا سيُحدَّث بالحقول المربوطة فقط، مع الحفاظ على سجلات الحضور والرسائل السابقة.",
+      "tr": "{0} élèves existants seront mis à jour uniquement avec les champs mappés, en conservant les anciens enregistrements de présence et de messages."
+    },
+    {
+      "ar": "{0} تلميذًا بدون رقم هاتف صالح — سيُحفظ التلميذ لكن لن تُرسل له رسائل SMS حتى تُحدَّث بياناته.",
+      "tr": "{0} élèves n'ont pas de numéro valide — l'élève sera enregistré, mais aucun SMS ne sera envoyé avant la mise à jour de ses données."
+    },
+    {
+      "ar": "{0} تلميذًا لم يُمسح بعد. عند إغلاق الفترة سيُسجَّلون غائبين ويمكن إشعار الأولياء بعد موافقتك.",
+      "tr": "{0} élèves n'ont pas encore été scannés. À la clôture de la période, ils seront marqués absents, et les parents pourront être notifiés après votre approbation."
+    },
+    {
+      "ar": "{0} تلميذًا غائبًا بدون رقم هاتف صالح. لن تصلهم رسائل SMS، ويمكن متابعتهم عبر التقرير اليومي.",
+      "tr": "{0} élèves absents n’ont pas de numéro de téléphone valide. Ils ne recevront pas de SMS ; suivez-les via le rapport quotidien."
+    },
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.",
+      "tr": "{0} nouveaux élèves seront ajoutés et {1} élèves existants mis à jour, en conservant les enregistrements de présence et de messages."
+    },
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.{2}",
+      "tr": "Ajout de {0} nouveaux élèves et mise à jour de {1} élèves existants, tout en conservant les registres de présence et les messages.{2}"
+    },
+    {
+      "ar": "عند الإغلاق سيُسجَّل {0} تلميذًا غير ممسوح بحالة «غائب». يمكنك إرسال الرسائل بعد الموافقة.",
+      "tr": "À la clôture, {0} élèves non scannés seront marqués « Absent ». Vous pourrez envoyer les messages après approbation."
+    },
+    {
+      "ar": "هل تريد حذف «{0}»؟ لا يمكن التراجع عن الحذف، وستُرفض العملية إذا كانت مرتبطة بسجلات حضور.",
+      "tr": "Supprimer « {0} » ? Cette action est irréversible, et l’opération sera refusée si des registres de présence y sont liés."
+    },
+    {
+      "ar": "{0} صفًا لم يُستورد بسبب أخطاء في البيانات. صححه في الملف واستورده مجددًا إذا لزم.",
+      "tr": "{0} lignes n'ont pas été importées en raison d'erreurs de données. Corrigez-les dans le fichier et réimportez si nécessaire."
+    },
+    {
+      "ar": "ستُحاول نسخ {0} صورة من المسارات المحلية؛ الصور التي لا تُقرأ ستُتجاهل مع تنبيه.",
+      "tr": "Le système tentera de copier {0} photos depuis les chemins locaux ; les images illisibles seront ignorées avec un avertissement."
+    },
+    {
+      "ar": "أُضيف {0} تلميذًا جديدًا وحُدِّثت بيانات {1} تلميذًا في قاعدة البيانات المحلية.",
+      "tr": "{0} nouveaux élèves ont été ajoutés et {1} élèves mis à jour dans la base locale."
+    },
+    {
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات.",
+      "tr": "La version {0} a été téléchargée et vérifiée. Elle sera installée automatiquement lorsque le système est inactif."
+    },
+    {
+      "ar": "سيتم تثبيت الإصدار {0} وإعادة تشغيل النظام. احفظ أي عمل جارٍ قبل المتابعة.",
+      "tr": "La version {0} va être installée et le système redémarré. Enregistrez tout travail en cours avant de continuer."
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}، مع استبعاد {2} صفًا. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} seront ajoutés et {1} mis à jour, avec {2} lignes exclues. Les modifications ne sont pas enregistrées avant confirmation."
+    },
+    {
+      "ar": "تظهر أول {0} تنبيهات فقط. راجع صفحة التلاميذ لاستكمال البيانات الناقصة.",
+      "tr": "Seuls les {0} premiers avertissements sont affichés. Consultez la page Élèves pour compléter les données manquantes."
+    },
+    {
+      "ar": "{0} صفًا سيُستبعد لاحتوائه على أخطاء. بقية الصفوف ستُستورد بشكل طبيعي.",
+      "tr": "{0} lignes seront exclues en raison d'erreurs. Les autres lignes seront importées normalement."
+    },
+    {
+      "ar": "أوافق على إرسال {0} رسالة معلّقة إلى أولياء التلاميذ الغائبين الآن.",
+      "tr": "J'accepte d'envoyer maintenant les {0} messages en attente aux parents des élèves absents."
+    },
+    {
+      "ar": "سيُعاد إرسال رسالة SMS إلى ولي {0} بعد موافقتك. هل تريد المتابعة؟",
+      "tr": "Un SMS sera renvoyé au parent de {0} après votre approbation. Voulez-vous continuer ?"
+    },
+    {
+      "ar": "سيُعاد {0} إلى قائمة التلاميذ النشطين ويمكن تسجيل حضوره من جديد.",
+      "tr": "{0} reviendra dans la liste des élèves actifs et sa présence pourra être enregistrée à nouveau."
+    },
+    {
+      "ar": "سُجِّل {0} تنبيهًا أثناء الاستيراد، منها مشاكل الصور أو الهواتف.",
+      "tr": "{0} avertissements ont été enregistrés pendant l'import, notamment des problèmes de photos ou de téléphones."
+    },
+    {
+      "ar": "تم تثبيت {0} حالة غياب لهذا اليوم، {1} رسالة SMS في انتظار الإرسال.",
+      "tr": "{0} absences ont été enregistrées pour aujourd'hui ; {1} SMS sont en attente."
+    },
+    {
+      "ar": "يتم عرض أول {0} من {1} فقط. صحح الملف ثم أعد التحليل لرؤية الباقي.",
+      "tr": "Seuls les {0} premiers sur {1} sont affichés. Corrigez le fichier puis relancez l'analyse pour voir le reste."
+    },
+    {
+      "ar": "معاينة توضيحية — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "Aperçu de démonstration — CR80 · 85,6 × 54 mm · {0} cartes sur une page A4"
+    },
+    {
+      "ar": "سيُحمّل الإصدار {0} ويُثبّت تلقائيًا بعد التحقق من توقيعه.",
+      "tr": "La version {0} sera téléchargée et installée automatiquement après vérification de sa signature."
+    },
+    {
+      "ar": "تم تثبيت {0} حالة غياب لهذا اليوم، ولا توجد رسائل معلّقة.",
+      "tr": "{0} absences ont été enregistrées pour aujourd'hui, et aucun message n'est en attente."
+    },
+    {
+      "ar": "تم تثبيت سجلات الغياب. توجد {0} رسالة في انتظار الإرسال.",
+      "tr": "Les absences ont été enregistrées. {0} messages sont en attente."
+    },
+    {
+      "ar": "{0} بدون رقم هاتف، و{1} برقم غير صالح — لم تُنشأ لهم رسائل.",
+      "tr": "{0} sans numéro de téléphone et {1} avec un numéro invalide — aucun message n'a été créé pour eux."
+    },
+    {
+      "ar": "معاينة توضيحية — ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Aperçu de démonstration — étiquette 65 × {0} mm · {1} étiquettes sur une page A4"
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} seront ajoutés et {1} mis à jour. Les modifications ne sont pas enregistrées avant confirmation."
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}{2}. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} seront ajoutés et {1} mis à jour{2}. Les modifications ne sont pas enregistrées avant confirmation."
+    },
+    {
+      "ar": "التاريخ: {0} | الفترة: {1} | القسم: {2} | السنة الدراسية: {3}",
+      "tr": "Date : {0}    |    Période : {1}    |    Classe : {2}    |    Année scolaire : {3}"
+    },
+    {
+      "ar": "اختيار يدوي: {0} — يُسجَّل المسح في هذه الفترة فقط.",
+      "tr": "Sélection manuelle : {0} — les scans sont enregistrés dans cette période uniquement."
+    },
+    {
+      "ar": "محاولات دخول كثيرة. انتظر {0} ثانية ثم حاول مجددًا.",
+      "tr": "Trop de tentatives de connexion. Attendez {0} secondes et réessayez."
+    },
+    {
+      "ar": "الشهر: {0} | الفترة: {1} | القسم: {2} | السنة الدراسية: {3}",
+      "tr": "Mois : {0}    |    Période : {1}    |    Classe : {2}    |    Année scolaire : {3}"
+    },
+    {
+      "ar": "الإصدار {0} متاح. افتح إعدادات التحديثات للمراجعة.",
+      "tr": "La version {0} est disponible. Ouvrez les paramètres de mise à jour pour la consulter."
+    },
+    {
+      "ar": "أُنشئ التقرير بواسطة نظام متابعة الحضور — {0}",
+      "tr": "Rapport généré par le système de suivi de présence — {0}"
+    },
+    {
+      "ar": "هل تريد حذف «{0}»؟ لن يستطيع الدخول بعد الآن.",
+      "tr": "Supprimer « {0} » ? Cette personne ne pourra plus se connecter."
+    },
+    {
+      "ar": "CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "CR80 · 85,6 × 54 mm · {0} cartes sur une page A4"
+    },
+    {
+      "ar": "{0} رسالة — {1} في الانتظار — وضع الاختبار",
+      "tr": "{0} messages — {1} en attente — mode test"
+    },
+    {
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه.",
+      "tr": "La version {0} a été téléchargée et sa signature vérifiée."
+    },
+    {
+      "ar": "توجد {0} رسالة SMS معلقة لهذه الفترة.",
+      "tr": "{0} messages SMS en attente pour cette période."
+    },
+    {
+      "ar": "ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Étiquette 65 × {0} mm · {1} étiquettes sur une page A4"
+    },
+    {
+      "ar": "الإصدار {0} متاح ومُنزّل ومُتحقق منه.",
+      "tr": "La version {0} est disponible, téléchargée et vérifiée."
+    },
+    {
+      "ar": "{0} تلميذًا — {1} سجل خلال الفترة {2} إلى {3}",
+      "tr": "{0} élèves — {1} enregistrements du {2} au {3}"
+    },
+    {
+      "ar": "{0} تلميذًا — {1} صفحة — تم التوليد في {2}",
+      "tr": "{0} élèves — {1} pages — généré à {2}"
+    },
+    {
+      "ar": "كلمة المرور يجب ألا تقل عن {0} أحرف.",
+      "tr": "Le mot de passe doit contenir au moins {0} caractères."
+    },
+    {
+      "ar": "{0} · الفترة: {1} · القسم: {2} · الحالة: {3}",
+      "tr": "{0} · Période : {1} · Classe : {2} · État : {3}"
+    },
+    {
+      "ar": "تلقائي: {0} ({1}) — نافذة الغياب حتى {2}",
+      "tr": "Automatique : {0} ({1}) — fenêtre d'absence jusqu'à {2}"
+    },
+    {
+      "ar": "عينة من {0} صفوف صالحة من إجمالي {1}.",
+      "tr": "Échantillon de {0} lignes valides sur {1}."
+    },
+    {
+      "ar": "الفترة المشمولة: من {0} إلى {1} — {2} — {3}",
+      "tr": "Période couverte : du {0} au {1} — {2} — {3}"
+    },
+    {
+      "ar": "{0} حاضر · {1} متأخر · {2} غائب · {3} مبرر",
+      "tr": "{0} présents · {1} en retard · {2} absents · {3} justifiés"
+    },
+    {
+      "ar": "تم التعرف على {0} صفًا و{1} عمودًا.",
+      "tr": "{0} lignes et {1} colonnes détectées."
+    },
+    {
+      "ar": "كلمة المرور أطول من {0} حرفًا.",
+      "tr": "Le mot de passe dépasse {0} caractères."
+    },
+    {
+      "ar": "{0} صفًا · العناوين في السطر {1}",
+      "tr": "{0} lignes · en-têtes à la ligne {1}"
+    },
+    {
+      "ar": "أُضيف {0} وتم تحديث {1} تلميذًا.",
+      "tr": "{0} ajoutés et {1} élèves mis à jour."
+    },
+    {
+      "ar": "{0} ناجحة · {1} فاشلة · {2} اختبار",
+      "tr": "{0} réussis · {1} échoués · {2} test"
+    },
+    {
+      "ar": "{0} — {1} تلميذًا — ورق A4 دقيق",
+      "tr": "{0} — {1} élèves — papier A4 exact"
+    },
+    {
+      "ar": "وسيُستبعد {0} صفًا غير صالح.",
+      "tr": "{0} lignes invalides seront exclues."
+    },
+    {
+      "ar": "© {0} — جميع الحقوق محفوظة.",
+      "tr": "© {0} — Tous droits réservés."
+    },
+    {
+      "ar": "{0} سجل مطابق — {1} تلميذًا — {2}",
+      "tr": "{0} enregistrements correspondants — {1} élèves — {2}"
+    },
+    {
+      "ar": "{0} · السنة الدراسية {1} — {2} — {3}",
+      "tr": "{0} · Année scolaire {1} — {2} — {3}"
+    },
+    {
+      "ar": "{0} بطاقتان جاهزتان للطباعة",
+      "tr": "{0} cartes prêtes à imprimer"
+    },
+    {
+      "ar": "إجمالي {0} سجل — صفحة {1} من {2}",
+      "tr": "Total : {0} enregistrements — page {1} sur {2}"
+    },
+    {
+      "ar": "عرض {0} صفوف من {1} · {2} عمودًا",
+      "tr": "Affichage de {0} lignes sur {1} · {2} colonnes"
+    },
+    {
+      "ar": "إرسال رسالة {0} عبر واتساب",
+      "tr": "Envoyer un message à {0} via WhatsApp"
+    },
+    {
+      "ar": "حاضر {0} · متأخر {1} · غائب {2}",
+      "tr": "Présents {0} · En retard {1} · Absents {2}"
+    },
+    {
+      "ar": "{0} تاريخ ميلاد غير مفهوم",
+      "tr": "{0} dates de naissance non reconnues"
+    },
+    {
+      "ar": "تم رصد {0} غائبًا جديدًا.",
+      "tr": "{0} nouvelles absences enregistrées."
+    },
+    {
+      "ar": "{0} ملصقان جاهزان للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} ملصقًا جاهزًا للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "مراسلة ولي {0} عبر واتساب",
+      "tr": "Contacter le parent de {0} via WhatsApp"
+    },
+    {
+      "ar": "حماية التكرار: {0} دقائق",
+      "tr": "Protection anti-doublon : {0} minutes"
+    },
+    {
+      "ar": "{0} رسالة — {1} في الانتظار",
+      "tr": "{0} messages — {1} en attente"
+    },
+    {
+      "ar": "{0} · الفترة: {1} · القسم: {2}",
+      "tr": "{0} · Période : {1} · Classe : {2}"
+    },
+    {
+      "ar": "{0} بطاقات جاهزة للطباعة",
+      "tr": "{0} cartes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} ملصقات جاهزة للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "{0} رسالة — وضع الاختبار",
+      "tr": "{0} messages — mode test"
+    },
+    {
+      "ar": "تم التنزيل والتحقق ({0})",
+      "tr": "Téléchargée et vérifiée ({0})"
+    },
+    {
+      "ar": "{0} رقم مكرر داخل الملف",
+      "tr": "{0} identifiants en double dans le fichier"
+    },
+    {
+      "ar": "{0} رسالة جاهزة للإرسال",
+      "tr": "{0} messages prêts à envoyer"
+    },
+    {
+      "ar": "أُنشئت {0} رسالة جديدة.",
+      "tr": "{0} nouveaux messages créés."
+    },
+    {
+      "ar": "{0} بطاقة جاهزة للطباعة",
+      "tr": "{0} cartes prêtes à imprimer"
+    },
+    {
+      "ar": "إعادة محاولة رسالة {0}",
+      "tr": "Réessayer le message de {0}"
+    },
+    {
+      "ar": "الإجمالي — {0} تلميذًا",
+      "tr": "Total — {0} élèves"
+    },
+    {
+      "ar": "{0} · السنة الدراسية {1}",
+      "tr": "{0} · Année scolaire {1}"
+    },
+    {
+      "ar": "{0} ملصق جاهز للطباعة",
+      "tr": "{0} étiquettes prêtes à imprimer"
+    },
+    {
+      "ar": "انحناء الزوايا {0} مم",
+      "tr": "Arrondi des coins {0} mm"
+    },
+    {
+      "ar": "، مع استبعاد {0} صفًا",
+      "tr": ", en excluant {0} lignes"
+    },
+    {
+      "ar": "· السنة الدراسية {0}",
+      "tr": "· Année scolaire {0}"
+    },
+    {
+      "ar": "معاينة توضيحية — {0}",
+      "tr": "Aperçu de démonstration — {0}"
+    },
+    {
+      "ar": "المجموع المسجل: {0}",
+      "tr": "Total enregistré : {0}"
+    },
+    {
+      "ar": "{0} — الفترة مفتوحة",
+      "tr": "{0} — Période ouverte"
+    },
+    {
+      "ar": "الفترة مغلقة — {0}",
+      "tr": "Période fermée — {0}"
+    },
+    {
+      "ar": "{0} — الفترة مغلقة",
+      "tr": "{0} — Période clôturée"
+    },
+    {
+      "ar": "{0} ناجحة · {1} فاشلة",
+      "tr": "{0} réussis · {1} échoués"
+    },
+    {
+      "ar": "الإجمالي — {0} سجل",
+      "tr": "Total — {0} enregistrements"
+    },
+    {
+      "ar": "إجمالي {0} تلميذًا",
+      "tr": "Total : {0} élèves"
+    },
+    {
+      "ar": "يتوفر الإصدار {0}.",
+      "tr": "La version {0} est disponible."
+    },
+    {
+      "ar": "{0} هاتف غير صالح",
+      "tr": "{0} numéros de téléphone invalides"
+    },
+    {
+      "ar": "{0} صورة للمعالجة",
+      "tr": "{0} photos à traiter"
+    },
+    {
+      "ar": "رسالة إلى ولي {0}",
+      "tr": "Message au parent de {0}"
+    },
+    {
+      "ar": "{0} حاضر · {1} متأخر",
+      "tr": "{0} présents · {1} en retard"
+    },
+    {
+      "ar": "طباعة {0} بطاقتين",
+      "tr": "Imprimer {0} cartes"
+    },
+    {
+      "ar": "الإصدار {0} متاح.",
+      "tr": "La version {0} est disponible."
+    },
+    {
+      "ar": "عرض {0} من {1} حالة",
+      "tr": "Affichage de {0} sur {1} cas"
+    },
+    {
+      "ar": "جارٍ معالجة: {0}",
+      "tr": "Traitement : {0}"
+    },
+    {
+      "ar": "{0} غائب · {1} مبرر",
+      "tr": "{0} absents · {1} justifiés"
+    },
+    {
+      "ar": "طباعة {0} بطاقات",
+      "tr": "Imprimer {0} cartes"
+    },
+    {
+      "ar": "طباعة {0} ملصقين",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "طباعة {0} ملصقات",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "طباعة {0} ملصقًا",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "طباعة بطاقة {0}",
+      "tr": "Imprimer la carte de {0}"
+    },
+    {
+      "ar": "— القيمة: «{0}»",
+      "tr": "— Valeur : « {0} »"
+    },
+    {
+      "ar": "{0} ولي له هاتف",
+      "tr": "{0} parents avec téléphone"
+    },
+    {
+      "ar": "{0} رسالة معلقة",
+      "tr": "{0} messages en attente"
+    },
+    {
+      "ar": "و{0} حالة أخرى…",
+      "tr": "et {0} autres cas…"
+    },
+    {
+      "ar": "{0} — {1} — ورق A4",
+      "tr": "{0} — {1} — papier A4"
+    },
+    {
+      "ar": "طباعة {0} بطاقة",
+      "tr": "Imprimer {0} cartes"
+    },
+    {
+      "ar": "{0} · {1} كيلوبايت",
+      "tr": "{0} · {1} Ko"
+    },
+    {
+      "ar": "{0} · الإصدار {1}",
+      "tr": "{0} · Version {1}"
+    },
+    {
+      "ar": "إجمالي {0} سجل",
+      "tr": "Total : {0} enregistrements"
+    },
+    {
+      "ar": "ملاحظة سجل {0}",
+      "tr": "Note du registre de {0}"
+    },
+    {
+      "ar": "إجمالي {0} سجل",
+      "tr": "Total {0} enregistrements"
+    },
+    {
+      "ar": "تم التوليد {0}",
+      "tr": "Généré {0}"
+    },
+    {
+      "ar": "طباعة {0} ملصق",
+      "tr": "Imprimer {0} étiquettes"
+    },
+    {
+      "ar": "تبرير غياب {0}",
+      "tr": "Justifier l’absence de {0}"
+    },
+    {
+      "ar": "عرض ملاحظة {0}",
+      "tr": "Voir la note de {0}"
+    },
+    {
+      "ar": "{0} / {1} مُرسلة",
+      "tr": "{0} / {1} envoyés"
+    },
+    {
+      "ar": "{0} حرف مستلم",
+      "tr": "{0} caractères reçus"
+    },
+    {
+      "ar": "{0} تلميذ نشط",
+      "tr": "{0} élèves actifs"
+    },
+    {
+      "ar": "{0} من {1} فترات",
+      "tr": "{0} sur {1} périodes"
+    },
+    {
+      "ar": "{0} بدون هاتف",
+      "tr": "{0} sans téléphone"
+    },
+    {
+      "ar": "عرض رسالة {0}",
+      "tr": "Voir le message de {0}"
+    },
+    {
+      "ar": "صفحة {0} من {1}",
+      "tr": "Page {0} sur {1}"
+    },
+    {
+      "ar": "{0} كيلوبايت",
+      "tr": "{0} Ko"
+    },
+    {
+      "ar": "{0} بدون قسم",
+      "tr": "{0} sans classe"
+    },
+    {
+      "ar": "{0} بدون اسم",
+      "tr": "{0} sans nom"
+    },
+    {
+      "ar": "المجموع: {0}",
+      "tr": "Total : {0}"
+    },
+    {
+      "ar": "{0} / {1} تلميذ",
+      "tr": "{0} / {1} élèves"
+    },
+    {
+      "ar": "{0} {1} للطباعة",
+      "tr": "{0} {1} à imprimer"
+    },
+    {
+      "ar": "الإصدار {0}",
+      "tr": "Version {0}"
+    },
+    {
+      "ar": "مغلقة · {0}",
+      "tr": "Fermée · {0}"
+    },
+    {
+      "ar": "عرض ملف {0}",
+      "tr": "Voir la fiche de {0}"
+    },
+    {
+      "ar": "{0} تلميذًا",
+      "tr": "{0} élèves"
+    },
+    {
+      "ar": "{0} بطاقتان",
+      "tr": "{0} cartes"
+    },
+    {
+      "ar": "{0} · مغلقة",
+      "tr": "{0} · Clôturée"
+    },
+    {
+      "ar": "الرمز: {0}",
+      "tr": "Code : {0}"
+    },
+    {
+      "ar": "بحث: «{0}»",
+      "tr": "Recherche : « {0} »"
+    },
+    {
+      "ar": "القسم: {0}",
+      "tr": "Classe : {0}"
+    },
+    {
+      "ar": "{0} محاولة",
+      "tr": "{0} tentatives"
+    },
+    {
+      "ar": "أُرسلت {0}",
+      "tr": "Envoyé {0}"
+    },
+    {
+      "ar": "أُنشئت {0}",
+      "tr": "Créé {0}"
+    },
+    {
+      "ar": "جويلية {0}",
+      "tr": "juillet {0}"
+    },
+    {
+      "ar": "سبتمبر {0}",
+      "tr": "septembre {0}"
+    },
+    {
+      "ar": "أكتوبر {0}",
+      "tr": "octobre {0}"
+    },
+    {
+      "ar": "نوفمبر {0}",
+      "tr": "novembre {0}"
+    },
+    {
+      "ar": "ديسمبر {0}",
+      "tr": "décembre {0}"
+    },
+    {
+      "ar": "متأخر: {0}",
+      "tr": "En retard : {0}"
+    },
+    {
+      "ar": "{0} — {1} نشط",
+      "tr": "{0} — {1} actifs"
+    },
+    {
+      "ar": "{0} بطاقات",
+      "tr": "{0} cartes"
+    },
+    {
+      "ar": "{0} ملصقان",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} ملصقات",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} ملصقًا",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "باركود {0}",
+      "tr": "Code-barres {0}"
+    },
+    {
+      "ar": "{0} اختبار",
+      "tr": "{0} tests"
+    },
+    {
+      "ar": "طباعة {0} {1}",
+      "tr": "Imprimer {0} {1}"
+    },
+    {
+      "ar": "{0} معلقة",
+      "tr": "{0} en attente"
+    },
+    {
+      "ar": "{0} تلميذ",
+      "tr": "{0} élèves"
+    },
+    {
+      "ar": "تعديل {0}",
+      "tr": "Modifier {0}"
+    },
+    {
+      "ar": "· مسح {0}",
+      "tr": "· scan {0}"
+    },
+    {
+      "ar": "{0} رسالة",
+      "tr": "{0} messages"
+    },
+    {
+      "ar": "جانفي {0}",
+      "tr": "janvier {0}"
+    },
+    {
+      "ar": "فيفري {0}",
+      "tr": "février {0}"
+    },
+    {
+      "ar": "أفريل {0}",
+      "tr": "avril {0}"
+    },
+    {
+      "ar": "حاضر: {0}",
+      "tr": "Présents : {0}"
+    },
+    {
+      "ar": "غائب: {0}",
+      "tr": "Absents : {0}"
+    },
+    {
+      "ar": "مبرر: {0}",
+      "tr": "Justifiés : {0}"
+    },
+    {
+      "ar": "{0} بطاقة",
+      "tr": "{0} cartes"
+    },
+    {
+      "ar": "عمود {0}",
+      "tr": "Colonne {0}"
+    },
+    {
+      "ar": "{0} جاهز",
+      "tr": "{0} prêt"
+    },
+    {
+      "ar": "الصف {0}",
+      "tr": "Ligne {0}"
+    },
+    {
+      "ar": "مارس {0}",
+      "tr": "mars {0}"
+    },
+    {
+      "ar": "جوان {0}",
+      "tr": "juin {0}"
+    },
+    {
+      "ar": "{0} بايت",
+      "tr": "{0} o"
+    },
+    {
+      "ar": "{0} ملصق",
+      "tr": "{0} étiquettes"
+    },
+    {
+      "ar": "{0} غائب",
+      "tr": "{0} absents"
+    },
+    {
+      "ar": "{0} مبرر",
+      "tr": "{0} justifiés"
+    },
+    {
+      "ar": "{0} سجل",
+      "tr": "{0} enregistrements"
+    },
+    {
+      "ar": "ماي {0}",
+      "tr": "mai {0}"
+    },
+    {
+      "ar": "أوت {0}",
+      "tr": "août {0}"
+    },
+    {
+      "ar": "{0} ك.ب",
+      "tr": "{0} Ko"
+    },
+    {
+      "ar": "{0} م.ب",
+      "tr": "{0} Mo"
+    },
+    {
+      "ar": "{0} غ.ب",
+      "tr": "{0} Go"
+    },
+    {
+      "ar": "مسح {0}",
+      "tr": "scan {0}"
+    },
+    {
+      "ar": "حذف {0}",
+      "tr": "Supprimer {0}"
+    },
+    {
+      "ar": "{0}: {1}",
+      "tr": "{0} : {1}"
+    }
+  ]
+}

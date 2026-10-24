@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <div class="flex flex-wrap">
+    <label class="sr-only" for="dash-date">تاريخ المتابعة</label>
+    <div class="input-group" style="width:auto">
+      <svg class="ico"><use href="#i-calendar"></use></svg>
+      <input class="input input-sm" type="date" id="dash-date" value="{{ today }}" max="{{ today }}" style="min-width:160px">
+    </div>
+    <button class="btn btn-secondary btn-sm" type="button" id="dash-refresh">
+      <svg class="ico"><use href="#i-refresh"></use></svg>
+      <span>تحديث</span>
+    </button>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <section class="dash-hero">
+    <div class="dash-hero-content">
+      <span class="dash-hero-kicker">
+        <svg class="ico"><use href="#i-sparkle"></use></svg>
+        <span>{{ school_name }} · السنة الدراسية {{ academic_year }}</span>
+      </span>
+      <h2 id="dash-greeting">متابعة حضور اليوم في لمحة واحدة</h2>
+      <p><span id="dash-date-label">{{ today_display }}</span> — راقب الوصول، عالج الغيابات، وأشعر الأولياء بسرعة من لوحة واحدة.</p>
+    </div>
+    <div class="dash-hero-actions">
+      <a class="btn btn-primary" href="{{ url_for('views.gate_page') }}">
+        <svg class="ico"><use href="#i-scan"></use></svg>
+        فتح بوابة المسح
+      </a>
+      <a class="btn btn-secondary" href="{{ url_for('views.attendance_page') }}">
+        <svg class="ico"><use href="#i-list"></use></svg>
+        سجل الحضور
+      </a>
+    </div>
+  </section>
+
+  <div class="stats-grid" aria-label="مؤشرات الحضور">
+    <article class="stat-card is-present">
+      <div class="stat-top">
+        <span class="stat-icon"><svg class="ico"><use href="#i-check"></use></svg></span>
+        <span class="stat-trend">في الوقت</span>
+      </div>
+      <div class="stat-value" id="stat-present">—</div>
+      <div class="stat-label">الحاضرون</div>
+    </article>
+    <article class="stat-card is-late">
+      <div class="stat-top">
+        <span class="stat-icon"><svg class="ico"><use href="#i-clock"></use></svg></span>
+        <span class="stat-trend">بعد الحد</span>
+      </div>
+      <div class="stat-value" id="stat-late">—</div>
+      <div class="stat-label">المتأخرون</div>
+    </article>
+    <article class="stat-card is-absent">
+      <div class="stat-top">
+        <span class="stat-icon"><svg class="ico"><use href="#i-warning"></use></svg></span>
+        <span class="stat-trend" id="sms-alert-badge">SMS</span>
+      </div>
+      <div class="stat-value" id="stat-absent">—</div>
+      <div class="stat-label">الغائبون</div>
+    </article>
+    <article class="stat-card is-excused">
+      <div class="stat-top">
+        <span class="stat-icon"><svg class="ico"><use href="#i-shield-check"></use></svg></span>
+        <span class="stat-trend">مبرر</span>
+      </div>
+      <div class="stat-value" id="stat-excused">—</div>
+      <div class="stat-label">الغياب المبرر</div>
+    </article>
+  </div>
+
+  <div class="dash-main mt-3">
+    <div class="stack">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-chart"></use></svg> نظرة على الفترة</h2>
+            <p>نسبة الحضور الإجمالية ومؤشرات المسح</p>
+          </div>
+          <div class="periodizer" id="dash-period-pills"></div>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <div class="donut" id="dash-donut" style="--value:0">
+              <div class="donut-center">
+                <strong id="dash-donut-value">0%</strong>
+                <span>نسبة الحضور</span>
+              </div>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-row is-present"><i></i> حاضر <span id="legend-present">0</span></div>
+              <div class="legend-row is-late"><i></i> متأخر <span id="legend-late">0</span></div>
+              <div class="legend-row is-absent"><i></i> غائب <span id="legend-absent">0</span></div>
+              <div class="legend-row is-excused"><i></i> مبرر <span id="legend-excused">0</span></div>
+              <div class="divider" style="margin:4px 0"></div>
+              <div class="legend-row"><i style="background:var(--text-muted)"></i> لم يُمسح بعد <span id="legend-unscanned">0</span></div>
+            </div>
+            <div style="flex:1;min-width:180px;display:grid;gap:10px">
+              <div class="flex between">
+                <span class="tiny muted">حالة الفترة</span>
+                <span id="dash-closure-status" class="badge">—</span>
+              </div>
+              <div class="progress-row">
+                <div class="row-head"><strong>اكتمال المسح</strong><span id="scan-progress-label">0 / 0</span></div>
+                <div class="progress"><span id="scan-progress-bar" style="width:0%"></span></div>
+              </div>
+              <div class="progress-row">
+                <div class="row-head"><strong>رسائل الغياب</strong><span id="sms-progress-label">0</span></div>
+                <div class="progress is-warning"><span id="sms-progress-bar" style="width:0%"></span></div>
+              </div>
+              <div class="mini-stats">
+                <div class="mini-stat is-present"><strong id="mini-present">0</strong><span>حاضر</span></div>
+                <div class="mini-stat is-late"><strong id="mini-late">0</strong><span>متأخر</span></div>
+                <div class="mini-stat"><strong id="mini-total">0</strong><span>نشط</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-users"></use></svg> الحضور حسب الأقسام</h2>
+            <p>مقارنة سريعة بين الأقسام في الفترة المحددة</p>
+          </div>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('views.attendance_page') }}">عرض السجل <svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+        </div>
+        <div class="card-body" id="class-breakdown">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل إحصاءات الأقسام…</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-scan"></use></svg> آخر عمليات المسح</h2>
+            <p>أحدث التلاميذ الذين سُجّل وصولهم في هذه الفترة</p>
+          </div>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('views.gate_page') }}">البوابة <svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+        </div>
+        <div class="card-body" id="recent-scans">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="dash-side">
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-sparkle"></use></svg> إجراءات سريعة</h2></div>
+        </div>
+        <div class="card-body">
+          <div class="quick-actions">
+            <a class="quick-action" href="{{ url_for('views.students_page') }}">
+              <svg class="ico"><use href="#i-plus"></use></svg>
+              <div>إضافة تلميذ<span>تسجيل فردي</span></div>
+            </a>
+            <a class="quick-action" href="{{ url_for('views.import_page') }}">
+              <svg class="ico"><use href="#i-upload"></use></svg>
+              <div>استيراد قائمة<span>XLS / XLSX</span></div>
+            </a>
+            <a class="quick-action" href="{{ url_for('views.print_studio_page') }}">
+              <svg class="ico"><use href="#i-printer"></use></svg>
+              <div>طباعة البطاقات<span>باركود CR80</span></div>
+            </a>
+            <a class="quick-action" href="{{ url_for('views.reports_page') }}">
+              <svg class="ico"><use href="#i-chart"></use></svg>
+              <div>تقارير اليوم<span>Excel / PDF</span></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-warning"></use></svg> غيابات تحتاج متابعة</h2>
+            <p id="absentee-subtitle">آخر الحالات غير المعالجة</p>
+          </div>
+          <span class="badge badge--absent" id="absentee-count">0</span>
+        </div>
+        <div class="card-body">
+          <div id="absentee-list">
+            <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+          </div>
+        </div>
+        <div class="card-foot">
+          <div class="flex between flex-wrap">
+            <span class="tiny muted">يتطلب الإرسال موافقة صريحة</span>
+            <button class="btn btn-warning btn-sm" type="button" id="dash-open-close">
+              <svg class="ico"><use href="#i-message"></use></svg>
+              معالجة الغياب
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-message"></use></svg> حالة إشعارات الأولياء</h2></div>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('views.attendance_page') }}#sms">سجل الرسائل</a>
+        </div>
+        <div class="card-body">
+          <div class="sms-summary-strip" style="margin-bottom:12px">
+            <div class="pending"><i></i><strong id="dash-sms-pending">0</strong><span>انتظار</span></div>
+            <div class="sent"><i></i><strong id="dash-sms-sent">0</strong><span>مُرسلة</span></div>
+            <div class="failed"><i></i><strong id="dash-sms-failed">0</strong><span>فاشلة</span></div>
+            <div class="cancelled"><i></i><strong id="dash-sms-cancelled">0</strong><span>ملغاة</span></div>
+          </div>
+          <div class="sms-mini">
+            <div class="sms-mini-row">
+              <svg class="ico" style="width:15px;height:15px;color:var(--warning)"><use href="#i-clock"></use></svg>
+              في الانتظار
+              <span class="bar"><span id="sms-bar-pending" style="background:var(--warning);width:0%"></span></span>
+              <span class="badge badge--pending" id="sms-badge-pending">0</span>
+            </div>
+            <div class="sms-mini-row">
+              <svg class="ico" style="width:15px;height:15px;color:var(--success)"><use href="#i-check"></use></svg>
+              تم الإرسال
+              <span class="bar"><span id="sms-bar-sent" style="background:var(--success);width:0%"></span></span>
+              <span class="badge badge--sent" id="sms-badge-sent">0</span>
+            </div>
+            <div class="sms-mini-row">
+              <svg class="ico" style="width:15px;height:15px;color:var(--danger)"><use href="#i-warning"></use></svg>
+              فشلت المحاولة
+              <span class="bar"><span id="sms-bar-failed" style="background:var(--danger);width:0%"></span></span>
+              <span class="badge badge--failed" id="sms-badge-failed">0</span>
+            </div>
+          </div>
+          <div class="info-banner mt-2" id="dash-sms-note">
+            <svg class="ico"><use href="#i-shield-check"></use></svg>
+            <div>لا تُرسل أي رسالة تلقائيًا من لوحة المتابعة. تتم العملية بعد موافقتك الصريحة.</div>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/absence-workflow.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

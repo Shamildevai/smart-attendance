@@ -1,0 +1,111 @@
+{
+  "strings": {
+    "ابحث بالاسم، رقم التعريف، أو هاتف الولي…": "Search by name, ID number, or parent phone…",
+    "تصفية حسب القسم": "Filter by class",
+    "كل الأقسام": "All classes",
+    "تصفية حسب الحالة": "Filter by status",
+    "كل الحالات": "All statuses",
+    "النشطون": "Active",
+    "المؤرشفون": "Archived",
+    "عدد الصفوف": "Rows per page",
+    "عدد الصفوف في الصفحة": "Rows per page",
+    "بحث عن تلميذ": "Search for a student",
+    "10 صفوف": "10 rows",
+    "20 صفوف": "20 rows",
+    "50 صفوف": "50 rows",
+    "100 صفوف": "100 rows",
+    "قاعدة بيانات التلاميذ": "Student database",
+    "جارٍ تحميل القائمة…": "Loading list…",
+    "تحديث القائمة": "Refresh list",
+    "تاريخ الميلاد": "Date of birth",
+    "جارٍ تحميل التلاميذ…": "Loading students…",
+    "تعذر تحميل قائمة التلاميذ": "Could not load the student list",
+    "تعذر تحميل البيانات.": "Could not load data.",
+    "تعذر تحميل القائمة.": "Could not load the list.",
+    "النشطون فقط": "Active only",
+    "المؤرشفون فقط": "Archived only",
+    "لا توجد نتائج مطابقة للمعايير المحددة. جرّب تغيير البحث أو الفلاتر.": "No results match the selected criteria. Try changing the search or filters.",
+    "لم تُضف أي تلميذ بعد. ابدأ بإضافة تلميذ يدويًا أو استيراد قائمة من Excel.": "No students have been added yet. Add one manually or import a list from Excel.",
+    "مسح الفلاتر": "Clear filters",
+    "إضافة أول تلميذ": "Add the first student",
+    "لا يوجد تلاميذ": "No students",
+    "أرشفة التلميذ": "Archive student",
+    "تنشيط التلميذ": "Activate student",
+    "تعديل البيانات": "Edit details",
+    "طباعة بطاقة التعريف": "Print ID card",
+    "رقم التعريف غير قابل للتعديل لأنه مرتبط بسجلات الحضور والباركود المطبوع.": "The ID number cannot be changed because it is linked to attendance records and the printed barcode.",
+    "هذا هو الرمز الذي سيُقرأ من بطاقة التلميذ. يجب أن يكون فريدًا.": "This is the code that will be read from the student card. It must be unique.",
+    "القسم / الفوج": "Class / Group",
+    "يُستعمل لإرسال إشعارات الغياب عبر SMS.": "Used to send absence notifications via SMS.",
+    "حالة التلميذ": "Student status",
+    "يظهر في المسح والاستيراد والتقارير.": "Visible in scanning, imports, and reports.",
+    "تعديل بيانات التلميذ": "Edit student details",
+    "إضافة تلميذ جديد": "Add a new student",
+    "عدّل المعلومات الشخصية وبيانات الاتصال.": "Edit personal information and contact details.",
+    "أدخل بيانات التلميذ يدويًا. يمكنك إضافة الصورة بعد الحفظ.": "Enter the student's details manually. You can add a photo after saving.",
+    "أدخل رقم التعريف الوطني أولًا.": "Enter the national ID number first.",
+    "أدخل الاسم أو اللقب على الأقل.": "Enter at least a first or last name.",
+    "تم حفظ بيانات التلميذ.": "Student details saved.",
+    "تعذر حفظ بيانات التلميذ.": "Could not save the student details.",
+    "تعذر تحميل ملف التلميذ.": "Could not load the student profile.",
+    "أضف فترات من الإعدادات لعرض حضور اليوم.": "Add periods in Settings to display today's attendance.",
+    "بيانات الاتصال وحضور اليوم": "Contact details and today's attendance",
+    "فترات حضور اليوم": "Today's attended periods",
+    "غياب اليوم": "Today's absences",
+    "لم تُسجل بعد": "Not recorded yet",
+    "صورة التلميذ": "Student photo",
+    "تُستعمل في بطاقة التعريف وشاشة البوابة. الحد الأقصى 5 ميغابايت.": "Used on the ID card and the gate screen. Maximum 5 MB.",
+    "رفع صورة": "Upload photo",
+    "غير مسجل": "Not recorded",
+    "فترات اليوم": "Today's periods",
+    "طباعة البطاقة": "Print card",
+    "حجم الصورة يتجاوز 5 ميغابايت.": "The image exceeds 5 MB.",
+    "تم تحديث صورة التلميذ.": "Student photo updated.",
+    "تعذر رفع صورة التلميذ.": "Could not upload the student photo.",
+    "تعذر تحديث حالة التلميذ.": "Could not update the student status.",
+    "تم تنشيط التلميذ.": "Student activated.",
+    "تمت أرشفة التلميذ.": "Student archived."
+  },
+  "patterns": [
+    {
+      "ar": "{0} تلميذ",
+      "tr": "{0} students"
+    },
+    {
+      "ar": "بحث: «{0}»",
+      "tr": "Search: “{0}”"
+    },
+    {
+      "ar": "القسم: {0}",
+      "tr": "Class: {0}"
+    },
+    {
+      "ar": "صفحة {0} من {1}",
+      "tr": "Page {0} of {1}"
+    },
+    {
+      "ar": "عرض ملف {0}",
+      "tr": "View {0}'s profile"
+    },
+    {
+      "ar": "تعديل {0}",
+      "tr": "Edit {0}"
+    },
+    {
+      "ar": "طباعة بطاقة {0}",
+      "tr": "Print {0}'s card"
+    },
+    {
+      "ar": " · مسح {0}",
+      "tr": " · scanned {0}"
+    },
+    {
+      "ar": "سيُعاد {0} إلى قائمة التلاميذ النشطين ويمكن تسجيل حضوره من جديد.",
+      "tr": "{0} will return to the active student list and attendance can be recorded again."
+    },
+    {
+      "ar": "سيُخفى {0} من قوائم المسح والاستيراد والتقارير الحالية، لكن سجلات حضوره السابقة تبقى محفوظة. يمكنك تنشيطه لاحقًا.",
+      "tr": "{0} will be hidden from scanning, import, and current reports, but previous attendance records remain saved. You can reactivate them later."
+    }
+  ]
+}

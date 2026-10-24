@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.students_page') }}">
+    <svg class="ico"><use href="#i-users"></use></svg>
+    <span>قائمة التلاميذ</span>
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="import-steps" id="import-steps" aria-label="مراحل الاستيراد">
+    <div class="import-step is-active" data-step="1">
+      <span class="step-number">1</span><span>اختيار الملف</span>
+    </div>
+    <div class="import-step" data-step="2">
+      <span class="step-number">2</span><span>ربط الأعمدة</span>
+    </div>
+    <div class="import-step" data-step="3">
+      <span class="step-number">3</span><span>المراجعة والاستيراد</span>
+    </div>
+    <div class="import-step" data-step="4">
+      <span class="step-number">4</span><span>النتيجة</span>
+    </div>
+  </div>
+
+  <div class="info-banner is-danger hidden mb-2" id="import-error" role="alert">
+    <svg class="ico"><use href="#i-warning"></use></svg>
+    <div id="import-error-text"></div>
+  </div>
+
+  <section class="card" id="step-upload">
+    <div class="card-header">
+      <div>
+        <h2><svg class="ico"><use href="#i-upload"></use></svg> رفع ملف قائمة التلاميذ</h2>
+        <p>استيراد ذكي يتعرّف على صيغة الملف وأعمدة الجدول تلقائيًا.</p>
+      </div>
+      <span class="chip"><svg class="ico"><use href="#i-shield-check"></use></svg> معالجة محلية آمنة</span>
+    </div>
+    <div class="card-body">
+      <div class="import-layout">
+        <div>
+          <label class="dropzone" id="import-dropzone">
+            <input type="file" id="import-file" accept=".xls,.xlsx,.htm,.html" aria-label="اختيار ملف الاستيراد">
+            <span class="dropzone-icon"><svg class="ico"><use href="#i-upload"></use></svg></span>
+            <strong>اسحب الملف هنا أو اضغط للاختيار</strong>
+            <p>ملفات Excel الحقيقية بصيغة XLS أو XLSX، وكذلك ملفات الجداول التي تصدّرها الأنظمة بصيغة HTML بامتداد XLS.</p>
+            <span class="file-pill"><svg class="ico"><use href="#i-file"></use></svg> XLS · XLSX · HTML</span>
+          </label>
+          <div class="import-uploading hidden" id="import-uploading" role="status">
+            <span class="spinner"></span>
+            <div>
+              <strong>جارٍ تحليل الملف وقراءة الأعمدة…</strong>
+              <span id="import-uploading-name"></span>
+            </div>
+          </div>
+        </div>
+        <aside class="import-guide">
+          <h3><svg class="ico"><use href="#i-sparkle"></use></svg> كيف يعمل الاستيراد؟</h3>
+          <div class="guide-row">
+            <span class="guide-num">1</span>
+            <div><strong>تعرّف تلقائي على الأعمدة</strong><p>يحاول النظام مطابقة عناوين الأعمدة العربية والفرنسية تلقائيًا، ويمكنك تعديلها.</p></div>
+          </div>
+          <div class="guide-row">
+            <span class="guide-num">2</span>
+            <div><strong>تحديث دون فقدان السجلات</strong><p>التلميذ الموجود يُحدَّث برقم التعريف الوطني، وتبقى سجلات حضوره ورسائله محفوظة.</p></div>
+          </div>
+          <div class="guide-row">
+            <span class="guide-num">3</span>
+            <div><strong>تحقق قبل الحفظ</strong><p>لن تُحفظ أي بيانات قبل مراجعة الصفوف والأخطاء والتنبيهات والموافقة على الاستيراد.</p></div>
+          </div>
+        </aside>
+      </div>
+      <div class="info-banner is-warning mt-2">
+        <svg class="ico"><use href="#i-id-card"></use></svg>
+        <div><strong>رقم التعريف الوطني إلزامي.</strong> هو الرقم الذي يُطبع داخل الباركود، لذلك يجب أن يكون عمودًا نصيًا واضحًا في الملف وخاليًا من الأرقام المكررة.</div>
+      </div>
+      <div class="flex flex-wrap mt-2">
+        <span class="muted" style="font-size:11px">نماذج جاهزة للتجربة:</span>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('static', filename='samples/students_sample.xlsx') }}" download>
+          <svg class="ico"><use href="#i-file"></use></svg>
+          <span>نموذج XLSX</span>
+        </a>
+        <a class="btn btn-secondary btn-sm" href="{{ url_for('static', filename='samples/students_sample.xls') }}" download>
+          <svg class="ico"><use href="#i-file"></use></svg>
+          <span>نموذج XLS بصيغة HTML</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="card hidden" id="step-mapping">
+    <div class="card-header">
+      <div>
+        <h2><svg class="ico"><use href="#i-filter"></use></svg> ربط أعمدة الملف بحقول التلميذ</h2>
+        <p>اختر العمود المقابل لكل معلومة. يُبرز الجدول الأعمدة التي اخترتها.</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" type="button" id="import-change-file">
+        <svg class="ico"><use href="#i-refresh"></use></svg>
+        <span>تغيير الملف</span>
+      </button>
+    </div>
+    <div class="card-body stack-sm">
+      <div class="import-file-head" id="import-file-head"></div>
+
+      <div class="section-title mt-1" style="margin-bottom:0">
+        <div>
+          <h2>مطابقة الحقول</h2>
+          <p>الحقول غير المربوطة تُترك فارغة، وتُحدَّث البيانات الحالية فقط بالحقول المربوطة.</p>
+        </div>
+        <span class="chip" id="import-mapping-count">0 / 0</span>
+      </div>
+      <div class="mapping-grid" id="import-mapping-grid"></div>
+
+      <div class="section-title mt-2" style="margin-bottom:0">
+        <div>
+          <h2>معاينة الصفوف الأولى</h2>
+          <p>للتأكد من أن صف العناوين والأعمدة صحيحة قبل التحليل الكامل.</p>
+        </div>
+        <span class="hint-inline" id="import-raw-hint"></span>
+      </div>
+      <div class="preview-scroll">
+        <div class="preview-table-wrap">
+          <table class="preview-table" id="import-raw-table"></table>
+        </div>
+      </div>
+    </div>
+    <div class="card-foot flex between flex-wrap">
+      <span class="tiny muted" id="import-mapping-status">رقم التعريف الوطني مطلوب للمتابعة.</span>
+      <button class="btn btn-primary" type="button" id="import-analyze">
+        <span>تحليل ومطابقة البيانات</span>
+        <svg class="ico"><use href="#i-chevron-left"></use></svg>
+      </button>
+    </div>
+  </section>
+
+  <section class="card hidden" id="step-review">
+    <div class="card-header">
+      <div>
+        <h2><svg class="ico"><use href="#i-shield-check"></use></svg> مراجعة الاستيراد</h2>
+        <p>تحقق من الأعداد والصفوف والأخطاء، ثم أكّد الاستيراد.</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" type="button" id="import-back-mapping">
+        <svg class="ico"><use href="#i-arrow-left"></use></svg>
+        <span>تعديل المطابقة</span>
+      </button>
+    </div>
+    <div class="card-body stack-sm">
+      <div class="import-summary" id="import-summary"></div>
+      <div class="flex flex-wrap" id="import-review-chips"></div>
+      <div id="import-review-notes" class="stack-sm"></div>
+
+      <div class="section-title mt-2" style="margin-bottom:0">
+        <div>
+          <h2>عينة من البيانات المعالجة</h2>
+          <p id="import-review-caption">أول الصفوف الصالحة بعد التحقق من الأرقام والتواريخ والهواتف.</p>
+        </div>
+        <span class="chip is-accent" id="import-review-badge">—</span>
+      </div>
+      <div class="preview-scroll">
+        <div class="preview-table-wrap">
+          <table class="preview-table" id="import-review-table"></table>
+        </div>
+      </div>
+
+      <div class="section-title mt-2" style="margin-bottom:0">
+        <div>
+          <h2>الأخطاء والتنبيهات</h2>
+          <p>الصفوف غير الصالحة لن تُستورد، ويمكن تصحيحها في الملف وإعادة المحاولة.</p>
+        </div>
+      </div>
+      <div class="segmented" id="import-issue-tabs" role="tablist" aria-label="تصنيف الأخطاء والتنبيهات">
+        <button type="button" data-issue-tab="errors" class="is-active">الأخطاء <span data-issue-count="errors">0</span></button>
+        <button type="button" data-issue-tab="warnings">التنبيهات <span data-issue-count="warnings">0</span></button>
+      </div>
+      <div class="issue-list" id="import-issue-list"></div>
+      <div class="tiny muted hidden" id="import-issue-more"></div>
+    </div>
+    <div class="card-foot flex between flex-wrap">
+      <span class="tiny muted" id="import-commit-hint">لن يتم حفظ أي تغيير قبل التأكيد.</span>
+      <div class="flex flex-wrap">
+        <button class="btn btn-secondary" type="button" id="import-cancel">إلغاء</button>
+        <button class="btn btn-primary" type="button" id="import-commit">
+          <svg class="ico"><use href="#i-database"></use></svg>
+          <span>تأكيد الاستيراد</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card hidden" id="step-done">
+    <div class="import-done">
+      <div class="import-done-icon"><svg class="ico"><use href="#i-check"></use></svg></div>
+      <h2>تم استيراد القائمة بنجاح</h2>
+      <p id="import-done-message">أُضيفت بيانات التلاميذ إلى قاعدة البيانات المحلية.</p>
+      <div class="import-done-stats" id="import-done-stats"></div>
+      <div class="stack-sm w-full" id="import-done-notes" style="max-width:600px;text-align:start"></div>
+      <div class="flex flex-wrap" style="justify-content:center;margin-top:6px">
+        <a class="btn btn-primary" href="{{ url_for('views.students_page') }}">
+          <svg class="ico"><use href="#i-users"></use></svg>
+          <span>عرض قائمة التلاميذ</span>
+        </a>
+        <a class="btn btn-secondary" href="{{ url_for('views.print_studio_page') }}">
+          <svg class="ico"><use href="#i-printer"></use></svg>
+          <span>طباعة البطاقات</span>
+        </a>
+        <button class="btn btn-secondary" type="button" id="import-again">
+          <svg class="ico"><use href="#i-upload"></use></svg>
+          <span>استيراد ملف آخر</span>
+        </button>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/import.js') }}"></script>
+{% endblock %}

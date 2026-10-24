@@ -1,0 +1,142 @@
+{
+  "strings": {
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا.": ". Any new scan will automatically convert absence to present or late.",
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا، ورسائل الغياب في قائمة الانتظار.": ". Any new scan will automatically convert absence to present or late, and absence messages are queued.",
+    ". لا يمكن التراجع بعد بدء الإرسال.": ". This cannot be undone once sending starts.",
+    "أُغلقت هذه الفترة اليوم على الساعة": "This period was closed today at",
+    "أُغلقت هذه الفترة اليوم.": "This period was closed today.",
+    "إلى أولياء التلاميذ الغائبين ضمن": "to the parents of absent students in",
+    "الإجمالي": "Total",
+    "الفترة لم تُغلق بعد": "The period has not been closed yet",
+    "بايت": "B",
+    "بتاريخ": "dated",
+    "بدأ إرسال الرسائل.": "Sending messages started.",
+    "بطاقات جاهزة للطباعة": "ready cards to print",
+    "بطاقة جاهزة للطباعة": "ready card to print",
+    "بطاقتان جاهزتان للطباعة": "ready cards to print",
+    "تم تثبيت سجلات الغياب.": "Absence records have been finalized.",
+    "حالة أخرى…": "more cases…",
+    "سيتم إرسال": "Will send",
+    "سيتم إيقاف الخادم المحلي. تأكد من عدم وجود عمليات مسح أو إرسال رسائل جارية. هل تريد المتابعة؟": "The local server will be stopped. Make sure no scans or message sends are in progress. Do you want to continue?",
+    "عدد المحاولات": "Attempt count",
+    "عرض ملف": "View profile",
+    "غ.ب": "GB",
+    "ك.ب": "KB",
+    "لا توجد رسائل SMS معلقة لهذه الفترة.": "There are no pending SMS messages for this period.",
+    "لا يوجد أي صف صالح للاستيراد.": "There is no valid row to import.",
+    "م.ب": "MB",
+    "مثال: 109876543210": "Example: 109876543210",
+    "مثال: 1AS1": "Example: 1AS1",
+    "مراسلة الولي عبر واتساب": "Message parent via WhatsApp",
+    "مسح": "Scan",
+    "ملصق جاهز للطباعة": "ready label to print",
+    "ملصقات جاهزة للطباعة": "ready labels to print",
+    "ملصقان جاهزان للطباعة": "ready labels to print",
+    "ملصقًا جاهزًا للطباعة": "ready labels to print",
+    "نص الرسالة": "Message text",
+    "هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome حديث.": "This browser cannot read barcodes from the camera. Use a USB scanner or a recent Edge/Chrome browser.",
+    "واجهة سحابية": "Cloud interface"
+  },
+  "patterns": [
+    {
+      "ar": "{0} / {1} تلميذ",
+      "tr": "{0} / {1} students"
+    },
+    {
+      "ar": "تبرير غياب {0}",
+      "tr": "Excuse absence for {0}"
+    },
+    {
+      "ar": "{0} تلميذًا غائبًا بدون رقم هاتف صالح. لن تصلهم رسائل SMS، ويمكن متابعتهم عبر التقرير اليومي.",
+      "tr": "{0} absent students have no valid phone number. They will not receive SMS messages; follow up via the daily report."
+    },
+    {
+      "ar": "{0} اختبار",
+      "tr": "{0} test"
+    },
+    {
+      "ar": "{0} · مغلقة",
+      "tr": "{0} · Closed"
+    },
+    {
+      "ar": "مراسلة ولي {0} عبر واتساب",
+      "tr": "Message the parent of {0} via WhatsApp"
+    },
+    {
+      "ar": "عرض ملاحظة {0}",
+      "tr": "View note for {0}"
+    },
+    {
+      "ar": "إرسال رسالة {0} عبر واتساب",
+      "tr": "Send message to {0} via WhatsApp"
+    },
+    {
+      "ar": "{0} رسالة — وضع الاختبار",
+      "tr": "{0} messages — test mode"
+    },
+    {
+      "ar": "اختيار يدوي: {0} — يُسجَّل المسح في هذه الفترة فقط.",
+      "tr": "Manual selection: {0} — scans are recorded in this period only."
+    },
+    {
+      "ar": "عمود {0}",
+      "tr": "Column {0}"
+    },
+    {
+      "ar": "{0} · {1} كيلوبايت",
+      "tr": "{0} · {1} KB"
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}{2}. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} will be added and {1} updated{2}. Changes are not saved before confirmation."
+    },
+    {
+      "ar": "، مع استبعاد {0} صفًا",
+      "tr": ", excluding {0} rows"
+    },
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.{2}",
+      "tr": "Will add {0} new students and update {1} existing students while preserving attendance records and messages.{2}"
+    },
+    {
+      "ar": "وسيُستبعد {0} صفًا غير صالح.",
+      "tr": "{0} invalid rows will be excluded."
+    },
+    {
+      "ar": "{0}: {1}",
+      "tr": "{0}: {1}"
+    },
+    {
+      "ar": "مسح {0}",
+      "tr": "scan {0}"
+    },
+    {
+      "ar": "{0} غائب",
+      "tr": "{0} absent"
+    },
+    {
+      "ar": "{0} مبرر",
+      "tr": "{0} excused"
+    },
+    {
+      "ar": "معاينة توضيحية — {0}",
+      "tr": "Demo preview — {0}"
+    },
+    {
+      "ar": "{0} {1} للطباعة",
+      "tr": "{0} {1} to print"
+    },
+    {
+      "ar": "طباعة {0} {1}",
+      "tr": "Print {0} {1}"
+    },
+    {
+      "ar": "هل تريد حذف «{0}»؟ لا يمكن التراجع عن الحذف، وستُرفض العملية إذا كانت مرتبطة بسجلات حضور.",
+      "tr": "Delete “{0}”? This cannot be undone, and the operation will be refused if attendance records are linked to it."
+    },
+    {
+      "ar": "حذف {0}",
+      "tr": "Delete {0}"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+<button class="btn btn-primary" type="button" data-add-user>
+  <svg class="ico"><use href="#i-plus"></use></svg>
+  <span>إضافة مستخدم</span>
+</button>
+{% endblock %}
+
+{% block content %}
+{% if open_admin %}
+<div class="info-banner is-warning" id="users-open-admin">
+  <svg class="ico"><use href="#i-warning"></use></svg>
+  <div>
+    <strong>يوجد حساب مدير بدون كلمة مرور.</strong>
+    <p class="tiny">اضبط كلمة مرور قوية لحساب admin قبل أن تشارك الجهاز مع مستخدمين آخرين.</p>
+  </div>
+</div>
+{% endif %}
+
+<section class="grid-3 users-summary" aria-label="ملخص المستخدمين">
+  <article class="card stat-card is-total">
+    <div class="stat-top"><div class="stat-icon"><svg class="ico"><use href="#i-users"></use></svg></div></div>
+    <div class="stat-value" id="users-total">—</div>
+    <div class="stat-label">إجمالي المستخدمين</div>
+  </article>
+  <article class="card stat-card">
+    <div class="stat-top"><div class="stat-icon"><svg class="ico"><use href="#i-shield-check"></use></svg></div></div>
+    <div class="stat-value" id="users-admins">—</div>
+    <div class="stat-label">مديرو النظام</div>
+  </article>
+  <article class="card stat-card">
+    <div class="stat-top"><div class="stat-icon"><svg class="ico"><use href="#i-user"></use></svg></div></div>
+    <div class="stat-value" id="users-active">—</div>
+    <div class="stat-label">حسابات نشطة</div>
+  </article>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <div>
+      <h2>حسابات الدخول</h2>
+      <p class="muted">الأدوار: المدير يدير الإعدادات والمستخدمين والنسخ الاحتياطي والتحديثات. المستخدم يدير العمليات اليومية دون صفحات النظام.</p>
+    </div>
+    <button class="btn btn-secondary btn-sm" type="button" data-refresh-users>
+      <svg class="ico"><use href="#i-refresh"></use></svg>
+      <span>تحديث</span>
+    </button>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table users-table">
+      <thead>
+        <tr>
+          <th>المستخدم</th>
+          <th>الدور</th>
+          <th>كلمة المرور</th>
+          <th>الحالة</th>
+          <th>آخر دخول</th>
+          <th class="table-actions-head">إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="users-body">
+        <tr><td colspan="6" class="table-loading">جارٍ تحميل المستخدمين…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="info-banner is-info">
+  <svg class="ico"><use href="#i-info"></use></svg>
+  <div>
+    <strong>كلمة المرور اختيارية.</strong>
+    <p class="tiny">عند إضافة مستخدم يمكنك ترك كلمة المرور فارغة؛ سيدخل باختيار اسمه دون كلمة مرور. يمكنك ضبطها أو حذفها لاحقًا من زر التعديل.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/users.js') }}"></script>
+{% endblock %}

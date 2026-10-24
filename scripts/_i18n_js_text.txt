@@ -1,0 +1,547 @@
+), page + 1, { disabled: page >= pages }); container.innerHTML = `<span>إجمالي ${formatInt(total)} سجل — صفحة ${page} من ${pages}</span><div class=
+)}</td></tr>`; $("students-result-label").textContent = "تعذر تحميل البيانات."; $("students-pagination").innerHTML = ""; if (!options.silent) A.toast(error.message || "تعذر تحميل القائمة.", "error"); } finally { if (requestId === state.requestId) state.loading = false; } } function applyClasses() { const selected = state.classGroup; const options = [
+, () => { closeModal(true); }); }, }); }); } function pagination(container, options = {}) { if (!container) return; const page = Math.max(1, Number(options.page) || 1); const pages = Math.max(1, Number(options.pages) || 1); const total = Number(options.total) || 0; const onChange = options.onChange || (() => {}); if (pages <= 1) { container.innerHTML = total ? `<span>إجمالي ${formatInt(total)} سجل</span>` :
+. لا يمكن التراجع بعد بدء الإرسال.
+.trim() || "—"; const isUpdate = row.status === "تحديث"; return
+: ""}. أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا{0}
+: ""}. لن تُحفظ التغييرات قبل التأكيد.
+: ""}{0}
+: "جارٍ التحضير…"))}
+: "لا توجد رسائل SMS معلقة لهذه الفترة."}
+: "ولا توجد رسائل معلّقة."}
+; const toggleLabel = student.is_active ? "أرشفة التلميذ" : "تنشيط التلميذ"; const dialog = A.openModal({ title: "ملف التلميذ", subtitle: "بيانات الاتصال وحضور اليوم", icon: "user", size: "lg", body: ` <div class="student-detail-head"> <div class="avatar avatar-lg" data-profile-avatar>${avatarInner}</div> <div style="flex:1;min-width:0"> <h3>${safe(student.full_name || "بدون اسم")}</h3> <p class="mono">${safe(student.student_nin)}</p> <div class="student-tags mt-1">${statusBadge}<span class="chip">${safe(displayClass(student.class_group))}</span>${ student.parent_phone ? `<span class="chip">${A.icon("phone")}<span class="mono">${safe(student.parent_phone)}</span></span>` :
+; const toggleLabel = student.is_active ? "أرشفة التلميذ" : "تنشيط التلميذ"; return ` <tr> <td> <div class="student-identity"> ${A.avatar(student)} <div> <strong>${safe(student.full_name || "بدون اسم")}</strong> <small class="student-nin">${safe(student.student_nin)}</small> </div> </div> </td> <td class="col-class"><span class="chip">${safe(displayClass(student.class_group))}</span></td> <td class="col-phone"><span class="mono">${safe(student.parent_phone || "—")}</span></td> <td class="col-birth">${safe(student.birth_date ? A.formatDate(student.birth_date) : "—")}</td> <td class="col-status">${activeBadge}</td> <td class="col-actions"> <div class="actions"> <button class="icon-btn" type="button" data-action="view" data-nin="${safe(student.student_nin)}" title="ملف التلميذ" aria-label="عرض ملف ${safe(student.full_name)}"> ${A.icon("eye")} </button> <button class="icon-btn" type="button" data-action="edit" data-nin="${safe(student.student_nin)}" title="تعديل البيانات" aria-label="تعديل ${safe(student.full_name)}"> ${A.icon("edit")} </button> <a class="icon-btn" href="${printUrl(student.student_nin)}" target="_blank" rel="noopener" title="طباعة بطاقة التعريف" aria-label="طباعة بطاقة ${safe(student.full_name)}"> ${A.icon("printer")} </a> <button class="icon-btn ${student.is_active ? "is-danger" : ""}" type="button" data-action="toggle" data-nin="${safe(student.student_nin)}" title="${toggleLabel}" aria-label="${toggleLabel}: ${safe(student.full_name)}"> ${A.icon(student.is_active ? "trash" : "refresh")} </button> </div> </td> </tr>`; }) .join(""); } function findStudent(nin) { return state.items.find((item) => item.student_nin === nin) || null; } function handleUrlActions() { if (state.autoNewNin !== null && state.autoNewNin !== undefined && state.autoNewNin !== "") { const nin = state.autoNewNin; state.autoNewNin = ""; openStudentForm(null, nin); syncUrl(); return; } if (state.autoOpenProfile) { state.autoOpenProfile = false; const target = state.items.find((item) => item.student_nin === state.q) || state.items[0]; if (target) openProfile(target.student_nin); syncUrl(); } } /* ---------------------------------------------------------------------- */ /* Student form */ /* ---------------------------------------------------------------------- */ function openStudentForm(student, presetNin) { const editing = Boolean(student); const initial = student || { student_nin: presetNin || "", first_name: "", last_name: "", birth_date: null, class_group: state.classGroup && state.classGroup !== "__none__" ? state.classGroup : "", parent_phone: "", is_active: true, }; const classValue = initial.class_group || ""; const body = ` <form id="student-form" class="form-grid" novalidate> <div class="field form-span-2"> <label for="student-nin">رقم التعريف الوطني <span class="required">*</span></label> <input class="input mono" id="student-nin" name="student_nin" value="${safe(initial.student_nin)}" ${editing ? "readonly" : "required autofocus"} maxlength="64" autocomplete="off" placeholder="مثال: 109876543210"> <div class="field-hint">${editing ? "رقم التعريف غير قابل للتعديل لأنه مرتبط بسجلات الحضور والباركود المطبوع." : "هذا هو الرمز الذي سيُقرأ من بطاقة التلميذ. يجب أن يكون فريدًا."}</div> </div> <div class="field"> <label for="student-last-name">اللقب</label> <input class="input" id="student-last-name" name="last_name" value="${safe(initial.last_name)}" maxlength="120" placeholder="لقب التلميذ"> </div> <div class="field"> <label for="student-first-name">الاسم</label> <input class="input" id="student-first-name" name="first_name" value="${safe(initial.first_name)}" maxlength="120" placeholder="اسم التلميذ"> </div> <div class="field"> <label for="student-class">القسم / الفوج</label> <input class="input" id="student-class" name="class_group" value="${safe(classValue)}" maxlength="80" list="student-class-options" placeholder="مثال: 1AS1"> <datalist id="student-class-options">${classOptionsForForm()}</datalist> </div> <div class="field"> <label for="student-phone">هاتف الولي</label> <input class="input mono" id="student-phone" name="parent_phone" value="${safe(initial.parent_phone)}" maxlength="24" type="tel" inputmode="tel" placeholder="0555123456"> <div class="field-hint">يُستعمل لإرسال إشعارات الغياب عبر SMS.</div> </div> <div class="field"> <label for="student-birth">تاريخ الميلاد</label> <input class="input" id="student-birth" name="birth_date" type="date" value="${safe(initial.birth_date || "")}" max="${new Date().toISOString().slice(0, 10)}"> </div> <div class="field"> <span class="field-label">حالة التلميذ</span> <label class="switch"> <input type="checkbox" name="is_active" ${initial.is_active === false ? "" : "checked"}> <span class="switch-track"></span> <span class="switch-text"><strong>تلميذ نشط</strong><span>يظهر في المسح والاستيراد والتقارير.</span></span> </label> </div> </form>`; const dialog = A.openModal({ title: editing ? "تعديل بيانات التلميذ" : "إضافة تلميذ جديد", subtitle: editing ? "عدّل المعلومات الشخصية وبيانات الاتصال." : "أدخل بيانات التلميذ يدويًا. يمكنك إضافة الصورة بعد الحفظ.", icon: editing ? "edit" : "plus", size: "lg", body, footer: ` <button class="btn btn-secondary" type="button" data-modal-close>إلغاء</button> <button class="btn btn-primary" type="submit" form="student-form" data-save>${editing ? "حفظ التعديلات" : "إضافة التلميذ"}</button>`, onMount(modal) { const form = modal.querySelector("#student-form"); const saveButton = modal.querySelector("[data-save]"); form.addEventListener("submit", async (event) => { event.preventDefault(); const values = A.formValues(form); const nin = String(values.student_nin || "").trim(); const firstName = String(values.first_name || "").trim(); const lastName = String(values.last_name || "").trim(); if (!editing && !nin) { A.toast("أدخل رقم التعريف الوطني أولًا.", "warning"); modal.querySelector("#student-nin").focus(); return; } if (!firstName && !lastName) { A.toast("أدخل الاسم أو اللقب على الأقل.", "warning"); modal.querySelector("#student-first-name").focus(); return; } const payload = { first_name: firstName, last_name: lastName, class_group: String(values.class_group || "").trim(), parent_phone: String(values.parent_phone || "").trim(), birth_date: String(values.birth_date || "").trim(), is_active: Boolean(values.is_active), }; A.setBusy(saveButton, true); try { let result; if (editing) { result = await A.api(`/api/students/${encodeURIComponent(student.student_nin)}`, { method: "PUT", body: payload }); } else { payload.student_nin = nin; result = await A.api("/api/students", { method: "POST", body: payload }); } A.toast(result.message || "تم حفظ بيانات التلميذ.", "success"); dialog.close(); loadStudents({ silent: false }); } catch (error) { A.toast(error.message || "تعذر حفظ بيانات التلميذ.", "error"); } finally { A.setBusy(saveButton, false); } }); const firstField = modal.querySelector(editing ? "#student-first-name" : "#student-nin"); if (firstField) window.setTimeout(() => firstField.focus(), 80); }, }); return dialog; } /* ---------------------------------------------------------------------- */ /* Profile */ /* ---------------------------------------------------------------------- */ async function openProfile(nin) { let data; try { data = await A.api(`/api/students/${encodeURIComponent(nin)}`); } catch (error) { A.toast(error.message || "تعذر تحميل ملف التلميذ.", "error"); return; } const student = data.student; const today = data.today || { periods: [], attended_periods: 0, total_periods: 0 }; const periods = Array.isArray(today.periods) ? today.periods : []; const attended = periods.filter((p) => p.status === "PRESENT" || p.status === "LATE").length; const absent = periods.filter((p) => p.status === "ABSENT").length; const excused = periods.filter((p) => p.status === "EXCUSED").length; const unrecorded = periods.filter((p) => !p.status).length; const todayRows = periods.length ? `<div class="activity-list">${periods .map( (period) => ` <div class="activity-row"> <div class="activity-main"> <strong>${safe(period.period_name)}</strong> <span>${safe(period.start_time || "")}${period.scan_time ? ` · مسح ${safe(period.scan_time)}` : ""}</span> </div> <div class="activity-side">${A.statusBadge(period.status, period.status_label)}</div> </div>` ) .join("")}</div>` : A.emptyState("clock", "لا توجد فترات نشطة", "أضف فترات من الإعدادات لعرض حضور اليوم."); const initials = A.initials( student.first_name, student.last_name ); const avatarInner = `${safe(initials)}${student.photo_url ? `<img data-avatar-img src="${safe(student.photo_url)}" alt="${safe(student.full_name)}" loading="lazy">` : ""}`; const statusBadge = student.is_active ?
+; tbody.innerHTML = `<tr><td colspan="6" class="empty-cell">${A.emptyState("users", "لا يوجد تلاميذ", description, action)}</td></tr>`; return; } tbody.innerHTML = state.items .map((student) => { const activeBadge = student.is_active ?
+<a class="btn btn-secondary btn-sm" href="/attendance">فتح سجل الحضور</a>
+<button class="btn btn-secondary btn-sm" type="button" data-reset-logs>مسح الفلاتر</button>
+<button class="btn btn-secondary btn-sm" type="button" data-reset-sms>مسح الفلاتر</button>
+<button class="btn btn-secondary btn-sm" type="button" data-retry-logs>إعادة المحاولة</button>
+<button class="btn btn-secondary btn-sm" type="button" data-retry-report>إعادة المحاولة</button>
+<button class="btn btn-secondary btn-sm" type="button" data-retry-sms>إعادة المحاولة</button>
+<button class="btn btn-secondary btn-sm" type="button" data-scan-clear>مسح تالٍ</button>
+<div class="queue-status-line">محاكاة اختبار</div>
+<div class="tiny muted" style="padding:8px 0">لا توجد عمليات مسح مسجلة في هذه الفترة بعد.</div>
+<option value="">تعذر تحميل الفترات</option>
+<option value="">تلقائي حسب الوقت الحالي</option>
+<option value="">لا توجد فترات نشطة</option>
+<option value="">لا توجد فترات</option>
+<span class="badge badge--cancelled"><i class="badge-dot"></i>معطّلة</span>
+<span class="badge badge--present"><i class="badge-dot"></i>نشطة</span>
+<span class="chip is-accent" style="margin-top:3px">اختبار</span>
+<span class="chip is-accent">محاكاة اختبار</span>
+<tr><td colspan="7" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل الرسائل…</span></div></td></tr>
+<tr><td colspan="7" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل السجلات…</span></div></td></tr>
+<tr><td colspan="9" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل التقرير…</span></div></td></tr>
+>أُغلقت قاعدة البيانات بأمان. يمكنك إغلاق هذه النافذة.</p></div></div>`; document.getElementById(
+>تم إيقاف النظام</h2><p class=
+[اسم_التلميذ]
+[اسم_الفترة]
+[اسم_المؤسسة]
+[الاسم]
+[التاريخ]
+[الرقم_التعريفي]
+[السنة_الدراسية]
+[القسم]
+[اللقب]
+]; state.classes.forEach((item) => { const suffix = item.active !== item.total ? ` (${A.formatInt(item.active)}/${A.formatInt(item.total)})` : ` (${A.formatInt(item.total)})`; options.push(`<option value="${safe(item.value)}">${safe(item.label)}${suffix}</option>`); }); classFilter.innerHTML = options.join(""); const values = state.classes.map((item) => item.value); if (selected && !values.includes(selected)) { state.classGroup = ""; classFilter.value = ""; state.page = 1; } else { classFilter.value = selected; } } function classOptionsForForm() { return state.classes .filter((item) => item.value !== "__none__") .map((item) => `<option value="${safe(item.value)}"></option>`) .join(""); } function renderCounts() { $("students-count-all").innerHTML = `<strong>${A.formatInt(state.counts.all)}</strong>&nbsp;إجمالي`; $("students-count-active").innerHTML = `<strong>${A.formatInt(state.counts.active)}</strong>&nbsp;نشط`; $("students-count-inactive").innerHTML = `<strong>${A.formatInt(state.counts.inactive)}</strong>&nbsp;مؤرشف`; } function filterSummary() { const bits = [`${A.formatInt(state.total)} تلميذ`]; if (state.q) bits.push(`بحث: «${state.q}»`); if (state.classGroup === "__none__") bits.push("بدون قسم"); else if (state.classGroup) bits.push(`القسم: ${state.classGroup}`); if (state.active === "1") bits.push("النشطون فقط"); if (state.active === "0") bits.push("المؤرشفون فقط"); if (state.pages > 1) bits.push(`صفحة ${state.page} من ${state.pages}`); return bits.join(" — "); } function renderResultLabel() { $("students-result-label").textContent = filterSummary(); } function renderRows() { if (!state.items.length) { const description = state.q || state.classGroup || state.active !== "all" ? "لا توجد نتائج مطابقة للمعايير المحددة. جرّب تغيير البحث أو الفلاتر." : "لم تُضف أي تلميذ بعد. ابدأ بإضافة تلميذ يدويًا أو استيراد قائمة من Excel."; const action = state.q || state.classGroup || state.active !== "all" ?
+data-modal-close>إغلاق</button>`; backdrop.innerHTML = ` <div class=
+data-modal-close>إلغاء</button> <button class=
+s profile. */ (function () { "use strict"; const A = window.App; const state = { q: "", classGroup: "", active: "all", page: 1, perPage: 20, items: [], counts: { all: 0, active: 0, inactive: 0 }, classes: [], pages: 1, total: 0, loading: false, requestId: 0, autoNewNin: "", autoOpenProfile: false, }; const $ = (id) => document.getElementById(id); const searchInput = $("students-search"); const classFilter = $("students-class-filter"); const activeFilter = $("students-active-filter"); const perPageSelect = $("students-per-page"); const tbody = $("students-table-body"); function safe(value) { return A.escapeHtml(value === null || value === undefined ? "" : value); } function displayClass(value) { return value || "بدون قسم"; } function printUrl(nin) { const params = new URLSearchParams({ scope: "student", nin, mode: "cards", layout: "10" }); return `/print/sheet?${params.toString()}`; } function currentFilters() { const params = new URLSearchParams(); if (state.q) params.set("q", state.q); if (state.classGroup) params.set("class_group", state.classGroup); if (state.active !== "all") params.set("active", state.active); if (state.page > 1) params.set("page", String(state.page)); if (state.perPage !== 20) params.set("per_page", String(state.perPage)); return params; } function syncUrl() { const params = currentFilters(); const url = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`; window.history.replaceState({}, "", url); } function readUrl() { const params = new URLSearchParams(window.location.search); state.q = params.get("q") || ""; state.classGroup = params.get("class_group") || ""; const active = params.get("active") || "all"; state.active = ["1", "0"].includes(active) ? active : "all"; const page = Number(params.get("page") || "1"); state.page = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1; const perPage = Number(params.get("per_page") || "20"); state.perPage = [10, 20, 50, 100].includes(perPage) ? perPage : 20; state.autoNewNin = params.get("new") === "1" ? params.get("nin") || "" : ""; state.autoOpenProfile = params.get("profile") === "1"; searchInput.value = state.q; activeFilter.value = state.active; perPageSelect.value = String(state.perPage); } /* ---------------------------------------------------------------------- */ /* Loading + rendering */ /* ---------------------------------------------------------------------- */ async function loadStudents(options = {}) { const requestId = ++state.requestId; state.loading = true; if (!options.silent) { tbody.innerHTML = `<tr><td colspan="6" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل التلاميذ…</span></div></td></tr>`; } try { const params = currentFilters(); params.set("per_page", String(state.perPage)); if (state.page > 1) params.set("page", String(state.page)); const data = await A.api(`/api/students?${params.toString()}`); if (requestId !== state.requestId) return; state.items = Array.isArray(data.items) ? data.items : []; state.counts = data.counts || { all: 0, active: 0, inactive: 0 }; state.classes = Array.isArray(data.classes) ? data.classes : []; state.pages = Number(data.pages) || 1; state.total = Number(data.total) || 0; if (state.page > state.pages) { state.page = state.pages; return loadStudents(options); } applyClasses(); renderCounts(); renderRows(); renderResultLabel(); A.pagination($("students-pagination"), { page: state.page, pages: state.pages, total: state.total, onChange(page) { state.page = page; loadStudents(); }, }); syncUrl(); handleUrlActions(); } catch (error) { if (requestId !== state.requestId) return; tbody.innerHTML = `<tr><td colspan="6" class="empty-cell">${A.emptyState( "warning", "تعذر تحميل قائمة التلاميذ", error.message || "أعد المحاولة.",
+{0} / {1} تلميذ
+{0} / {1} مُرسلة
+{0} {1} بدون هاتف
+{0} {1} رسالة معلقة
+{0} {1} ولي له هاتف
+{0} · {1} كيلوبايت
+{0} إعداد الفترات
+{0} إغلاق الفترة
+{0} إغلاق وإرسال SMS
+{0} اربط عمود رقم التعريف الوطني للمتابعة.
+{0} بايت
+{0} بدون اسم
+{0} بدون قسم
+{0} بطاقات CR80
+{0} تأكيد الإرسال
+{0} تأكيد التبرير
+{0} تاريخ ميلاد غير مفهوم
+{0} تلميذ
+{0} تلميذ نشط
+{0} تلميذًا بدون رقم هاتف صالح — سيُحفظ التلميذ لكن لن تُرسل له رسائل SMS حتى تُحدَّث بياناته.
+{0} تلميذًا لم يُمسح بعد. عند إغلاق الفترة سيُسجَّلون غائبين ويمكن إشعار الأولياء بعد موافقتك.
+{0} تلميذًا موجودًا سيُحدَّث بالحقول المربوطة فقط، مع الحفاظ على سجلات الحضور والرسائل السابقة.
+{0} تلميذًا — {1} سجل خلال الفترة {2} إلى {3}
+{0} جاهز
+{0} رسالة جاهزة للإرسال
+{0} رسالة{1}
+{0} رقم التعريف الوطني مربوط. يمكنك متابعة التحليل.
+{0} رقم مكرر داخل الملف
+{0} سجل
+{0} سجل مطابق — {1} تلميذًا — {2}
+{0} صفًا سيُستبعد لاحتوائه على أخطاء. بقية الصفوف ستُستورد بشكل طبيعي.
+{0} صفًا لم يُستورد بسبب أخطاء في البيانات. صححه في الملف واستورده مجددًا إذا لزم.
+{0} صورة للمعالجة
+{0} غ.ب
+{0} فتح البوابة
+{0} فتح بوابة المسح
+{0} ك.ب
+{0} م.ب
+{0} محاولة
+{0} معلقة
+{0} ملصقات باركود
+{0} من {1} فترات
+{0} ناجحة · {1} فاشلة{2}
+{0} هاتف غير صالح
+{0} — الفترة مغلقة
+{0} — الفترة مفتوحة
+{0}CR80 · 85.6 × 54 مم · {1} بطاقات في صفحة A4
+{0}{1}
+{0}ملصق 65 × {1} مم · {2} ملصقًا في صفحة A4
+{1} بدون رقم هاتف، و{2} برقم غير صالح — لم تُنشأ لهم رسائل.
+{1} حاضر · {2} متأخر
+{1} رسالة SMS
+{1} للطباعة
+{3} · {4} صفًا · العناوين في السطر {5}
+{3} غائب
+{4} مبرر
+{7} من {8}
+· مسح {0}
+· مغلقة
+، ورسائل الغياب في قائمة الانتظار.
+أدخل جميع أوقات الفترة.
+أدخل رابط بوابة SMS قبل تعطيل وضع الاختبار.
+أدخل رقم هاتف لإجراء الاختبار.
+أرشفة
+أرشفة التلميذ
+أضف التلاميذ أو استورد قائمة لحساب الإحصاءات حسب القسم.
+أضف فترة دراسية من الإعدادات لبدء متابعة الحضور وإغلاق الغياب.
+أضف فترة من الإعدادات
+أعد المحاولة.
+أمين
+أوافق على إرسال {0} رسالة معلّقة إلى أولياء التلاميذ الغائبين الآن.
+أوافق على إرسال الرسائل المعلّقة الآن إلى أولياء التلاميذ المعنيين.
+أوافق على إرسال رسائل SMS إلى أولياء التلاميذ الغائبين بعد إغلاق الفترة.
+أُضيف {0} تلميذًا جديدًا وحُدِّثت بيانات {1} تلميذًا في قاعدة البيانات المحلية.
+أُضيف {0} وتم تحديث {1} تلميذًا.
+أُغلقت قاعدة البيانات بأمان. يمكنك إغلاق هذه النافذة.
+أُغلقت هذه الفترة اليوم{1}
+إجمالي
+إجمالي {0} تلميذًا
+إجمالي {0} سجل
+إجمالي {0} سجل — صفحة {1} من {2}
+إخفاء الرسالة
+إخفاء المفتاح
+إرسال الرسائل المعلّقة
+إرسال رسائل الغياب المعلّقة
+إرسال رسالة ${safe(item.full_name)} عبر واتساب
+إرسال عبر واتساب
+إزالة
+إزالة الصورة
+إضافة التلميذ
+إضافة الفترة
+إضافة فترة دراسية
+إظهار المفتاح
+إعادة المحاولة
+إعادة محاولة إرسال الرسالة
+إعادة محاولة رسالة ${safe(item.full_name)}
+إغلاق
+إغلاق آلي
+إغلاق الفترة ومعالجة الغياب
+إغلاق يدوي
+إلغاء
+إلغاء الاستيراد
+إلى أولياء التلاميذ الغائبين ضمن
+إنهاء ملء الشاشة
+إيقاف الكاميرا
+اختبار بوابة SMS
+اختر القسم أولًا
+اختر تلميذًا أولًا
+اختر فترة نشطة أولًا لمعالجة الغياب.
+اختر يومًا دراسيًا واحدًا على الأقل.
+اختيار يدوي: {0} — يُسجَّل المسح في هذه الفترة فقط.
+اسم التلميذ
+اسم الفترة
+اسم الفترة مطلوب.
+اسم المؤسسة التعليمية
+اسم المؤسسة مطلوب.
+افتح بوابة المسح ومرر بطاقة تلميذ لتظهر أحدث العمليات هنا مباشرة.
+اكتب قالب الرسالة لعرض المعاينة.
+اكتمل الاختبار.
+اكتمل الاستيراد
+اكتملت العملية دون أخطاء أو تنبيهات. يمكنك الآن طباعة بطاقات التلاميذ أو بدء المسح.
+اكتملت معالجة الرسائل
+اكتملت معالجة الرسائل.
+الإجراء
+الإجمالي
+الإجمالي — {0} سجل
+الإصدار {0}
+الإعدادات
+الاسم
+الاسم واللقب
+البداية
+التاريخ
+التلميذ
+الحالة
+الرمز: {0}
+السجلات
+السنة الدراسية
+الصف ${escape(String(item.row))}
+الصف {1}
+الفترة
+الفترة الصباحية
+الفترة المحددة
+الفترة لم تُغلق بعد
+الفترة مغلقة — {0}
+الفترة مغلقة — المسح يحدّث الحالات
+الفترة مفتوحة ولم تُغلق بعد
+القسم
+القسم / الفوج
+القسم: {0}
+الكاميرا مستعملة من طرف تطبيق آخر. أغلق التطبيق الآخر ثم أعد المحاولة.
+الكاميرا مفعّلة — وجّه الباركود
+اللقب
+المجموع المسجل: {0}
+المسح بعد هذا الوقت يُسجّل متأخرًا.
+الملف جاهز للمطابقة
+باركود ${safeNin}
+باركود {1}
+باركود {5}
+باركود غير مسجل
+بانتظار أول عملية مسح
+بانتظار الإغلاق
+بتاريخ
+بحث: «{0}»
+بدء الاستيراد
+بدأ إرسال الرسائل.
+بدون اسم
+بدون قسم
+بدون هاتف
+بدون هاتف صالح
+بدون هاتف ولي
+بطاقات
+بطاقات جاهزة
+بطاقة
+بطاقة جاهزة
+بطاقتان
+بطاقتان جاهزتان
+بعد هذا الوقت يصبح التلميذ غائبًا عند الرصد التلقائي.
+بن طالب
+بن علي
+بوابة سحابية
+بوابة محلية
+بوزيان
+تأكيد استيراد القائمة
+تاريخ الإنشاء
+تاريخ الميلاد
+تبرير الغياب
+تبرير غياب ${A.escapeHtml(item.full_name)}
+تبرير غياب ${safe(item.full_name)}
+تبرير غياب {2}
+تحديث
+تحقق من الفلاتر أو أعد المحاولة.
+ترتيب العرض
+ترويسات HTTP ليست JSON صالحًا.
+تشغيل الكاميرا
+تظهر أول {0} تنبيهات فقط. راجع صفحة التلاميذ لاستكمال البيانات الناقصة.
+تظهر في بوابة المسح وسجل الحضور. عطّل الفترة لإخفائها دون حذف سجلاتها.
+تعديل ${safe(period.period_name)}
+تعديل {11}
+تعديل {8}
+تعديل البيانات
+تعديل الفترة
+تعديل الفترة الدراسية
+تعذر الاتصال بالخادم المحلي.
+تعذر تحديث حالة التلميذ.
+تعذر تحميل الإعدادات.
+تعذر تحميل البيانات
+تعذر تحميل البيانات.
+تعذر تحميل التقرير
+تعذر تحميل التقرير.
+تعذر تحميل الرسائل.
+تعذر تحميل السجلات.
+تعذر تحميل الفترات.
+تعذر تحميل بيانات البوابة.
+تعذر تحميل حالة الفترة
+تعذر تحميل سجل الحضور
+تعذر تحميل صندوق الرسائل
+تعذر تسجيل المسح
+تعذر تسجيل المسح.
+تعذر تشغيل الكاميرا.
+تعذر تفعيل ملء الشاشة في هذا المتصفح.
+تعذر حذف الصورة.
+تعذر حذف الفترة.
+تعذر حفظ الإعدادات.
+تعذر حفظ الفترة.
+تعذر رفع الصورة.
+تعذر رفع صورة التلميذ.
+تعذر متابعة تقدم الإرسال. حدّث الصفحة لعرض النتيجة.
+تقرير الحضور اليومي
+تقرير الغياب الشهري
+تلقائي
+تلقائي: {0} ({1}) — نافذة الغياب حتى {2}
+تلميذ بدون اسم
+تلميذ جديد
+تلميذ محدَّث
+تلميذ موجود
+تلميذ نشط
+تم
+تم إغلاق الفترة، لكن تعذر تجهيز الإرسال:
+تم إيقاف النظام
+تم الإرسال
+تم التعرف على {0} صفًا و{1} عمودًا.
+تم التوليد {0}
+تم تبرير الغياب.
+تم تثبيت {0} حالة غياب لهذا اليوم، {1}
+تم تثبيت سجلات الغياب. {0}
+تم تحديث الإعدادات من قاعدة البيانات.
+تم تحديث بيانات المتابعة.
+تم تحديث صورة التلميذ.
+تم تفريغ ذاكرة المسح والبطاقة الحالية.
+تم تنشيط التلميذ.
+تم حذف الصورة.
+تم حذف الفترة.
+تم حفظ إعدادات الدوام.
+تم حفظ إعدادات رسائل SMS.
+تم حفظ الإعدادات قبل الاختبار.
+تم حفظ الإعدادات.
+تم حفظ التصميم
+تم حفظ الفترة.
+تم حفظ بيانات المؤسسة.
+تم رفض إذن الكاميرا. اسمح بالوصول من إعدادات المتصفح ثم أعد المحاولة.
+تم رفع ختم المؤسسة.
+تم رفع شعار المؤسسة.
+تمت أرشفة التلميذ.
+تمت العملية بنجاح.
+تمت جدولة إعادة المحاولة.
+تنبيه
+تنشيط
+تنشيط التلميذ
+توجد {0} رسالة SMS معلقة لهذه الفترة.
+تُستعمل في بطاقة التعريف وشاشة البوابة. الحد الأقصى 5 ميغابايت.
+جارٍ إرسال الرسائل إلى الأولياء
+جارٍ التحضير…
+جارٍ التحقق من الباركود…
+جارٍ التحميل…
+جارٍ المعالجة…
+جارٍ تجهيز ملف Excel…
+جارٍ تجهيز نسخة احتياطية من قاعدة البيانات.
+جارٍ تحميل التلاميذ…
+جارٍ تسجيل الحضور…
+جارٍ حساب التلاميذ…
+جارٍ معالجة: {0}
+جاهز للمسح
+حاضر
+حاضر ${item.present} · متأخر ${item.late} · غائب ${item.absent}
+حالة التلميذ
+حجم الصورة يتجاوز 3 ميغابايت.
+حجم الصورة يتجاوز 5 ميغابايت.
+حجم الملف يتجاوز 25 ميغابايت. قسّم القائمة إلى ملفات أصغر.
+حد الحضور
+حد الغياب
+حداد
+حدث خطأ غير متوقع. أعد المحاولة.
+حدد اسم الفترة وأوقات البداية وحدود الحضور والغياب.
+حذف ${safe(period.period_name)}
+حذف {11}
+حذف الفترة
+حرف مستلم
+حضور اليوم
+حفظ التعديلات
+حماية التكرار: {0} دقائق
+خاتم المؤسسة
+خطأ
+خطأ في الاتصال أو في البيانات المرسلة
+رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.
+رسائل قيد الانتظار
+رسائل مُرسلة سابقًا
+رسالة SMS
+رسالة إلى ولي {0}
+رفع صورة
+رقم التعريف
+رقم التعريف الوطني
+رمز QR
+رمز الدولة يجب أن يتكون من 1 إلى 4 أرقام.
+سارة
+سبب التبرير
+ستظهر هنا بطاقة التلميذ مع الاسم، القسم، وقت التسجيل، وحصيلة اليوم مباشرةً بعد المسح.
+ستُحاول نسخ {0} صورة من المسارات المحلية؛ الصور التي لا تُقرأ ستُتجاهل مع تنبيه.
+سجل الفترة
+سجلات الحضور اليومية
+سيتم إرسال
+سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.{2}
+سيتم تجاهل الملف الحالي ومسح المعاينة. لم تُحفظ أي بيانات بعد. هل تريد المتابعة؟
+سيُحدَّث
+سيُحذف ختم المؤسسة من المطبوعات. هل تريد المتابعة؟
+سيُحذف شعار المؤسسة من المطبوعات. هل تريد المتابعة؟
+سيُخفى {0} من قوائم المسح والاستيراد والتقارير الحالية، لكن سجلات حضوره السابقة تبقى محفوظة. يمكنك تنشيطه لاحقًا.
+سيُستعمل هذا التصميم افتراضيًا في المرات القادمة.
+سيُسجل السبب في ملاحظات السجل ويظهر في التقارير.
+سيُضاف
+سيُضاف {0} ويُحدَّث {1}{2}
+سيُعاد {0} إلى قائمة التلاميذ النشطين ويمكن تسجيل حضوره من جديد.
+سيُعاد إرسال رسالة SMS إلى ولي {0} بعد موافقتك. هل تريد المتابعة؟
+سُجِّل {0} تنبيهًا أثناء الاستيراد، منها مشاكل الصور أو الهواتف.
+شعار المؤسسة
+صالح للاستيراد
+صباح الخير — إليك ملخص الحضور
+صفحة {0} من {1}
+صفوف الملف
+صفوف مرفوضة
+صندوق الرسائل فارغ
+صورة التلميذ
+صورة منسوخة
+صيغة الصورة غير مدعومة. استعمل PNG أو JPG أو WEBP.
+طباعة {0} {1}
+طباعة البطاقة
+طباعة بطاقة {14}
+طباعة بطاقة التعريف
+عدد المحاولات
+عدد محاولات الإرسال يجب أن يكون بين 1 و10.
+عرض {0} صفوف من {1} · {2} عمودًا
+عرض {0} من {1} حالة
+عرض الرسالة
+عرض الملاحظة
+عرض رسالة ${safe(item.full_name)}
+عرض رسالة {1}
+عرض ملاحظة ${safe(item.full_name)}
+عرض ملاحظة {1}
+عرض ملف {8}
+عمود ${escape(field.label)}
+عمود {0}
+عمود {6}
+عند إغلاق الفترة سيُسجَّل التلاميذ غير الممسوحين كغائبين، ويمكنك إشعار الأولياء بعد الموافقة.
+عند الإغلاق سيُسجَّل {0} تلميذًا غير ممسوح بحالة «غائب». يمكنك إرسال الرسائل بعد الموافقة.
+عينة من {0} صفوف صالحة من إجمالي {1}.
+غائب
+غائب متوقع
+غائب مسجل
+غياب اليوم
+غياب مبرر
+غير مسجل
+غير معروف
+غير نشط
+فترات اليوم
+فترات حضور اليوم
+فترة نشطة
+فشل
+فشل اختبار بوابة SMS.
+في الانتظار
+قالب JSON للطلب غير صالح.
+قالب رسالة SMS لا يمكن أن يكون فارغًا.
+قراءة الباركود بالكاميرا غير مدعومة في هذا المتصفح. استعمل قارئ USB.
+كل الأقسام
+كل التلاميذ النشطين لديهم سجلات حضور أو تبرير.
+كل الحالات معالجة
+كل الصفوف صالحة ولم تُكتشف أخطاء. راجع العينة ثم أكّد الاستيراد.
+كل الفترات
+كل حالات الغياب
+لا توجد أخطاء تمنع الاستيراد.
+لا توجد أقسام بعد
+لا توجد بيانات لهذا الشهر
+لا توجد تنبيهات مسجلة.
+لا توجد رسائل SMS معلقة لهذه الفترة.
+لا توجد رسائل مطابقة للفلاتر الحالية.
+لا توجد رسائل معلّقة
+لا توجد رسائل معلّقة لهذا التاريخ وهذه الفترة.
+لا توجد سجلات بعد
+لا توجد سجلات لهذا اليوم
+لا توجد سجلات مطابقة للفلاتر الحالية. جرّب تغيير الحالة أو القسم.
+لا توجد صيغ باركود مدعومة في هذا المتصفح.
+لا توجد فترات بعد. أضف فترة لبدء تسجيل الحضور.
+لا توجد فترة محددة
+لا توجد فترة نشطة.
+لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.
+لا توجد فترة نشطة. أضف فترة من الإعدادات لتسجيل الحضور.
+لا توجد فترة نشطة. أضف فترة من صفحة الإعدادات.
+لا توجد كاميرا متصلة بهذا الجهاز.
+لا توجد نتائج
+لا رسائل
+لا عمليات مسح بعد
+لا غياب مسجل في هذه الفترة
+لا يمكن الاستيراد قبل وجود صفوف صالحة.
+لا يمكن الوصول إلى الكاميرا. تأكد من تشغيل النظام على localhost ومنح الإذن.
+لا يمكن عرض إحصاءات تاريخ مستقبلي.
+لا يوجد أي صف صالح للاستيراد.
+لا يوجد أي صف صالح للاستيراد. صحح الأخطاء في الملف أو أعد ربط الأعمدة ثم كرر التحليل.
+لا يوجد تلاميذ نشطون في هذا النطاق
+لقب التلميذ
+لم تُسجل بعد
+لم تُسجَّل أي حالة حضور أو غياب مطابقة للفلاتر. جرّب تغيير التاريخ أو الفترة.
+لم تُسجَّل أي حالة خلال هذا الشهر للفلاتر المحددة. جرّب تغيير الشهر أو القسم.
+لم تُغلق الفترة بعد
+لم تُنشأ رسائل غياب بعد. أغلق الفترة من الأعلى ثم وافق على إشعار الأولياء.
+لم يُسجَّل أي حضور بعد لهذا اليوم. افتح بوابة المسح لتسجيل الوصول، أو أغلق الفترة لرصد الغياب.
+لينة
+مؤرشف
+مؤسسة النور التعليمية
+مبرر
+متأخر
+متابعة الغياب والرسائل
+متابعة غياب الفترة
+مثال: 109876543210
+مثال: 1AS1
+مثال: شهادة طبية مسلمة للإدارة بتاريخ اليوم…
+محمد أمين
+محمد أمين بن علي
+مدة منع التكرار يجب أن تكون بين 1 و60 دقيقة.
+مدير المؤسسة
+مرابط
+مراسلة الولي عبر واتساب
+مراسلة ولي ${safe(item.full_name)} عبر واتساب
+مراسلة ولي {1} عبر واتساب
+مساء الخير — إليك ملخص الحضور
+مسجل مسبقًا
+مسح مكرر
+معاينة توضيحية —
+معاينة وطباعة
+مغلقة
+مغلقة {0}
+مفتوحة
+ملء الشاشة
+ملاحظة
+ملاحظة سجل {0}
+ملخص الغياب الشهري لكل تلميذ
+ملصق
+ملصق جاهز
+ملصقات
+ملصقات جاهزة
+ملصقان
+ملصقان جاهزان
+ملصقًا
+ملصقًا جاهزًا
+ملغاة
+ملف التلميذ
+منع المتصفح فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم أعد المحاولة.
+مهلة الاتصال يجب أن تكون بين 3 و120 ثانية.
+موافقة صريحة على الإرسال
+نسبة الغياب
+نسخ احتياطي
+نشط
+نص الرسالة
+نهارك سعيد — إليك ملخص الحضور
+هاتف الولي
+هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome الحديث.
+هل تريد حذف «{0}»؟ لا يمكن التراجع عن الحذف، وستُرفض العملية إذا كانت مرتبطة بسجلات حضور.
+واجهة سحابية
+وجّه الباركود داخل الإطار. تبقى الكاميرا تعمل حتى توقفها أو تصغّر النافذة.
+وضع الاختبار معطّل: ستُرسل رسائل حقيقية عبر البوابة المضبوطة. تأكد من صحة الرابط والمفتاح قبل الإرسال.
+وضع الاختبار مفعّل: تُحاكى عمليات الإرسال دون استخدام الشبكة أو استهلاك رصيد.
+وضع الاختبار: سيتم تسجيل الإرسال كمحاكاة ناجحة دون شبكة.
+وقت الإرسال
+وقت الإغلاق
+وقت البداية
+وقت التسجيل
+وقت المسح
+ولا توجد رسائل معلّقة.
+ولي له هاتف
+يتم عرض أول {0} من {1} فقط. صحح الملف ثم أعد التحليل لرؤية الباقي.
+يجب أن يكون وقت البداية ≤ حد الحضور ≤ حد الغياب.
+يجب ربط عمود رقم التعريف الوطني قبل التحليل.
+يرجى كتابة سبب التبرير (حرفان على الأقل).
+يظهر في المسح والاستيراد والتقارير.
+يعتبر التبرير الغياب «مبررًا» ويمنع إرسال رسالة SMS إن لم تُرسل بعد. لا يمكن تبرير سجل حضور أو تأخر.
+يوسف
+يُستعمل لإرسال إشعارات الغياب عبر SMS.
+— اختر تلميذًا —
+— القيمة: «{0}»
+— غير مربوط —
+— وضع الاختبار

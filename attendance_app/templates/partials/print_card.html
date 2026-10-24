@@ -1,0 +1,52 @@
+{% set nin = student.student_nin %}
+{% set initials = (student.first_name[:1] if student.first_name else "") ~ (student.last_name[:1] if student.last_name else "") %}
+<div class="print-card {{ '' if print_config.show_header else 'no-header' }}"
+     style="--pc-accent: {{ print_config.accent_color }}; --pc-header: {{ print_config.header_color }}; border-radius: {{ print_config.border_radius }}mm">
+  {% if print_config.show_header %}
+    <div class="pc-head">
+      {% if print_config.show_logo and logo_url %}
+        <span class="pc-logo"><img src="{{ logo_url }}" alt=""></span>
+      {% endif %}
+      <div class="pc-school">
+        <strong>{{ school_name }}</strong>
+        <span>{{ academic_year }}</span>
+      </div>
+      <span class="pc-year">بطاقة التلميذ</span>
+    </div>
+  {% endif %}
+
+  <div class="pc-body">
+    {% if print_config.show_photo %}
+      <div class="pc-photo">
+        <span>{{ initials or "ت" }}</span>
+        {% if student.photo_url %}<img src="{{ student.photo_url }}" alt="{{ student.full_name }}">{% endif %}
+      </div>
+    {% endif %}
+
+    <div class="pc-info">
+      <div class="pc-name" title="{{ student.full_name }}">{{ student.full_name }}</div>
+      <span class="pc-class" style="color: {{ print_config.accent_color }}; background: {{ print_config.accent_color }}1f">{{ student.class_group or "بدون قسم" }}</span>
+      <div class="pc-meta"><span>رقم التعريف</span><b>{{ nin }}</b></div>
+      {% if print_config.show_birth_date %}
+        <div class="pc-meta"><span>تاريخ الميلاد</span><b>{{ student.birth_date_display if student.birth_date else "—" }}</b></div>
+      {% endif %}
+    </div>
+
+    {% if print_config.show_qr %}
+      <div class="pc-qr"><img src="{{ url_for('api.qr_svg', nin=nin) }}" alt="QR"></div>
+    {% endif %}
+  </div>
+
+  <div class="pc-foot">
+    <div class="pc-barcode">
+      <img src="{{ url_for('api.barcode_svg', nin=nin) }}" alt="باركود {{ nin }}">
+      <span class="pc-nin">{{ nin }}</span>
+    </div>
+    {% if print_config.show_stamp %}
+      <div class="pc-sign">
+        {% if stamp_url %}<img src="{{ stamp_url }}" alt="خاتم المؤسسة">{% endif %}
+        <span>{{ principal_name }}</span>
+      </div>
+    {% endif %}
+  </div>
+</div>

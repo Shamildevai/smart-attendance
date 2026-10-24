@@ -1,0 +1,147 @@
+{
+  "strings": {
+    "نوع التقرير": "Type de rapport",
+    "تقرير يومي": "Rapport quotidien",
+    "تقرير شهري": "Rapport mensuel",
+    "تاريخ التقرير": "Date du rapport",
+    "شهر التقرير": "Mois du rapport",
+    "حالة الحضور": "État de présence",
+    "تقرير الحضور والغياب اليومي": "Rapport quotidien de présence et d'absence",
+    "تقرير الغياب الشهري": "Rapport mensuel des absences",
+    "تقرير الحضور اليومي": "Rapport de présence quotidien",
+    "طباعة التقرير": "Imprimer le rapport",
+    "طباعة / PDF": "Imprimer / PDF",
+    "تصدير Excel": "Exporter Excel",
+    "سجلات اليوم": "Registres du jour",
+    "سجلات الحضور اليومية": "Registres de présence quotidiens",
+    "ملخص الغياب الشهري لكل تلميذ": "Résumé mensuel des absences par élève",
+    "التلميذ": "Élève",
+    "نسبة الغياب": "Taux d'absence",
+    "إجمالي السجلات": "Total des registres",
+    "سجل": "enregistrement",
+    "جارٍ تحميل التقرير…": "Chargement du rapport…",
+    "تعذر تحميل التقرير": "Impossible de charger le rapport",
+    "تحقق من الفلاتر أو أعد المحاولة.": "Vérifiez les filtres ou réessayez.",
+    "تعذر تحميل التقرير.": "Impossible de charger le rapport.",
+    "جارٍ تجهيز ملف Excel…": "Préparation du fichier Excel…",
+    "منع المتصفح فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم أعد المحاولة.": "Le navigateur a bloqué la fenêtre d'impression. Autorisez les fenêtres pop-up puis réessayez.",
+    "فتح سجل الحضور": "Ouvrir le registre de présence",
+    "لا توجد سجلات لهذا اليوم": "Aucun registre pour ce jour",
+    "لا توجد بيانات لهذا الشهر": "Aucune donnée pour ce mois",
+    "لم تُسجَّل أي حالة حضور أو غياب مطابقة للفلاتر. جرّب تغيير التاريخ أو الفترة.": "Aucun enregistrement de présence ou d'absence ne correspond aux filtres. Essayez de changer la date ou la période.",
+    "لم تُسجَّل أي حالة خلال هذا الشهر للفلاتر المحددة. جرّب تغيير الشهر أو القسم.": "Aucun enregistrement ce mois-ci pour les filtres sélectionnés. Essayez de changer le mois ou la classe.",
+    "يمكن تصدير التقرير إلى Excel أو طباعته كملف PDF من نافذة الطباعة.": "Vous pouvez exporter le rapport vers Excel ou l'imprimer en PDF depuis la boîte d'impression.",
+    "ورق A4": "Papier A4",
+    "اختر «حفظ كملف PDF» من نافذة الطباعة للتصدير.": "Choisissez « Enregistrer au format PDF » dans la boîte d'impression pour exporter.",
+    "العودة للتقارير": "Retour aux rapports",
+    "طباعة الآن": "Imprimer maintenant",
+    "لا توجد بيانات مسجلة خلال هذا الشهر للفلاتر المحددة.": "Aucune donnée enregistrée ce mois-ci pour les filtres sélectionnés.",
+    "لا توجد سجلات حضور أو غياب لهذا اليوم للفلاتر المحددة.": "Aucun registre de présence ou d'absence pour ce jour ne correspond aux filtres sélectionnés.",
+    "مدير(ة) المؤسسة": "Directeur/Directrice de l'établissement",
+    "المؤسسة التعليمية": "Établissement scolaire",
+    "الرقم": "N°",
+    "حالة SMS": "État du SMS",
+    "الملخص": "Résumé",
+    "المجموع": "Total",
+    "مجموع السجلات": "Total des registres",
+    "تقرير": "Rapport"
+  },
+  "patterns": [
+    {
+      "ar": "تم التوليد {0}",
+      "tr": "Généré {0}"
+    },
+    {
+      "ar": "الإجمالي — {0} سجل",
+      "tr": "Total — {0} enregistrements"
+    },
+    {
+      "ar": "الإجمالي — {0} تلميذًا",
+      "tr": "Total — {0} élèves"
+    },
+    {
+      "ar": "{0} حاضر · {1} متأخر",
+      "tr": "{0} présents · {1} en retard"
+    },
+    {
+      "ar": "{0} غائب · {1} مبرر",
+      "tr": "{0} absents · {1} justifiés"
+    },
+    {
+      "ar": "{0} حاضر · {1} متأخر · {2} غائب · {3} مبرر",
+      "tr": "{0} présents · {1} en retard · {2} absents · {3} justifiés"
+    },
+    {
+      "ar": "{0} سجل مطابق — {1} تلميذًا — {2}",
+      "tr": "{0} enregistrements correspondants — {1} élèves — {2}"
+    },
+    {
+      "ar": "{0} تلميذًا — {1} سجل خلال الفترة {2} إلى {3}",
+      "tr": "{0} élèves — {1} enregistrements du {2} au {3}"
+    },
+    {
+      "ar": "إجمالي {0} تلميذًا",
+      "tr": "Total : {0} élèves"
+    },
+    {
+      "ar": "{0} تلميذًا",
+      "tr": "{0} élèves"
+    },
+    {
+      "ar": " · السنة الدراسية {0}",
+      "tr": " · Année scolaire {0}"
+    },
+    {
+      "ar": "{0} · السنة الدراسية {1} — {2} — {3}",
+      "tr": "{0} · Année scolaire {1} — {2} — {3}"
+    },
+    {
+      "ar": "{0} — {1} — ورق A4",
+      "tr": "{0} — {1} — papier A4"
+    },
+    {
+      "ar": "{0} · الفترة: {1} · القسم: {2}",
+      "tr": "{0} · Période : {1} · Classe : {2}"
+    },
+    {
+      "ar": "{0} · الفترة: {1} · القسم: {2} · الحالة: {3}",
+      "tr": "{0} · Période : {1} · Classe : {2} · État : {3}"
+    },
+    {
+      "ar": "الفترة المشمولة: من {0} إلى {1} — {2} — {3}",
+      "tr": "Période couverte : du {0} au {1} — {2} — {3}"
+    },
+    {
+      "ar": "التاريخ: {0}    |    الفترة: {1}    |    القسم: {2}    |    السنة الدراسية: {3}",
+      "tr": "Date : {0}    |    Période : {1}    |    Classe : {2}    |    Année scolaire : {3}"
+    },
+    {
+      "ar": "الشهر: {0}    |    الفترة: {1}    |    القسم: {2}    |    السنة الدراسية: {3}",
+      "tr": "Mois : {0}    |    Période : {1}    |    Classe : {2}    |    Année scolaire : {3}"
+    },
+    {
+      "ar": "أُنشئ التقرير بواسطة نظام متابعة الحضور — {0}",
+      "tr": "Rapport généré par le système de suivi de présence — {0}"
+    },
+    {
+      "ar": "حاضر: {0}",
+      "tr": "Présents : {0}"
+    },
+    {
+      "ar": "متأخر: {0}",
+      "tr": "En retard : {0}"
+    },
+    {
+      "ar": "غائب: {0}",
+      "tr": "Absents : {0}"
+    },
+    {
+      "ar": "مبرر: {0}",
+      "tr": "Justifiés : {0}"
+    },
+    {
+      "ar": "المجموع: {0}",
+      "tr": "Total : {0}"
+    }
+  ]
+}

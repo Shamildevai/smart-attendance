@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0e7c66">
+  <title>{{ code }} — {{ app_title }}</title>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+</head>
+<body>
+  <main class="error-page">
+    <div class="error-card">
+      <div class="brand-mark" aria-hidden="true" style="width:52px;height:52px;border-radius:15px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:26px;height:26px">
+          <path d="M4 6v12M7 6v12M11 6v12M15 6v12M18 6v12M21 6v12"/>
+        </svg>
+      </div>
+      <span class="error-code">{{ code }}</span>
+      <h1>
+        {% if code == 404 %}الصفحة غير موجودة
+        {% elif code == 413 %}حجم الطلب كبير جدًا
+        {% elif code == 500 %}حدث خطأ داخلي
+        {% else %}تعذر إتمام العملية{% endif %}
+      </h1>
+      <p>{{ message }}</p>
+      <div class="flex flex-wrap" style="justify-content:center;margin-top:6px">
+        <a class="btn btn-primary" href="{{ url_for('views.dashboard_page') }}">العودة إلى لوحة المتابعة</a>
+        <a class="btn btn-secondary" href="{{ url_for('views.gate_page') }}">فتح بوابة المسح</a>
+      </div>
+      <p class="tiny muted" style="margin-top:8px">إذا تكرر هذا الخطأ، راجع ملف السجل في مجلد البيانات ثم أعد تشغيل النظام.</p>
+    </div>
+  </main>
+</body>
+</html>

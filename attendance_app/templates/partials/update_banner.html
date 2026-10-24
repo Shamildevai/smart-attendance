@@ -1,0 +1,18 @@
+<div class="update-banner" id="update-banner" hidden>
+  <div class="update-banner-icon"><svg class="ico"><use href="#i-shield-check"></use></svg></div>
+  <div class="update-banner-text">
+    <strong>يتوفر تحديث جديد <span class="update-version" data-update-version></span></strong>
+    <p data-update-banner-text>سيتم تنزيله والتحقق من توقيعه ثم تثبيته تلقائيًا عند توقف العمليات.</p>
+  </div>
+  <div class="update-banner-actions">
+    {% if is_admin %}
+    <button class="btn btn-primary btn-sm" type="button" data-update-install>
+      <svg class="ico"><use href="#i-download"></use></svg><span>تثبيت الآن</span>
+    </button>
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('views.settings_page') }}#settings-updates">التفاصيل</a>
+    {% endif %}
+    <button class="icon-btn" type="button" data-update-dismiss aria-label="إخفاء التنبيه" title="إخفاء التنبيه">
+      <svg class="ico"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+</div>

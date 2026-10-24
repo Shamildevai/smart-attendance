@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ ("ملصقات الباركود" if mode == "stickers" else "بطاقات التلاميذ")|t }} — {{ school_name }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}">
+</head>
+<body data-autoprint="{{ '1' if request.args.get('print') == '1' else '0' }}">
+  {% include "partials/sprite.html" %}
+
+  <header class="print-toolbar screen-only">
+    <div class="toolbar-brand">
+      <span class="toolbar-icon"><svg class="ico"><use href="#i-printer"></use></svg></span>
+      <div>
+        <strong>{{ ("ملصقات الباركود" if mode == "stickers" else "بطاقات التلاميذ")|t }} · {{ school_name }}</strong>
+        <span>{{ scope_label|t }} — {{ student_count }} تلميذًا — ورق A4 دقيق</span>
+      </div>
+    </div>
+    <div class="toolbar-actions">
+      <span class="toolbar-hint">الهوامش: بلا · طباعة الخلفيات: مفعّلة</span>
+      <a class="toolbar-btn is-ghost" href="{{ url_for('views.print_studio_page') }}">العودة للاستوديو</a>
+      {% if student_count %}
+        <button class="toolbar-btn is-primary" type="button" id="print-now">طباعة الآن</button>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="sheets">
+    {% if student_count == 0 %}
+      <div class="print-empty screen-only">
+        <div class="print-empty-icon"><svg class="ico"><use href="#i-printer"></use></svg></div>
+        <h1>لا يوجد تلاميذ للطباعة</h1>
+        <p>أضف التلاميذ أو استورد قائمة، ثم عد إلى استوديو الطباعة. لا يمكن إنشاء بطاقات فارغة.</p>
+        <div class="print-empty-actions">
+          <a class="toolbar-btn is-primary" href="{{ url_for('views.import_page') }}">استيراد قائمة</a>
+          <a class="toolbar-btn is-ghost" href="{{ url_for('views.students_page') }}">إدارة التلاميذ</a>
+        </div>
+      </div>
+    {% else %}
+      {% for page in pages %}
+        {% if page %}
+          <section class="sheet sheet--{{ mode }}-{{ layout }}">
+            {% if mode == "stickers" %}
+              {% for student in page %}
+                {% include "partials/print_sticker.html" %}
+              {% endfor %}
+            {% else %}
+              {% for student in page %}
+                {% include "partials/print_card.html" %}
+              {% endfor %}
+            {% endif %}
+          </section>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </main>
+
+  {% if student_count %}
+    <div class="print-footnote screen-only">
+      {{ student_count }} تلميذًا — {{ pages|length }} صفحة — تم التوليد في {{ generated_at }}
+    </div>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/print-sheet.js') }}"></script>
+</body>
+</html>

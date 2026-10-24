@@ -1,0 +1,208 @@
+{
+  "strings": {
+    "تصميم ورقة الطباعة": "Print sheet design",
+    "بطاقات تعريف CR80 أو ملصقات باركود بمقاسات دقيقة على ورق A4.": "CR80 ID cards or barcode stickers at exact sizes on A4 paper.",
+    "نوع الطباعة": "Print type",
+    "بطاقات التلاميذ": "Student cards",
+    "ملصقات الباركود": "Barcode stickers",
+    "نطاق التلاميذ": "Student scope",
+    "نطاق الطباعة": "Print scope",
+    "كل التلاميذ النشطين": "All active students",
+    "اختيار محدد": "Specific selection",
+    "قسم": "Class",
+    "تلميذ": "Student",
+    "القسم المطلوب": "Required class",
+    "اختر القسم…": "Choose a class…",
+    "البحث عن تلميذ": "Search for a student",
+    "الاسم، اللقب، أو رقم التعريف…": "Name, surname, or ID number…",
+    "اختيار التلميذ": "Select student",
+    "— اختر تلميذًا —": "— Choose a student —",
+    "توزيع البطاقات": "Card layout",
+    "10 بطاقات": "10 cards",
+    "2 × 5 في الصفحة": "2 × 5 per page",
+    "8 بطاقات": "8 cards",
+    "2 × 4 مع فراغات": "2 × 4 with gaps",
+    "توزيع الملصقات": "Sticker layout",
+    "30 ملصقًا": "30 stickers",
+    "3 × 10 — 65 × 27 مم": "3 × 10 — 65 × 27 mm",
+    "24 ملصقًا": "24 stickers",
+    "3 × 8 — 65 × 34 مم": "3 × 8 — 65 × 34 mm",
+    "عناصر البطاقة": "Card elements",
+    "شعار المؤسسة والاسم والسنة": "School logo, name and year",
+    "شعار المؤسسة في الترويسة": "School logo in the header",
+    "أو الأحرف الأولى عند غيابها": "Or initials when no photo is available",
+    "يظهر ضمن بيانات التلميذ": "Shown in the student details",
+    "رمز QR": "QR code",
+    "إضافة مربع QR بجانب الباركود": "Add a QR square next to the barcode",
+    "التوقيع والخاتم": "Signature & stamp",
+    "صورة الخاتم المرفوعة في الإعدادات": "The stamp image uploaded in Settings",
+    "الألوان والانحناء": "Colors & rounding",
+    "اللون الرئيسي": "Primary color",
+    "لون الترويسة": "Header color",
+    "رمز اللون الرئيسي": "Primary color hex code",
+    "رمز لون الترويسة": "Header color hex code",
+    "مم": "mm",
+    "انحناء الزوايا": "Corner rounding",
+    "المعاينة المباشرة": "Live preview",
+    "بطاقة CR80": "CR80 card",
+    "بطاقة CR80 — 85.6 × 54 مم": "CR80 card — 85.6 × 54 mm",
+    "تُفتح ورقة الطباعة في تبويب جديد بمقاس A4 دقيق (210 × 297 مم). عند الطباعة اختر": "The print sheet opens in a new tab at exact A4 size (210 × 297 mm). When printing, choose",
+    "الهوامش: بلا": "Margins: None",
+    "وفعّل": "and enable",
+    "طباعة خلفيات الرسوم": "Print background graphics",
+    "للحصول على الألوان والشعار.": "to get colors and the logo.",
+    "اسم المؤسسة التعليمية": "School name",
+    "بطاقة التلميذ": "Student ID card",
+    "تلميذ بدون اسم": "Unnamed student",
+    "بطاقات CR80": "CR80 cards",
+    "ملصقات باركود": "Barcode stickers",
+    "اختر القسم أولًا": "Choose a class first",
+    "اختر تلميذًا أولًا": "Choose a student first",
+    "لا يوجد تلاميذ نشطون في هذا النطاق": "No active students in this scope",
+    "تم حفظ التصميم": "Design saved",
+    "سيُستعمل هذا التصميم افتراضيًا في المرات القادمة.": "This design will be used as the default from now on.",
+    "أضف التلاميذ أو استورد قائمة، ثم عد إلى استوديو الطباعة. لا يمكن إنشاء بطاقات فارغة.": "Add students or import a list, then return to Print Studio. Empty cards cannot be generated.",
+    "الهوامش: بلا · طباعة الخلفيات: مفعّلة": "Margins: None · Background printing: On",
+    "العودة للاستوديو": "Back to Studio",
+    "لا يوجد تلاميذ للطباعة": "No students to print",
+    "ورق A4 دقيق": "Exact A4 paper",
+    "معاينة توضيحية —": "Demo preview —",
+    "بطاقة": "card",
+    "بطاقتان": "cards",
+    "بطاقات": "cards",
+    "ملصق": "sticker",
+    "ملصقان": "stickers",
+    "ملصقات": "stickers",
+    "ملصقًا": "stickers",
+    "بطاقة جاهزة": "card ready",
+    "بطاقتان جاهزتان": "cards ready",
+    "بطاقات جاهزة": "cards ready",
+    "ملصق جاهز": "sticker ready",
+    "ملصقان جاهزان": "stickers ready",
+    "ملصقات جاهزة": "stickers ready",
+    "ملصقًا جاهزًا": "stickers ready",
+    "للطباعة": "to print"
+  },
+  "patterns": [
+    {
+      "ar": "{0} — {1} نشط",
+      "tr": "{0} — {1} active"
+    },
+    {
+      "ar": "معاينة توضيحية — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "Demo preview — CR80 · 85.6 × 54 mm · {0} cards on an A4 page"
+    },
+    {
+      "ar": "CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "CR80 · 85.6 × 54 mm · {0} cards on an A4 page"
+    },
+    {
+      "ar": "معاينة توضيحية — ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Demo preview — 65 × {0} mm sticker · {1} stickers on an A4 page"
+    },
+    {
+      "ar": "ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "65 × {0} mm sticker · {1} stickers on an A4 page"
+    },
+    {
+      "ar": "{0} بطاقة",
+      "tr": "{0} cards"
+    },
+    {
+      "ar": "{0} بطاقتان",
+      "tr": "{0} cards"
+    },
+    {
+      "ar": "{0} بطاقات",
+      "tr": "{0} cards"
+    },
+    {
+      "ar": "{0} ملصق",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "{0} ملصقان",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "{0} ملصقات",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "{0} ملصقًا",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "{0} بطاقة جاهزة للطباعة",
+      "tr": "{0} cards ready to print"
+    },
+    {
+      "ar": "{0} بطاقتان جاهزتان للطباعة",
+      "tr": "{0} cards ready to print"
+    },
+    {
+      "ar": "{0} بطاقات جاهزة للطباعة",
+      "tr": "{0} cards ready to print"
+    },
+    {
+      "ar": "{0} ملصق جاهز للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "{0} ملصقان جاهزان للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "{0} ملصقات جاهزة للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "{0} ملصقًا جاهزًا للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "طباعة {0} بطاقة",
+      "tr": "Print {0} cards"
+    },
+    {
+      "ar": "طباعة {0} بطاقتين",
+      "tr": "Print {0} cards"
+    },
+    {
+      "ar": "طباعة {0} بطاقات",
+      "tr": "Print {0} cards"
+    },
+    {
+      "ar": "طباعة {0} ملصق",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "طباعة {0} ملصقين",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "طباعة {0} ملصقات",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "طباعة {0} ملصقًا",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "{0} — {1} تلميذًا — ورق A4 دقيق",
+      "tr": "{0} — {1} students — exact A4 paper"
+    },
+    {
+      "ar": "{0} تلميذًا — {1} صفحة — تم التوليد في {2}",
+      "tr": "{0} students — {1} pages — generated at {2}"
+    },
+    {
+      "ar": "باركود {0}",
+      "tr": "Barcode {0}"
+    },
+    {
+      "ar": "انحناء الزوايا {0} مم",
+      "tr": "Corner rounding {0} mm"
+    }
+  ]
+}

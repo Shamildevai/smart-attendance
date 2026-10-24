@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0e7c66">
+  <title>{{ "تسجيل الدخول"|t }} — {{ app_title }}</title>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+</head>
+<body class="login-page">
+  {% include "partials/sprite.html" %}
+  <div class="login-shell">
+    <aside class="login-aside">
+      <div class="login-brand">
+        <div class="brand-mark brand-mark--lg" aria-hidden="true">
+          <svg class="ico"><use href="#i-barcode"></use></svg>
+        </div>
+        <div>
+          <strong>{{ app_title }}</strong>
+          <span>{{ app_subtitle }}</span>
+        </div>
+      </div>
+
+      <div class="login-aside-copy">
+        <span class="login-eyebrow">{{ "منصة محلية آمنة"|t }}</span>
+        <h2>{{ "الحضور بالباركود، والرسائل، والتقارير في مكان واحد."|t }}</h2>
+        <p>{{ "كل البيانات تبقى على جهاز المؤسسة. سجّل الدخول للوصول إلى الأدوات المسموحة لحسابك."|t }}</p>
+      </div>
+
+      <ul class="login-features">
+        <li><span><svg class="ico"><use href="#i-scan"></use></svg></span>{{ "مسح سريع عبر ماسح HID أو الكاميرا"|t }}</li>
+        <li><span><svg class="ico"><use href="#i-message"></use></svg></span>{{ "رسائل SMS وواتساب للأولياء"|t }}</li>
+        <li><span><svg class="ico"><use href="#i-printer"></use></svg></span>{{ "بطاقات وملصقات باركود بدقة A4"|t }}</li>
+        <li><span><svg class="ico"><use href="#i-shield-check"></use></svg></span>{{ "أدوار منفصلة لمدير النظام والمستخدمين"|t }}</li>
+      </ul>
+
+      <div class="login-aside-footer">
+        <span>{{ school_name }}</span>
+        <span>{{ academic_year }}</span>
+      </div>
+    </aside>
+
+    <main class="login-card">
+      <div class="login-card-top">
+        <nav class="lang-switch" aria-label="اختيار لغة الواجهة">
+          {% for code, info in lang_options.items() %}
+            <a class="lang-pill {% if code == lang %}is-active{% endif %}"
+               href="{{ url_for('views.set_language', code=code, next=url_for('auth.login_page', next=next_url)) }}"
+               hreflang="{{ code }}" lang="{{ code }}" title="{{ info.name }}"
+               {% if code == lang %}aria-current="true"{% endif %}>{{ info.label }}</a>
+          {% endfor %}
+        </nav>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="تبديل المظهر" title="تبديل المظهر">
+          <svg class="ico icon-sun"><use href="#i-sun"></use></svg>
+          <svg class="ico icon-moon"><use href="#i-moon"></use></svg>
+        </button>
+      </div>
+
+      <div class="login-mobile-brand">
+        {% if logo_path %}
+          <img src="{{ logo_path }}" alt="{{ school_name }}" class="login-logo">
+        {% else %}
+          <div class="brand-mark" aria-hidden="true"><svg class="ico"><use href="#i-barcode"></use></svg></div>
+        {% endif %}
+        <strong>{{ app_title }}</strong>
+      </div>
+
+      <span class="login-eyebrow">{{ school_name or ("نظام الحضور"|t) }}</span>
+      <h1>{{ "تسجيل الدخول"|t }}</h1>
+      <p class="login-subtitle">{{ "أدخل بيانات حسابك للمتابعة."|t }}</p>
+
+      {% if error %}
+        <div class="info-banner is-danger login-alert" role="alert">
+          <svg class="ico"><use href="#i-warning"></use></svg>
+          <div>{{ error }}</div>
+        </div>
+      {% endif %}
+
+      <form method="post" action="{{ url_for('auth.login_submit') }}" class="login-form" autocomplete="on">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="next" value="{{ next_url }}">
+        <label class="field">
+          <span>{{ "اسم المستخدم"|t }}</span>
+          <input name="username" value="{{ username }}" required autofocus autocomplete="username"
+                 inputmode="text" spellcheck="false" placeholder="admin">
+        </label>
+        <label class="field">
+          <span>{{ "كلمة المرور"|t }}</span>
+          <div class="password-field">
+            <input id="login-password" type="password" name="password" autocomplete="current-password"
+                   placeholder="{{ 'اتركها فارغة إن لم تضبط كلمة مرور'|t }}">
+            <button class="password-toggle" type="button" data-toggle-password
+                    aria-label="إظهار كلمة المرور" title="إظهار كلمة المرور">
+              <svg class="ico"><use href="#i-eye"></use></svg>
+            </button>
+          </div>
+        </label>
+        <p class="tiny muted">{{ "كلمة المرور اختيارية. إذا لم يضبطها مدير النظام، اترك الحقل فارغًا."|t }}</p>
+        <button class="btn btn-primary btn-block login-submit" type="submit">
+          <svg class="ico"><use href="#i-arrow-left"></use></svg>
+          <span>{{ "دخول إلى النظام"|t }}</span>
+        </button>
+      </form>
+
+      {% if open_admin %}
+        <div class="info-banner is-warning login-alert">
+          <svg class="ico"><use href="#i-warning"></use></svg>
+          <div>
+            <strong>{{ "أول تشغيل: الحساب admin بدون كلمة مرور."|t }}</strong>
+            <p class="tiny">{{ "سجّل الدخول ثم افتح صفحة المستخدمين واضبط كلمة مرور قوية لحساب المدير."|t }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      <footer class="login-footer">
+        <span>{{ app_title }} · {{ "الإصدار"|t }} {{ app_version }}</span>
+        <span>{{ app_author_latin }} — {{ app_location_latin }}</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

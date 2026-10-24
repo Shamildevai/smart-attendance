@@ -1,0 +1,57 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="ProgId" content="Excel.Sheet">
+  <!-- ملف نموذجي: جدول HTML بامتداد XLS كما تصدّره بعض أنظمة تسيير المدارس. -->
+</head>
+<body dir="rtl">
+  <table border="1" cellspacing="0" cellpadding="4">
+    <thead>
+      <tr style="background:#0e7c66;color:#ffffff;font-weight:bold">
+        <th>رقم التعريف الوطني</th>
+        <th>اللقب</th>
+        <th>الاسم</th>
+        <th>تاريخ الميلاد</th>
+        <th>القسم / الفوج</th>
+        <th>رقم هاتف الولي</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="mso-number-format:'\@'">2099000201</td>
+        <td>بلحاج</td>
+        <td>ريان</td>
+        <td>2009-03-11</td>
+        <td>1AS4</td>
+        <td style="mso-number-format:'\@'">0550110301</td>
+      </tr>
+      <tr>
+        <td style="mso-number-format:'\@'">2099000202</td>
+        <td>عبدلي</td>
+        <td>ملاك</td>
+        <td>12/07/2010</td>
+        <td>1AS4</td>
+        <td style="mso-number-format:'\@'">0660110302</td>
+      </tr>
+      <tr>
+        <td style="mso-number-format:'\@'">2099000203</td>
+        <td>لعروسي</td>
+        <td>حمزة</td>
+        <td>2011-09-05</td>
+        <td>2AS4</td>
+        <td style="mso-number-format:'\@'">0770110303</td>
+      </tr>
+      <tr>
+        <td style="mso-number-format:'\@'">2099000204</td>
+        <td>مزيان</td>
+        <td>إكرام</td>
+        <td>2010-01-27</td>
+        <td>2AS4</td>
+        <td style="mso-number-format:'\@'">0555110304</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

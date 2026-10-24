@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0e7c66">
+  <title>{% block title %}{{ page_title|t }} — {{ app_title }}{% endblock %}</title>
+  <script src="{{ url_for('static', filename='js/theme-init.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  {% block head %}{% endblock %}
+</head>
+<body data-page="{{ active }}" data-today="{{ today }}" data-user-id="{{ current_user.id }}" data-user-role="{{ current_user.role }}">
+  {% include "partials/sprite.html" %}
+  <a class="skip-link" href="#main-content">تجاوز إلى المحتوى</a>
+
+  <div class="app-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <aside class="sidebar" id="sidebar" aria-label="القائمة الرئيسية">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg class="ico"><use href="#i-barcode"></use></svg>
+        </div>
+        <div class="brand-text">
+          <strong>{{ school_name or "نظام الحضور" }}</strong>
+          <span>{{ app_subtitle }} · {{ academic_year }}</span>
+        </div>
+        <button class="icon-btn sidebar-close" type="button" data-sidebar-close aria-label="إغلاق القائمة">
+          <svg class="ico"><use href="#i-close"></use></svg>
+        </button>
+      </div>
+
+      <nav class="nav">
+        <a class="nav-link {% if active == 'dashboard' %}is-active{% endif %}" href="{{ url_for('views.dashboard_page') }}">
+          <svg class="ico"><use href="#i-dashboard"></use></svg><span>لوحة المتابعة</span>
+        </a>
+        <a class="nav-link {% if active == 'gate' %}is-active{% endif %}" href="{{ url_for('views.gate_page') }}">
+          <svg class="ico"><use href="#i-scan"></use></svg><span>بوابة المسح</span>
+          <span class="nav-live"><i></i> مباشر</span>
+        </a>
+        <div class="nav-label">إدارة التلاميذ</div>
+        <a class="nav-link {% if active == 'students' %}is-active{% endif %}" href="{{ url_for('views.students_page') }}">
+          <svg class="ico"><use href="#i-users"></use></svg><span>التلاميذ</span>
+        </a>
+        <a class="nav-link {% if active == 'import' %}is-active{% endif %}" href="{{ url_for('views.import_page') }}">
+          <svg class="ico"><use href="#i-upload"></use></svg><span>الاستيراد الذكي</span>
+        </a>
+        <a class="nav-link {% if active == 'print' %}is-active{% endif %}" href="{{ url_for('views.print_studio_page') }}">
+          <svg class="ico"><use href="#i-printer"></use></svg><span>استوديو الطباعة</span>
+        </a>
+        <div class="nav-label">المتابعة والتقارير</div>
+        <a class="nav-link {% if active == 'attendance' %}is-active{% endif %}" href="{{ url_for('views.attendance_page') }}">
+          <svg class="ico"><use href="#i-list"></use></svg><span>سجل الحضور</span>
+        </a>
+        <a class="nav-link {% if active == 'reports' %}is-active{% endif %}" href="{{ url_for('views.reports_page') }}">
+          <svg class="ico"><use href="#i-chart"></use></svg><span>التقارير والإحصاءات</span>
+        </a>
+        <div class="nav-label">النظام</div>
+        {% if is_admin %}
+        <a class="nav-link {% if active == 'settings' %}is-active{% endif %}" href="{{ url_for('views.settings_page') }}">
+          <svg class="ico"><use href="#i-settings"></use></svg><span>الإعدادات</span>
+        </a>
+        <a class="nav-link {% if active == 'users' %}is-active{% endif %}" href="{{ url_for('views.users_page') }}">
+          <svg class="ico"><use href="#i-user"></use></svg><span>المستخدمون</span>
+        </a>
+        {% endif %}
+        <a class="nav-link {% if active == 'about' %}is-active{% endif %}" href="{{ url_for('views.about_page') }}">
+          <svg class="ico"><use href="#i-info"></use></svg><span>حول التطبيق</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="sidebar-status">
+          <span class="status-dot is-online"></span>
+          <div>
+            <strong>الخادم المحلي يعمل</strong>
+            <span>البيانات محفوظة على هذا الجهاز</span>
+          </div>
+        </div>
+        {% if is_admin %}
+        <button class="sidebar-shutdown" type="button" data-action="shutdown">
+          <svg class="ico"><use href="#i-power"></use></svg>
+          <span>إغلاق النظام</span>
+        </button>
+        {% endif %}
+        <div class="sidebar-version">{{ app_title }} · الإصدار {{ app_version }}</div>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-start">
+          <button class="icon-btn menu-btn" type="button" data-sidebar-open aria-label="فتح القائمة">
+            <svg class="ico"><use href="#i-menu"></use></svg>
+          </button>
+          <div class="topbar-date">
+            <svg class="ico"><use href="#i-calendar"></use></svg>
+            <span>{{ today_display }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="topbar-clock" data-live-clock>{{ now_time }}</span>
+          <nav class="lang-switch" aria-label="اختيار لغة الواجهة">
+            {% for code, info in lang_options.items() %}
+              <a class="lang-pill {% if code == lang %}is-active{% endif %}"
+                 href="{{ url_for('views.set_language', code=code, next=(request.full_path if request.query_string else request.path)) }}"
+                 hreflang="{{ code }}" lang="{{ code }}" title="{{ info.name }}"
+                 {% if code == lang %}aria-current="true"{% endif %}>{{ info.label }}</a>
+            {% endfor %}
+          </nav>
+          <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="تبديل المظهر" title="تبديل المظهر">
+            <svg class="ico icon-sun"><use href="#i-sun"></use></svg>
+            <svg class="ico icon-moon"><use href="#i-moon"></use></svg>
+          </button>
+          <a class="btn btn-primary btn-sm gate-shortcut" href="{{ url_for('views.gate_page') }}">
+            <svg class="ico"><use href="#i-scan"></use></svg>
+            <span>مسح سريع</span>
+            <kbd>F2</kbd>
+          </a>
+          <div class="user-chip" title="{{ current_user.display_name }} — {{ role_label }}">
+            <span class="user-avatar" aria-hidden="true">{{ current_user.display_name[:1] }}</span>
+            <span class="user-meta">
+              <strong>{{ current_user.display_name }}</strong>
+              <small>{{ role_label }}</small>
+            </span>
+            <form method="post" action="{{ url_for('auth.logout') }}" class="user-logout">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="icon-btn" type="submit" title="تسجيل الخروج" aria-label="تسجيل الخروج">
+                <svg class="ico"><use href="#i-power"></use></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </header>
+
+      {% include "partials/update_banner.html" %}
+
+      <main class="page" id="main-content">
+        <div class="page-heading">
+          <div class="page-heading-text">
+            <h1>{{ page_title|t }}</h1>
+            {% if page_subtitle %}<p>{{ page_subtitle|t }}</p>{% endif %}
+          </div>
+          <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+        </div>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+  <div id="modal-root"></div>
+  <div class="flash-layer" id="flash-layer" aria-hidden="true"></div>
+
+  <noscript>
+    <div class="noscript">يتطلب هذا النظام تفعيل JavaScript لتعمل البوابة ولوحة المتابعة بشكل صحيح.</div>
+  </noscript>
+
+  <script src="{{ url_for('views.i18n_script') }}"></script>
+  <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/updates.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

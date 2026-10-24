@@ -1,0 +1,11 @@
+{% set nin = student.student_nin %}
+<div class="print-sticker" style="--pc-accent: {{ print_config.accent_color }}; --pc-header: {{ print_config.header_color }}">
+  <div class="st-head">
+    {% if print_config.show_logo and logo_url %}<img src="{{ logo_url }}" alt="">{% endif %}
+    <span>{{ school_name }}</span>
+  </div>
+  <strong>{{ student.full_name }}</strong>
+  <span class="st-class">{{ student.class_group or "بدون قسم" }}</span>
+  <img class="st-barcode" src="{{ url_for('api.barcode_svg', nin=nin) }}" alt="باركود {{ nin }}">
+  <span class="st-nin">{{ nin }}</span>
+</div>

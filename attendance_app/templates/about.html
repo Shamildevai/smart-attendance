@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="about-layout">
+  <section class="card about-hero">
+    <div class="about-mark" aria-hidden="true">
+      <svg class="ico"><use href="#i-barcode"></use></svg>
+    </div>
+    <div class="about-hero-text">
+      <span class="chip is-accent about-chip">
+        <svg class="ico"><use href="#i-shield-check"></use></svg>
+        <span>منتج محلي مكتمل</span>
+      </span>
+      <h2>{{ app_title }}</h2>
+      <p>{{ app_subtitle }} — {{ "نظام سطح مكتب يعمل دون اتصال بالإنترنت."|t }}</p>
+      <div class="about-hero-meta">
+        <span>الإصدار {{ app_version }}</span>
+        <i class="dot-sep" aria-hidden="true"></i>
+        <span>البيانات على هذا الجهاز</span>
+        <i class="dot-sep" aria-hidden="true"></i>
+        <span>{{ current_year }}</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="about-grid">
+    <section class="card about-panel">
+      <div class="card-header">
+        <svg class="ico"><use href="#i-user"></use></svg>
+        <div>
+          <h2>المطوّر</h2>
+          <p>تصميم وتطوير النظام</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="about-profile">
+          <div class="about-avatar" aria-hidden="true">ب.ع</div>
+          <div class="about-profile-text">
+            <strong>{{ app_author }}</strong>
+            {% if app_author_latin and app_author_latin != app_author %}
+              <span class="about-latin" dir="ltr">{{ app_author_latin }}</span>
+            {% endif %}
+            <span class="about-handle" dir="ltr">@{{ app_author_handle }}</span>
+          </div>
+        </div>
+        <ul class="about-facts">
+          <li>
+            <svg class="ico"><use href="#i-school"></use></svg>
+            <div>
+              <span>المكان</span>
+              <strong>{{ app_location }}{% if app_location_latin and app_location_latin != app_location %} — <span dir="ltr">{{ app_location_latin }}</span>{% endif %}</strong>
+            </div>
+          </li>
+          <li>
+            <svg class="ico"><use href="#i-id-card"></use></svg>
+            <div>
+              <span>المعرّف</span>
+              <strong dir="ltr">{{ app_author_handle }}</strong>
+            </div>
+          </li>
+          <li>
+            <svg class="ico"><use href="#i-sparkle"></use></svg>
+            <div>
+              <span>العمل</span>
+              <strong>تطوير مستقل — الجزائر</strong>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card about-panel about-dedication">
+      <div class="card-header">
+        <svg class="ico"><use href="#i-sparkle"></use></svg>
+        <div>
+          <h2>إهداء</h2>
+          <p>صدقة جارية</p>
+        </div>
+      </div>
+      <div class="card-body about-dedication-body">
+        <div class="about-dedication-glyph" aria-hidden="true">
+          <svg class="ico"><use href="#i-sparkle"></use></svg>
+        </div>
+        <blockquote class="about-dedication-text">{{ app_dedication }}</blockquote>
+        <p class="about-dedication-note">نسأل الله أن يتقبّله ويرحمه ويسكنه فسيح جناته.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="card about-panel">
+    <div class="card-header">
+      <svg class="ico"><use href="#i-database"></use></svg>
+      <div>
+        <h2>معلومات النظام</h2>
+        <p>تفاصيل التشغيل والخصوصية</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="about-tech-grid">
+        <div class="about-tech-item"><span>الإصدار</span><strong>{{ app_version }}</strong></div>
+        <div class="about-tech-item"><span>واجهة الاستخدام</span><strong>عربية RTL · English · Français</strong></div>
+        <div class="about-tech-item"><span>التشغيل</span><strong>محلي دون إنترنت</strong></div>
+        <div class="about-tech-item"><span>قاعدة البيانات</span><strong>SQLite محلية</strong></div>
+        <div class="about-tech-item"><span>رسائل الأولياء</span><strong>إرسال بموافقة يدوية</strong></div>
+        <div class="about-tech-item"><span>وضع الاختبار</span><strong>مفعّل افتراضيًا</strong></div>
+      </div>
+      <div class="about-links">
+        <a class="about-link" href="{{ app_repo_url }}" target="_blank" rel="noopener">
+          <span class="about-link-icon"><svg class="ico"><use href="#i-file"></use></svg></span>
+          <span class="about-link-text">
+            <strong>مستودع المشروع على GitHub</strong>
+            <span dir="ltr">{{ app_repo_url }}</span>
+          </span>
+        </a>
+        {% if is_admin %}
+        <a class="about-link" href="{{ url_for('views.settings_page') }}#settings-updates">
+          <span class="about-link-icon"><svg class="ico"><use href="#i-shield-check"></use></svg></span>
+          <span class="about-link-text">
+            <strong>تحديثات النظام</strong>
+            <span>فحص الإصدارات الموقّعة وتثبيتها من fetsync.</span>
+          </span>
+        </a>
+        {% endif %}
+      </div>
+      <p class="about-footnote">
+        <svg class="ico"><use href="#i-shield-check"></use></svg>
+        <span>تبقى بيانات المؤسسة على هذا الجهاز، ولا تُرسل أي معلومات إلى خدمات خارجية إلا رسائل SMS التي يوافق عليها المستخدم صراحةً.</span>
+      </p>
+      <p class="about-copyright">© {{ current_year }} {{ app_author }} — جميع الحقوق محفوظة.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}

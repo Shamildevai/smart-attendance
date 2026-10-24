@@ -1,0 +1,1867 @@
+{
+  "strings": {
+    "تجاوز إلى المحتوى": "Skip to content",
+    "القائمة الرئيسية": "Main menu",
+    "نظام الحضور": "Attendance System",
+    "إغلاق القائمة": "Close menu",
+    "لوحة المتابعة": "Dashboard",
+    "بوابة المسح": "Scan Gate",
+    "مباشر": "Live",
+    "إدارة التلاميذ": "Student Management",
+    "التلاميذ": "Students",
+    "الاستيراد الذكي": "Smart Import",
+    "استوديو الطباعة": "Print Studio",
+    "المتابعة والتقارير": "Tracking & Reports",
+    "سجل الحضور": "Attendance Log",
+    "التقارير والإحصاءات": "Reports & Statistics",
+    "النظام": "System",
+    "الإعدادات": "Settings",
+    "حول التطبيق": "About",
+    "الخادم المحلي يعمل": "Local server is running",
+    "البيانات محفوظة على هذا الجهاز": "Data is stored on this device",
+    "البيانات على هذا الجهاز": "Data on this device",
+    "إغلاق النظام": "Exit System",
+    "مسح سريع": "Quick Scan",
+    "اختيار لغة الواجهة": "Choose interface language",
+    "تبديل المظهر": "Toggle theme",
+    "فتح القائمة": "Open menu",
+    "يتطلب هذا النظام تفعيل JavaScript لتعمل البوابة ولوحة المتابعة بشكل صحيح.": "This system requires JavaScript for the gate and dashboard to work correctly.",
+    "العربية": "Arabic",
+    "نظام متابعة الحضور": "Student Attendance System",
+    "الحضور بالباركود وإشعار الأولياء": "Barcode attendance & parent notifications",
+    "د. بوزويرة عزيز": "Dr. Bouzouira Aziz",
+    "سعيدة، الجزائر": "Saida, Algeria",
+    "صدقة عن والدي المرحوم بوزويرة قادة": "A continuous charity in memory of my late father, Bouzouira Kada",
+    "نظرة شاملة على حضور اليوم ورسائل الأولياء": "An overview of today's attendance and parent messages",
+    "تسجيل فوري بحركة باركود سريعة أو كاميرا": "Instant check-in with a fast barcode scan or camera",
+    "إدارة قاعدة بيانات التلاميذ وأرقام التعريف والصور": "Manage student records, ID numbers, and photos",
+    "استيراد قوائم التلاميذ من XLS أو XLSX أو HTML": "Import student lists from XLS, XLSX, or HTML",
+    "متابعة السجلات وتبرير الغيابات وإدارة رسائل SMS": "Review records, excuse absences, and manage SMS messages",
+    "تقارير يومية وشهرية قابلة للتصدير والطباعة": "Daily and monthly reports ready to export and print",
+    "بطاقات تعريف التلاميذ والملصقات بالباركود": "Student ID cards and barcode labels",
+    "بيانات المؤسسة والفترات وبوابة الرسائل": "School details, periods, and SMS gateway",
+    "معلومات الإصدار والمطوّر والإهداء": "Version, developer, and dedication",
+    "منتج محلي مكتمل": "Complete offline product",
+    "المطوّر": "Developer",
+    "تصميم وتطوير النظام": "System design & development",
+    "المكان": "Location",
+    "المعرّف": "Handle",
+    "العمل": "Work",
+    "تطوير مستقل — الجزائر": "Independent developer — Algeria",
+    "إهداء": "Dedication",
+    "صدقة جارية": "Ongoing charity",
+    "نسأل الله أن يتقبّله ويرحمه ويسكنه فسيح جناته.": "May Allah accept it, have mercy on him, and grant him a place in Paradise.",
+    "معلومات النظام": "System Information",
+    "تفاصيل التشغيل والخصوصية": "Runtime and privacy details",
+    "الإصدار": "Version",
+    "واجهة الاستخدام": "Interface",
+    "عربية RTL · English · Français": "Arabic RTL · English · Français",
+    "التشغيل": "Operation",
+    "محلي دون إنترنت": "Offline, local",
+    "قاعدة البيانات": "Database",
+    "SQLite محلية": "Local SQLite",
+    "رسائل الأولياء": "Parent Messages",
+    "إرسال بموافقة يدوية": "Manual approval required",
+    "وضع الاختبار": "Test Mode",
+    "مفعّل افتراضيًا": "Enabled by default",
+    "نظام سطح مكتب يعمل دون اتصال بالإنترنت.": "A desktop system that works fully offline.",
+    "تبقى بيانات المؤسسة على هذا الجهاز، ولا تُرسل أي معلومات إلى خدمات خارجية إلا رسائل SMS التي يوافق عليها المستخدم صراحةً.": "School data stays on this device. No information is sent to external services except SMS messages that the user explicitly approves.",
+    "ب.ع": "B.A.",
+    "حاضر": "Present",
+    "متأخر": "Late",
+    "غائب": "Absent",
+    "غياب مبرر": "Excused Absence",
+    "مبرر": "Excused",
+    "في الانتظار": "Pending",
+    "تم الإرسال": "Sent",
+    "فشل": "Failed",
+    "ملغاة": "Cancelled",
+    "مُرسلة": "Sent",
+    "فاشلة": "Failed",
+    "انتظار": "Pending",
+    "نشط": "Active",
+    "نشطة": "Active",
+    "مؤرشف": "Archived",
+    "معطّلة": "Disabled",
+    "مغلقة": "Closed",
+    "مفتوحة": "Open",
+    "اختبار": "Test",
+    "محاكاة اختبار": "Test simulation",
+    "تمت العملية": "Done",
+    "معلومة": "Info",
+    "تنبيه": "Warning",
+    "إغلاق": "Close",
+    "إلغاء": "Cancel",
+    "تأكيد": "Confirm",
+    "تحديث": "Refresh",
+    "نافذة": "Dialog",
+    "تأكيد العملية": "Confirm action",
+    "هل تريد المتابعة؟": "Do you want to continue?",
+    "حدث خطأ غير متوقع. أعد المحاولة.": "An unexpected error occurred. Please try again.",
+    "تعذر الاتصال بالخادم المحلي. تحقق من أن النظام ما زال يعمل.": "Could not reach the local server. Check that the system is still running.",
+    "تعذر الاتصال بالخادم المحلي.": "Could not reach the local server.",
+    "حجم الملف كبير جدًا.": "The file is too large.",
+    "لا توجد بيانات": "No data",
+    "تم إيقاف الخادم. يمكنك إغلاق النافذة الآن.": "The server has stopped. You can close this window now.",
+    "إلى اللقاء": "Goodbye",
+    "تم إيقاف النظام": "System stopped",
+    "أُغلقت قاعدة البيانات بأمان. يمكنك إغلاق هذه النافذة.": "The database was closed safely. You can close this window.",
+    "إجمالي": "Total",
+    "الكل": "All",
+    "الترويسة": "Header",
+    "الشعار": "Logo",
+    "الشعار والختم": "Logo & Stamp",
+    "خاتم المؤسسة": "School stamp",
+    "ختم المؤسسة": "School stamp",
+    "شعار المؤسسة": "School logo",
+    "الصورة الشخصية": "Photo",
+    "إدارة": "Manage",
+    "حفظ": "Save",
+    "حفظ التعديلات": "Save changes",
+    "مثال": "Example",
+    "الاسم": "First name",
+    "اللقب": "Last name",
+    "الاسم واللقب": "Full name",
+    "اسم التلميذ": "Student name",
+    "لقب التلميذ": "Student last name",
+    "القسم": "Class",
+    "الفترة": "Period",
+    "التاريخ": "Date",
+    "الوقت": "Time",
+    "الحالة": "Status",
+    "ملاحظة": "Note",
+    "إجراءات": "Actions",
+    "الإجراء": "Action",
+    "الرسالة": "Message",
+    "هاتف الولي": "Parent phone",
+    "رقم التعريف": "ID number",
+    "رقم التعريف الوطني": "National ID number",
+    "المحاولات": "Attempts",
+    "السجلات": "Records",
+    "إجمالي التلاميذ": "Total students",
+    "تلميذ نشط": "Active student",
+    "فترة دراسية": "Academic period",
+    "حجم قاعدة البيانات": "Database size",
+    "البداية": "Start",
+    "حد الحضور": "On-time cutoff",
+    "حد الغياب": "Absence cutoff",
+    "وقت البداية": "Start time",
+    "ترتيب العرض": "Display order",
+    "اسم الفترة": "Period name",
+    "الفترة الدراسية": "School period",
+    "الفترات الدراسية": "School periods",
+    "إضافة فترة": "Add period",
+    "تعديل الفترة": "Edit period",
+    "حذف الفترة": "Delete period",
+    "فترة نشطة": "Active period",
+    "موافقة صريحة على الإرسال": "Explicit sending approval",
+    "أوافق على إرسال الرسائل المعلّقة الآن إلى أولياء التلاميذ المعنيين.": "I agree to send the pending messages now to the parents of the students concerned.",
+    "تأكيد الإرسال": "Confirm sending",
+    "تم": "Done",
+    "أرشفة": "Archive",
+    "تنشيط": "Activate",
+    "تمت الأرشفة": "Archived",
+    "حفظ كافتراضي": "Save as default",
+    "معاينة وطباعة": "Preview & Print",
+    "جارٍ التحميل…": "Loading…",
+    "جارٍ التحضير…": "Preparing…",
+    "جارٍ المعالجة…": "Processing…",
+    "جارٍ حساب التلاميذ…": "Counting students…",
+    "لا توجد نتائج": "No results",
+    "أعد المحاولة.": "Try again.",
+    "إعادة المحاولة": "Retry",
+    "الأحد": "Sunday",
+    "الاثنين": "Monday",
+    "الثلاثاء": "Tuesday",
+    "الأربعاء": "Wednesday",
+    "الخميس": "Thursday",
+    "الجمعة": "Friday",
+    "السبت": "Saturday",
+    "جانفي": "January",
+    "فيفري": "February",
+    "مارس": "March",
+    "أفريل": "April",
+    "ماي": "May",
+    "جوان": "June",
+    "جويلية": "July",
+    "أوت": "August",
+    "سبتمبر": "September",
+    "أكتوبر": "October",
+    "نوفمبر": "November",
+    "ديسمبر": "December",
+    "الجمهورية الجزائرية الديمقراطية الشعبية": "People's Democratic Republic of Algeria",
+    "وزارة التربية الوطنية": "Ministry of National Education",
+    "تم توليد التقرير آليًا": "Report generated automatically",
+    "خطأ": "Error",
+    "غير معروف": "Unknown",
+    "بدون اسم": "Unnamed",
+    "بدون قسم": "No class",
+    "بدون هاتف": "No phone",
+    "بدون هاتف ولي": "No parent phone",
+    "بدون هاتف صالح": "No valid phone",
+    "تم حفظ الإعدادات.": "Settings saved.",
+    "تم حفظ الإعدادات بنجاح.": "Settings saved successfully.",
+    "تم حفظ إعدادات التصميم.": "Design settings saved.",
+    "تم تحديث البيانات.": "Data updated.",
+    "تم تحديث بيانات التلميذ.": "Student details updated.",
+    "تمت إضافة التلميذ.": "Student added.",
+    "تمت إضافة الفترة.": "Period added.",
+    "تم تحديث الفترة.": "Period updated.",
+    "تم حذف الفترة.": "Period deleted.",
+    "تم حذف الصورة.": "Image deleted.",
+    "تم رفع الصورة بنجاح.": "Image uploaded successfully.",
+    "تمت جدولة إعادة المحاولة.": "Retry scheduled.",
+    "تعذر حفظ البيانات بسبب قيد في قاعدة البيانات.": "Could not save the data because of a database constraint.",
+    "تعذر توليد الباركود لهذا الرقم.": "Could not generate a barcode for this number.",
+    "تعذر توليد رمز QR.": "Could not generate the QR code.",
+    "صيغة الصورة غير مدعومة (JPG، PNG، WEBP فقط).": "Unsupported image format (JPG, PNG, WEBP only).",
+    "الملف لا يبدو صورة صالحة.": "The file does not appear to be a valid image.",
+    "الملف فارغ.": "The file is empty.",
+    "انتهت صلاحية جلسة الاستيراد. أعد رفع الملف.": "The import session expired. Please upload the file again.",
+    "جلسة استيراد غير صالحة. أعد رفع الملف.": "Invalid import session. Please upload the file again.",
+    "تعذر قراءة جلسة الاستيراد. أعد رفع الملف.": "Could not read the import session. Please upload the file again.",
+    "الفترة غير موجودة.": "Period not found.",
+    "الفترة المحددة غير موجودة.": "The selected period was not found.",
+    "الفترة المحددة معطّلة. اختر فترة نشطة.": "The selected period is disabled. Choose an active period.",
+    "التلميذ غير موجود.": "Student not found.",
+    "سجل الحضور غير موجود.": "Attendance record not found.",
+    "رسالة SMS غير موجودة.": "SMS message not found.",
+    "مهمة الإرسال غير موجودة.": "Sending job not found.",
+    "المسار غير موجود.": "Path not found.",
+    "الصفحة غير موجودة.": "Page not found.",
+    "الصفحة غير موجودة": "Page not found",
+    "حجم الطلب كبير جدًا": "Request is too large",
+    "حدث خطأ داخلي": "Internal error",
+    "تعذر إتمام العملية": "Operation could not be completed",
+    "العودة إلى لوحة المتابعة": "Back to Dashboard",
+    "فتح بوابة المسح": "Open Scan Gate",
+    "إذا تكرر هذا الخطأ، راجع ملف السجل في مجلد البيانات ثم أعد تشغيل النظام.": "If this error persists, check the log file in the data folder and restart the system.",
+    "حدث خطأ داخلي غير متوقع. راجع سجل التطبيق.": "An unexpected internal error occurred. Check the application log.",
+    "حدث خطأ غير متوقع. راجع سجل التطبيق.": "An unexpected error occurred. Check the application log.",
+    "حدث خطأ داخلي غير متوقع.": "An unexpected internal error occurred.",
+    "طلب غير مصرح به. أعد تحميل الصفحة.": "Unauthorized request. Reload the page.",
+    "لا يمكن تنفيذ العملية لارتباط السجل ببيانات أخرى.": "The operation cannot be performed because the record is linked to other data.",
+    "هذه العملية متاحة من نفس جهاز الخادم فقط.": "This operation is only available from the server machine.",
+    "إغلاق الخادم غير متاح في وضع التشغيل الحالي.": "Shutting down the server is not available in the current run mode.",
+    "فشلت المحاولة": "Attempt failed",
+    "تاريخ المتابعة": "Review date",
+    "تقرير اليوم": "Today's report",
+    "متابعة حضور اليوم في لمحة واحدة": "Today's attendance at a glance",
+    "— راقب الوصول، عالج الغيابات، وأشعر الأولياء بسرعة من لوحة واحدة.": "— Monitor arrivals, process absences, and notify parents quickly from one dashboard.",
+    "مؤشرات الحضور": "Attendance indicators",
+    "في الوقت": "On time",
+    "بعد الحد": "After cutoff",
+    "الحاضرون": "Present",
+    "المتأخرون": "Late",
+    "الغائبون": "Absent",
+    "الغياب المبرر": "Excused absence",
+    "نظرة على الفترة": "Period overview",
+    "نسبة الحضور الإجمالية ومؤشرات المسح": "Overall attendance rate and scan indicators",
+    "نسبة الحضور": "Attendance rate",
+    "لم يُمسح بعد": "Not scanned yet",
+    "حالة الفترة": "Period status",
+    "اكتمال المسح": "Scan completion",
+    "رسائل الغياب": "Absence messages",
+    "الحضور حسب الأقسام": "Attendance by class",
+    "مقارنة سريعة بين الأقسام في الفترة المحددة": "Quick comparison between classes in the selected period",
+    "عرض السجل": "View log",
+    "جارٍ تحميل إحصاءات الأقسام…": "Loading class statistics…",
+    "آخر عمليات المسح": "Latest scans",
+    "أحدث التلاميذ الذين سُجّل وصولهم في هذه الفترة": "The latest students checked in during this period",
+    "البوابة": "Gate",
+    "إجراءات سريعة": "Quick actions",
+    "إضافة تلميذ": "Add student",
+    "تسجيل فردي": "Single entry",
+    "استيراد قائمة": "Import list",
+    "طباعة البطاقات": "Print cards",
+    "باركود CR80": "CR80 barcode",
+    "تقارير اليوم": "Today's reports",
+    "غيابات تحتاج متابعة": "Absences needing follow-up",
+    "آخر الحالات غير المعالجة": "Latest unprocessed cases",
+    "معالجة الغياب": "Process absences",
+    "يتطلب الإرسال موافقة صريحة": "Sending requires explicit approval",
+    "حالة إشعارات الأولياء": "Parent notification status",
+    "سجل الرسائل": "Message log",
+    "لا تُرسل أي رسالة تلقائيًا من لوحة المتابعة. تتم العملية بعد موافقتك الصريحة.": "No message is sent automatically from the dashboard. Sending happens only after your explicit approval.",
+    "تلقائي": "Automatic",
+    "لا رسائل": "No messages",
+    "لا توجد أقسام بعد": "No classes yet",
+    "أضف التلاميذ أو استورد قائمة لحساب الإحصاءات حسب القسم.": "Add students or import a list to calculate statistics by class.",
+    "لا عمليات مسح بعد": "No scans yet",
+    "افتح بوابة المسح ومرر بطاقة تلميذ لتظهر أحدث العمليات هنا مباشرة.": "Open the scan gate and pass a student card to see the latest scans here.",
+    "فتح البوابة": "Open Gate",
+    "لا غياب مسجل في هذه الفترة": "No absences recorded in this period",
+    "لم تُغلق الفترة بعد": "The period is not closed yet",
+    "كل التلاميذ النشطين لديهم سجلات حضور أو تبرير.": "All active students have attendance records or an excuse.",
+    "عند إغلاق الفترة سيُسجَّل التلاميذ غير الممسوحين كغائبين، ويمكنك إشعار الأولياء بعد الموافقة.": "When the period is closed, unscanned students will be marked absent, and you can notify parents after approval.",
+    "إغلاق الفترة": "Close period",
+    "كل الحالات معالجة": "All cases processed",
+    "تبرير الغياب": "Excuse absence",
+    "كل حالات الغياب": "All absence cases",
+    "لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.": "No active period. Add a period from Settings first.",
+    "صباح الخير — إليك ملخص الحضور": "Good morning — here is the attendance summary",
+    "نهارك سعيد — إليك ملخص الحضور": "Good afternoon — here is the attendance summary",
+    "مساء الخير — إليك ملخص الحضور": "Good evening — here is the attendance summary",
+    "رسائل قيد الانتظار": "Pending messages",
+    "تعذر تحميل البيانات": "Could not load data",
+    "لا يمكن عرض إحصاءات تاريخ مستقبلي.": "Statistics for a future date cannot be displayed.",
+    "ملء الشاشة": "Fullscreen",
+    "جاهز للمسح": "Ready to scan",
+    "مرّر بطاقة التلميذ الآن": "Pass the student card now",
+    "يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال الكاميرا.": "The barcode reader works as an automatic input device — no need to click any field. You can also use the camera.",
+    "قارئ USB": "USB reader",
+    "تأكيد تلقائي": "Auto confirm",
+    "حرف مستلم": "characters received",
+    "إغلاق الكاميرا": "Close camera",
+    "وجّه الباركود داخل الإطار. توقف الكاميرا عند إخفاء هذه النافذة.": "Point the barcode inside the frame. The camera stops when this window is hidden.",
+    "تشغيل الكاميرا": "Start camera",
+    "تفريغ الذاكرة": "Clear buffer",
+    "بانتظار أول عملية مسح": "Waiting for the first scan",
+    "ستظهر هنا بطاقة التلميذ مع الاسم، القسم، وقت التسجيل، وحصيلة اليوم مباشرةً بعد المسح.": "The student card will appear here with the name, class, check-in time, and today's summary right after scanning.",
+    "فترة التسجيل": "Check-in period",
+    "اختيار يدوي أو كشف تلقائي حسب الوقت": "Manual selection or automatic detection by time",
+    "تحديث البيانات": "Refresh data",
+    "تلقائي حسب الوقت الحالي": "Automatic based on the current time",
+    "سيُختار الوقت الأنسب تلقائيًا.": "The most suitable period will be selected automatically.",
+    "لم يُمسح": "Not scanned",
+    "آخر الوصولات": "Latest arrivals",
+    "يُحدَّث تلقائيًا مع كل مسح": "Updates automatically with every scan",
+    "لا توجد فترات نشطة": "No active periods",
+    "أضف فترة من الإعدادات": "Add a period in Settings",
+    "لا توجد فترة نشطة. أضف فترة من صفحة الإعدادات.": "No active period. Add a period from the Settings page.",
+    "لا توجد فترة نشطة. أضف فترة من الإعدادات لتسجيل الحضور.": "No active period. Add a period from Settings to record attendance.",
+    "الفترة مغلقة — المسح يحدّث الحالات": "Period closed — scanning updates statuses",
+    "تعذر تحميل بيانات البوابة.": "Could not load gate data.",
+    "لا توجد فترة نشطة.": "No active period.",
+    "أُغلقت هذه الفترة اليوم": "This period was closed today",
+    "على الساعة": "at",
+    "أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا": "Any new scan will automatically turn absence into present or late",
+    "، ورسائل الغياب في قائمة الانتظار.": ", and absence messages are queued.",
+    "لا توجد عمليات مسح مسجلة في هذه الفترة بعد.": "No scans recorded in this period yet.",
+    "جارٍ التحقق من الباركود…": "Verifying barcode…",
+    "جارٍ تسجيل الحضور…": "Recording attendance…",
+    "تعذر تسجيل المسح.": "Could not record the scan.",
+    "الكاميرا مفعّلة — وجّه الباركود": "Camera active — point at the barcode",
+    "مسح مكرر": "Duplicate scan",
+    "مسجل مسبقًا": "Already recorded",
+    "غير نشط": "Inactive",
+    "باركود غير مسجل": "Unregistered barcode",
+    "وقت التسجيل": "Check-in time",
+    "حضور اليوم": "Today's attendance",
+    "مسح تالٍ": "Next scan",
+    "سجل الفترة": "Period log",
+    "ملف التلميذ": "Student profile",
+    "إضافة التلميذ": "Add student",
+    "تعذر تسجيل المسح": "Could not record the scan",
+    "خطأ في الاتصال أو في البيانات المرسلة": "Connection error or invalid data",
+    "إخفاء الرسالة": "Hide message",
+    "هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome الحديث.": "This browser does not support camera barcode scanning. Use a USB reader or a recent Edge/Chrome browser.",
+    "قراءة الباركود بالكاميرا غير مدعومة في هذا المتصفح. استعمل قارئ USB.": "Camera barcode scanning is not supported in this browser. Use a USB reader.",
+    "لا يمكن الوصول إلى الكاميرا. تأكد من تشغيل النظام على localhost ومنح الإذن.": "Cannot access the camera. Make sure the system runs on localhost and grant permission.",
+    "لا توجد صيغ باركود مدعومة في هذا المتصفح.": "No supported barcode formats in this browser.",
+    "إيقاف الكاميرا": "Stop camera",
+    "وجّه الباركود داخل الإطار. تبقى الكاميرا تعمل حتى توقفها أو تصغّر النافذة.": "Point the barcode inside the frame. The camera keeps running until you stop it or minimize the window.",
+    "تعذر تشغيل الكاميرا.": "Could not start the camera.",
+    "تم رفض إذن الكاميرا. اسمح بالوصول من إعدادات المتصفح ثم أعد المحاولة.": "Camera permission was denied. Allow access in the browser settings and try again.",
+    "لا توجد كاميرا متصلة بهذا الجهاز.": "No camera connected to this device.",
+    "الكاميرا مستعملة من طرف تطبيق آخر. أغلق التطبيق الآخر ثم أعد المحاولة.": "The camera is in use by another application. Close it and try again.",
+    "إنهاء ملء الشاشة": "Exit fullscreen",
+    "تعذر تفعيل ملء الشاشة في هذا المتصفح.": "Fullscreen could not be enabled in this browser.",
+    "تم تفريغ ذاكرة المسح والبطاقة الحالية.": "The scan buffer and current card were cleared.",
+    "ابحث بالاسم، رقم التعريف، أو هاتف الولي…": "Search by name, ID number, or parent phone…",
+    "تصفية حسب القسم": "Filter by class",
+    "كل الأقسام": "All classes",
+    "تصفية حسب الحالة": "Filter by status",
+    "كل الحالات": "All statuses",
+    "النشطون": "Active",
+    "المؤرشفون": "Archived",
+    "عدد الصفوف": "Rows per page",
+    "عدد الصفوف في الصفحة": "Rows per page",
+    "بحث عن تلميذ": "Search for a student",
+    "10 صفوف": "10 rows",
+    "20 صفوف": "20 rows",
+    "50 صفوف": "50 rows",
+    "100 صفوف": "100 rows",
+    "قاعدة بيانات التلاميذ": "Student database",
+    "جارٍ تحميل القائمة…": "Loading list…",
+    "تحديث القائمة": "Refresh list",
+    "تاريخ الميلاد": "Date of birth",
+    "جارٍ تحميل التلاميذ…": "Loading students…",
+    "تعذر تحميل قائمة التلاميذ": "Could not load the student list",
+    "تعذر تحميل البيانات.": "Could not load data.",
+    "تعذر تحميل القائمة.": "Could not load the list.",
+    "النشطون فقط": "Active only",
+    "المؤرشفون فقط": "Archived only",
+    "لا توجد نتائج مطابقة للمعايير المحددة. جرّب تغيير البحث أو الفلاتر.": "No results match the selected criteria. Try changing the search or filters.",
+    "لم تُضف أي تلميذ بعد. ابدأ بإضافة تلميذ يدويًا أو استيراد قائمة من Excel.": "No students have been added yet. Add one manually or import a list from Excel.",
+    "مسح الفلاتر": "Clear filters",
+    "إضافة أول تلميذ": "Add the first student",
+    "لا يوجد تلاميذ": "No students",
+    "أرشفة التلميذ": "Archive student",
+    "تنشيط التلميذ": "Activate student",
+    "تعديل البيانات": "Edit details",
+    "طباعة بطاقة التعريف": "Print ID card",
+    "رقم التعريف غير قابل للتعديل لأنه مرتبط بسجلات الحضور والباركود المطبوع.": "The ID number cannot be changed because it is linked to attendance records and the printed barcode.",
+    "هذا هو الرمز الذي سيُقرأ من بطاقة التلميذ. يجب أن يكون فريدًا.": "This is the code that will be read from the student card. It must be unique.",
+    "القسم / الفوج": "Class / Group",
+    "يُستعمل لإرسال إشعارات الغياب عبر SMS.": "Used to send absence notifications via SMS.",
+    "حالة التلميذ": "Student status",
+    "يظهر في المسح والاستيراد والتقارير.": "Visible in scanning, imports, and reports.",
+    "تعديل بيانات التلميذ": "Edit student details",
+    "إضافة تلميذ جديد": "Add a new student",
+    "عدّل المعلومات الشخصية وبيانات الاتصال.": "Edit personal information and contact details.",
+    "أدخل بيانات التلميذ يدويًا. يمكنك إضافة الصورة بعد الحفظ.": "Enter the student's details manually. You can add a photo after saving.",
+    "أدخل رقم التعريف الوطني أولًا.": "Enter the national ID number first.",
+    "أدخل الاسم أو اللقب على الأقل.": "Enter at least a first or last name.",
+    "تم حفظ بيانات التلميذ.": "Student details saved.",
+    "تعذر حفظ بيانات التلميذ.": "Could not save the student details.",
+    "تعذر تحميل ملف التلميذ.": "Could not load the student profile.",
+    "أضف فترات من الإعدادات لعرض حضور اليوم.": "Add periods in Settings to display today's attendance.",
+    "بيانات الاتصال وحضور اليوم": "Contact details and today's attendance",
+    "فترات حضور اليوم": "Today's attended periods",
+    "غياب اليوم": "Today's absences",
+    "لم تُسجل بعد": "Not recorded yet",
+    "صورة التلميذ": "Student photo",
+    "تُستعمل في بطاقة التعريف وشاشة البوابة. الحد الأقصى 5 ميغابايت.": "Used on the ID card and the gate screen. Maximum 5 MB.",
+    "رفع صورة": "Upload photo",
+    "غير مسجل": "Not recorded",
+    "فترات اليوم": "Today's periods",
+    "طباعة البطاقة": "Print card",
+    "حجم الصورة يتجاوز 5 ميغابايت.": "The image exceeds 5 MB.",
+    "تم تحديث صورة التلميذ.": "Student photo updated.",
+    "تعذر رفع صورة التلميذ.": "Could not upload the student photo.",
+    "تعذر تحديث حالة التلميذ.": "Could not update the student status.",
+    "تم تنشيط التلميذ.": "Student activated.",
+    "تمت أرشفة التلميذ.": "Student archived.",
+    "قائمة التلاميذ": "Student list",
+    "مراحل الاستيراد": "Import steps",
+    "اختيار الملف": "Choose file",
+    "ربط الأعمدة": "Map columns",
+    "المراجعة والاستيراد": "Review & import",
+    "النتيجة": "Result",
+    "رفع ملف قائمة التلاميذ": "Upload a student list file",
+    "استيراد ذكي يتعرّف على صيغة الملف وأعمدة الجدول تلقائيًا.": "Smart import that automatically detects the file format and table columns.",
+    "معالجة محلية آمنة": "Secure local processing",
+    "اختيار ملف الاستيراد": "Choose import file",
+    "اسحب الملف هنا أو اضغط للاختيار": "Drag the file here or click to choose",
+    "ملفات Excel الحقيقية بصيغة XLS أو XLSX، وكذلك ملفات الجداول التي تصدّرها الأنظمة بصيغة HTML بامتداد XLS.": "Real Excel files in XLS or XLSX format, as well as HTML tables exported by other systems with an XLS extension.",
+    "جارٍ تحليل الملف وقراءة الأعمدة…": "Analyzing the file and reading columns…",
+    "كيف يعمل الاستيراد؟": "How does the import work?",
+    "تعرّف تلقائي على الأعمدة": "Automatic column detection",
+    "يحاول النظام مطابقة عناوين الأعمدة العربية والفرنسية تلقائيًا، ويمكنك تعديلها.": "The system tries to match Arabic and French column headers automatically; you can adjust them.",
+    "تحديث دون فقدان السجلات": "Update without losing records",
+    "التلميذ الموجود يُحدَّث برقم التعريف الوطني، وتبقى سجلات حضوره ورسائله محفوظة.": "An existing student is updated by national ID number, and their attendance and message history is preserved.",
+    "تحقق قبل الحفظ": "Verify before saving",
+    "لن تُحفظ أي بيانات قبل مراجعة الصفوف والأخطاء والتنبيهات والموافقة على الاستيراد.": "No data is saved until you review the rows, errors, and warnings and approve the import.",
+    "رقم التعريف الوطني إلزامي.": "The national ID number is required.",
+    "هو الرقم الذي يُطبع داخل الباركود، لذلك يجب أن يكون عمودًا نصيًا واضحًا في الملف وخاليًا من الأرقام المكررة.": "It is the number printed in the barcode, so it must be a clear text column in the file with no duplicate numbers.",
+    "نماذج جاهزة للتجربة:": "Ready-to-try samples:",
+    "نموذج XLSX": "XLSX sample",
+    "نموذج XLS بصيغة HTML": "XLS (HTML) sample",
+    "ربط أعمدة الملف بحقول التلميذ": "Map file columns to student fields",
+    "اختر العمود المقابل لكل معلومة. يُبرز الجدول الأعمدة التي اخترتها.": "Choose the matching column for each field. The table highlights the columns you select.",
+    "تغيير الملف": "Change file",
+    "مطابقة الحقول": "Field mapping",
+    "الحقول غير المربوطة تُترك فارغة، وتُحدَّث البيانات الحالية فقط بالحقول المربوطة.": "Unmapped fields are left empty; existing data is updated only with mapped fields.",
+    "معاينة الصفوف الأولى": "Preview the first rows",
+    "للتأكد من أن صف العناوين والأعمدة صحيحة قبل التحليل الكامل.": "To confirm the header row and columns are correct before the full analysis.",
+    "رقم التعريف الوطني مطلوب للمتابعة.": "The national ID number is required to continue.",
+    "تحليل ومطابقة البيانات": "Analyze & match data",
+    "مراجعة الاستيراد": "Import review",
+    "تحقق من الأعداد والصفوف والأخطاء، ثم أكّد الاستيراد.": "Check the counts, rows, and errors, then confirm the import.",
+    "تعديل المطابقة": "Edit mapping",
+    "عينة من البيانات المعالجة": "Sample of processed data",
+    "أول الصفوف الصالحة بعد التحقق من الأرقام والتواريخ والهواتف.": "The first valid rows after validating numbers, dates, and phones.",
+    "الأخطاء والتنبيهات": "Errors & warnings",
+    "الصفوف غير الصالحة لن تُستورد، ويمكن تصحيحها في الملف وإعادة المحاولة.": "Invalid rows will not be imported; you can correct them in the file and try again.",
+    "الأخطاء": "Errors",
+    "التنبيهات": "Warnings",
+    "لن يتم حفظ أي تغيير قبل التأكيد.": "No change is saved before confirmation.",
+    "تأكيد الاستيراد": "Confirm import",
+    "تم استيراد القائمة بنجاح": "List imported successfully",
+    "أُضيفت بيانات التلاميذ إلى قاعدة البيانات المحلية.": "Student data was added to the local database.",
+    "عرض قائمة التلاميذ": "View student list",
+    "استيراد ملف آخر": "Import another file",
+    "تصنيف الأخطاء والتنبيهات": "Error and warning categories",
+    "حجم الملف يتجاوز 25 ميغابايت. قسّم القائمة إلى ملفات أصغر.": "The file exceeds 25 MB. Split the list into smaller files.",
+    "الملف جاهز للمطابقة": "File ready for mapping",
+    "— غير مربوط —": "— Not mapped —",
+    "رقم التعريف الوطني مربوط. يمكنك متابعة التحليل.": "The national ID column is mapped. You can proceed with the analysis.",
+    "اربط عمود رقم التعريف الوطني للمتابعة.": "Map the national ID column to continue.",
+    "يجب ربط عمود رقم التعريف الوطني قبل التحليل.": "The national ID column must be mapped before analysis.",
+    "صفوف الملف": "File rows",
+    "صالح للاستيراد": "Ready to import",
+    "تلميذ جديد": "New student",
+    "سيُضاف": "Will be added",
+    "تلميذ موجود": "Existing student",
+    "سيُحدَّث": "Will be updated",
+    "صفوف مرفوضة": "Rejected rows",
+    "لا يوجد أي صف صالح للاستيراد. صحح الأخطاء في الملف أو أعد ربط الأعمدة ثم كرر التحليل.": "There are no valid rows to import. Fix the errors in the file or remap the columns and run the analysis again.",
+    "كل الصفوف صالحة ولم تُكتشف أخطاء. راجع العينة ثم أكّد الاستيراد.": "All rows are valid and no errors were found. Review the sample and confirm the import.",
+    "لا يمكن الاستيراد قبل وجود صفوف صالحة.": "Import is not possible until there are valid rows.",
+    "لا توجد أخطاء تمنع الاستيراد.": "There are no errors preventing the import.",
+    "لا توجد تنبيهات مسجلة.": "No warnings recorded.",
+    "لا توجد صفوف صالحة لعرضها.": "No valid rows to display.",
+    "إلغاء الاستيراد": "Cancel import",
+    "سيتم تجاهل الملف الحالي ومسح المعاينة. لم تُحفظ أي بيانات بعد. هل تريد المتابعة؟": "The current file will be discarded and the preview cleared. No data has been saved yet. Do you want to continue?",
+    "تأكيد استيراد القائمة": "Confirm list import",
+    "بدء الاستيراد": "Start import",
+    "اكتمل الاستيراد": "Import complete",
+    "تلميذ محدَّث": "Updated student",
+    "صورة منسوخة": "Photo copied",
+    "اكتملت العملية دون أخطاء أو تنبيهات. يمكنك الآن طباعة بطاقات التلاميذ أو بدء المسح.": "The operation completed with no errors or warnings. You can now print student cards or start scanning.",
+    "الرقم التعريفي المستعمل في الباركود (إلزامي)": "The ID number used in the barcode (required)",
+    "يوم/شهر/سنة أو Excel date": "Day/month/year or Excel date",
+    "رقم هاتف الولي": "Parent phone number",
+    "رقم جزائري يبدأ بـ 0": "Algerian number starting with 0",
+    "مسار صورة التلميذ": "Student photo path",
+    "مسار ملف محلي على هذا الحاسوب (اختياري)": "Local file path on this computer (optional)",
+    "جارٍ تحميل حالة الفترة…": "Loading period status…",
+    "يتم التحقق من سجلات الحضور وحالة الإغلاق لهذا اليوم.": "Checking today's attendance records and closure status.",
+    "لا توجد فترات": "No periods",
+    "إغلاق الفترة ومعالجة الغياب": "Close period & process absences",
+    "جارٍ إرسال الرسائل…": "Sending messages…",
+    "يتم تجهيز قائمة الرسائل المعلّقة.": "Preparing the pending message list.",
+    "أقسام المتابعة": "Tracking sections",
+    "ابحث بالاسم أو رقم التعريف…": "Search by name or ID number…",
+    "25 صفًا": "25 rows",
+    "50 صفًا": "50 rows",
+    "100 صف": "100 rows",
+    "سجلات الحضور": "Attendance records",
+    "جارٍ تحميل السجلات…": "Loading records…",
+    "القسم والفترة": "Class & period",
+    "وقت المسح": "Scan time",
+    "رسالة SMS": "SMS message",
+    "صندوق رسائل الغياب": "Absence message inbox",
+    "جارٍ تحميل الرسائل…": "Loading messages…",
+    "إرسال الرسائل المعلّقة": "Send pending messages",
+    "بحث في رسائل الأولياء": "Search parent messages",
+    "تصفية حسب حالة الإرسال": "Filter by delivery status",
+    "20 صفًا": "20 rows",
+    "تعذر تحميل الفترات": "Could not load periods",
+    "لا توجد فترة محددة": "No period selected",
+    "أضف فترة دراسية من الإعدادات لبدء متابعة الحضور وإغلاق الغياب.": "Add a school period in Settings to start tracking attendance and closing absences.",
+    "إعداد الفترات": "Period settings",
+    "بانتظار الإغلاق": "Awaiting closure",
+    "متابعة الغياب والرسائل": "Track absences & messages",
+    "تعذر تحميل حالة الفترة": "Could not load the period status",
+    "كل الفترات": "All periods",
+    "لا توجد سجلات مطابقة للفلاتر الحالية. جرّب تغيير الحالة أو القسم.": "No records match the current filters. Try changing the status or class.",
+    "لم يُسجَّل أي حضور بعد لهذا اليوم. افتح بوابة المسح لتسجيل الوصول، أو أغلق الفترة لرصد الغياب.": "No attendance has been recorded today. Open the scan gate to check students in, or close the period to mark absences.",
+    "لا توجد سجلات بعد": "No records yet",
+    "تعذر تحميل سجل الحضور": "Could not load the attendance log",
+    "تعذر تحميل السجلات.": "Could not load the records.",
+    "بوابة سحابية": "Cloud gateway",
+    "بوابة محلية": "Local gateway",
+    "لا توجد رسائل معلّقة": "No pending messages",
+    "عرض الرسالة": "View message",
+    "إرسال عبر واتساب": "Send via WhatsApp",
+    "صندوق الرسائل فارغ": "Message inbox is empty",
+    "لم تُنشأ رسائل غياب بعد. أغلق الفترة من الأعلى ثم وافق على إشعار الأولياء.": "No absence messages have been created yet. Close the period above, then approve notifying parents.",
+    "تعذر تحميل صندوق الرسائل": "Could not load the message inbox",
+    "تعذر تحميل الرسائل.": "Could not load the messages.",
+    "اكتملت معالجة الرسائل": "Message processing completed",
+    "اكتملت معالجة الرسائل.": "Message processing completed.",
+    "جارٍ إرسال الرسائل إلى الأولياء": "Sending messages to parents",
+    "لا توجد رسائل معلّقة لهذا التاريخ وهذه الفترة.": "No pending messages for this date and period.",
+    "الفترة المحددة": "Selected period",
+    "إرسال رسائل الغياب المعلّقة": "Send pending absence messages",
+    "وضع الاختبار مفعّل: ستُسجَّل الرسائل كمحاكاة ناجحة دون إرسال حقيقي أو استهلاك رصيد.": "Test mode is on: messages will be recorded as successful simulations without real sending or credit use.",
+    "وضع الإرسال الحقيقي مفعّل. تأكد من صحة أرقام الأولياء وبوابة SMS قبل المتابعة.": "Live sending mode is on. Verify parent numbers and the SMS gateway before continuing.",
+    "تاريخ الإنشاء": "Created at",
+    "وقت الإرسال": "Sent at",
+    "ملاحظة النظام:": "System note:",
+    "المراسلة عبر واتساب:": "WhatsApp messaging:",
+    "فتح واتساب": "Open WhatsApp",
+    "إعادة محاولة إرسال الرسالة": "Retry sending the message",
+    "تم تحديث بيانات المتابعة.": "Tracking data updated.",
+    "عرض الملاحظة": "View note",
+    "إغلاق آلي": "Automatic closure",
+    "إغلاق يدوي": "Manual closure",
+    "الفترة مفتوحة ولم تُغلق بعد": "The period is open and not yet closed",
+    "غائب مسجل": "Recorded absent",
+    "غائب متوقع": "Expected absent",
+    "ولي له هاتف": "Parent with a phone",
+    "تلميذًا غائبًا بدون رقم هاتف صالح. لن تصلهم رسائل SMS، ويمكن متابعتهم عبر التقرير اليومي.": "absent students have no valid phone number. They will not receive SMS; follow them via the daily report.",
+    "موافقة صريحة على إرسال رسائل SMS": "Explicit approval to send SMS",
+    "أوافق على إرسال رسائل SMS إلى أولياء التلاميذ الغائبين بعد إغلاق الفترة.": "I agree to send SMS to the parents of absent students after the period is closed.",
+    "وضع الاختبار مفعّل: ستُسجَّل الرسائل كمحاكاة ناجحة دون إرسال حقيقي أو استهلاك رصيد. يمكن تعطيله من الإعدادات.": "Test mode is on: messages will be recorded as successful simulations without real sending or credit use. You can disable it in Settings.",
+    "عينة من التلاميذ المعنيين": "Sample of affected students",
+    "وقت الإغلاق": "Closure time",
+    "رسائل مُرسلة سابقًا": "Previously sent messages",
+    "تعذر متابعة تقدم الإرسال. حدّث الصفحة لعرض النتيجة.": "Could not follow sending progress. Refresh the page to see the result.",
+    "اختر فترة نشطة أولًا لمعالجة الغياب.": "Select an active period first to process absences.",
+    "إرسال الرسائل المعلقة": "Send pending messages",
+    "إغلاق وإرسال SMS": "Close & send SMS",
+    "متابعة غياب الفترة": "Track period absences",
+    "تمت العملية بنجاح.": "Operation completed successfully.",
+    "تم إغلاق الفترة، لكن تعذر تجهيز الإرسال:": "The period was closed, but the sending could not be prepared:",
+    "وضع الاختبار: سيتم تسجيل الإرسال كمحاكاة ناجحة دون شبكة.": "Test mode: the send will be recorded as a successful simulation without network access.",
+    "سبب التبرير": "Excuse reason",
+    "مثال: شهادة طبية مسلمة للإدارة بتاريخ اليوم…": "Example: medical certificate submitted to the administration today…",
+    "سيُسجل السبب في ملاحظات السجل ويظهر في التقارير.": "The reason will be saved in the record notes and shown in reports.",
+    "تأكيد التبرير": "Confirm excuse",
+    "يرجى كتابة سبب التبرير (حرفان على الأقل).": "Please enter the excuse reason (at least two characters).",
+    "تم تبرير الغياب.": "Absence excused.",
+    "يعتبر التبرير الغياب «مبررًا» ويمنع إرسال رسالة SMS إن لم تُرسل بعد. لا يمكن تبرير سجل حضور أو تأخر.": "An excuse marks the absence as “excused” and prevents an SMS from being sent if it has not been sent yet. Present or late records cannot be excused.",
+    "لا توجد فترات نشطة. أضف فترة من الإعدادات أولًا.": "No active periods. Add a period in Settings first.",
+    "بحث في سجل الحضور": "Search attendance records",
+    "تم تثبيت سجلات الغياب. لا توجد رسائل SMS معلقة لهذه الفترة.": "Absence records were saved. There are no pending SMS messages for this period.",
+    "نوع التقرير": "Report type",
+    "تقرير يومي": "Daily report",
+    "تقرير شهري": "Monthly report",
+    "تاريخ التقرير": "Report date",
+    "شهر التقرير": "Report month",
+    "حالة الحضور": "Attendance status",
+    "تقرير الحضور والغياب اليومي": "Daily attendance report",
+    "تقرير الغياب الشهري": "Monthly absence report",
+    "تقرير الحضور اليومي": "Daily attendance report",
+    "طباعة التقرير": "Print report",
+    "طباعة / PDF": "Print / PDF",
+    "تصدير Excel": "Export Excel",
+    "سجلات اليوم": "Today's records",
+    "سجلات الحضور اليومية": "Daily attendance records",
+    "ملخص الغياب الشهري لكل تلميذ": "Monthly absence summary per student",
+    "التلميذ": "Student",
+    "نسبة الغياب": "Absence rate",
+    "إجمالي السجلات": "Total records",
+    "سجل": "record",
+    "جارٍ تحميل التقرير…": "Loading report…",
+    "تعذر تحميل التقرير": "Could not load the report",
+    "تحقق من الفلاتر أو أعد المحاولة.": "Check the filters or try again.",
+    "تعذر تحميل التقرير.": "Could not load the report.",
+    "جارٍ تجهيز ملف Excel…": "Preparing the Excel file…",
+    "منع المتصفح فتح نافذة الطباعة. اسمح بالنوافذ المنبثقة ثم أعد المحاولة.": "The browser blocked the print window. Allow pop-ups and try again.",
+    "فتح سجل الحضور": "Open attendance log",
+    "لا توجد سجلات لهذا اليوم": "No records for this day",
+    "لا توجد بيانات لهذا الشهر": "No data for this month",
+    "لم تُسجَّل أي حالة حضور أو غياب مطابقة للفلاتر. جرّب تغيير التاريخ أو الفترة.": "No attendance or absence records match the filters. Try changing the date or period.",
+    "لم تُسجَّل أي حالة خلال هذا الشهر للفلاتر المحددة. جرّب تغيير الشهر أو القسم.": "No records were registered this month for the selected filters. Try changing the month or class.",
+    "يمكن تصدير التقرير إلى Excel أو طباعته كملف PDF من نافذة الطباعة.": "You can export the report to Excel or print it as a PDF from the print dialog.",
+    "ورق A4": "A4 paper",
+    "اختر «حفظ كملف PDF» من نافذة الطباعة للتصدير.": "Choose “Save as PDF” in the print dialog to export.",
+    "العودة للتقارير": "Back to reports",
+    "طباعة الآن": "Print now",
+    "لا توجد بيانات مسجلة خلال هذا الشهر للفلاتر المحددة.": "No data was recorded this month for the selected filters.",
+    "لا توجد سجلات حضور أو غياب لهذا اليوم للفلاتر المحددة.": "No attendance or absence records for this day match the selected filters.",
+    "مدير(ة) المؤسسة": "School principal",
+    "المؤسسة التعليمية": "School",
+    "الرقم": "No.",
+    "حالة SMS": "SMS status",
+    "الملخص": "Summary",
+    "المجموع": "Total",
+    "مجموع السجلات": "Total records",
+    "تقرير": "Report",
+    "محفوظ": "Saved",
+    "أقسام الإعدادات": "Settings sections",
+    "بيانات المؤسسة": "School information",
+    "الدوام والسلوك": "Schedule & behavior",
+    "رسائل SMS": "SMS messages",
+    "البيانات والنظام": "Data & system",
+    "تظهر هذه المعلومات في ترويسة المطبوعات ورسائل الأولياء.": "This information appears in print headers and parent messages.",
+    "ترويسة رسمية": "Official header",
+    "اسم المؤسسة": "School name",
+    "اسم المؤسسة كما يظهر في الوثائق الرسمية.": "The school name as it appears in official documents.",
+    "السنة الدراسية": "Academic year",
+    "اسم مدير المؤسسة": "School principal name",
+    "مدير المؤسسة": "School principal",
+    "نص الترويسة": "Header text",
+    "سطران أو ثلاثة تظهر أعلى بطاقات التعريف والتقارير المطبوعة.": "Two or three lines shown at the top of ID cards and printed reports.",
+    "حفظ بيانات المؤسسة": "Save school information",
+    "صور شفافة بصيغة PNG أو WEBP تعطي مظهرًا رسميًا للبطاقات والتقارير.": "Transparent PNG or WEBP images give ID cards and reports an official look.",
+    "PNG أو JPG أو WEBP — بحد أقصى 3 ميغابايت.": "PNG, JPG or WEBP — up to 3 MB.",
+    "رفع الشعار": "Upload logo",
+    "إزالة": "Remove",
+    "يظهر أسفل الشهادات والتقارير المطبوعة.": "Appears at the bottom of printed certificates and reports.",
+    "رفع الختم": "Upload stamp",
+    "تُحفظ الصور داخل مجلد بيانات النظام على هذا الجهاز، ولا تُرسل إلى أي خدمة خارجية. استعمل خلفية شفافة لنتيجة طباعة أفضل.": "Images are stored in the system data folder on this device and are never sent to an external service. Use a transparent background for better printing.",
+    "أيام الدراسة وتفعيل الرصد التلقائي وحماية البوابة من التكرار.": "School days, automatic tracking and gate duplicate protection.",
+    "أيام الدراسة": "School days",
+    "تُستعمل لتخطي الرصد التلقائي في أيام العطل الأسبوعية.": "Used to skip automatic tracking on weekly holidays.",
+    "الرصد التلقائي للغياب": "Automatic absence tracking",
+    "عند تجاوز حد الغياب، تُسجَّل الغيابات وتُجهَّز رسائل الأولياء في الانتظار دون إرسال تلقائي.": "When the absence cutoff passes, absences are recorded and parent messages are queued without automatic sending.",
+    "منع تكرار المسح (بالدقائق)": "Duplicate scan prevention (minutes)",
+    "إذا أعاد التلميذ مسح بطاقته خلال هذه المدة، يُحتسب حضوره دون إنشاء سجل مكرر.": "If a student scans their card again within this time, attendance is counted without creating a duplicate record.",
+    "حفظ إعدادات الدوام": "Save schedule settings",
+    "اضبط أوقات البداية وحدود الحضور والغياب لكل فترة.": "Set the start time and presence/absence cutoffs for each period.",
+    "لا توجد فترات بعد. أضف فترة لبدء تسجيل الحضور.": "No periods yet. Add a period to start recording attendance.",
+    "لا يمكن حذف فترة مرتبطة بسجلات حضور أو إغلاقات سابقة. عطّلها بدل حذفها للحفاظ على الأرشيف.": "A period linked to attendance records or previous closures cannot be deleted. Disable it instead to preserve the archive.",
+    "رسائل الأولياء (SMS وواتساب)": "Parent messages (SMS & WhatsApp)",
+    "قالب الرسالة وبوابة الإرسال وإعدادات المحاولات والمشاركة اليدوية عبر واتساب.": "Message template, sending gateway, retry settings and manual WhatsApp sharing.",
+    "وضع الاختبار مفعّل: تُحاكى عمليات الإرسال دون استخدام الشبكة أو استهلاك رصيد.": "Test mode is on: sending is simulated without network access or credit use.",
+    "أبقِه مفعّلًا أثناء التجارب. عند تعطيله ستحتاج إلى رابط بوابة صالح في الإعدادات. لا يؤثر على روابط واتساب اليدوية.": "Keep it on while testing. When disabled, you will need a valid gateway URL in Settings. It does not affect manual WhatsApp links.",
+    "إظهار أزرار واتساب": "Show WhatsApp buttons",
+    "تظهر في سجل الغياب وصندوق الرسائل. الضغط يفتح واتساب بنص الرسالة جاهزًا، ثم تراجع النص وتضغط «إرسال» داخل واتساب.": "Shown in the absence log and message inbox. Clicking opens WhatsApp with the text ready; review it and press “Send” inside WhatsApp.",
+    "رمز الدولة الافتراضي": "Default country code",
+    "يُضاف تلقائيًا للأرقام المحلية التي تبدأ بـ 0 (الجزائر: 213).": "Automatically added to local numbers starting with 0 (Algeria: 213).",
+    "روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. تحتاج تطبيق واتساب أو متصفحًا متصلًا بالإنترنت، ولا يرسل النظام أي رسالة دون تأكيدك داخل واتساب.": "Official wa.me links require no gateway or credit. They need the WhatsApp app or an internet-connected browser, and the system sends nothing without your confirmation inside WhatsApp.",
+    "قالب رسالة الغياب": "Absence message template",
+    "إدراج متغير:": "Insert variable:",
+    "إدراج متغير": "Insert variable",
+    "المتغيرات تُستبدل تلقائيًا لكل تلميذ عند تجهيز الرسائل.": "Variables are replaced automatically for each student when messages are prepared.",
+    "معاينة:": "Preview:",
+    "نوع بوابة الإرسال": "Sending gateway type",
+    "بوابة أندرويد محلية (HTTP)": "Local Android gateway (HTTP)",
+    "واجهة سحابية قابلة للضبط": "Configurable cloud API",
+    "البوابة المحلية تستقبل JSON بالحقول phone و message.": "The local gateway receives JSON with the phone and message fields.",
+    "رابط بوابة SMS": "SMS gateway URL",
+    "عنوان الخدمة التي ستستقبل طلبات الإرسال.": "The service address that will receive sending requests.",
+    "مفتاح API (اختياري)": "API key (optional)",
+    "إظهار المفتاح": "Show key",
+    "إخفاء المفتاح": "Hide key",
+    "يُرسل في ترويسة X-Api-Key للبوابة المحلية.": "Sent in the X-Api-Key header to the local gateway.",
+    "مهلة الاتصال (ثوانٍ)": "Connection timeout (seconds)",
+    "عدد محاولات الإرسال": "Send attempts",
+    "تُعاد المحاولة تلقائيًا عند فشل الاتصال قبل تسجيل الرسالة كفاشلة.": "Retried automatically on connection failure before the message is recorded as failed.",
+    "عدد اختباري للتحقق": "Test number for verification",
+    "إرسال تجريبي": "Send test",
+    "يحفظ الإعدادات الجديدة أولًا عند إجراء الاختبار. في وضع الاختبار تُحاكى العملية فقط.": "Saves the new settings first when testing. In test mode the operation is only simulated.",
+    "إعدادات متقدمة للواجهة السحابية": "Advanced cloud API settings",
+    "ترويسات HTTP (JSON)": "HTTP headers (JSON)",
+    "يمكن استخدام {{api_key}} داخل الترويسات.": "You can use {{api_key}} inside the headers.",
+    "قالب JSON للطلب": "Request JSON template",
+    "الحقول المتاحة: {{phone}} و {{message}} و {{api_key}}. يُستبدل الرابط أيضًا بنفس الحقول.": "Available fields: {{phone}}, {{message}} and {{api_key}}. The URL is also replaced with the same fields.",
+    "هذه الإعدادات تُستعمل فقط عند اختيار «واجهة سحابية». تأكد من صيغة JSON صالحة قبل الحفظ.": "These settings are used only when “Cloud API” is selected. Make sure the JSON is valid before saving.",
+    "حفظ إعدادات الرسائل": "Save message settings",
+    "موقع قاعدة البيانات وحجمها والنسخ الاحتياطي وإغلاق الخادم المحلي.": "Database location and size, backup, and shutting down the local server.",
+    "مجلد البيانات": "Data folder",
+    "يحتوي قاعدة SQLite والصور والنسخ المؤقتة.": "Contains the SQLite database, images and temporary backups.",
+    "جميع البيانات محفوظة محليًا على هذا الجهاز فقط. أنشئ نسخة احتياطية دوريًا واحفظها في مكان آمن.": "All data is stored locally on this device only. Create backups regularly and keep them in a safe place.",
+    "تنزيل نسخة احتياطية": "Download backup",
+    "استيراد قائمة تلاميذ": "Import student list",
+    "يوقف الخادم المحلي ويغلق قاعدة البيانات بأمان. لا تفقد أي بيانات محفوظة.": "Stops the local server and safely closes the database. No saved data is lost.",
+    "تم تحديث الإعدادات من قاعدة البيانات.": "Settings refreshed from the database.",
+    "تعذر تحميل الإعدادات.": "Could not load settings.",
+    "تعذر تحميل الفترات.": "Could not load periods.",
+    "صيغة الصورة غير مدعومة. استعمل PNG أو JPG أو WEBP.": "Unsupported image format. Use PNG, JPG or WEBP.",
+    "حجم الصورة يتجاوز 3 ميغابايت.": "The image exceeds 3 MB.",
+    "تم رفع شعار المؤسسة.": "School logo uploaded.",
+    "تم رفع ختم المؤسسة.": "School stamp uploaded.",
+    "تعذر رفع الصورة.": "Could not upload the image.",
+    "إزالة الصورة": "Remove image",
+    "سيُحذف شعار المؤسسة من المطبوعات. هل تريد المتابعة؟": "The school logo will be removed from printed documents. Do you want to continue?",
+    "سيُحذف ختم المؤسسة من المطبوعات. هل تريد المتابعة؟": "The school stamp will be removed from printed documents. Do you want to continue?",
+    "تعذر حذف الصورة.": "Could not remove the image.",
+    "تعذر حفظ الإعدادات.": "Could not save settings.",
+    "اسم المؤسسة مطلوب.": "School name is required.",
+    "تم حفظ بيانات المؤسسة.": "School information saved.",
+    "اختر يومًا دراسيًا واحدًا على الأقل.": "Select at least one school day.",
+    "مدة منع التكرار يجب أن تكون بين 1 و60 دقيقة.": "Duplicate prevention must be between 1 and 60 minutes.",
+    "تم حفظ إعدادات الدوام.": "Schedule settings saved.",
+    "اكتب قالب الرسالة لعرض المعاينة.": "Write the message template to see the preview.",
+    "وضع الاختبار معطّل: ستُرسل رسائل حقيقية عبر البوابة المضبوطة. تأكد من صحة الرابط والمفتاح قبل الإرسال.": "Test mode is off: real messages will be sent through the configured gateway. Verify the URL and key before sending.",
+    "قالب رسالة SMS لا يمكن أن يكون فارغًا.": "The SMS template cannot be empty.",
+    "رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.": "The SMS gateway URL must start with http:// or https://.",
+    "أدخل رابط بوابة SMS قبل تعطيل وضع الاختبار.": "Enter the SMS gateway URL before disabling test mode.",
+    "مهلة الاتصال يجب أن تكون بين 3 و120 ثانية.": "The connection timeout must be between 3 and 120 seconds.",
+    "عدد محاولات الإرسال يجب أن يكون بين 1 و10.": "Send attempts must be between 1 and 10.",
+    "رمز الدولة يجب أن يتكون من 1 إلى 4 أرقام.": "The country code must contain 1 to 4 digits.",
+    "ترويسات HTTP ليست JSON صالحًا.": "HTTP headers are not valid JSON.",
+    "قالب JSON للطلب غير صالح.": "The request JSON template is invalid.",
+    "تم حفظ إعدادات رسائل SMS.": "SMS settings saved.",
+    "أدخل رقم هاتف لإجراء الاختبار.": "Enter a phone number to run the test.",
+    "تم حفظ الإعدادات قبل الاختبار.": "Settings saved before testing.",
+    "اكتمل الاختبار.": "Test completed.",
+    "اختبار بوابة SMS": "SMS gateway test",
+    "فشل اختبار بوابة SMS.": "SMS gateway test failed.",
+    "تعديل الفترة الدراسية": "Edit school period",
+    "إضافة فترة دراسية": "Add school period",
+    "حدد اسم الفترة وأوقات البداية وحدود الحضور والغياب.": "Set the period name, start time and presence/absence cutoffs.",
+    "الفترة الصباحية": "Morning period",
+    "المسح بعد هذا الوقت يُسجّل متأخرًا.": "Scans after this time are marked late.",
+    "بعد هذا الوقت يصبح التلميذ غائبًا عند الرصد التلقائي.": "After this time the student becomes absent during automatic tracking.",
+    "تظهر في بوابة المسح وسجل الحضور. عطّل الفترة لإخفائها دون حذف سجلاتها.": "Shown in the scan gate and attendance log. Disable the period to hide it without deleting its records.",
+    "إضافة الفترة": "Add period",
+    "اسم الفترة مطلوب.": "Period name is required.",
+    "أدخل جميع أوقات الفترة.": "Enter all period times.",
+    "يجب أن يكون وقت البداية ≤ حد الحضور ≤ حد الغياب.": "Start time must be ≤ on-time cutoff ≤ absence cutoff.",
+    "تعذر حذف الفترة.": "Could not delete the period.",
+    "تم حفظ الفترة.": "Period saved.",
+    "تعذر حفظ الفترة.": "Could not save the period.",
+    "جارٍ تجهيز نسخة احتياطية من قاعدة البيانات.": "Preparing a database backup.",
+    "نسخ احتياطي": "Backup",
+    "تعديل": "Edit",
+    "حذف": "Delete",
+    "مؤسسة": "School",
+    "يُرسل في ترويسة": "Sent in the header",
+    "للبوابة المحلية.": "to the local gateway.",
+    "يمكن استخدام": "You can use",
+    "داخل الترويسات.": "inside the headers.",
+    "الحقول المتاحة:": "Available fields:",
+    "و": "and",
+    ". يُستبدل الرابط أيضًا بنفس الحقول.": ". The URL is also replaced with the same fields.",
+    "تصميم ورقة الطباعة": "Print sheet design",
+    "بطاقات تعريف CR80 أو ملصقات باركود بمقاسات دقيقة على ورق A4.": "CR80 ID cards or barcode stickers at exact sizes on A4 paper.",
+    "نوع الطباعة": "Print type",
+    "بطاقات التلاميذ": "Student cards",
+    "ملصقات الباركود": "Barcode stickers",
+    "نطاق التلاميذ": "Student scope",
+    "نطاق الطباعة": "Print scope",
+    "كل التلاميذ النشطين": "All active students",
+    "اختيار محدد": "Specific selection",
+    "قسم": "Class",
+    "تلميذ": "Student",
+    "القسم المطلوب": "Required class",
+    "اختر القسم…": "Choose a class…",
+    "البحث عن تلميذ": "Search for a student",
+    "الاسم، اللقب، أو رقم التعريف…": "Name, surname, or ID number…",
+    "اختيار التلميذ": "Select student",
+    "— اختر تلميذًا —": "— Choose a student —",
+    "توزيع البطاقات": "Card layout",
+    "10 بطاقات": "10 cards",
+    "2 × 5 في الصفحة": "2 × 5 per page",
+    "8 بطاقات": "8 cards",
+    "2 × 4 مع فراغات": "2 × 4 with gaps",
+    "توزيع الملصقات": "Sticker layout",
+    "30 ملصقًا": "30 stickers",
+    "3 × 10 — 65 × 27 مم": "3 × 10 — 65 × 27 mm",
+    "24 ملصقًا": "24 stickers",
+    "3 × 8 — 65 × 34 مم": "3 × 8 — 65 × 34 mm",
+    "عناصر البطاقة": "Card elements",
+    "شعار المؤسسة والاسم والسنة": "School logo, name and year",
+    "شعار المؤسسة في الترويسة": "School logo in the header",
+    "أو الأحرف الأولى عند غيابها": "Or initials when no photo is available",
+    "يظهر ضمن بيانات التلميذ": "Shown in the student details",
+    "رمز QR": "QR code",
+    "إضافة مربع QR بجانب الباركود": "Add a QR square next to the barcode",
+    "التوقيع والخاتم": "Signature & stamp",
+    "صورة الخاتم المرفوعة في الإعدادات": "The stamp image uploaded in Settings",
+    "الألوان والانحناء": "Colors & rounding",
+    "اللون الرئيسي": "Primary color",
+    "لون الترويسة": "Header color",
+    "رمز اللون الرئيسي": "Primary color hex code",
+    "رمز لون الترويسة": "Header color hex code",
+    "مم": "mm",
+    "انحناء الزوايا": "Corner rounding",
+    "المعاينة المباشرة": "Live preview",
+    "بطاقة CR80": "CR80 card",
+    "بطاقة CR80 — 85.6 × 54 مم": "CR80 card — 85.6 × 54 mm",
+    "تُفتح ورقة الطباعة في تبويب جديد بمقاس A4 دقيق (210 × 297 مم). عند الطباعة اختر": "The print sheet opens in a new tab at exact A4 size (210 × 297 mm). When printing, choose",
+    "الهوامش: بلا": "Margins: None",
+    "وفعّل": "and enable",
+    "طباعة خلفيات الرسوم": "Print background graphics",
+    "للحصول على الألوان والشعار.": "to get colors and the logo.",
+    "اسم المؤسسة التعليمية": "School name",
+    "بطاقة التلميذ": "Student ID card",
+    "تلميذ بدون اسم": "Unnamed student",
+    "بطاقات CR80": "CR80 cards",
+    "ملصقات باركود": "Barcode stickers",
+    "اختر القسم أولًا": "Choose a class first",
+    "اختر تلميذًا أولًا": "Choose a student first",
+    "لا يوجد تلاميذ نشطون في هذا النطاق": "No active students in this scope",
+    "تم حفظ التصميم": "Design saved",
+    "سيُستعمل هذا التصميم افتراضيًا في المرات القادمة.": "This design will be used as the default from now on.",
+    "أضف التلاميذ أو استورد قائمة، ثم عد إلى استوديو الطباعة. لا يمكن إنشاء بطاقات فارغة.": "Add students or import a list, then return to Print Studio. Empty cards cannot be generated.",
+    "الهوامش: بلا · طباعة الخلفيات: مفعّلة": "Margins: None · Background printing: On",
+    "العودة للاستوديو": "Back to Studio",
+    "لا يوجد تلاميذ للطباعة": "No students to print",
+    "ورق A4 دقيق": "Exact A4 paper",
+    "معاينة توضيحية —": "Demo preview —",
+    "بطاقة": "card",
+    "بطاقتان": "cards",
+    "بطاقات": "cards",
+    "ملصق": "sticker",
+    "ملصقان": "stickers",
+    "ملصقات": "stickers",
+    "ملصقًا": "stickers",
+    "بطاقة جاهزة": "card ready",
+    "بطاقتان جاهزتان": "cards ready",
+    "بطاقات جاهزة": "cards ready",
+    "ملصق جاهز": "sticker ready",
+    "ملصقان جاهزان": "stickers ready",
+    "ملصقات جاهزة": "stickers ready",
+    "ملصقًا جاهزًا": "stickers ready",
+    "للطباعة": "to print",
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا.": ". Any new scan will automatically convert absence to present or late.",
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا، ورسائل الغياب في قائمة الانتظار.": ". Any new scan will automatically convert absence to present or late, and absence messages are queued.",
+    ". لا يمكن التراجع بعد بدء الإرسال.": ". This cannot be undone once sending starts.",
+    "أُغلقت هذه الفترة اليوم على الساعة": "This period was closed today at",
+    "أُغلقت هذه الفترة اليوم.": "This period was closed today.",
+    "إلى أولياء التلاميذ الغائبين ضمن": "to the parents of absent students in",
+    "الإجمالي": "Total",
+    "الفترة لم تُغلق بعد": "The period has not been closed yet",
+    "بايت": "B",
+    "بتاريخ": "dated",
+    "بدأ إرسال الرسائل.": "Sending messages started.",
+    "بطاقات جاهزة للطباعة": "ready cards to print",
+    "بطاقة جاهزة للطباعة": "ready card to print",
+    "بطاقتان جاهزتان للطباعة": "ready cards to print",
+    "تم تثبيت سجلات الغياب.": "Absence records have been finalized.",
+    "حالة أخرى…": "more cases…",
+    "سيتم إرسال": "Will send",
+    "سيتم إيقاف الخادم المحلي. تأكد من عدم وجود عمليات مسح أو إرسال رسائل جارية. هل تريد المتابعة؟": "The local server will be stopped. Make sure no scans or message sends are in progress. Do you want to continue?",
+    "عدد المحاولات": "Attempt count",
+    "عرض ملف": "View profile",
+    "غ.ب": "GB",
+    "ك.ب": "KB",
+    "لا توجد رسائل SMS معلقة لهذه الفترة.": "There are no pending SMS messages for this period.",
+    "لا يوجد أي صف صالح للاستيراد.": "There is no valid row to import.",
+    "م.ب": "MB",
+    "مثال: 109876543210": "Example: 109876543210",
+    "مثال: 1AS1": "Example: 1AS1",
+    "مراسلة الولي عبر واتساب": "Message parent via WhatsApp",
+    "مسح": "Scan",
+    "ملصق جاهز للطباعة": "ready label to print",
+    "ملصقات جاهزة للطباعة": "ready labels to print",
+    "ملصقان جاهزان للطباعة": "ready labels to print",
+    "ملصقًا جاهزًا للطباعة": "ready labels to print",
+    "نص الرسالة": "Message text",
+    "هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome حديث.": "This browser cannot read barcodes from the camera. Use a USB scanner or a recent Edge/Chrome browser.",
+    "واجهة سحابية": "Cloud interface",
+    "مدير": "Administrator",
+    "مستخدم": "User",
+    "معطل": "Disabled",
+    "ملخص المستخدمين": "User summary",
+    "إجمالي المستخدمين": "Total users",
+    "مديرو النظام": "Administrators",
+    "حسابات نشطة": "Active accounts",
+    "حسابات الدخول": "Sign-in accounts",
+    "الأدوار: المدير يدير الإعدادات والمستخدمين والنسخ الاحتياطي والتحديثات. المستخدم يدير العمليات اليومية دون صفحات النظام.": "Roles: administrators manage settings, users, backups and updates. Users manage daily operations without access to system pages.",
+    "المستخدم": "User",
+    "الدور": "Role",
+    "كلمة المرور": "Password",
+    "اسم المستخدم": "Username",
+    "آخر دخول": "Last sign-in",
+    "جارٍ تحميل المستخدمين…": "Loading users…",
+    "كلمة المرور اختيارية.": "The password is optional.",
+    "عند إضافة مستخدم يمكنك ترك كلمة المرور فارغة؛ سيدخل باختيار اسمه دون كلمة مرور. يمكنك ضبطها أو حذفها لاحقًا من زر التعديل.": "When adding a user you may leave the password empty; they will sign in by selecting their name without a password. You can set or remove it later from the edit button.",
+    "إضافة مستخدم": "Add user",
+    "يوجد حساب مدير بدون كلمة مرور.": "An administrator account has no password.",
+    "اضبط كلمة مرور قوية لحساب admin قبل أن تشارك الجهاز مع مستخدمين آخرين.": "Set a strong password for the admin account before sharing this device with other users.",
+    "حسابات الدخول والأدوار وكلمات المرور": "Sign-in accounts, roles and passwords",
+    "المستخدمون": "Users",
+    "مضبوطة": "Set",
+    "بدون كلمة مرور": "No password",
+    "لم يدخل بعد": "Never signed in",
+    "لا يوجد مستخدمون": "No users",
+    "أضف أول حساب للدخول إلى النظام.": "Add the first account to sign in to the system.",
+    "حسابك": "Your account",
+    "تعذر تحميل المستخدمين": "Could not load users",
+    "3 إلى 32 حرفًا لاتينيًا أو رقمًا أو . _ -": "3 to 32 Latin letters, digits or . _ -",
+    "الاسم المعروض": "Display name",
+    "كلمة المرور (اختيارية)": "Password (optional)",
+    "اتركها فارغة لعدم التغيير": "Leave empty to keep unchanged",
+    "لا تقل عن 6 أحرف عند ضبطها.": "At least 6 characters when set.",
+    "حذف كلمة المرور الحالية": "Remove the current password",
+    "الحساب نشط ويستطيع الدخول": "Account is active and can sign in",
+    "لا يمكنك تغيير دور حسابك أو تعطيله من هنا.": "You cannot change your role or disable your account here.",
+    "تعديل المستخدم": "Edit user",
+    "أنشئ حسابًا جديدًا بصلاحية مدير أو مستخدم.": "Create a new account with administrator or user rights.",
+    "أدخل الاسم المعروض.": "Enter the display name.",
+    "تم تحديث بيانات المستخدم.": "User details updated.",
+    "تم إنشاء المستخدم بنجاح.": "User created successfully.",
+    "حذف المستخدم": "Delete user",
+    "تم حذف المستخدم.": "User deleted.",
+    "تسجيل الخروج": "Sign out",
+    "تسجيل الدخول": "Sign in",
+    "منصة محلية آمنة": "Secure local platform",
+    "الحضور بالباركود، والرسائل، والتقارير في مكان واحد.": "Barcode attendance, messages and reports in one place.",
+    "كل البيانات تبقى على جهاز المؤسسة. سجّل الدخول للوصول إلى الأدوات المسموحة لحسابك.": "All data stays on the school's device. Sign in to access the tools allowed for your account.",
+    "مسح سريع عبر ماسح HID أو الكاميرا": "Fast scanning with a HID scanner or the camera",
+    "رسائل SMS وواتساب للأولياء": "SMS and WhatsApp messages for parents",
+    "بطاقات وملصقات باركود بدقة A4": "A4 barcode cards and stickers",
+    "أدوار منفصلة لمدير النظام والمستخدمين": "Separate roles for administrators and users",
+    "أدخل بيانات حسابك للمتابعة.": "Enter your account details to continue.",
+    "اتركها فارغة إن لم تضبط كلمة مرور": "Leave empty if no password is set",
+    "إظهار كلمة المرور": "Show password",
+    "كلمة المرور اختيارية. إذا لم يضبطها مدير النظام، اترك الحقل فارغًا.": "The password is optional. If the administrator has not set one, leave the field empty.",
+    "دخول إلى النظام": "Sign in to the system",
+    "أول تشغيل: الحساب admin بدون كلمة مرور.": "First run: the admin account has no password.",
+    "سجّل الدخول ثم افتح صفحة المستخدمين واضبط كلمة مرور قوية لحساب المدير.": "Sign in, open the Users page and set a strong password for the administrator account.",
+    "تحديثات النظام": "System updates",
+    "تحديثات موقّعة رقميًا تُحمّل من خادم fetsync وتُثبّت تلقائيًا بعد التحقق.": "Digitally signed updates are downloaded from the fetsync server and installed automatically after verification.",
+    "التحديث التلقائي": "Automatic updates",
+    "فحص التحديثات وتنزيلها والتحقق من توقيعها ثم تثبيتها عند توقف العمليات.": "Check for updates, download and verify their signature, then install them while the system is idle.",
+    "رابط خادم التحديثات": "Update server URL",
+    "يجب أن يبدأ بـ https:// ويشير إلى ملف latest.json الموقّع.": "Must start with https:// and point to the signed latest.json file.",
+    "حالة التحديث": "Update status",
+    "جارٍ قراءة حالة التحديث…": "Reading update status…",
+    "الإصدار الحالي": "Current version",
+    "آخر إصدار متاح": "Latest available version",
+    "آخر فحص": "Last check",
+    "حالة التنزيل": "Download status",
+    "ملاحظات الإصدار": "Release notes",
+    "فحص التحديثات الآن": "Check for updates now",
+    "تثبيت التحديث": "Install update",
+    "لن يُثبّت النظام أي تحديث إلا بعد التحقق من توقيع Ed25519 المضمّن في التطبيق ومطابقة بصمة SHA-256 للملف. تُرفض التحديثات غير الموقّعة أو المعدّلة.": "The system will only install an update after verifying its Ed25519 signature against the key embedded in the app and matching the file's SHA-256 hash. Unsigned or modified updates are rejected.",
+    "حفظ إعدادات التحديث": "Save update settings",
+    "مستودع المشروع": "Project repository",
+    "مستودع المشروع على GitHub": "Project repository on GitHub",
+    "فحص الإصدارات الموقّعة وتثبيتها من fetsync.": "Check and install signed releases from fetsync.",
+    "يتوفر تحديث جديد": "A new update is available",
+    "سيتم تنزيله والتحقق من توقيعه ثم تثبيته تلقائيًا عند توقف العمليات.": "It will be downloaded, verified and installed automatically while the system is idle.",
+    "تثبيت الآن": "Install now",
+    "التفاصيل": "Details",
+    "إخفاء التنبيه": "Dismiss alert",
+    "جارٍ تثبيت التحديث وإعادة تشغيل النظام. انتظر قليلًا…": "Installing the update and restarting the system. Please wait…",
+    "محدّث": "Up to date",
+    "جارٍ التثبيت": "Installing",
+    "جاهز للتثبيت": "Ready to install",
+    "يتوفر تحديث": "Update available",
+    "النظام يعمل بأحدث إصدار موقّع.": "The system is running the latest signed version.",
+    "سيُنزّل تلقائيًا": "Will download automatically",
+    "تعذر قراءة حالة التحديث.": "Could not read the update status.",
+    "تم فحص التحديثات.": "Updates checked.",
+    "التحديثات": "Updates",
+    "تعذر فحص التحديثات.": "Could not check for updates.",
+    "تثبيت وإعادة التشغيل": "Install and restart",
+    "سيتم تثبيت التحديث الآن.": "The update will be installed now.",
+    "إعادة التشغيل": "Restart",
+    "تعذر تثبيت التحديث.": "Could not install the update.",
+    "تم حفظ إعدادات التحديث.": "Update settings saved.",
+    "تعذر حفظ إعدادات التحديث.": "Could not save update settings.",
+    "انتهت الجلسة. جارٍ إعادة تسجيل الدخول…": "Your session has expired. Redirecting to sign in…",
+    "ليست لديك صلاحية لتنفيذ هذه العملية.": "You do not have permission to perform this operation.",
+    "ليست لديك صلاحية الوصول إلى هذه العملية.": "You do not have permission to access this operation.",
+    "ليست لديك صلاحية الوصول إلى هذه الصفحة. ارجع إلى مدير النظام.": "You do not have permission to access this page. Contact the system administrator.",
+    "يجب تسجيل الدخول للمتابعة.": "You must sign in to continue.",
+    "انتهت جلسة الدخول. سجّل الدخول من جديد.": "Your session has expired. Sign in again.",
+    "اسم المستخدم أو كلمة المرور غير صحيحة.": "Incorrect username or password.",
+    "انتهت صلاحية الجلسة. أعد تحميل الصفحة ثم حاول مجددًا.": "The session has expired. Reload the page and try again.",
+    "اسم المستخدم يجب أن يكون بين 3 و32 حرفًا لاتينيًا أو رقمًا أو . _ -": "The username must be 3 to 32 Latin letters, digits or . _ -",
+    "الاسم المعروض أطول من 80 حرفًا.": "The display name is longer than 80 characters.",
+    "الدور المحدد غير صالح.": "The selected role is invalid.",
+    "كلمة المرور يجب ألا تقل عن 6 أحرف.": "The password must be at least 6 characters.",
+    "كلمة المرور أطول من 128 حرفًا.": "The password is longer than 128 characters.",
+    "المستخدم غير موجود.": "User not found.",
+    "لا يمكنك إزالة صلاحية مدير النظام عن حسابك أو تعطيله.": "You cannot remove administrator rights from your account or disable it.",
+    "يجب أن يبقى مدير نظام واحد نشط على الأقل.": "At least one active administrator must remain.",
+    "لا يمكنك حذف حسابك الحالي.": "You cannot delete your current account.",
+    "اسم المستخدم مستخدم بالفعل. اختر اسمًا آخر.": "The username is already taken. Choose another.",
+    "ملف التحديث غير صالح.": "The update file is invalid.",
+    "التحديث غير موقّع ولن يتم تثبيته.": "The update is not signed and will not be installed.",
+    "توقيع التحديث مشوّه.": "The update signature is malformed.",
+    "رقم إصدار التحديث غير صالح.": "The update version number is invalid.",
+    "وصف التحديث غير صالح.": "The update description is invalid.",
+    "قائمة ملفات التحديث غير صالحة.": "The update file list is invalid.",
+    "ملف تحديث غير صالح.": "An update file entry is invalid.",
+    "نوع ملف التحديث غير معروف.": "The update file type is unknown.",
+    "روابط التحديث يجب أن تكون https.": "Update links must use https.",
+    "بصمة SHA-256 لملف التحديث غير صالحة.": "The update file SHA-256 hash is invalid.",
+    "حجم ملف التحديث غير صالح.": "The update file size is invalid.",
+    "إصدار صيغة التحديث غير صالح.": "The update schema version is invalid.",
+    "توقيع التحديث غير صالح. تم رفض الملف.": "The update signature is invalid. The file was rejected.",
+    "لا يحتوي التحديث على ملف قابل للتثبيت.": "The update does not contain an installable file.",
+    "رابط خادم التحديثات يجب أن يبدأ بـ https://.": "The update server URL must start with https://.",
+    "أعاد خادم التحديثات اتصالًا غير آمن.": "The update server redirected to an insecure connection.",
+    "تعذر الاتصال بخادم التحديثات. تحقق من الاتصال بالإنترنت.": "Could not reach the update server. Check the internet connection.",
+    "ملف التحديث أكبر من الحد المسموح.": "The update file exceeds the allowed size.",
+    "ملف التحديث ليس بصيغة JSON صالحة.": "The update file is not valid JSON.",
+    "لا يوجد تحديث متاح للتنزيل.": "No update is available to download.",
+    "لا يوجد تحديث جاهز للتثبيت.": "No update is ready to install.",
+    "بيانات التحديث المنزّل غير متطابقة.": "The downloaded update details do not match.",
+    "ملف التحديث المنزّل غير موجود.": "The downloaded update file is missing.",
+    "تغيّر ملف التحديث بعد تنزيله. تم رفض التثبيت.": "The update file changed after download. Installation was rejected.",
+    "التثبيت التلقائي متاح فقط في نسخة EXE المبنية من التطبيق.": "Automatic installation is only available in the built EXE version of the app.",
+    "الإصدار المثبت محدّث بالفعل.": "The installed version is already up to date.",
+    "تعذر تجهيز إعادة التشغيل التلقائية.": "Could not prepare the automatic restart.",
+    "مسار التحديث غير صالح.": "The update path is invalid.",
+    "تعذر تنزيل ملف التحديث. أعد المحاولة لاحقًا.": "Could not download the update file. Try again later.",
+    "حجم ملف التحديث لا يطابق البيانات الموقّعة.": "The update file size does not match the signed data.",
+    "بصمة الملف لا تطابق التوقيع. تم حذف التنزيل.": "The file hash does not match the signature. The download was deleted.",
+    "أنت تستخدم أحدث إصدار متاح.": "You are using the latest available version.",
+    "سيتم تثبيت التحديث وإعادة تشغيل النظام الآن.": "The update will be installed and the system restarted now."
+  },
+  "patterns": [
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل. وسيُستبعد {2} صفًا غير صالح.",
+      "tr": "{0} new students will be added and {1} existing students updated, while preserving attendance and message records. {2} invalid rows will be excluded."
+    },
+    {
+      "ar": "سيُخفى {0} من قوائم المسح والاستيراد والتقارير الحالية، لكن سجلات حضوره السابقة تبقى محفوظة. يمكنك تنشيطه لاحقًا.",
+      "tr": "{0} will be hidden from scanning, import, and current reports, but previous attendance records remain saved. You can reactivate them later."
+    },
+    {
+      "ar": "يفتح واتساب مع نص الرسالة جاهزًا ({0}). راجع النص ثم اضغط «إرسال» داخل واتساب. لا يُرسل شيء تلقائيًا.",
+      "tr": "Opens WhatsApp with the message ready ({0}). Review the text and press “Send” inside WhatsApp. Nothing is sent automatically."
+    },
+    {
+      "ar": "سيتم إرسال {0} رسالة SMS إلى أولياء التلاميذ الغائبين ضمن {1} بتاريخ {2}. لا يمكن التراجع بعد بدء الإرسال.",
+      "tr": "{0} SMS messages will be sent to the parents of absent students in {1} on {2}. This cannot be undone once sending starts."
+    },
+    {
+      "ar": "{0} تلميذًا موجودًا سيُحدَّث بالحقول المربوطة فقط، مع الحفاظ على سجلات الحضور والرسائل السابقة.",
+      "tr": "{0} existing students will be updated only with mapped fields, preserving previous attendance and message records."
+    },
+    {
+      "ar": "{0} تلميذًا بدون رقم هاتف صالح — سيُحفظ التلميذ لكن لن تُرسل له رسائل SMS حتى تُحدَّث بياناته.",
+      "tr": "{0} students have no valid phone number — the student will be saved, but no SMS will be sent until their details are updated."
+    },
+    {
+      "ar": "{0} تلميذًا لم يُمسح بعد. عند إغلاق الفترة سيُسجَّلون غائبين ويمكن إشعار الأولياء بعد موافقتك.",
+      "tr": "{0} students have not been scanned yet. When the period is closed, they will be marked absent, and parents can be notified after your approval."
+    },
+    {
+      "ar": "{0} تلميذًا غائبًا بدون رقم هاتف صالح. لن تصلهم رسائل SMS، ويمكن متابعتهم عبر التقرير اليومي.",
+      "tr": "{0} absent students have no valid phone number. They will not receive SMS messages; follow up via the daily report."
+    },
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.",
+      "tr": "{0} new students will be added and {1} existing students updated, while preserving attendance and message records."
+    },
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.{2}",
+      "tr": "Will add {0} new students and update {1} existing students while preserving attendance records and messages.{2}"
+    },
+    {
+      "ar": "عند الإغلاق سيُسجَّل {0} تلميذًا غير ممسوح بحالة «غائب». يمكنك إرسال الرسائل بعد الموافقة.",
+      "tr": "On closure, {0} unscanned students will be marked “Absent”. You can send messages after approval."
+    },
+    {
+      "ar": "هل تريد حذف «{0}»؟ لا يمكن التراجع عن الحذف، وستُرفض العملية إذا كانت مرتبطة بسجلات حضور.",
+      "tr": "Delete “{0}”? This cannot be undone, and the operation will be refused if attendance records are linked to it."
+    },
+    {
+      "ar": "{0} صفًا لم يُستورد بسبب أخطاء في البيانات. صححه في الملف واستورده مجددًا إذا لزم.",
+      "tr": "{0} rows were not imported due to data errors. Correct them in the file and import again if needed."
+    },
+    {
+      "ar": "ستُحاول نسخ {0} صورة من المسارات المحلية؛ الصور التي لا تُقرأ ستُتجاهل مع تنبيه.",
+      "tr": "The system will try to copy {0} photos from local paths; unreadable images will be skipped with a warning."
+    },
+    {
+      "ar": "أُضيف {0} تلميذًا جديدًا وحُدِّثت بيانات {1} تلميذًا في قاعدة البيانات المحلية.",
+      "tr": "{0} new students were added and {1} students updated in the local database."
+    },
+    {
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات.",
+      "tr": "Version {0} was downloaded and verified. It will install automatically while the system is idle."
+    },
+    {
+      "ar": "سيتم تثبيت الإصدار {0} وإعادة تشغيل النظام. احفظ أي عمل جارٍ قبل المتابعة.",
+      "tr": "Version {0} will be installed and the system restarted. Save any ongoing work before continuing."
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}، مع استبعاد {2} صفًا. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} will be added and {1} updated, with {2} rows excluded. Changes are not saved before confirmation."
+    },
+    {
+      "ar": "تظهر أول {0} تنبيهات فقط. راجع صفحة التلاميذ لاستكمال البيانات الناقصة.",
+      "tr": "Only the first {0} warnings are shown. Review the Students page to complete missing data."
+    },
+    {
+      "ar": "{0} صفًا سيُستبعد لاحتوائه على أخطاء. بقية الصفوف ستُستورد بشكل طبيعي.",
+      "tr": "{0} rows will be excluded due to errors. The remaining rows will be imported normally."
+    },
+    {
+      "ar": "أوافق على إرسال {0} رسالة معلّقة إلى أولياء التلاميذ الغائبين الآن.",
+      "tr": "I agree to send the {0} pending messages to the parents of absent students now."
+    },
+    {
+      "ar": "سيُعاد إرسال رسالة SMS إلى ولي {0} بعد موافقتك. هل تريد المتابعة؟",
+      "tr": "An SMS will be resent to {0}'s parent after your approval. Do you want to continue?"
+    },
+    {
+      "ar": "سيُعاد {0} إلى قائمة التلاميذ النشطين ويمكن تسجيل حضوره من جديد.",
+      "tr": "{0} will return to the active student list and attendance can be recorded again."
+    },
+    {
+      "ar": "سُجِّل {0} تنبيهًا أثناء الاستيراد، منها مشاكل الصور أو الهواتف.",
+      "tr": "{0} warnings were recorded during the import, including photo or phone issues."
+    },
+    {
+      "ar": "تم تثبيت {0} حالة غياب لهذا اليوم، {1} رسالة SMS في انتظار الإرسال.",
+      "tr": "{0} absences were recorded for today; {1} SMS messages are pending."
+    },
+    {
+      "ar": "يتم عرض أول {0} من {1} فقط. صحح الملف ثم أعد التحليل لرؤية الباقي.",
+      "tr": "Only the first {0} of {1} are shown. Fix the file and re-run the analysis to see the rest."
+    },
+    {
+      "ar": "معاينة توضيحية — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "Demo preview — CR80 · 85.6 × 54 mm · {0} cards on an A4 page"
+    },
+    {
+      "ar": "سيُحمّل الإصدار {0} ويُثبّت تلقائيًا بعد التحقق من توقيعه.",
+      "tr": "Version {0} will be downloaded and installed automatically after signature verification."
+    },
+    {
+      "ar": "تم تثبيت {0} حالة غياب لهذا اليوم، ولا توجد رسائل معلّقة.",
+      "tr": "{0} absences were recorded for today, and there are no pending messages."
+    },
+    {
+      "ar": "تم تثبيت سجلات الغياب. توجد {0} رسالة في انتظار الإرسال.",
+      "tr": "Absence records were saved. {0} messages are pending."
+    },
+    {
+      "ar": "{0} بدون رقم هاتف، و{1} برقم غير صالح — لم تُنشأ لهم رسائل.",
+      "tr": "{0} without a phone number and {1} with an invalid number — no messages were created for them."
+    },
+    {
+      "ar": "معاينة توضيحية — ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Demo preview — 65 × {0} mm sticker · {1} stickers on an A4 page"
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} will be added and {1} updated. Changes are not saved before confirmation."
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}{2}. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} will be added and {1} updated{2}. Changes are not saved before confirmation."
+    },
+    {
+      "ar": "التاريخ: {0} | الفترة: {1} | القسم: {2} | السنة الدراسية: {3}",
+      "tr": "Date: {0}    |    Period: {1}    |    Class: {2}    |    Academic year: {3}"
+    },
+    {
+      "ar": "اختيار يدوي: {0} — يُسجَّل المسح في هذه الفترة فقط.",
+      "tr": "Manual selection: {0} — scans are recorded in this period only."
+    },
+    {
+      "ar": "محاولات دخول كثيرة. انتظر {0} ثانية ثم حاول مجددًا.",
+      "tr": "Too many sign-in attempts. Wait {0} seconds and try again."
+    },
+    {
+      "ar": "الشهر: {0} | الفترة: {1} | القسم: {2} | السنة الدراسية: {3}",
+      "tr": "Month: {0}    |    Period: {1}    |    Class: {2}    |    Academic year: {3}"
+    },
+    {
+      "ar": "الإصدار {0} متاح. افتح إعدادات التحديثات للمراجعة.",
+      "tr": "Version {0} is available. Open update settings to review it."
+    },
+    {
+      "ar": "أُنشئ التقرير بواسطة نظام متابعة الحضور — {0}",
+      "tr": "Report generated by the attendance system — {0}"
+    },
+    {
+      "ar": "هل تريد حذف «{0}»؟ لن يستطيع الدخول بعد الآن.",
+      "tr": "Delete “{0}”? They will no longer be able to sign in."
+    },
+    {
+      "ar": "CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "CR80 · 85.6 × 54 mm · {0} cards on an A4 page"
+    },
+    {
+      "ar": "{0} رسالة — {1} في الانتظار — وضع الاختبار",
+      "tr": "{0} messages — {1} pending — test mode"
+    },
+    {
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه.",
+      "tr": "Version {0} was downloaded and its signature verified."
+    },
+    {
+      "ar": "توجد {0} رسالة SMS معلقة لهذه الفترة.",
+      "tr": "{0} pending SMS messages for this period."
+    },
+    {
+      "ar": "ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "65 × {0} mm sticker · {1} stickers on an A4 page"
+    },
+    {
+      "ar": "الإصدار {0} متاح ومُنزّل ومُتحقق منه.",
+      "tr": "Version {0} is available, downloaded and verified."
+    },
+    {
+      "ar": "{0} تلميذًا — {1} سجل خلال الفترة {2} إلى {3}",
+      "tr": "{0} students — {1} records from {2} to {3}"
+    },
+    {
+      "ar": "{0} تلميذًا — {1} صفحة — تم التوليد في {2}",
+      "tr": "{0} students — {1} pages — generated at {2}"
+    },
+    {
+      "ar": "كلمة المرور يجب ألا تقل عن {0} أحرف.",
+      "tr": "The password must be at least {0} characters."
+    },
+    {
+      "ar": "{0} · الفترة: {1} · القسم: {2} · الحالة: {3}",
+      "tr": "{0} · Period: {1} · Class: {2} · Status: {3}"
+    },
+    {
+      "ar": "تلقائي: {0} ({1}) — نافذة الغياب حتى {2}",
+      "tr": "Automatic: {0} ({1}) — absence window until {2}"
+    },
+    {
+      "ar": "عينة من {0} صفوف صالحة من إجمالي {1}.",
+      "tr": "Sample of {0} valid rows out of {1}."
+    },
+    {
+      "ar": "الفترة المشمولة: من {0} إلى {1} — {2} — {3}",
+      "tr": "Period covered: from {0} to {1} — {2} — {3}"
+    },
+    {
+      "ar": "{0} حاضر · {1} متأخر · {2} غائب · {3} مبرر",
+      "tr": "{0} present · {1} late · {2} absent · {3} excused"
+    },
+    {
+      "ar": "تم التعرف على {0} صفًا و{1} عمودًا.",
+      "tr": "Detected {0} rows and {1} columns."
+    },
+    {
+      "ar": "كلمة المرور أطول من {0} حرفًا.",
+      "tr": "The password is longer than {0} characters."
+    },
+    {
+      "ar": "{0} صفًا · العناوين في السطر {1}",
+      "tr": "{0} rows · headers on row {1}"
+    },
+    {
+      "ar": "أُضيف {0} وتم تحديث {1} تلميذًا.",
+      "tr": "{0} added and {1} students updated."
+    },
+    {
+      "ar": "{0} ناجحة · {1} فاشلة · {2} اختبار",
+      "tr": "{0} sent · {1} failed · {2} test"
+    },
+    {
+      "ar": "{0} — {1} تلميذًا — ورق A4 دقيق",
+      "tr": "{0} — {1} students — exact A4 paper"
+    },
+    {
+      "ar": "وسيُستبعد {0} صفًا غير صالح.",
+      "tr": "{0} invalid rows will be excluded."
+    },
+    {
+      "ar": "© {0} — جميع الحقوق محفوظة.",
+      "tr": "© {0} — All rights reserved."
+    },
+    {
+      "ar": "{0} سجل مطابق — {1} تلميذًا — {2}",
+      "tr": "{0} matching records — {1} students — {2}"
+    },
+    {
+      "ar": "{0} · السنة الدراسية {1} — {2} — {3}",
+      "tr": "{0} · Academic year {1} — {2} — {3}"
+    },
+    {
+      "ar": "{0} بطاقتان جاهزتان للطباعة",
+      "tr": "{0} cards ready to print"
+    },
+    {
+      "ar": "إجمالي {0} سجل — صفحة {1} من {2}",
+      "tr": "Total: {0} records — page {1} of {2}"
+    },
+    {
+      "ar": "عرض {0} صفوف من {1} · {2} عمودًا",
+      "tr": "Showing {0} of {1} rows · {2} columns"
+    },
+    {
+      "ar": "إرسال رسالة {0} عبر واتساب",
+      "tr": "Send message to {0} via WhatsApp"
+    },
+    {
+      "ar": "حاضر {0} · متأخر {1} · غائب {2}",
+      "tr": "Present {0} · Late {1} · Absent {2}"
+    },
+    {
+      "ar": "{0} تاريخ ميلاد غير مفهوم",
+      "tr": "{0} unrecognized birth dates"
+    },
+    {
+      "ar": "تم رصد {0} غائبًا جديدًا.",
+      "tr": "{0} new absences recorded."
+    },
+    {
+      "ar": "{0} ملصقان جاهزان للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "{0} ملصقًا جاهزًا للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "مراسلة ولي {0} عبر واتساب",
+      "tr": "Message the parent of {0} via WhatsApp"
+    },
+    {
+      "ar": "حماية التكرار: {0} دقائق",
+      "tr": "Duplicate protection: {0} minutes"
+    },
+    {
+      "ar": "{0} رسالة — {1} في الانتظار",
+      "tr": "{0} messages — {1} pending"
+    },
+    {
+      "ar": "{0} · الفترة: {1} · القسم: {2}",
+      "tr": "{0} · Period: {1} · Class: {2}"
+    },
+    {
+      "ar": "{0} بطاقات جاهزة للطباعة",
+      "tr": "{0} cards ready to print"
+    },
+    {
+      "ar": "{0} ملصقات جاهزة للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "{0} رسالة — وضع الاختبار",
+      "tr": "{0} messages — test mode"
+    },
+    {
+      "ar": "تم التنزيل والتحقق ({0})",
+      "tr": "Downloaded and verified ({0})"
+    },
+    {
+      "ar": "{0} رقم مكرر داخل الملف",
+      "tr": "{0} duplicate IDs in the file"
+    },
+    {
+      "ar": "{0} رسالة جاهزة للإرسال",
+      "tr": "{0} messages ready to send"
+    },
+    {
+      "ar": "أُنشئت {0} رسالة جديدة.",
+      "tr": "{0} new messages created."
+    },
+    {
+      "ar": "{0} بطاقة جاهزة للطباعة",
+      "tr": "{0} cards ready to print"
+    },
+    {
+      "ar": "إعادة محاولة رسالة {0}",
+      "tr": "Retry {0}'s message"
+    },
+    {
+      "ar": "الإجمالي — {0} تلميذًا",
+      "tr": "Total — {0} students"
+    },
+    {
+      "ar": "{0} · السنة الدراسية {1}",
+      "tr": "{0} · Academic year {1}"
+    },
+    {
+      "ar": "{0} ملصق جاهز للطباعة",
+      "tr": "{0} stickers ready to print"
+    },
+    {
+      "ar": "انحناء الزوايا {0} مم",
+      "tr": "Corner rounding {0} mm"
+    },
+    {
+      "ar": "، مع استبعاد {0} صفًا",
+      "tr": ", excluding {0} rows"
+    },
+    {
+      "ar": "· السنة الدراسية {0}",
+      "tr": "· Academic year {0}"
+    },
+    {
+      "ar": "معاينة توضيحية — {0}",
+      "tr": "Demo preview — {0}"
+    },
+    {
+      "ar": "المجموع المسجل: {0}",
+      "tr": "Recorded total: {0}"
+    },
+    {
+      "ar": "{0} — الفترة مفتوحة",
+      "tr": "{0} — Period open"
+    },
+    {
+      "ar": "الفترة مغلقة — {0}",
+      "tr": "Period closed — {0}"
+    },
+    {
+      "ar": "{0} — الفترة مغلقة",
+      "tr": "{0} — Period closed"
+    },
+    {
+      "ar": "{0} ناجحة · {1} فاشلة",
+      "tr": "{0} sent · {1} failed"
+    },
+    {
+      "ar": "الإجمالي — {0} سجل",
+      "tr": "Total — {0} records"
+    },
+    {
+      "ar": "إجمالي {0} تلميذًا",
+      "tr": "Total: {0} students"
+    },
+    {
+      "ar": "يتوفر الإصدار {0}.",
+      "tr": "Version {0} is available."
+    },
+    {
+      "ar": "{0} هاتف غير صالح",
+      "tr": "{0} invalid phone numbers"
+    },
+    {
+      "ar": "{0} صورة للمعالجة",
+      "tr": "{0} photos to process"
+    },
+    {
+      "ar": "رسالة إلى ولي {0}",
+      "tr": "Message to {0}'s parent"
+    },
+    {
+      "ar": "{0} حاضر · {1} متأخر",
+      "tr": "{0} present · {1} late"
+    },
+    {
+      "ar": "طباعة {0} بطاقتين",
+      "tr": "Print {0} cards"
+    },
+    {
+      "ar": "الإصدار {0} متاح.",
+      "tr": "Version {0} is available."
+    },
+    {
+      "ar": "عرض {0} من {1} حالة",
+      "tr": "Showing {0} of {1} cases"
+    },
+    {
+      "ar": "جارٍ معالجة: {0}",
+      "tr": "Processing: {0}"
+    },
+    {
+      "ar": "{0} غائب · {1} مبرر",
+      "tr": "{0} absent · {1} excused"
+    },
+    {
+      "ar": "طباعة {0} بطاقات",
+      "tr": "Print {0} cards"
+    },
+    {
+      "ar": "طباعة {0} ملصقين",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "طباعة {0} ملصقات",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "طباعة {0} ملصقًا",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "طباعة بطاقة {0}",
+      "tr": "Print {0}'s card"
+    },
+    {
+      "ar": "— القيمة: «{0}»",
+      "tr": "— Value: “{0}”"
+    },
+    {
+      "ar": "{0} ولي له هاتف",
+      "tr": "{0} parents with a phone"
+    },
+    {
+      "ar": "{0} رسالة معلقة",
+      "tr": "{0} pending messages"
+    },
+    {
+      "ar": "و{0} حالة أخرى…",
+      "tr": "and {0} more cases…"
+    },
+    {
+      "ar": "{0} — {1} — ورق A4",
+      "tr": "{0} — {1} — A4 paper"
+    },
+    {
+      "ar": "طباعة {0} بطاقة",
+      "tr": "Print {0} cards"
+    },
+    {
+      "ar": "{0} · {1} كيلوبايت",
+      "tr": "{0} · {1} KB"
+    },
+    {
+      "ar": "{0} · الإصدار {1}",
+      "tr": "{0} · Version {1}"
+    },
+    {
+      "ar": "إجمالي {0} سجل",
+      "tr": "Total: {0} records"
+    },
+    {
+      "ar": "ملاحظة سجل {0}",
+      "tr": "{0}'s record note"
+    },
+    {
+      "ar": "إجمالي {0} سجل",
+      "tr": "Total {0} records"
+    },
+    {
+      "ar": "تم التوليد {0}",
+      "tr": "Generated {0}"
+    },
+    {
+      "ar": "طباعة {0} ملصق",
+      "tr": "Print {0} stickers"
+    },
+    {
+      "ar": "تبرير غياب {0}",
+      "tr": "Excuse absence for {0}"
+    },
+    {
+      "ar": "عرض ملاحظة {0}",
+      "tr": "View note for {0}"
+    },
+    {
+      "ar": "{0} / {1} مُرسلة",
+      "tr": "{0} / {1} sent"
+    },
+    {
+      "ar": "{0} حرف مستلم",
+      "tr": "{0} characters received"
+    },
+    {
+      "ar": "{0} تلميذ نشط",
+      "tr": "{0} active students"
+    },
+    {
+      "ar": "{0} من {1} فترات",
+      "tr": "{0} of {1} periods"
+    },
+    {
+      "ar": "{0} بدون هاتف",
+      "tr": "{0} without a phone"
+    },
+    {
+      "ar": "عرض رسالة {0}",
+      "tr": "View {0}'s message"
+    },
+    {
+      "ar": "صفحة {0} من {1}",
+      "tr": "Page {0} of {1}"
+    },
+    {
+      "ar": "{0} كيلوبايت",
+      "tr": "{0} KB"
+    },
+    {
+      "ar": "{0} بدون قسم",
+      "tr": "{0} without a class"
+    },
+    {
+      "ar": "{0} بدون اسم",
+      "tr": "{0} without a name"
+    },
+    {
+      "ar": "المجموع: {0}",
+      "tr": "Total: {0}"
+    },
+    {
+      "ar": "{0} / {1} تلميذ",
+      "tr": "{0} / {1} students"
+    },
+    {
+      "ar": "{0} {1} للطباعة",
+      "tr": "{0} {1} to print"
+    },
+    {
+      "ar": "الإصدار {0}",
+      "tr": "Version {0}"
+    },
+    {
+      "ar": "مغلقة · {0}",
+      "tr": "Closed · {0}"
+    },
+    {
+      "ar": "عرض ملف {0}",
+      "tr": "View {0}'s profile"
+    },
+    {
+      "ar": "{0} تلميذًا",
+      "tr": "{0} students"
+    },
+    {
+      "ar": "{0} بطاقتان",
+      "tr": "{0} cards"
+    },
+    {
+      "ar": "{0} · مغلقة",
+      "tr": "{0} · Closed"
+    },
+    {
+      "ar": "الرمز: {0}",
+      "tr": "Code: {0}"
+    },
+    {
+      "ar": "بحث: «{0}»",
+      "tr": "Search: “{0}”"
+    },
+    {
+      "ar": "القسم: {0}",
+      "tr": "Class: {0}"
+    },
+    {
+      "ar": "{0} محاولة",
+      "tr": "{0} attempts"
+    },
+    {
+      "ar": "أُرسلت {0}",
+      "tr": "Sent {0}"
+    },
+    {
+      "ar": "أُنشئت {0}",
+      "tr": "Created {0}"
+    },
+    {
+      "ar": "جويلية {0}",
+      "tr": "July {0}"
+    },
+    {
+      "ar": "سبتمبر {0}",
+      "tr": "September {0}"
+    },
+    {
+      "ar": "أكتوبر {0}",
+      "tr": "October {0}"
+    },
+    {
+      "ar": "نوفمبر {0}",
+      "tr": "November {0}"
+    },
+    {
+      "ar": "ديسمبر {0}",
+      "tr": "December {0}"
+    },
+    {
+      "ar": "متأخر: {0}",
+      "tr": "Late: {0}"
+    },
+    {
+      "ar": "{0} — {1} نشط",
+      "tr": "{0} — {1} active"
+    },
+    {
+      "ar": "{0} بطاقات",
+      "tr": "{0} cards"
+    },
+    {
+      "ar": "{0} ملصقان",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "{0} ملصقات",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "{0} ملصقًا",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "باركود {0}",
+      "tr": "Barcode {0}"
+    },
+    {
+      "ar": "{0} اختبار",
+      "tr": "{0} test"
+    },
+    {
+      "ar": "طباعة {0} {1}",
+      "tr": "Print {0} {1}"
+    },
+    {
+      "ar": "{0} معلقة",
+      "tr": "{0} pending"
+    },
+    {
+      "ar": "{0} تلميذ",
+      "tr": "{0} students"
+    },
+    {
+      "ar": "تعديل {0}",
+      "tr": "Edit {0}"
+    },
+    {
+      "ar": "· مسح {0}",
+      "tr": "· scanned {0}"
+    },
+    {
+      "ar": "{0} رسالة",
+      "tr": "{0} messages"
+    },
+    {
+      "ar": "جانفي {0}",
+      "tr": "January {0}"
+    },
+    {
+      "ar": "فيفري {0}",
+      "tr": "February {0}"
+    },
+    {
+      "ar": "أفريل {0}",
+      "tr": "April {0}"
+    },
+    {
+      "ar": "حاضر: {0}",
+      "tr": "Present: {0}"
+    },
+    {
+      "ar": "غائب: {0}",
+      "tr": "Absent: {0}"
+    },
+    {
+      "ar": "مبرر: {0}",
+      "tr": "Excused: {0}"
+    },
+    {
+      "ar": "{0} بطاقة",
+      "tr": "{0} cards"
+    },
+    {
+      "ar": "{0} جاهز",
+      "tr": "{0} ready"
+    },
+    {
+      "ar": "الصف {0}",
+      "tr": "Row {0}"
+    },
+    {
+      "ar": "مارس {0}",
+      "tr": "March {0}"
+    },
+    {
+      "ar": "جوان {0}",
+      "tr": "June {0}"
+    },
+    {
+      "ar": "{0} بايت",
+      "tr": "{0} B"
+    },
+    {
+      "ar": "{0} ملصق",
+      "tr": "{0} stickers"
+    },
+    {
+      "ar": "عمود {0}",
+      "tr": "Column {0}"
+    },
+    {
+      "ar": "{0} غائب",
+      "tr": "{0} absent"
+    },
+    {
+      "ar": "{0} مبرر",
+      "tr": "{0} excused"
+    },
+    {
+      "ar": "{0} سجل",
+      "tr": "{0} records"
+    },
+    {
+      "ar": "ماي {0}",
+      "tr": "May {0}"
+    },
+    {
+      "ar": "أوت {0}",
+      "tr": "August {0}"
+    },
+    {
+      "ar": "{0} ك.ب",
+      "tr": "{0} KB"
+    },
+    {
+      "ar": "{0} م.ب",
+      "tr": "{0} MB"
+    },
+    {
+      "ar": "{0} غ.ب",
+      "tr": "{0} GB"
+    },
+    {
+      "ar": "مسح {0}",
+      "tr": "scan {0}"
+    },
+    {
+      "ar": "حذف {0}",
+      "tr": "Delete {0}"
+    },
+    {
+      "ar": "{0}: {1}",
+      "tr": "{0}: {1}"
+    }
+  ]
+}

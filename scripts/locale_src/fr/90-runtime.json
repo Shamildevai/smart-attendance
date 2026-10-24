@@ -1,0 +1,138 @@
+{
+  "strings": {
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا.": ". Tout nouveau scan convertira automatiquement l’absence en présence ou en retard.",
+    ". أي مسح جديد سيحوّل الغياب إلى حضور أو تأخر تلقائيًا، ورسائل الغياب في قائمة الانتظار.": ". Tout nouveau scan convertira automatiquement l’absence en présence ou en retard, et les messages d’absence sont en file d’attente.",
+    ". لا يمكن التراجع بعد بدء الإرسال.": ". Cette action est irréversible une fois l’envoi commencé.",
+    "أُغلقت هذه الفترة اليوم على الساعة": "Cette période a été clôturée aujourd’hui à",
+    "أُغلقت هذه الفترة اليوم.": "Cette période a été clôturée aujourd’hui.",
+    "إلى أولياء التلاميذ الغائبين ضمن": "aux parents des élèves absents dans",
+    "الإجمالي": "Total",
+    "الفترة لم تُغلق بعد": "La période n’a pas encore été clôturée",
+    "بايت": "o",
+    "بتاريخ": "le",
+    "بدأ إرسال الرسائل.": "L’envoi des messages a commencé.",
+    "بطاقات جاهزة للطباعة": "cartes prêtes à imprimer",
+    "بطاقة جاهزة للطباعة": "carte prête à imprimer",
+    "بطاقتان جاهزتان للطباعة": "cartes prêtes à imprimer",
+    "تم تثبيت سجلات الغياب.": "Les enregistrements d’absence ont été finalisés.",
+    "حالة أخرى…": "autres cas…",
+    "سيتم إرسال": "Envoi de",
+    "سيتم إيقاف الخادم المحلي. تأكد من عدم وجود عمليات مسح أو إرسال رسائل جارية. هل تريد المتابعة؟": "Le serveur local va être arrêté. Vérifiez qu’aucun scan ni envoi de messages n’est en cours. Voulez-vous continuer ?",
+    "عدد المحاولات": "Nombre de tentatives",
+    "عرض ملف": "Voir la fiche",
+    "غ.ب": "Go",
+    "ك.ب": "Ko",
+    "لا توجد رسائل SMS معلقة لهذه الفترة.": "Aucun SMS en attente pour cette période.",
+    "لا يوجد أي صف صالح للاستيراد.": "Aucune ligne valide à importer.",
+    "م.ب": "Mo",
+    "مثال: 109876543210": "Exemple : 109876543210",
+    "مثال: 1AS1": "Exemple : 1AS1",
+    "مراسلة الولي عبر واتساب": "Contacter le parent via WhatsApp",
+    "مسح": "Scan",
+    "ملصق جاهز للطباعة": "étiquette prête à imprimer",
+    "ملصقات جاهزة للطباعة": "étiquettes prêtes à imprimer",
+    "ملصقان جاهزان للطباعة": "étiquettes prêtes à imprimer",
+    "ملصقًا جاهزًا للطباعة": "étiquettes prêtes à imprimer",
+    "نص الرسالة": "Texte du message",
+    "هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome حديث.": "Ce navigateur ne peut pas lire les codes-barres depuis la caméra. Utilisez un lecteur USB ou un navigateur Edge/Chrome récent.",
+    "واجهة سحابية": "Interface cloud"
+  },
+  "patterns": [
+    {
+      "ar": "{0} / {1} تلميذ",
+      "tr": "{0} / {1} élèves"
+    },
+    {
+      "ar": "تبرير غياب {0}",
+      "tr": "Justifier l’absence de {0}"
+    },
+    {
+      "ar": "{0} تلميذًا غائبًا بدون رقم هاتف صالح. لن تصلهم رسائل SMS، ويمكن متابعتهم عبر التقرير اليومي.",
+      "tr": "{0} élèves absents n’ont pas de numéro de téléphone valide. Ils ne recevront pas de SMS ; suivez-les via le rapport quotidien."
+    },
+    {
+      "ar": "{0} اختبار",
+      "tr": "{0} tests"
+    },
+    {
+      "ar": "{0} · مغلقة",
+      "tr": "{0} · Clôturée"
+    },
+    {
+      "ar": "مراسلة ولي {0} عبر واتساب",
+      "tr": "Contacter le parent de {0} via WhatsApp"
+    },
+    {
+      "ar": "عرض ملاحظة {0}",
+      "tr": "Voir la note de {0}"
+    },
+    {
+      "ar": "إرسال رسالة {0} عبر واتساب",
+      "tr": "Envoyer un message à {0} via WhatsApp"
+    },
+    {
+      "ar": "{0} رسالة — وضع الاختبار",
+      "tr": "{0} messages — mode test"
+    },
+    {
+      "ar": "اختيار يدوي: {0} — يُسجَّل المسح في هذه الفترة فقط.",
+      "tr": "Sélection manuelle : {0} — les scans sont enregistrés dans cette période uniquement."
+    },
+    {
+      "ar": "{0} · {1} كيلوبايت",
+      "tr": "{0} · {1} Ko"
+    },
+    {
+      "ar": "سيُضاف {0} ويُحدَّث {1}{2}. لن تُحفظ التغييرات قبل التأكيد.",
+      "tr": "{0} seront ajoutés et {1} mis à jour{2}. Les modifications ne sont pas enregistrées avant confirmation."
+    },
+    {
+      "ar": "، مع استبعاد {0} صفًا",
+      "tr": ", en excluant {0} lignes"
+    },
+    {
+      "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل.{2}",
+      "tr": "Ajout de {0} nouveaux élèves et mise à jour de {1} élèves existants, tout en conservant les registres de présence et les messages.{2}"
+    },
+    {
+      "ar": "وسيُستبعد {0} صفًا غير صالح.",
+      "tr": "{0} lignes invalides seront exclues."
+    },
+    {
+      "ar": "{0}: {1}",
+      "tr": "{0} : {1}"
+    },
+    {
+      "ar": "مسح {0}",
+      "tr": "scan {0}"
+    },
+    {
+      "ar": "{0} غائب",
+      "tr": "{0} absents"
+    },
+    {
+      "ar": "{0} مبرر",
+      "tr": "{0} justifiés"
+    },
+    {
+      "ar": "معاينة توضيحية — {0}",
+      "tr": "Aperçu de démonstration — {0}"
+    },
+    {
+      "ar": "{0} {1} للطباعة",
+      "tr": "{0} {1} à imprimer"
+    },
+    {
+      "ar": "طباعة {0} {1}",
+      "tr": "Imprimer {0} {1}"
+    },
+    {
+      "ar": "هل تريد حذف «{0}»؟ لا يمكن التراجع عن الحذف، وستُرفض العملية إذا كانت مرتبطة بسجلات حضور.",
+      "tr": "Supprimer « {0} » ? Cette action est irréversible, et l’opération sera refusée si des registres de présence y sont liés."
+    },
+    {
+      "ar": "حذف {0}",
+      "tr": "Supprimer {0}"
+    }
+  ]
+}

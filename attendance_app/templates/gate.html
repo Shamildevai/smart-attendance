@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <button class="btn btn-secondary btn-sm" type="button" id="gate-fullscreen">
+    <svg class="ico"><use href="#i-eye"></use></svg>
+    <span>ملء الشاشة</span>
+  </button>
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.dashboard_page') }}">
+    <svg class="ico"><use href="#i-dashboard"></use></svg>
+    <span>لوحة المتابعة</span>
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="gate-layout">
+    <div class="gate-main">
+      <section class="gate-scanner" id="gate-scanner">
+        <div class="gate-ready-content" id="gate-ready">
+          <div class="gate-status">
+            <span class="gate-ready" style="position:static">
+              <i></i>
+              <span id="gate-state-label">جاهز للمسح</span>
+              <span class="mono" id="gate-live-time" style="font-size:10px;opacity:.75"></span>
+            </span>
+            <h2>مرّر بطاقة التلميذ الآن</h2>
+            <p>يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال الكاميرا.</p>
+          </div>
+
+          <div class="scan-orb" id="scan-orb">
+            <div class="scan-orb-icon">
+              <svg class="ico"><use href="#i-barcode"></use></svg>
+            </div>
+          </div>
+
+          <div class="scan-capture-hint">
+            <span class="kbd-hint"><kbd>HID</kbd> قارئ USB</span>
+            <span style="opacity:.4">·</span>
+            <span class="kbd-hint"><kbd>Enter</kbd> تأكيد تلقائي</span>
+            <span style="opacity:.4">·</span>
+            <span class="kbd-hint" id="gate-buffer-hint"><kbd>0</kbd> حرف مستلم</span>
+          </div>
+
+          <div class="camera-dock" id="camera-dock">
+            <div class="camera-frame">
+              <video id="camera-video" playsinline muted></video>
+              <span class="scan-line"></span>
+              <button class="icon-btn camera-close" type="button" id="camera-close" aria-label="إغلاق الكاميرا">
+                <svg class="ico"><use href="#i-close"></use></svg>
+              </button>
+            </div>
+            <div class="camera-note" id="camera-note">وجّه الباركود داخل الإطار. توقف الكاميرا عند إخفاء هذه النافذة.</div>
+          </div>
+
+          <div class="gate-actions">
+            <button class="btn btn-sm" type="button" id="camera-toggle">
+              <svg class="ico"><use href="#i-camera"></use></svg>
+              <span>تشغيل الكاميرا</span>
+            </button>
+            <button class="btn btn-sm" type="button" id="gate-clear">
+              <svg class="ico"><use href="#i-refresh"></use></svg>
+              <span>تفريغ الذاكرة</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="gate-result" aria-live="polite">
+        <div class="scan-result-empty">
+          <svg class="ico"><use href="#i-keyboard"></use></svg>
+          <strong>بانتظار أول عملية مسح</strong>
+          <p>ستظهر هنا بطاقة التلميذ مع الاسم، القسم، وقت التسجيل، وحصيلة اليوم مباشرةً بعد المسح.</p>
+        </div>
+      </section>
+    </div>
+
+    <aside class="gate-side">
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-clock"></use></svg> فترة التسجيل</h2><p>اختيار يدوي أو كشف تلقائي حسب الوقت</p></div>
+          <button class="icon-btn" type="button" id="gate-refresh" title="تحديث البيانات" aria-label="تحديث البيانات">
+            <svg class="ico"><use href="#i-refresh"></use></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="gate-period-select">
+            <label class="sr-only" for="gate-period">الفترة</label>
+            <select class="select" id="gate-period">
+              <option value="">تلقائي حسب الوقت الحالي</option>
+            </select>
+          </div>
+          <div class="gate-period-note" id="gate-period-note">
+            <svg class="ico" style="width:14px;height:14px"><use href="#i-sparkle"></use></svg>
+            <span>سيُختار الوقت الأنسب تلقائيًا.</span>
+          </div>
+          <div id="gate-closure"></div>
+          <div class="gate-kpi">
+            <div><span>الحاضرون</span><strong class="is-success" id="gate-kpi-present">0</strong></div>
+            <div><span>المتأخرون</span><strong class="is-warning" id="gate-kpi-late">0</strong></div>
+            <div><span>الغائبون</span><strong id="gate-kpi-absent">0</strong></div>
+            <div><span>لم يُمسح</span><strong id="gate-kpi-unscanned">0</strong></div>
+          </div>
+          <div class="progress-row" style="margin-top:12px">
+            <div class="row-head"><strong>نسبة الحضور</strong><span id="gate-rate-label">0%</span></div>
+            <div class="progress"><span id="gate-rate-bar" style="width:0%"></span></div>
+          </div>
+          <div class="tiny muted mt-2" id="gate-period-meta">—</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-list"></use></svg> آخر الوصولات</h2><p>يُحدَّث تلقائيًا مع كل مسح</p></div>
+          <span class="badge badge--present" id="gate-recent-count">0</span>
+        </div>
+        <div class="card-body" id="gate-recent">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/gate.js') }}"></script>
+{% endblock %}

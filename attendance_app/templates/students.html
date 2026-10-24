@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.import_page') }}">
+    <svg class="ico"><use href="#i-upload"></use></svg>
+    <span>استيراد قائمة</span>
+  </a>
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.print_studio_page') }}">
+    <svg class="ico"><use href="#i-printer"></use></svg>
+    <span>استوديو الطباعة</span>
+  </a>
+  <button class="btn btn-primary btn-sm" type="button" id="students-add">
+    <svg class="ico"><use href="#i-plus"></use></svg>
+    <span>إضافة تلميذ</span>
+  </button>
+{% endblock %}
+
+{% block content %}
+  <section class="card filter-card mb-2">
+    <div class="card-body" style="padding:14px 18px">
+      <div class="toolbar">
+        <div class="search-box">
+          <svg class="ico"><use href="#i-search"></use></svg>
+          <input class="input" type="search" id="students-search" placeholder="ابحث بالاسم، رقم التعريف، أو هاتف الولي…" autocomplete="off" aria-label="بحث عن تلميذ">
+        </div>
+        <label class="sr-only" for="students-class-filter">تصفية حسب القسم</label>
+        <select class="select" id="students-class-filter">
+          <option value="">كل الأقسام</option>
+        </select>
+        <label class="sr-only" for="students-active-filter">تصفية حسب الحالة</label>
+        <select class="select" id="students-active-filter">
+          <option value="all">كل الحالات</option>
+          <option value="1">النشطون</option>
+          <option value="0">المؤرشفون</option>
+        </select>
+        <label class="sr-only" for="students-per-page">عدد الصفوف</label>
+        <select class="select" id="students-per-page" title="عدد الصفوف في الصفحة">
+          <option value="10">10 صفوف</option>
+          <option value="20" selected>20 صفوف</option>
+          <option value="50">50 صفوف</option>
+          <option value="100">100 صفوف</option>
+        </select>
+        <div class="spacer"></div>
+        <div class="students-summary" aria-live="polite">
+          <span class="chip" id="students-count-all"><strong>0</strong>&nbsp;إجمالي</span>
+          <span class="chip is-accent" id="students-count-active"><strong>0</strong>&nbsp;نشط</span>
+          <span class="chip" id="students-count-inactive"><strong>0</strong>&nbsp;مؤرشف</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2><svg class="ico"><use href="#i-users"></use></svg> قاعدة بيانات التلاميذ</h2>
+        <p id="students-result-label">جارٍ تحميل القائمة…</p>
+      </div>
+      <button class="icon-btn" type="button" id="students-refresh" title="تحديث القائمة" aria-label="تحديث القائمة">
+        <svg class="ico"><use href="#i-refresh"></use></svg>
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table students-table">
+        <thead>
+          <tr>
+            <th>التلميذ</th>
+            <th class="col-class">القسم</th>
+            <th class="col-phone">هاتف الولي</th>
+            <th class="col-birth">تاريخ الميلاد</th>
+            <th class="col-status">الحالة</th>
+            <th class="col-actions" style="width:1%">إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="students-table-body">
+          <tr>
+            <td colspan="6" class="empty-cell">
+              <div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل التلاميذ…</span></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-foot">
+      <div class="pagination" id="students-pagination"></div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/students.js') }}"></script>
+{% endblock %}

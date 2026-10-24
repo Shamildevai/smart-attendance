@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <div class="flex flex-wrap">
+    <label class="sr-only" for="att-date">تاريخ المتابعة</label>
+    <div class="input-group" style="width:auto">
+      <svg class="ico"><use href="#i-calendar"></use></svg>
+      <input class="input input-sm" type="date" id="att-date" value="{{ today }}" max="{{ today }}" style="min-width:160px">
+    </div>
+    <button class="btn btn-secondary btn-sm" type="button" id="att-refresh">
+      <svg class="ico"><use href="#i-refresh"></use></svg>
+      <span>تحديث</span>
+    </button>
+    <a class="btn btn-secondary btn-sm" id="att-report-link" href="{{ url_for('views.reports_page') }}?date={{ today }}">
+      <svg class="ico"><use href="#i-chart"></use></svg>
+      <span>تقرير اليوم</span>
+    </a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <section class="card attendance-status-bar" id="att-status-bar" aria-live="polite">
+    <div class="attendance-status-info">
+      <div class="attendance-status-icon" id="att-status-icon">
+        <svg class="ico"><use href="#i-clock"></use></svg>
+      </div>
+      <div>
+        <strong id="att-status-title">جارٍ تحميل حالة الفترة…</strong>
+        <p id="att-status-text">يتم التحقق من سجلات الحضور وحالة الإغلاق لهذا اليوم.</p>
+        <div class="tag-list" id="att-status-tags" style="margin-top:4px"></div>
+      </div>
+    </div>
+    <div class="attendance-status-actions">
+      <label class="sr-only" for="att-period">الفترة الدراسية</label>
+      {% set ns = namespace(selected=false) %}
+      <select class="select" id="att-period" style="min-width:170px;min-height:36px;font-size:12px">
+        {% for period in periods %}
+          <option value="{{ period.id }}" {% if period.is_active and not ns.selected %}{% set ns.selected = true %}selected{% endif %}>{{ period.period_name }}</option>
+        {% endfor %}
+        {% if not periods %}<option value="">لا توجد فترات</option>{% endif %}
+      </select>
+      <button class="btn btn-warning btn-sm" type="button" id="att-close">
+        <svg class="ico"><use href="#i-shield-check"></use></svg>
+        <span>إغلاق الفترة ومعالجة الغياب</span>
+      </button>
+    </div>
+  </section>
+
+  <div class="sms-progress" id="sms-job-progress" role="status">
+    <span class="spinner"></span>
+    <div class="sms-progress-text">
+      <strong id="sms-job-title">جارٍ إرسال الرسائل…</strong>
+      <span id="sms-job-note">يتم تجهيز قائمة الرسائل المعلّقة.</span>
+      <div class="sms-progress-bar"><span id="sms-job-bar" style="width:0%"></span></div>
+    </div>
+    <div class="sms-progress-meta" id="sms-job-meta">—</div>
+  </div>
+
+  <div class="attendance-tabs" role="tablist" aria-label="أقسام المتابعة">
+    <button class="attendance-tab is-active" type="button" role="tab" aria-selected="true" data-att-tab="logs" id="att-tab-logs">
+      <svg class="ico"><use href="#i-list"></use></svg>
+      <span>سجل الحضور</span>
+      <span class="count" id="att-logs-count">0</span>
+    </button>
+    <button class="attendance-tab" type="button" role="tab" aria-selected="false" data-att-tab="sms" id="att-tab-sms">
+      <svg class="ico"><use href="#i-message"></use></svg>
+      <span>رسائل الأولياء</span>
+      <span class="count" id="att-sms-count">0</span>
+    </button>
+  </div>
+
+  <div id="att-panel-logs" role="tabpanel" aria-labelledby="att-tab-logs">
+    <section class="card filter-card mb-2">
+      <div class="card-body" style="padding:14px 18px">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg class="ico"><use href="#i-search"></use></svg>
+            <input class="input" type="search" id="att-search" placeholder="ابحث بالاسم أو رقم التعريف…" autocomplete="off" aria-label="بحث في سجل الحضور">
+          </div>
+          <label class="sr-only" for="att-class-filter">تصفية حسب القسم</label>
+          <select class="select" id="att-class-filter">
+            <option value="">كل الأقسام</option>
+            {% for item in classes %}
+              <option value="{{ item.value }}">{{ item.label }} ({{ item.active }})</option>
+            {% endfor %}
+          </select>
+          <label class="sr-only" for="att-status-filter">تصفية حسب الحالة</label>
+          <select class="select" id="att-status-filter">
+            <option value="">كل الحالات</option>
+            <option value="PRESENT">حاضر</option>
+            <option value="LATE">متأخر</option>
+            <option value="ABSENT">غائب</option>
+            <option value="EXCUSED">غياب مبرر</option>
+          </select>
+          <label class="sr-only" for="att-per-page">عدد الصفوف</label>
+          <select class="select" id="att-per-page" title="عدد الصفوف في الصفحة">
+            <option value="25" selected>25 صفًا</option>
+            <option value="50">50 صفًا</option>
+            <option value="100">100 صف</option>
+          </select>
+          <div class="spacer"></div>
+          <div class="students-summary" aria-live="polite">
+            <span class="chip is-accent" id="att-chip-present"><strong>0</strong>&nbsp;حاضر</span>
+            <span class="chip is-warning" id="att-chip-late"><strong>0</strong>&nbsp;متأخر</span>
+            <span class="chip is-danger" id="att-chip-absent"><strong>0</strong>&nbsp;غائب</span>
+            <span class="chip" id="att-chip-excused"><strong>0</strong>&nbsp;مبرر</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2><svg class="ico"><use href="#i-list"></use></svg> سجلات الحضور</h2>
+          <p id="att-logs-label">جارٍ تحميل السجلات…</p>
+        </div>
+        <a class="icon-btn" href="{{ url_for('views.gate_page') }}" title="فتح بوابة المسح" aria-label="فتح بوابة المسح">
+          <svg class="ico"><use href="#i-scan"></use></svg>
+        </a>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>التلميذ</th>
+              <th>القسم والفترة</th>
+              <th>وقت المسح</th>
+              <th>الحالة</th>
+              <th>رسالة SMS</th>
+              <th class="col-note">ملاحظة</th>
+              <th style="width:1%">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="att-table-body">
+            <tr><td colspan="7" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل السجلات…</span></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-foot">
+        <div class="pagination" id="att-pagination"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="att-panel-sms" role="tabpanel" aria-labelledby="att-tab-sms" hidden>
+    <div class="sms-summary-strip" aria-live="polite">
+      <div class="pending"><i></i><strong id="sms-count-pending">0</strong><span>في الانتظار</span></div>
+      <div class="sent"><i></i><strong id="sms-count-sent">0</strong><span>تم الإرسال</span></div>
+      <div class="failed"><i></i><strong id="sms-count-failed">0</strong><span>فشل</span></div>
+      <div class="cancelled"><i></i><strong id="sms-count-cancelled">0</strong><span>ملغاة</span></div>
+    </div>
+
+    <section class="card filter-card mb-2">
+      <div class="card-body" style="padding:14px 18px">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg class="ico"><use href="#i-search"></use></svg>
+            <input class="input" type="search" id="sms-search" placeholder="ابحث بالاسم أو رقم الهاتف…" autocomplete="off" aria-label="بحث في رسائل الأولياء">
+          </div>
+          <label class="sr-only" for="sms-status-filter">تصفية حسب حالة الإرسال</label>
+          <select class="select" id="sms-status-filter">
+            <option value="">كل الحالات</option>
+            <option value="PENDING">في الانتظار</option>
+            <option value="SENT">تم الإرسال</option>
+            <option value="FAILED">فشل</option>
+            <option value="CANCELLED">ملغاة</option>
+          </select>
+          <label class="sr-only" for="sms-per-page">عدد الصفوف</label>
+          <select class="select" id="sms-per-page" title="عدد الصفوف في الصفحة">
+            <option value="20" selected>20 صفًا</option>
+            <option value="50">50 صفًا</option>
+            <option value="100">100 صف</option>
+          </select>
+          <div class="spacer"></div>
+          <span class="chip is-accent hidden" id="sms-test-chip">وضع الاختبار</span>
+          <button class="btn btn-warning btn-sm" type="button" id="sms-dispatch">
+            <svg class="ico"><use href="#i-send"></use></svg>
+            <span>إرسال الرسائل المعلّقة</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2><svg class="ico"><use href="#i-message"></use></svg> صندوق رسائل الغياب</h2>
+          <p id="sms-logs-label">جارٍ تحميل الرسائل…</p>
+        </div>
+        <span class="badge" id="sms-gateway-badge">—</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>التلميذ</th>
+              <th>القسم</th>
+              <th>هاتف الولي</th>
+              <th>الرسالة</th>
+              <th>الحالة</th>
+              <th>المحاولات</th>
+              <th style="width:1%">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="sms-table-body">
+            <tr><td colspan="7" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل الرسائل…</span></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-foot">
+        <div class="pagination" id="sms-pagination"></div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/absence-workflow.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/attendance.js') }}"></script>
+{% endblock %}

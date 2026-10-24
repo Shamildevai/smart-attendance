@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <div class="flex flex-wrap">
+    <button class="btn btn-secondary btn-sm" type="button" id="reports-refresh">
+      <svg class="ico"><use href="#i-refresh"></use></svg>
+      <span>تحديث</span>
+    </button>
+    <button class="btn btn-secondary btn-sm" type="button" id="reports-export">
+      <svg class="ico"><use href="#i-download"></use></svg>
+      <span>تصدير Excel</span>
+    </button>
+    <button class="btn btn-primary btn-sm" type="button" id="reports-print">
+      <svg class="ico"><use href="#i-printer"></use></svg>
+      <span>طباعة / PDF</span>
+    </button>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <section class="card filter-card mb-2">
+    <div class="card-body" style="padding:14px 18px;display:grid;gap:12px">
+      <div class="flex between" style="flex-wrap:wrap;gap:10px">
+        <div class="segmented" id="reports-kind" role="tablist" aria-label="نوع التقرير">
+          <button type="button" class="is-active" data-report-kind="daily" role="tab" aria-selected="true">
+            <svg class="ico"><use href="#i-calendar"></use></svg>
+            <span>تقرير يومي</span>
+          </button>
+          <button type="button" data-report-kind="monthly" role="tab" aria-selected="false">
+            <svg class="ico"><use href="#i-chart"></use></svg>
+            <span>تقرير شهري</span>
+          </button>
+        </div>
+        <span class="chip" id="reports-generated">—</span>
+      </div>
+      <div class="toolbar">
+        <div id="reports-daily-date-wrap">
+          <label class="sr-only" for="reports-date">تاريخ التقرير</label>
+          <div class="input-group" style="width:auto">
+            <svg class="ico"><use href="#i-calendar"></use></svg>
+            <input class="input" type="date" id="reports-date" value="{{ today }}" max="{{ today }}">
+          </div>
+        </div>
+        <div id="reports-month-wrap" hidden>
+          <label class="sr-only" for="reports-month">شهر التقرير</label>
+          <div class="input-group" style="width:auto">
+            <svg class="ico"><use href="#i-calendar"></use></svg>
+            <input class="input" type="month" id="reports-month" value="{{ current_month }}" max="{{ current_month }}">
+          </div>
+        </div>
+        <label class="sr-only" for="reports-period-filter">الفترة</label>
+        <select class="select" id="reports-period-filter">
+          <option value="">كل الفترات</option>
+          {% for period in periods %}
+            <option value="{{ period.id }}">{{ period.period_name }}</option>
+          {% endfor %}
+        </select>
+        <label class="sr-only" for="reports-class-filter">القسم</label>
+        <select class="select" id="reports-class-filter">
+          <option value="">كل الأقسام</option>
+          {% for item in classes %}
+            <option value="{{ item.value }}">{{ item.label }}</option>
+          {% endfor %}
+        </select>
+        <label class="sr-only" for="reports-status-filter">حالة الحضور</label>
+        <select class="select" id="reports-status-filter">
+          <option value="">كل الحالات</option>
+          {% for key in status_order %}
+            <option value="{{ key }}">{{ status_labels[key] }}</option>
+          {% endfor %}
+        </select>
+        <div class="spacer"></div>
+        <span class="tiny muted" id="reports-scope-note">—</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="report-hero">
+    <div>
+      <h2><svg class="ico"><use href="#i-chart"></use></svg> <span id="reports-title">تقرير الحضور والغياب اليومي</span></h2>
+      <p id="reports-subtitle">جارٍ تحميل التقرير…</p>
+    </div>
+    <div class="report-hero-actions">
+      <button class="btn btn-secondary btn-sm" type="button" id="reports-export-hero">
+        <svg class="ico"><use href="#i-download"></use></svg>
+        <span>تصدير Excel</span>
+      </button>
+      <button class="btn btn-primary btn-sm" type="button" id="reports-print-hero">
+        <svg class="ico"><use href="#i-printer"></use></svg>
+        <span>طباعة التقرير</span>
+      </button>
+    </div>
+  </section>
+
+  <div class="report-summary" id="reports-summary" aria-live="polite">
+    <article class="report-summary-card">
+      <span class="dot" style="background:var(--success)"></span>
+      <div><strong id="reports-stat-present">—</strong><span>حاضر</span></div>
+    </article>
+    <article class="report-summary-card">
+      <span class="dot" style="background:var(--warning)"></span>
+      <div><strong id="reports-stat-late">—</strong><span>متأخر</span></div>
+    </article>
+    <article class="report-summary-card">
+      <span class="dot" style="background:var(--danger)"></span>
+      <div><strong id="reports-stat-absent">—</strong><span>غائب</span></div>
+    </article>
+    <article class="report-summary-card">
+      <span class="dot" style="background:var(--info)"></span>
+      <div><strong id="reports-stat-excused">—</strong><span>غياب مبرر</span></div>
+    </article>
+  </div>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2><svg class="ico"><use href="#i-list"></use></svg> <span id="reports-table-title">سجلات اليوم</span></h2>
+        <p id="reports-table-label">—</p>
+      </div>
+      <div class="flex" id="reports-table-meta" style="gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table report-table">
+        <thead id="reports-table-head"></thead>
+        <tbody id="reports-table-body">
+          <tr><td class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل التقرير…</span></div></td></tr>
+        </tbody>
+        <tfoot id="reports-table-foot"></tfoot>
+      </table>
+    </div>
+    <div class="card-foot">
+      <div class="flex between" style="flex-wrap:wrap;gap:8px">
+        <span class="tiny muted" id="reports-foot-note">—</span>
+        <span class="tiny muted">يمكن تصدير التقرير إلى Excel أو طباعته كملف PDF من نافذة الطباعة.</span>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+{% endblock %}

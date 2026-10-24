@@ -1,0 +1,547 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <div class="flex flex-wrap">
+    <span class="chip hidden" id="settings-saved-chip" aria-live="polite">
+      <svg class="ico" style="width:13px;height:13px"><use href="#i-check"></use></svg>
+      <span>محفوظ</span>
+    </span>
+    <button class="btn btn-secondary btn-sm" type="button" id="settings-refresh">
+      <svg class="ico"><use href="#i-refresh"></use></svg>
+      <span>تحديث</span>
+    </button>
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('views.print_studio_page') }}">
+      <svg class="ico"><use href="#i-printer"></use></svg>
+      <span>استوديو الطباعة</span>
+    </a>
+  </div>
+{% endblock %}
+
+{% block content %}
+<div class="settings-layout">
+  <nav class="settings-nav" aria-label="أقسام الإعدادات">
+    <a href="#settings-institution">
+      <svg class="ico"><use href="#i-school"></use></svg><span>بيانات المؤسسة</span>
+    </a>
+    <a href="#settings-branding">
+      <svg class="ico"><use href="#i-stamp"></use></svg><span>الشعار والختم</span>
+    </a>
+    <a href="#settings-schedule">
+      <svg class="ico"><use href="#i-calendar"></use></svg><span>الدوام والسلوك</span>
+    </a>
+    <a href="#settings-periods">
+      <svg class="ico"><use href="#i-clock"></use></svg><span>الفترات الدراسية</span>
+    </a>
+    <a href="#settings-sms">
+      <svg class="ico"><use href="#i-message"></use></svg><span>رسائل SMS</span>
+    </a>
+    <a href="#settings-data">
+      <svg class="ico"><use href="#i-database"></use></svg><span>البيانات والنظام</span>
+    </a>
+  </nav>
+
+  <div class="settings-sections">
+    <section class="card settings-section" id="settings-institution">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-school"></use></svg></div>
+        <div class="flex-1">
+          <h2>بيانات المؤسسة</h2>
+          <p>تظهر هذه المعلومات في ترويسة المطبوعات ورسائل الأولياء.</p>
+        </div>
+        <span class="chip is-accent">ترويسة رسمية</span>
+      </div>
+      <form class="settings-card-body" id="institution-form" novalidate>
+        <div class="form-grid">
+          <div class="field form-span-2">
+            <label for="school-name">اسم المؤسسة <span class="required">*</span></label>
+            <input class="input" id="school-name" name="school_name" maxlength="160" value="{{ settings.get('school_name', '') }}" required autocomplete="organization">
+            <span class="field-hint">اسم المؤسسة كما يظهر في الوثائق الرسمية.</span>
+          </div>
+          <div class="field">
+            <label for="academic-year">السنة الدراسية</label>
+            <input class="input" id="academic-year" name="academic_year" maxlength="40" value="{{ settings.get('academic_year', '') }}" placeholder="2026/2025">
+          </div>
+          <div class="field">
+            <label for="principal-name">اسم مدير المؤسسة</label>
+            <input class="input" id="principal-name" name="principal_name" maxlength="120" value="{{ settings.get('principal_name', '') }}" placeholder="مدير المؤسسة">
+          </div>
+          <div class="field form-span-2">
+            <label for="header-text">نص الترويسة</label>
+            <textarea class="textarea" id="header-text" name="header_text" maxlength="600" rows="3" placeholder="الجمهورية الجزائرية الديمقراطية الشعبية&#10;وزارة التربية الوطنية">{{ settings.get('header_text', '') }}</textarea>
+            <span class="field-hint">سطران أو ثلاثة تظهر أعلى بطاقات التعريف والتقارير المطبوعة.</span>
+          </div>
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-primary btn-sm" type="submit">
+            <svg class="ico"><use href="#i-check"></use></svg>
+            <span>حفظ بيانات المؤسسة</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card settings-section" id="settings-branding">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-stamp"></use></svg></div>
+        <div class="flex-1">
+          <h2>الشعار والختم</h2>
+          <p>صور شفافة بصيغة PNG أو WEBP تعطي مظهرًا رسميًا للبطاقات والتقارير.</p>
+        </div>
+      </div>
+      <div class="settings-card-body">
+        <div class="branding-grid">
+          <div class="upload-tile">
+            <div class="upload-preview" id="logo-preview" aria-live="polite">
+              {% if settings.get('logo_path') %}
+                <img src="{{ settings.get('logo_path') }}" alt="شعار المؤسسة">
+              {% else %}
+                <svg class="ico"><use href="#i-school"></use></svg>
+              {% endif %}
+            </div>
+            <div class="upload-meta">
+              <strong>شعار المؤسسة</strong>
+              <span>PNG أو JPG أو WEBP — بحد أقصى 3 ميغابايت.</span>
+              <div class="flex flex-wrap">
+                <button class="btn btn-secondary btn-sm" type="button" data-upload="logo">
+                  <svg class="ico"><use href="#i-upload"></use></svg>
+                  <span>رفع الشعار</span>
+                </button>
+                <button class="btn btn-ghost btn-sm {% if not settings.get('logo_path') %}hidden{% endif %}" type="button" data-remove="logo" id="logo-remove">
+                  <svg class="ico"><use href="#i-trash"></use></svg>
+                  <span>إزالة</span>
+                </button>
+              </div>
+              <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp" hidden>
+            </div>
+          </div>
+
+          <div class="upload-tile">
+            <div class="upload-preview" id="stamp-preview" aria-live="polite">
+              {% if settings.get('stamp_path') %}
+                <img src="{{ settings.get('stamp_path') }}" alt="ختم المؤسسة">
+              {% else %}
+                <svg class="ico"><use href="#i-stamp"></use></svg>
+              {% endif %}
+            </div>
+            <div class="upload-meta">
+              <strong>ختم المؤسسة</strong>
+              <span>يظهر أسفل الشهادات والتقارير المطبوعة.</span>
+              <div class="flex flex-wrap">
+                <button class="btn btn-secondary btn-sm" type="button" data-upload="stamp">
+                  <svg class="ico"><use href="#i-upload"></use></svg>
+                  <span>رفع الختم</span>
+                </button>
+                <button class="btn btn-ghost btn-sm {% if not settings.get('stamp_path') %}hidden{% endif %}" type="button" data-remove="stamp" id="stamp-remove">
+                  <svg class="ico"><use href="#i-trash"></use></svg>
+                  <span>إزالة</span>
+                </button>
+              </div>
+              <input type="file" id="stamp-file" accept="image/png,image/jpeg,image/webp" hidden>
+            </div>
+          </div>
+        </div>
+        <div class="settings-note">
+          <svg class="ico"><use href="#i-shield-check"></use></svg>
+          <div>تُحفظ الصور داخل مجلد بيانات النظام على هذا الجهاز، ولا تُرسل إلى أي خدمة خارجية. استعمل خلفية شفافة لنتيجة طباعة أفضل.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card settings-section" id="settings-schedule">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-calendar"></use></svg></div>
+        <div class="flex-1">
+          <h2>الدوام والسلوك</h2>
+          <p>أيام الدراسة وتفعيل الرصد التلقائي وحماية البوابة من التكرار.</p>
+        </div>
+      </div>
+      <form class="settings-card-body" id="schedule-form" novalidate>
+        <div class="field">
+          <span class="field-label">أيام الدراسة</span>
+          <div class="weekday-grid" id="weekday-grid">
+            {% set active_days = (settings.get('school_weekdays') or '0,1,2,3,4').split(',') %}
+            {% for day_name in ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'] %}
+              <label class="weekday-chip">
+                <input type="checkbox" name="school_weekdays" value="{{ loop.index0 }}" {% if loop.index0 | string in active_days %}checked{% endif %}>
+                <span>{{ day_name }}</span>
+              </label>
+            {% endfor %}
+          </div>
+          <span class="field-hint">تُستعمل لتخطي الرصد التلقائي في أيام العطل الأسبوعية.</span>
+        </div>
+
+        <div class="settings-toggle-grid">
+          <label class="switch">
+            <input type="checkbox" id="auto-sweep" name="auto_sweep" {% if settings.get('auto_sweep', '1') == '1' %}checked{% endif %}>
+            <span class="switch-track"></span>
+            <span class="switch-text">
+              <strong>الرصد التلقائي للغياب</strong>
+              <span>عند تجاوز حد الغياب، تُسجَّل الغيابات وتُجهَّز رسائل الأولياء في الانتظار دون إرسال تلقائي.</span>
+            </span>
+          </label>
+          <div class="field">
+            <label for="anti-passback">منع تكرار المسح (بالدقائق)</label>
+            <input class="input" type="number" id="anti-passback" min="1" max="60" step="1" value="{{ settings.get('anti_passback_minutes', '5') }}">
+            <span class="field-hint">إذا أعاد التلميذ مسح بطاقته خلال هذه المدة، يُحتسب حضوره دون إنشاء سجل مكرر.</span>
+          </div>
+        </div>
+
+        <div class="settings-actions">
+          <button class="btn btn-primary btn-sm" type="submit">
+            <svg class="ico"><use href="#i-check"></use></svg>
+            <span>حفظ إعدادات الدوام</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card settings-section" id="settings-periods">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-clock"></use></svg></div>
+        <div class="flex-1">
+          <h2>الفترات الدراسية</h2>
+          <p>اضبط أوقات البداية وحدود الحضور والغياب لكل فترة.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" type="button" id="period-add">
+          <svg class="ico"><use href="#i-plus"></use></svg>
+          <span>إضافة فترة</span>
+        </button>
+      </div>
+      <div class="settings-card-body">
+        <div class="periods-list" id="periods-list">
+          {% if periods %}
+            <div class="period-row is-head">
+              <span>الفترة</span><span style="text-align:center">البداية</span><span style="text-align:center">حد الحضور</span><span style="text-align:center">حد الغياب</span><span></span>
+            </div>
+            {% for period in periods %}
+              <div class="period-row" data-period-id="{{ period.id }}">
+                <div class="period-name">
+                  <svg class="ico" style="width:15px;height:15px;color:var(--primary)"><use href="#i-clock"></use></svg>
+                  <span>{{ period.period_name }}</span>
+                  {% if period.is_active %}
+                    <span class="badge badge--present"><i class="badge-dot"></i>نشطة</span>
+                  {% else %}
+                    <span class="badge badge--cancelled"><i class="badge-dot"></i>معطّلة</span>
+                  {% endif %}
+                </div>
+                <time>{{ period.start_time }}</time>
+                <time>{{ period.on_time_cutoff }}</time>
+                <time>{{ period.absent_cutoff_time }}</time>
+                <div class="actions">
+                  <button class="icon-btn" type="button" data-period-edit="{{ period.id }}" title="تعديل الفترة" aria-label="تعديل {{ period.period_name }}">
+                    <svg class="ico"><use href="#i-edit"></use></svg>
+                  </button>
+                  <button class="icon-btn" type="button" data-period-delete="{{ period.id }}" title="حذف الفترة" aria-label="حذف {{ period.period_name }}">
+                    <svg class="ico"><use href="#i-trash"></use></svg>
+                  </button>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="period-row"><span class="muted">لا توجد فترات بعد. أضف فترة لبدء تسجيل الحضور.</span></div>
+          {% endif %}
+        </div>
+        <div class="settings-note">
+          <svg class="ico"><use href="#i-shield-check"></use></svg>
+          <div>لا يمكن حذف فترة مرتبطة بسجلات حضور أو إغلاقات سابقة. عطّلها بدل حذفها للحفاظ على الأرشيف.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card settings-section" id="settings-sms">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-message"></use></svg></div>
+        <div class="flex-1">
+          <h2>رسائل الأولياء (SMS وواتساب)</h2>
+          <p>قالب الرسالة وبوابة الإرسال وإعدادات المحاولات والمشاركة اليدوية عبر واتساب.</p>
+        </div>
+        <span class="chip is-accent" id="sms-gateway-badge">بوابة محلية</span>
+      </div>
+      <form class="settings-card-body" id="sms-form" novalidate>
+        <div class="settings-note" id="sms-mode-note">
+          <svg class="ico"><use href="#i-shield-check"></use></svg>
+          <div id="sms-mode-text">وضع الاختبار مفعّل: تُحاكى عمليات الإرسال دون استخدام الشبكة أو استهلاك رصيد.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="sms-test-mode" {% if settings.get('sms_test_mode', '1') == '1' %}checked{% endif %}>
+          <span class="switch-track"></span>
+          <span class="switch-text">
+            <strong>وضع الاختبار</strong>
+            <span>أبقِه مفعّلًا أثناء التجارب. عند تعطيله ستحتاج إلى رابط بوابة صالح في الإعدادات. لا يؤثر على روابط واتساب اليدوية.</span>
+          </span>
+        </label>
+
+        <div class="settings-toggle-grid">
+          <label class="switch">
+            <input type="checkbox" id="whatsapp-enabled" {% if settings.get('whatsapp_enabled', '1') == '1' %}checked{% endif %}>
+            <span class="switch-track"></span>
+            <span class="switch-text">
+              <strong>إظهار أزرار واتساب</strong>
+              <span>تظهر في سجل الغياب وصندوق الرسائل. الضغط يفتح واتساب بنص الرسالة جاهزًا، ثم تراجع النص وتضغط «إرسال» داخل واتساب.</span>
+            </span>
+          </label>
+          <div class="field">
+            <label for="whatsapp-country-code">رمز الدولة الافتراضي</label>
+            <input class="input mono" id="whatsapp-country-code" type="text" inputmode="numeric" dir="ltr" maxlength="4" value="{{ settings.get('whatsapp_country_code', '213') }}">
+            <span class="field-hint">يُضاف تلقائيًا للأرقام المحلية التي تبدأ بـ 0 (الجزائر: 213).</span>
+          </div>
+        </div>
+
+        <div class="settings-note">
+          <svg class="ico"><use href="#i-whatsapp"></use></svg>
+          <div>روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. تحتاج تطبيق واتساب أو متصفحًا متصلًا بالإنترنت، ولا يرسل النظام أي رسالة دون تأكيدك داخل واتساب.</div>
+        </div>
+
+        <div class="sms-template-editor">
+          <div class="field">
+            <label for="sms-template">قالب رسالة الغياب <span class="required">*</span></label>
+            <div class="sms-template-tools" aria-label="إدراج متغير">
+              <span class="hint-inline"><svg class="ico"><use href="#i-sparkle"></use></svg>إدراج متغير:</span>
+              <button class="var-chip" type="button" data-var="[اسم_المؤسسة]">اسم المؤسسة</button>
+              <button class="var-chip" type="button" data-var="[اسم_التلميذ]">اسم التلميذ</button>
+              <button class="var-chip" type="button" data-var="[القسم]">القسم</button>
+              <button class="var-chip" type="button" data-var="[اسم_الفترة]">الفترة</button>
+              <button class="var-chip" type="button" data-var="[التاريخ]">التاريخ</button>
+              <button class="var-chip" type="button" data-var="[السنة_الدراسية]">السنة الدراسية</button>
+            </div>
+            <textarea class="textarea" id="sms-template" rows="5" maxlength="2000" required spellcheck="false">{{ settings.get('sms_template', '') }}</textarea>
+            <div class="sms-template-meta">
+              <span class="hint-inline">المتغيرات تُستبدل تلقائيًا لكل تلميذ عند تجهيز الرسائل.</span>
+              <span class="sms-counter" id="sms-template-count">0 / 2000</span>
+            </div>
+          </div>
+          <div class="sms-template-preview">
+            <span>معاينة:</span>
+            <p id="sms-template-preview">—</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="sms-gateway">نوع بوابة الإرسال</label>
+            <select class="select" id="sms-gateway">
+              <option value="local" {% if settings.get('sms_gateway', 'local') == 'local' %}selected{% endif %}>بوابة أندرويد محلية (HTTP)</option>
+              <option value="cloud" {% if settings.get('sms_gateway') == 'cloud' %}selected{% endif %}>واجهة سحابية قابلة للضبط</option>
+            </select>
+            <span class="field-hint">البوابة المحلية تستقبل JSON بالحقول phone و message.</span>
+          </div>
+          <div class="field">
+            <label for="sms-api-url">رابط بوابة SMS</label>
+            <input class="input mono" id="sms-api-url" type="url" inputmode="url" dir="ltr" maxlength="500" value="{{ settings.get('sms_api_url', '') }}" placeholder="http://127.0.0.1:8080/send">
+            <span class="field-hint">عنوان الخدمة التي ستستقبل طلبات الإرسال.</span>
+          </div>
+          <div class="field">
+            <label for="sms-api-key">مفتاح API (اختياري)</label>
+            <div class="input-group">
+              <svg class="ico"><use href="#i-shield-check"></use></svg>
+              <input class="input mono" id="sms-api-key" type="password" dir="ltr" maxlength="1000" value="{{ settings.get('sms_api_key', '') }}" placeholder="X-Api-Key">
+              <button class="input-action" type="button" id="sms-api-key-toggle" aria-label="إظهار المفتاح" title="إظهار المفتاح">
+                <svg class="ico"><use href="#i-eye"></use></svg>
+              </button>
+            </div>
+            <span class="field-hint">يُرسل في ترويسة <code>X-Api-Key</code> للبوابة المحلية.</span>
+          </div>
+          <div class="field">
+            <label for="sms-timeout">مهلة الاتصال (ثوانٍ)</label>
+            <input class="input" id="sms-timeout" type="number" min="3" max="120" step="1" value="{{ settings.get('sms_timeout', '10') }}">
+          </div>
+          <div class="field">
+            <label for="sms-retry">عدد محاولات الإرسال</label>
+            <input class="input" id="sms-retry" type="number" min="1" max="10" step="1" value="{{ settings.get('sms_retry_max', '3') }}">
+            <span class="field-hint">تُعاد المحاولة تلقائيًا عند فشل الاتصال قبل تسجيل الرسالة كفاشلة.</span>
+          </div>
+          <div class="field">
+            <label for="sms-test-phone">عدد اختباري للتحقق</label>
+            <div class="flex flex-wrap">
+              <input class="input mono flex-1" id="sms-test-phone" type="tel" dir="ltr" inputmode="tel" placeholder="0550123456" maxlength="20" style="min-width:150px">
+              <button class="btn btn-secondary btn-sm" type="button" id="sms-test-send">
+                <svg class="ico"><use href="#i-send"></use></svg>
+                <span>إرسال تجريبي</span>
+              </button>
+            </div>
+            <span class="field-hint">يحفظ الإعدادات الجديدة أولًا عند إجراء الاختبار. في وضع الاختبار تُحاكى العملية فقط.</span>
+          </div>
+        </div>
+
+        <details class="gateway-config" id="gateway-cloud">
+          <summary>
+            <svg class="ico"><use href="#i-settings"></use></svg>
+            إعدادات متقدمة للواجهة السحابية
+          </summary>
+          <div class="gateway-config-body">
+            <div class="field">
+              <label for="sms-headers">ترويسات HTTP (JSON)</label>
+              <textarea class="textarea mono" id="sms-headers" rows="4" dir="ltr" spellcheck="false">{{ settings.get('sms_headers', '{}') }}</textarea>
+              <span class="field-hint">يمكن استخدام <code>{{ '{{api_key}}' }}</code> داخل الترويسات.</span>
+            </div>
+            <div class="field">
+              <label for="sms-payload">قالب JSON للطلب</label>
+              <textarea class="textarea mono" id="sms-payload" rows="4" dir="ltr" spellcheck="false">{{ settings.get('sms_payload_template', '') }}</textarea>
+              <span class="field-hint">الحقول المتاحة: <code>{{ '{{phone}}' }}</code> و <code>{{ '{{message}}' }}</code> و <code>{{ '{{api_key}}' }}</code>. يُستبدل الرابط أيضًا بنفس الحقول.</span>
+            </div>
+            <div class="settings-note">
+              <svg class="ico"><use href="#i-warning"></use></svg>
+              <div>هذه الإعدادات تُستعمل فقط عند اختيار «واجهة سحابية». تأكد من صيغة JSON صالحة قبل الحفظ.</div>
+            </div>
+          </div>
+        </details>
+
+        <div class="settings-actions">
+          <button class="btn btn-primary btn-sm" type="submit">
+            <svg class="ico"><use href="#i-check"></use></svg>
+            <span>حفظ إعدادات الرسائل</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card settings-section" id="settings-updates">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-shield-check"></use></svg></div>
+        <div class="flex-1">
+          <h2>تحديثات النظام</h2>
+          <p>تحديثات موقّعة رقميًا تُحمّل من خادم fetsync وتُثبّت تلقائيًا بعد التحقق.</p>
+        </div>
+        <span class="chip is-accent" id="update-current-version">الإصدار {{ app_version }}</span>
+      </div>
+      <div class="settings-card-body">
+        <form id="update-form" novalidate>
+          <div class="check-row">
+            <label class="switch">
+              <input type="checkbox" id="auto-update" {% if settings.get('auto_update', '1') == '1' %}checked{% endif %}>
+              <span class="switch-track"></span>
+              <span class="switch-text">
+                <strong>التحديث التلقائي</strong>
+                <small>فحص التحديثات وتنزيلها والتحقق من توقيعها ثم تثبيتها عند توقف العمليات.</small>
+              </span>
+            </label>
+          </div>
+          <label class="field" for="update-feed-url">
+            <span>رابط خادم التحديثات</span>
+            <input class="input mono" id="update-feed-url" type="url" dir="ltr" spellcheck="false" maxlength="500"
+                   value="{{ settings.get('update_feed_url', '') }}" placeholder="https://update.fetsync.org/latest.json">
+            <small class="hint">يجب أن يبدأ بـ https:// ويشير إلى ملف latest.json الموقّع.</small>
+          </label>
+          <div class="update-panel" id="update-panel">
+            <div class="update-panel-head">
+              <div>
+                <strong>حالة التحديث</strong>
+                <p data-update-summary>جارٍ قراءة حالة التحديث…</p>
+              </div>
+              <span class="badge" id="update-state-badge" hidden></span>
+            </div>
+            <div class="update-status-grid">
+              <div><span>الإصدار الحالي</span><strong dir="ltr" data-update-current>—</strong></div>
+              <div><span>آخر إصدار متاح</span><strong dir="ltr" data-update-latest>—</strong></div>
+              <div><span>آخر فحص</span><strong data-update-checked>—</strong></div>
+              <div><span>حالة التنزيل</span><strong data-update-staged>—</strong></div>
+            </div>
+            <div class="update-notes" id="update-notes" hidden>
+              <strong>ملاحظات الإصدار</strong>
+              <p data-update-notes></p>
+            </div>
+            <div class="info-banner is-danger" id="update-error" hidden>
+              <svg class="ico"><use href="#i-warning"></use></svg>
+              <div data-update-error></div>
+            </div>
+            <div class="settings-actions" style="justify-content:flex-start">
+              <button class="btn btn-secondary btn-sm" type="button" id="update-check">
+                <svg class="ico"><use href="#i-refresh"></use></svg>
+                <span>فحص التحديثات الآن</span>
+              </button>
+              <button class="btn btn-primary btn-sm" type="button" id="update-install" hidden>
+                <svg class="ico"><use href="#i-download"></use></svg>
+                <span>تثبيت التحديث</span>
+              </button>
+            </div>
+          </div>
+          <div class="settings-note">
+            <svg class="ico"><use href="#i-shield-check"></use></svg>
+            <div>لن يُثبّت النظام أي تحديث إلا بعد التحقق من توقيع Ed25519 المضمّن في التطبيق ومطابقة بصمة SHA-256 للملف. تُرفض التحديثات غير الموقّعة أو المعدّلة.</div>
+          </div>
+          <div class="settings-actions">
+            <button class="btn btn-primary btn-sm" type="submit" id="update-save">
+              <svg class="ico"><use href="#i-check"></use></svg>
+              <span>حفظ إعدادات التحديث</span>
+            </button>
+            <a class="btn btn-ghost btn-sm" href="{{ app_repo_url }}" target="_blank" rel="noopener">
+              <svg class="ico"><use href="#i-info"></use></svg>
+              <span>مستودع المشروع</span>
+            </a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="card settings-section" id="settings-data">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-database"></use></svg></div>
+        <div class="flex-1">
+          <h2>البيانات والنظام</h2>
+          <p>موقع قاعدة البيانات وحجمها والنسخ الاحتياطي وإغلاق الخادم المحلي.</p>
+        </div>
+        <span class="chip" id="settings-version">الإصدار {{ app_version }}</span>
+      </div>
+      <div class="settings-card-body">
+        <div class="settings-stats">
+          <div>
+            <strong id="settings-students">—</strong>
+            <span>إجمالي التلاميذ</span>
+          </div>
+          <div>
+            <strong id="settings-active-students">—</strong>
+            <span>تلميذ نشط</span>
+          </div>
+          <div>
+            <strong id="settings-periods-count">—</strong>
+            <span>فترة دراسية</span>
+          </div>
+          <div>
+            <strong id="settings-db-size">—</strong>
+            <span>حجم قاعدة البيانات</span>
+          </div>
+        </div>
+
+        <div class="settings-data-row">
+          <div class="settings-data-label">
+            <svg class="ico"><use href="#i-database"></use></svg>
+            <div><strong>مجلد البيانات</strong><span>يحتوي قاعدة SQLite والصور والنسخ المؤقتة.</span></div>
+          </div>
+          <code class="mono" id="settings-data-dir" dir="ltr">—</code>
+        </div>
+
+        <div class="settings-note">
+          <svg class="ico"><use href="#i-shield-check"></use></svg>
+          <div>جميع البيانات محفوظة محليًا على هذا الجهاز فقط. أنشئ نسخة احتياطية دوريًا واحفظها في مكان آمن.</div>
+        </div>
+
+        <div class="settings-actions" style="justify-content:flex-start">
+          <button class="btn btn-secondary btn-sm" type="button" id="settings-backup">
+            <svg class="ico"><use href="#i-download"></use></svg>
+            <span>تنزيل نسخة احتياطية</span>
+          </button>
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('views.import_page') }}">
+            <svg class="ico"><use href="#i-upload"></use></svg>
+            <span>استيراد قائمة تلاميذ</span>
+          </a>
+        </div>
+
+        <div class="danger-zone">
+          <div>
+            <strong>إغلاق النظام</strong>
+            <p>يوقف الخادم المحلي ويغلق قاعدة البيانات بأمان. لا تفقد أي بيانات محفوظة.</p>
+          </div>
+          <button class="btn btn-danger btn-sm" type="button" data-action="shutdown">
+            <svg class="ico"><use href="#i-power"></use></svg>
+            <span>إغلاق النظام</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}
