@@ -54,6 +54,9 @@
         <a class="nav-link {% if active == 'attendance' %}is-active{% endif %}" href="{{ url_for('views.attendance_page') }}">
           <svg class="ico"><use href="#i-list"></use></svg><span>سجل الحضور</span>
         </a>
+        <a class="nav-link {% if active == 'messages' %}is-active{% endif %}" href="{{ url_for('views.messages_page') }}">
+          <svg class="ico"><use href="#i-message"></use></svg><span>مركز الرسائل</span>
+        </a>
         <a class="nav-link {% if active == 'reports' %}is-active{% endif %}" href="{{ url_for('views.reports_page') }}">
           <svg class="ico"><use href="#i-chart"></use></svg><span>التقارير والإحصاءات</span>
         </a>

@@ -88,13 +88,13 @@
     }
     if (node.nodeType !== 1) return;
     var skip = inheritedSkip ||
-      Boolean(SKIP_TAGS[node.tagName]) ||
       node.hasAttribute("data-no-i18n") ||
       node.isContentEditable;
     if (!skip) translateAttributes(node);
+    var skipChildren = skip || Boolean(SKIP_TAGS[node.tagName]);
     var children = node.childNodes;
     for (var index = 0; index < children.length; index += 1) {
-      walk(children[index], skip);
+      walk(children[index], skipChildren);
     }
   }
 

@@ -268,6 +268,9 @@ _JSON_TEXT_KEYS = frozenset(
         "class_label",
         "status_label",
         "sms_status_label",
+        "scope_label",
+        "channel_label",
+        "error_msg",
         "month_display",
     }
 )

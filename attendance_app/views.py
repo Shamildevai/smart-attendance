@@ -88,6 +88,18 @@ def attendance_page():
     return render_template("attendance.html", **_page_context("attendance", "سجل الحضور", "متابعة السجلات وتبرير الغيابات وإدارة رسائل SMS"))
 
 
+@views_bp.get("/messages")
+def messages_page():
+    return render_template(
+        "messages.html",
+        **_page_context(
+            "messages",
+            "مركز الرسائل",
+            "إرسال رسائل جماعية لكل التلاميذ أو قسم أو اختيار محدد عبر SMS أو واتساب",
+        ),
+    )
+
+
 @views_bp.get("/reports")
 def reports_page():
     context = _page_context("reports", "التقارير والإحصاءات", "تقارير يومية وشهرية قابلة للتصدير والطباعة")

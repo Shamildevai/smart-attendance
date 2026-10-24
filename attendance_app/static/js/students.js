@@ -294,7 +294,7 @@
         </div>
         <div class="field">
           <label for="student-birth">تاريخ الميلاد</label>
-          <input class="input" id="student-birth" name="birth_date" type="date" value="${safe(initial.birth_date || "")}" max="${new Date().toISOString().slice(0, 10)}">
+          <input class="input" id="student-birth" name="birth_date" type="date" lang="en-GB" dir="ltr" value="${safe(initial.birth_date || "")}" max="${new Date().toISOString().slice(0, 10)}">
         </div>
         <div class="field">
           <span class="field-label">حالة التلميذ</span>

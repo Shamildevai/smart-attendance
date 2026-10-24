@@ -11,6 +11,7 @@ from flask import Flask, jsonify, render_template, request
 from . import config, i18n
 from .db import init_app as init_db_app
 from .db import init_db
+from .services.messaging_service import MessageJobManager
 from .services.scheduler import start_scheduler
 from .services.sms_service import SmsJobManager
 from .services.update_service import cleanup_on_startup
@@ -90,6 +91,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     init_db_app(app)
     _setup_logging(app)
     app.extensions["sms_jobs"] = SmsJobManager()
+    app.extensions["message_jobs"] = MessageJobManager()
     app.json.ensure_ascii = False
     i18n.init_app(app)
 

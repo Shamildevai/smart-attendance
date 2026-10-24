@@ -30,7 +30,7 @@ from .db import (
 from .importer import commit_import, parse_file, preview_import
 from .media import save_image
 from .services import attendance_service as attendance
-from .services import report_service, sms_service, update_service, whatsapp_service
+from .services import messaging_service, report_service, sms_service, update_service, whatsapp_service
 from .services.sms_service import SmsGatewayError
 from .services.update_service import UpdateError
 from .utils import (
@@ -193,6 +193,10 @@ def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
         "sms_gateway": settings.get("sms_gateway", "local"),
         "sms_api_url": settings.get("sms_api_url", ""),
         "sms_api_key": settings.get("sms_api_key", ""),
+        "sms_mobile_url": settings.get("sms_mobile_url", ""),
+        "sms_mobile_key": settings.get("sms_mobile_key", ""),
+        "sms_cloud_url": settings.get("sms_cloud_url", ""),
+        "sms_cloud_key": settings.get("sms_cloud_key", ""),
         "sms_headers": settings.get("sms_headers", "{}"),
         "sms_payload_template": settings.get("sms_payload_template", ""),
         "sms_test_mode": bool_setting(settings, "sms_test_mode", True),
@@ -283,11 +287,15 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         "sms_template": 2000,
         "sms_api_url": 500,
         "sms_api_key": 1000,
+        "sms_mobile_url": 500,
+        "sms_mobile_key": 1000,
+        "sms_cloud_url": 500,
+        "sms_cloud_key": 1000,
         "update_feed_url": 500,
     }
     for key, limit in text_limits.items():
         if key in data:
-            value = str(data[key] or "").strip() if key != "sms_api_key" else str(data[key] or "")
+            value = str(data[key] or "").strip() if not key.endswith("_key") else str(data[key] or "")
             if len(value) > limit:
                 raise ApiError(f"الحقل {key} أطول من المسموح ({limit} حرف).", 400)
             updates[key] = value
@@ -299,9 +307,10 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         if data["sms_gateway"] not in ("local", "cloud"):
             raise ApiError("نوع بوابة SMS غير صالح.", 400)
         updates["sms_gateway"] = data["sms_gateway"]
-    if "sms_api_url" in updates and updates["sms_api_url"]:
-        if not re.match(r"^https?://", updates["sms_api_url"], re.IGNORECASE):
-            raise ApiError("رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.", 400)
+    for url_key in ("sms_api_url", "sms_mobile_url", "sms_cloud_url"):
+        if url_key in updates and updates[url_key]:
+            if not re.match(r"^https?://", updates[url_key], re.IGNORECASE):
+                raise ApiError("رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.", 400)
     if "sms_headers" in data:
         obj = _json_object(str(data.get("sms_headers") or "{}"), "ترويسات HTTP")
         updates["sms_headers"] = json.dumps(obj, ensure_ascii=False, indent=2)
@@ -353,8 +362,11 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
             days.add(day)
         updates["school_weekdays"] = ",".join(str(day) for day in sorted(days))
     merged = {**get_settings(conn), **updates}
-    if merged.get("sms_test_mode", "1") != "1" and not merged.get("sms_api_url"):
-        raise ApiError("أدخل رابط بوابة SMS قبل تعطيل وضع الاختبار.", 400)
+    if merged.get("sms_test_mode", "1") != "1" and not any(
+        merged.get(key)
+        for key in ("sms_api_url", "sms_mobile_url", "sms_cloud_url")
+    ):
+        raise ApiError("أدخل رابط بوابة SMS واحدة على الأقل قبل تعطيل وضع الاختبار.", 400)
     return updates
 
 
@@ -1100,6 +1112,167 @@ def current_sms_job_api():
 @api_bp.get("/sms/jobs/<job_id>")
 def sms_job_api(job_id: str):
     manager: sms_service.SmsJobManager = current_app.extensions["sms_jobs"]
+    job = manager.get(job_id)
+    if not job:
+        raise ApiError("مهمة الإرسال غير موجودة.", 404, "not_found")
+    return ok(job=job)
+
+
+# ---------------------------------------------------------------------------
+# Bulk messaging center
+# ---------------------------------------------------------------------------
+
+
+def _message_scope(data: dict[str, Any]) -> dict[str, Any]:
+    scope = str(data.get("scope") or "all")
+    if scope not in ("all", "class", "selected"):
+        raise ApiError("نطاق المستلمين غير صالح.", 400)
+    raw_nins = data.get("student_nins")
+    if raw_nins is not None and not isinstance(raw_nins, list):
+        raise ApiError("قائمة التلاميذ المحددين غير صالحة.", 400)
+    student_nins = (
+        [str(item) for item in raw_nins if str(item or "").strip()][:5000]
+        if isinstance(raw_nins, list)
+        else []
+    )
+    return {
+        "scope": scope,
+        "class_group": str(data.get("class_group") or "").strip() or None,
+        "student_nins": student_nins,
+        "query": str(data.get("q") or "").strip() or None,
+    }
+
+
+@api_bp.get("/messages/students")
+def message_students_api():
+    conn = get_db()
+    settings = get_settings(conn)
+    students = messaging_service.fetch_recipients(conn, scope="all")
+    country_code = settings.get("whatsapp_country_code", "213")
+    sms_ready = 0
+    whatsapp_ready = 0
+    for student in students:
+        phone = normalize_phone(student.get("parent_phone"))
+        student["sms_ready"] = bool(phone and re.fullmatch(r"\+?\d{8,15}", phone))
+        student["whatsapp_ready"] = bool(
+            whatsapp_service.normalize_whatsapp_number(student.get("parent_phone"), country_code)
+        )
+        if student["sms_ready"]:
+            sms_ready += 1
+        if student["whatsapp_ready"]:
+            whatsapp_ready += 1
+    return ok(
+        students=students,
+        counts={
+            "total": len(students),
+            "sms_ready": sms_ready,
+            "whatsapp_ready": whatsapp_ready,
+            "missing_phone": len(students) - sms_ready,
+        },
+        classes=messaging_service.class_summary(students),
+        channels=messaging_service.channels_payload(settings),
+        defaults={
+            "sms_template": settings.get("sms_template", ""),
+            "school_name": settings.get("school_name", ""),
+            "academic_year": settings.get("academic_year", ""),
+        },
+    )
+
+
+@api_bp.post("/messages/preview")
+def preview_message_campaign_api():
+    data = _payload()
+    scope = _message_scope(data)
+    preview = messaging_service.preview_campaign(
+        get_db(),
+        scope=scope["scope"],
+        channel=str(data.get("channel") or "mobile"),
+        message=str(data.get("message") or ""),
+        class_group=scope["class_group"],
+        student_nins=scope["student_nins"],
+        query=scope["query"],
+    )
+    return ok(preview=preview)
+
+
+@api_bp.post("/messages/send")
+def send_message_campaign_api():
+    data = _payload()
+    approved = _as_bool(data.get("approved", False), "الموافقة على الإرسال")
+    scope = _message_scope(data)
+    conn = get_db()
+    manager: messaging_service.MessageJobManager = current_app.extensions["message_jobs"]
+    channel = str(data.get("channel") or "mobile")
+    if channel != "whatsapp" and manager.current():
+        raise ApiError(
+            "هناك حملة رسائل قيد الإرسال. انتظر اكتمالها قبل بدء حملة جديدة.",
+            409,
+            "busy",
+        )
+    result = messaging_service.create_campaign(
+        conn,
+        scope=scope["scope"],
+        channel=channel,
+        message=str(data.get("message") or ""),
+        class_group=scope["class_group"],
+        student_nins=scope["student_nins"],
+        query=scope["query"],
+        approved=approved,
+        created_by=g.user["display_name"],
+    )
+    campaign = result["campaign"]
+    response: dict[str, Any] = {
+        "campaign": campaign,
+        "test_mode": result["test_mode"],
+    }
+    if campaign["channel"] == "whatsapp":
+        response["items"] = result["items"]
+        response["message"] = (
+            f"تم تجهيز محادثات واتساب. العدد: {len(result['items'])}. راجع كل رسالة وأرسلها يدويًا من واتساب."
+        )
+    else:
+        job, started = manager.start(current_app._get_current_object(), campaign["id"])
+        if not started:
+            messaging_service.delete_campaign(conn, campaign["id"])
+            raise ApiError(
+                "هناك حملة رسائل قيد الإرسال. انتظر اكتمالها قبل بدء حملة جديدة.",
+                409,
+                "busy",
+            )
+        response["job"] = job
+        response["job_started"] = True
+        response["message"] = "بدأ إرسال الرسائل إلى الأولياء."
+    return ok(**response)
+
+
+@api_bp.get("/messages/campaigns")
+def message_campaigns_api():
+    page = _as_int(request.args.get("page", 1), "الصفحة", 1, 1000000, 1)
+    per_page = _as_int(request.args.get("per_page", 10), "حجم الصفحة", 5, 50, 10)
+    return ok(**messaging_service.list_campaigns(get_db(), page=page, per_page=per_page))
+
+
+@api_bp.get("/messages/campaigns/<campaign_id>")
+def message_campaign_api(campaign_id: str):
+    page = _as_int(request.args.get("page", 1), "الصفحة", 1, 1000000, 1)
+    per_page = _as_int(request.args.get("per_page", 25), "حجم الصفحة", 5, 100, 25)
+    status = request.args.get("status") or ""
+    return ok(
+        **messaging_service.campaign_detail(
+            get_db(), campaign_id, page=page, per_page=per_page, status_filter=status
+        )
+    )
+
+
+@api_bp.get("/messages/jobs/current")
+def current_message_job_api():
+    manager: messaging_service.MessageJobManager = current_app.extensions["message_jobs"]
+    return ok(job=manager.current())
+
+
+@api_bp.get("/messages/jobs/<job_id>")
+def message_job_api(job_id: str):
+    manager: messaging_service.MessageJobManager = current_app.extensions["message_jobs"]
     job = manager.get(job_id)
     if not job:
         raise ApiError("مهمة الإرسال غير موجودة.", 404, "not_found")

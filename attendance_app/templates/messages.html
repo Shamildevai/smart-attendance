@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.attendance_page') }}?tab=sms">
+    <svg class="ico"><use href="#i-list"></use></svg>
+    <span>صندوق رسائل الغياب</span>
+  </a>
+  {% if is_admin %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.settings_page') }}#settings-sms">
+    <svg class="ico"><use href="#i-settings"></use></svg>
+    <span>إعدادات الرسائل</span>
+  </a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <section class="card messages-status-bar" aria-live="polite">
+    <div class="messages-status-copy">
+      <div class="messages-status-icon"><svg class="ico"><use href="#i-message"></use></svg></div>
+      <div>
+        <strong>مركز الرسائل الجماعية</strong>
+        <p>اختر المستلمين والقناة، اكتب الرسالة، ثم وافق على الإرسال. لا تُرسل أي رسالة تلقائيًا.</p>
+        <div class="tag-list" id="msg-status-chips" style="margin-top:5px">
+          <span class="chip">جارٍ تحميل حالة القنوات…</span>
+        </div>
+      </div>
+    </div>
+    <div class="messages-status-actions">
+      <span class="chip" id="msg-total-chip"><strong>0</strong>&nbsp;تلميذ نشط</span>
+      <button class="icon-btn" type="button" id="msg-refresh" title="تحديث بيانات المستلمين" aria-label="تحديث بيانات المستلمين">
+        <svg class="ico"><use href="#i-refresh"></use></svg>
+      </button>
+    </div>
+  </section>
+
+  <div class="messages-layout">
+    <section class="card messages-composer">
+      <div class="messages-step">
+        <div class="messages-step-head">
+          <span class="messages-step-number">1</span>
+          <div><h2>المستلمون</h2><p>اختر كل التلاميذ أو قسمًا أو أسماء محددة.</p></div>
+        </div>
+        <div class="segmented messages-scope" id="msg-scope" role="group" aria-label="نطاق المستلمين">
+          <button type="button" class="is-active" data-scope="all" aria-pressed="true">
+            <svg class="ico"><use href="#i-users"></use></svg>
+            <span>كل التلاميذ</span>
+            <span class="count" id="msg-scope-all-count">0</span>
+          </button>
+          <button type="button" data-scope="class" aria-pressed="false">
+            <svg class="ico"><use href="#i-school"></use></svg>
+            <span>قسم محدد</span>
+          </button>
+          <button type="button" data-scope="selected" aria-pressed="false">
+            <svg class="ico"><use href="#i-check"></use></svg>
+            <span>اختيار تلاميذ</span>
+            <span class="count" id="msg-scope-selected-count">0</span>
+          </button>
+        </div>
+
+        <div class="messages-scope-panel" id="msg-class-panel" hidden>
+          <label class="field-label" for="msg-class-filter">القسم المستهدف</label>
+          <select class="select" id="msg-class-filter">
+            {% for item in classes %}
+              {% if item.active %}
+              <option value="{{ item.value }}">{{ item.label }} — {{ item.active }} تلميذ</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          {% if not classes %}
+          <span class="field-hint">لا توجد أقسام بعد. أضف تلاميذ من صفحة التلاميذ أولًا.</span>
+          {% endif %}
+        </div>
+
+        <div class="messages-scope-panel" id="msg-selected-panel" hidden>
+          <div class="selected-toolbar">
+            <button class="btn btn-secondary btn-sm" type="button" id="msg-pick-students">
+              <svg class="ico"><use href="#i-users"></use></svg>
+              <span>فتح قائمة الاختيار</span>
+            </button>
+            <button class="btn btn-ghost btn-sm" type="button" id="msg-clear-selected">مسح التحديد</button>
+            <span class="chip" id="msg-selected-summary">لم يتم اختيار أحد</span>
+          </div>
+          <div class="selected-students" id="msg-selected-chips"></div>
+        </div>
+
+        <div class="recipient-summary" id="msg-recipient-summary">
+          <div><strong id="msg-summary-total">0</strong><span>مستلم في النطاق</span></div>
+          <div><strong id="msg-summary-eligible">0</strong><span id="msg-summary-eligible-label">سيصلهم الإرسال</span></div>
+          <div><strong id="msg-summary-skipped">0</strong><span>بدون رقم صالح</span></div>
+          <div><strong id="msg-summary-classes">0</strong><span>قسم</span></div>
+        </div>
+        <div class="info-banner is-warning hidden" id="msg-skipped-note">
+          <svg class="ico"><use href="#i-warning"></use></svg>
+          <div id="msg-skipped-text"></div>
+        </div>
+      </div>
+
+      <div class="messages-step">
+        <div class="messages-step-head">
+          <span class="messages-step-number">2</span>
+          <div><h2>قناة الإرسال</h2><p id="msg-channel-subtitle">اختر كيف تريد إيصال الرسالة إلى الأولياء.</p></div>
+        </div>
+        <div class="channel-grid" id="msg-channels">
+          <label class="channel-card" data-channel="mobile">
+            <input type="radio" name="msg-channel" value="mobile" checked>
+            <div class="channel-head">
+              <span class="channel-icon"><svg class="ico"><use href="#i-phone"></use></svg></span>
+              <div><strong>SMS عبر تطبيق الهاتف</strong><small>يرسل من شريحة الهاتف المتصلة</small></div>
+              <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
+            </div>
+            <p>بوابة أندرويد المحلية على نفس شبكة Wi-Fi. اخترها لإرسال الرسائل من هاتفك دون رصيد على الحاسوب.</p>
+            <span class="channel-state chip" data-channel-state="mobile">جارٍ التحقق…</span>
+          </label>
+          <label class="channel-card" data-channel="cloud">
+            <input type="radio" name="msg-channel" value="cloud">
+            <div class="channel-head">
+              <span class="channel-icon"><svg class="ico"><use href="#i-dashboard"></use></svg></span>
+              <div><strong>SMS عبر الحاسوب أو السحابة</strong><small>واجهة API سحابية</small></div>
+              <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
+            </div>
+            <p>يستخدم رابط الواجهة السحابية المضبوط في الإعدادات. مناسب عند وجود مزوّد SMS يعمل من الحاسوب.</p>
+            <span class="channel-state chip" data-channel-state="cloud">جارٍ التحقق…</span>
+          </label>
+          <label class="channel-card" data-channel="whatsapp">
+            <input type="radio" name="msg-channel" value="whatsapp">
+            <div class="channel-head">
+              <span class="channel-icon is-whatsapp"><svg class="ico"><use href="#i-whatsapp"></use></svg></span>
+              <div><strong>واتساب</strong><small>فتح محادثة جاهزة لكل ولي</small></div>
+              <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
+            </div>
+            <p>لا يُرسل النظام رسائل واتساب تلقائيًا. ستفتح محادثة كل ولي بنص الرسالة، وتراجعها وتضغط «إرسال» داخل واتساب.</p>
+            <span class="channel-state chip" data-channel-state="whatsapp">جارٍ التحقق…</span>
+          </label>
+        </div>
+        <div class="test-mode-note hidden" id="msg-test-note">
+          <svg class="ico"><use href="#i-shield-check"></use></svg>
+          <div>وضع الاختبار مفعّل: ستُحاكى رسائل SMS دون استخدام الشبكة أو استهلاك رصيد. أما واتساب فيُفتح يدويًا دائمًا.</div>
+        </div>
+        <div class="info-banner is-warning hidden" id="msg-channel-warning">
+          <svg class="ico"><use href="#i-warning"></use></svg>
+          <div id="msg-channel-warning-text"></div>
+        </div>
+      </div>
+
+      <div class="messages-step">
+        <div class="messages-step-head">
+          <span class="messages-step-number">3</span>
+          <div><h2>نص الرسالة</h2><p>يمكنك إدراج متغيرات تُستبدل تلقائيًا لكل تلميذ.</p></div>
+        </div>
+        <div class="sms-template-tools" aria-label="إدراج متغير في الرسالة">
+          <span class="hint-inline"><svg class="ico"><use href="#i-sparkle"></use></svg>إدراج متغير:</span>
+          <button class="var-chip" type="button" data-msg-var="[اسم_المؤسسة]">اسم المؤسسة</button>
+          <button class="var-chip" type="button" data-msg-var="[اسم_التلميذ]">اسم التلميذ</button>
+          <button class="var-chip" type="button" data-msg-var="[القسم]">القسم</button>
+          <button class="var-chip" type="button" data-msg-var="[التاريخ]">التاريخ</button>
+          <button class="var-chip" type="button" data-msg-var="[السنة_الدراسية]">السنة الدراسية</button>
+        </div>
+        <textarea class="textarea messages-body" id="msg-body" rows="7" maxlength="2000" placeholder="اكتب نص الرسالة هنا…&#10;مثال: تحية طيبة من [اسم_المؤسسة]، نذكّر أولياء التلميذ [اسم_التلميذ] بقسم [القسم] بموعد اجتماع الأولياء يوم [التاريخ]."></textarea>
+        <div class="messages-meta">
+          <span class="hint-inline">المتغيرات بين القوسين تُستبدل لكل تلميذ عند الإرسال.</span>
+          <span class="sms-counter" id="msg-body-count" dir="ltr">0 / 2000</span>
+        </div>
+        <div class="messages-preview" id="msg-preview">
+          <div class="messages-preview-head">
+            <span><svg class="ico"><use href="#i-eye"></use></svg> معاينة الرسالة</span>
+            <span class="chip hidden" id="msg-segment-chip">0 مقطع</span>
+          </div>
+          <div class="messages-preview-body" id="msg-preview-body">اكتب الرسالة لعرض معاينة حقيقية من بيانات أول مستلم.</div>
+        </div>
+      </div>
+
+      <div class="messages-step messages-submit-step">
+        <div class="approval-box" id="msg-approval-box">
+          <input type="checkbox" id="msg-approve" autocomplete="off">
+          <label for="msg-approve">
+            <strong>موافقة صريحة قبل المتابعة</strong>
+            <span id="msg-approval-text">أوافق على تجهيز وإرسال الرسائل إلى المستلمين المحددين.</span>
+          </label>
+        </div>
+        <div class="messages-submit-actions">
+          <div class="messages-submit-hint" id="msg-submit-hint">اختر المستلمين واكتب الرسالة أولًا.</div>
+          <button class="btn btn-primary" type="button" id="msg-send" disabled>
+            <svg class="ico"><use href="#i-send"></use></svg>
+            <span>متابعة الإرسال</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="msg-progress"></div>
+    </section>
+
+    <aside class="messages-side">
+      <section class="card messages-history-card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-list"></use></svg> آخر الحملات</h2>
+            <p id="msg-history-label">جارٍ تحميل سجل الحملات…</p>
+          </div>
+          <button class="icon-btn" type="button" id="msg-history-refresh" title="تحديث السجل" aria-label="تحديث سجل الحملات">
+            <svg class="ico"><use href="#i-refresh"></use></svg>
+          </button>
+        </div>
+        <div class="messages-history" id="msg-history">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+
+      <section class="card messages-help">
+        <div class="messages-help-head">
+          <span class="messages-help-icon"><svg class="ico"><use href="#i-info"></use></svg></span>
+          <div><h2>كيف يعمل الإرسال؟</h2><p>ثلاث قنوات، وكلها تتطلب موافقتك.</p></div>
+        </div>
+        <ul class="messages-help-list">
+          <li>
+            <span class="help-dot is-mobile"></span>
+            <div><strong>من الهاتف</strong><p>ثبّت تطبيق بوابة SMS على هاتف أندرويد متصل بالشبكة، ثم اضبط رابطه ومفتاحه في الإعدادات. سيرسل التطبيق الرسائل من شريحة الهاتف.</p></div>
+          </li>
+          <li>
+            <span class="help-dot is-cloud"></span>
+            <div><strong>من الحاسوب أو السحابة</strong><p>اضبط رابط واجهة مزوّد SMS في الإعدادات. سيستخدم النظام تلك الواجهة من الحاسوب مباشرة.</p></div>
+          </li>
+          <li>
+            <span class="help-dot is-whatsapp"></span>
+            <div><strong>واتساب يدوي</strong><p>يفتح النظام رابط wa.me لكل ولي برسالة جاهزة. لا يرسل شيئًا نيابة عنك، ولا يحتاج بوابة أو رصيد SMS.</p></div>
+          </li>
+        </ul>
+        <p class="messages-help-foot">تبقى بيانات التلاميذ على هذا الجهاز. لا تُرسل إلا الرسائل التي توافق عليها.</p>
+      </section>
+    </aside>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+{% endblock %}

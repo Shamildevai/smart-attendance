@@ -316,31 +316,64 @@
           </div>
         </div>
 
-        <div class="form-grid">
-          <div class="field">
-            <label for="sms-gateway">نوع بوابة الإرسال</label>
-            <select class="select" id="sms-gateway">
-              <option value="local" {% if settings.get('sms_gateway', 'local') == 'local' %}selected{% endif %}>بوابة أندرويد محلية (HTTP)</option>
-              <option value="cloud" {% if settings.get('sms_gateway') == 'cloud' %}selected{% endif %}>واجهة سحابية قابلة للضبط</option>
-            </select>
-            <span class="field-hint">البوابة المحلية تستقبل JSON بالحقول phone و message.</span>
-          </div>
-          <div class="field">
-            <label for="sms-api-url">رابط بوابة SMS</label>
-            <input class="input mono" id="sms-api-url" type="url" inputmode="url" dir="ltr" maxlength="500" value="{{ settings.get('sms_api_url', '') }}" placeholder="http://127.0.0.1:8080/send">
-            <span class="field-hint">عنوان الخدمة التي ستستقبل طلبات الإرسال.</span>
-          </div>
-          <div class="field">
-            <label for="sms-api-key">مفتاح API (اختياري)</label>
-            <div class="input-group">
-              <svg class="ico"><use href="#i-shield-check"></use></svg>
-              <input class="input mono" id="sms-api-key" type="password" dir="ltr" maxlength="1000" value="{{ settings.get('sms_api_key', '') }}" placeholder="X-Api-Key">
-              <button class="input-action" type="button" id="sms-api-key-toggle" aria-label="إظهار المفتاح" title="إظهار المفتاح">
-                <svg class="ico"><use href="#i-eye"></use></svg>
-              </button>
+        <div class="field">
+          <label for="sms-gateway">القناة الافتراضية لرسائل الغياب التلقائية</label>
+          <select class="select" id="sms-gateway">
+            <option value="local" {% if settings.get('sms_gateway', 'local') == 'local' %}selected{% endif %}>SMS عبر تطبيق الهاتف</option>
+            <option value="cloud" {% if settings.get('sms_gateway') == 'cloud' %}selected{% endif %}>SMS عبر الحاسوب أو السحابة</option>
+          </select>
+          <span class="field-hint">تُستخدم عند إرسال رسالة غياب مفردة من سجل الحضور. يمكن اختيار قناة مختلفة لكل حملة من مركز الرسائل.</span>
+        </div>
+
+        <div class="channel-endpoint-grid">
+          <div class="channel-endpoint" data-endpoint="mobile">
+            <div class="channel-endpoint-head">
+              <span class="channel-icon"><svg class="ico"><use href="#i-phone"></use></svg></span>
+              <div><strong>SMS عبر تطبيق الهاتف</strong><small>بوابة أندرويد المحلية على شبكة Wi-Fi</small></div>
             </div>
-            <span class="field-hint">يُرسل في ترويسة <code>X-Api-Key</code> للبوابة المحلية.</span>
+            <div class="field">
+              <label for="sms-mobile-url">رابط بوابة الهاتف</label>
+              <input class="input mono" id="sms-mobile-url" type="url" inputmode="url" dir="ltr" maxlength="500" placeholder="http://192.168.1.20:8080/send">
+              <span class="field-hint">عنوان يظهر في تطبيق بوابة SMS على الهاتف، مثل <code dir="ltr">http://192.168.1.20:8080/send</code>.</span>
+            </div>
+            <div class="field">
+              <label for="sms-mobile-key">مفتاح بوابة الهاتف (اختياري)</label>
+              <div class="input-group">
+                <svg class="ico"><use href="#i-shield-check"></use></svg>
+                <input class="input mono" id="sms-mobile-key" type="password" dir="ltr" maxlength="1000" placeholder="X-Api-Key">
+                <button class="input-action" type="button" id="sms-mobile-key-toggle" aria-label="إظهار مفتاح بوابة الهاتف" title="إظهار المفتاح">
+                  <svg class="ico"><use href="#i-eye"></use></svg>
+                </button>
+              </div>
+              <span class="field-hint">نفس المفتاح المضبوط في تطبيق الهاتف. يُرسل في ترويسة <code>X-Api-Key</code>.</span>
+            </div>
           </div>
+
+          <div class="channel-endpoint" data-endpoint="cloud">
+            <div class="channel-endpoint-head">
+              <span class="channel-icon"><svg class="ico"><use href="#i-dashboard"></use></svg></span>
+              <div><strong>SMS عبر الحاسوب أو السحابة</strong><small>واجهة HTTP لمزوّد خدمة SMS</small></div>
+            </div>
+            <div class="field">
+              <label for="sms-cloud-url">رابط واجهة الحاسوب/السحابة</label>
+              <input class="input mono" id="sms-cloud-url" type="url" inputmode="url" dir="ltr" maxlength="500" placeholder="https://api.example.com/sms/send">
+              <span class="field-hint">واجهة مزوّد SMS التي ستستقبل طلبات الإرسال من الحاسوب.</span>
+            </div>
+            <div class="field">
+              <label for="sms-cloud-key">مفتاح واجهة الحاسوب/السحابة (اختياري)</label>
+              <div class="input-group">
+                <svg class="ico"><use href="#i-shield-check"></use></svg>
+                <input class="input mono" id="sms-cloud-key" type="password" dir="ltr" maxlength="1000" placeholder="API key">
+                <button class="input-action" type="button" id="sms-cloud-key-toggle" aria-label="إظهار مفتاح الواجهة السحابية" title="إظهار المفتاح">
+                  <svg class="ico"><use href="#i-eye"></use></svg>
+                </button>
+              </div>
+              <span class="field-hint">يُرسل وفق إعدادات الترويسات المتقدمة أدناه إن وُجدت.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid">
           <div class="field">
             <label for="sms-timeout">مهلة الاتصال (ثوانٍ)</label>
             <input class="input" id="sms-timeout" type="number" min="3" max="120" step="1" value="{{ settings.get('sms_timeout', '10') }}">

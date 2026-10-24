@@ -90,9 +90,16 @@
     });
 
     $("sms-template").value = s.sms_template || "";
-    $("sms-gateway").value = s.sms_gateway === "cloud" ? "cloud" : "local";
-    $("sms-api-url").value = s.sms_api_url || "";
-    $("sms-api-key").value = s.sms_api_key || "";
+    const gateway = s.sms_gateway === "cloud" ? "cloud" : "local";
+    $("sms-gateway").value = gateway;
+    $("sms-mobile-url").value =
+      s.sms_mobile_url || (gateway === "local" ? s.sms_api_url || "" : "");
+    $("sms-mobile-key").value =
+      s.sms_mobile_key || (gateway === "local" ? s.sms_api_key || "" : "");
+    $("sms-cloud-url").value =
+      s.sms_cloud_url || (gateway === "cloud" ? s.sms_api_url || "" : "");
+    $("sms-cloud-key").value =
+      s.sms_cloud_key || (gateway === "cloud" ? s.sms_api_key || "" : "");
     $("sms-timeout").value = s.sms_timeout || 10;
     $("sms-retry").value = s.sms_retry_max || 3;
     $("sms-headers").value = s.sms_headers || "{}";
@@ -293,12 +300,12 @@
   function syncGatewayUI() {
     const gateway = $("sms-gateway").value;
     const badge = $("sms-gateway-badge");
-    badge.textContent = gateway === "cloud" ? "واجهة سحابية" : "بوابة محلية";
-    $("sms-api-url").placeholder = gateway === "cloud"
-      ? "https://api.example.com/sms/send"
-      : "http://127.0.0.1:8080/send";
-    const cloud = $("gateway-cloud");
-    if (gateway === "cloud") cloud.open = true;
+    badge.textContent = gateway === "cloud" ? "الافتراضي: الحاسوب/السحابة" : "الافتراضي: تطبيق الهاتف";
+    const activeEndpoint = gateway === "cloud" ? "cloud" : "mobile";
+    document.querySelectorAll(".channel-endpoint").forEach((card) => {
+      card.classList.toggle("is-active", card.dataset.endpoint === activeEndpoint);
+    });
+    if (gateway === "cloud") $("gateway-cloud").open = true;
     syncTestModeNote();
   }
 
@@ -332,15 +339,29 @@
     }
     const gateway = $("sms-gateway").value;
     const testMode = $("sms-test-mode").checked;
-    const apiUrl = $("sms-api-url").value.trim();
-    if (apiUrl && !/^https?:\/\//i.test(apiUrl)) {
-      A.toast("رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.", "warning");
-      $("sms-api-url").focus();
-      return null;
+    const mobileUrl = $("sms-mobile-url").value.trim();
+    const cloudUrl = $("sms-cloud-url").value.trim();
+    const mobileKey = $("sms-mobile-key").value;
+    const cloudKey = $("sms-cloud-key").value;
+    for (const [url, fieldId] of [
+      [mobileUrl, "sms-mobile-url"],
+      [cloudUrl, "sms-cloud-url"],
+    ]) {
+      if (url && !/^https?:\/\//i.test(url)) {
+        A.toast("روابط بوابة SMS يجب أن تبدأ بـ http:// أو https://.", "warning");
+        $(fieldId).focus();
+        return null;
+      }
     }
-    if (!testMode && !apiUrl) {
-      A.toast("أدخل رابط بوابة SMS قبل تعطيل وضع الاختبار.", "warning");
-      $("sms-api-url").focus();
+    const activeUrl = gateway === "cloud" ? cloudUrl : mobileUrl;
+    if (!testMode && !activeUrl) {
+      A.toast(
+        gateway === "cloud"
+          ? "أدخل رابط واجهة الحاسوب/السحابة قبل تعطيل وضع الاختبار."
+          : "أدخل رابط بوابة الهاتف قبل تعطيل وضع الاختبار.",
+        "warning"
+      );
+      $(gateway === "cloud" ? "sms-cloud-url" : "sms-mobile-url").focus();
       return null;
     }
     const timeout = Number($("sms-timeout").value);
@@ -364,8 +385,12 @@
     const payload = {
       sms_template: template,
       sms_gateway: gateway,
-      sms_api_url: apiUrl,
-      sms_api_key: $("sms-api-key").value,
+      sms_api_url: activeUrl,
+      sms_api_key: gateway === "cloud" ? cloudKey : mobileKey,
+      sms_mobile_url: mobileUrl,
+      sms_mobile_key: mobileKey,
+      sms_cloud_url: cloudUrl,
+      sms_cloud_key: cloudKey,
       sms_test_mode: testMode,
       sms_timeout: Math.floor(timeout),
       sms_retry_max: Math.floor(retry),
@@ -402,11 +427,18 @@
     document.querySelectorAll(".var-chip").forEach((button) => {
       button.addEventListener("click", () => insertTemplateVariable(button.dataset.var || ""));
     });
-    $("sms-api-key-toggle").addEventListener("click", () => {
-      const input = $("sms-api-key");
-      const show = input.type === "password";
-      input.type = show ? "text" : "password";
-      $("sms-api-key-toggle").setAttribute("aria-label", show ? "إخفاء المفتاح" : "إظهار المفتاح");
+    [
+      ["sms-mobile-key-toggle", "sms-mobile-key", "مفتاح بوابة الهاتف"],
+      ["sms-cloud-key-toggle", "sms-cloud-key", "مفتاح واجهة الحاسوب/السحابة"],
+    ].forEach(([toggleId, inputId, label]) => {
+      const toggle = $(toggleId);
+      if (!toggle) return;
+      toggle.addEventListener("click", () => {
+        const input = $(inputId);
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        toggle.setAttribute("aria-label", show ? `إخفاء ${label}` : `إظهار ${label}`);
+      });
     });
     $("sms-form").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -515,16 +547,16 @@
           </div>
           <div class="field">
             <label for="period-start">وقت البداية</label>
-            <input class="input mono" id="period-start" type="time" value="${safe(current.start_time)}">
+            <input class="input mono" id="period-start" type="time" lang="en-GB" dir="ltr" value="${safe(current.start_time)}">
           </div>
           <div class="field">
             <label for="period-cutoff">حد الحضور</label>
-            <input class="input mono" id="period-cutoff" type="time" value="${safe(current.on_time_cutoff)}">
+            <input class="input mono" id="period-cutoff" type="time" lang="en-GB" dir="ltr" value="${safe(current.on_time_cutoff)}">
             <span class="field-hint">المسح بعد هذا الوقت يُسجّل متأخرًا.</span>
           </div>
           <div class="field">
             <label for="period-absent">حد الغياب</label>
-            <input class="input mono" id="period-absent" type="time" value="${safe(current.absent_cutoff_time)}">
+            <input class="input mono" id="period-absent" type="time" lang="en-GB" dir="ltr" value="${safe(current.absent_cutoff_time)}">
             <span class="field-hint">بعد هذا الوقت يصبح التلميذ غائبًا عند الرصد التلقائي.</span>
           </div>
           <div class="field">

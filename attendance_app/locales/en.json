@@ -441,7 +441,6 @@
     "تعذر تحديث حالة التلميذ.": "Could not update the student status.",
     "تم تنشيط التلميذ.": "Student activated.",
     "تمت أرشفة التلميذ.": "Student archived.",
-    "قائمة التلاميذ": "Student list",
     "مراحل الاستيراد": "Import steps",
     "اختيار الملف": "Choose file",
     "ربط الأعمدة": "Map columns",
@@ -1068,7 +1067,187 @@
     "حجم ملف التحديث لا يطابق البيانات الموقّعة.": "The update file size does not match the signed data.",
     "بصمة الملف لا تطابق التوقيع. تم حذف التنزيل.": "The file hash does not match the signature. The download was deleted.",
     "أنت تستخدم أحدث إصدار متاح.": "You are using the latest available version.",
-    "سيتم تثبيت التحديث وإعادة تشغيل النظام الآن.": "The update will be installed and the system restarted now."
+    "سيتم تثبيت التحديث وإعادة تشغيل النظام الآن.": "The update will be installed and the system restarted now.",
+    "مركز الرسائل": "Messages Center",
+    "مركز الرسائل الجماعية": "Bulk messages center",
+    "إعدادات الرسائل": "Message settings",
+    "إرسال رسائل جماعية لكل التلاميذ أو قسم أو اختيار محدد عبر SMS أو واتساب": "Send bulk messages to all students, a class, or selected students via SMS or WhatsApp",
+    "اختر المستلمين والقناة، اكتب الرسالة، ثم وافق على الإرسال. لا تُرسل أي رسالة تلقائيًا.": "Choose recipients and channel, write the message, then approve sending. No message is sent automatically.",
+    "جارٍ تحميل حالة القنوات…": "Loading channel status…",
+    "تحديث بيانات المستلمين": "Refresh recipient data",
+    "المستلمون": "Recipients",
+    "اختر كل التلاميذ أو قسمًا أو أسماء محددة.": "Select all students, a class, or specific names.",
+    "نطاق المستلمين": "Recipient scope",
+    "كل التلاميذ": "All students",
+    "قسم محدد": "Specific class",
+    "اختيار تلاميذ": "Select students",
+    "القسم المستهدف": "Target class",
+    "لا توجد أقسام بعد. أضف تلاميذ من صفحة التلاميذ أولًا.": "No classes yet. Add students from the Students page first.",
+    "فتح قائمة الاختيار": "Open selection list",
+    "مسح التحديد": "Clear selection",
+    "لم يتم اختيار أحد": "No one selected",
+    "مستلم في النطاق": "recipients in scope",
+    "سيصلهم الإرسال": "will receive it",
+    "بدون رقم صالح": "no valid number",
+    "قناة الإرسال": "Sending channel",
+    "اختر كيف تريد إيصال الرسالة إلى الأولياء.": "Choose how you want to deliver the message to parents.",
+    "SMS عبر تطبيق الهاتف": "SMS via phone app",
+    "يرسل من شريحة الهاتف المتصلة": "Sends from the connected phone SIM",
+    "بوابة أندرويد المحلية على نفس شبكة Wi-Fi. اخترها لإرسال الرسائل من هاتفك دون رصيد على الحاسوب.": "The local Android gateway on the same Wi-Fi network. Choose it to send messages from your phone without computer credit.",
+    "جارٍ التحقق…": "Checking…",
+    "SMS عبر الحاسوب أو السحابة": "SMS via computer or cloud",
+    "واجهة API سحابية": "Cloud API",
+    "يستخدم رابط الواجهة السحابية المضبوط في الإعدادات. مناسب عند وجود مزوّد SMS يعمل من الحاسوب.": "Uses the cloud API URL configured in Settings. Suitable when an SMS provider works from the computer.",
+    "واتساب": "WhatsApp",
+    "فتح محادثة جاهزة لكل ولي": "Opens a ready chat for each parent",
+    "لا يُرسل النظام رسائل واتساب تلقائيًا. ستفتح محادثة كل ولي بنص الرسالة، وتراجعها وتضغط «إرسال» داخل واتساب.": "The system does not send WhatsApp messages automatically. It opens each parent's chat with the message text; you review it and press “Send” inside WhatsApp.",
+    "وضع الاختبار مفعّل: ستُحاكى رسائل SMS دون استخدام الشبكة أو استهلاك رصيد. أما واتساب فيُفتح يدويًا دائمًا.": "Test mode is on: SMS messages will be simulated without network use or credit. WhatsApp is always opened manually.",
+    "يمكنك إدراج متغيرات تُستبدل تلقائيًا لكل تلميذ.": "You can insert variables that are replaced automatically for each student.",
+    "إدراج متغير في الرسالة": "Insert a variable in the message",
+    "المتغيرات بين القوسين تُستبدل لكل تلميذ عند الإرسال.": "Variables in brackets are replaced for each student when sending.",
+    "معاينة الرسالة": "Message preview",
+    "اكتب الرسالة لعرض معاينة حقيقية من بيانات أول مستلم.": "Write the message to see a real preview using the first recipient's data.",
+    "موافقة صريحة قبل المتابعة": "Explicit approval before continuing",
+    "أوافق على تجهيز وإرسال الرسائل إلى المستلمين المحددين.": "I agree to prepare and send messages to the selected recipients.",
+    "اختر المستلمين واكتب الرسالة أولًا.": "Select recipients and write the message first.",
+    "متابعة الإرسال": "Continue sending",
+    "آخر الحملات": "Recent campaigns",
+    "جارٍ تحميل سجل الحملات…": "Loading campaign history…",
+    "تحديث السجل": "Refresh history",
+    "تحديث سجل الحملات": "Refresh campaign history",
+    "كيف يعمل الإرسال؟": "How does sending work?",
+    "ثلاث قنوات، وكلها تتطلب موافقتك.": "Three channels, all require your approval.",
+    "من الهاتف": "From the phone",
+    "ثبّت تطبيق بوابة SMS على هاتف أندرويد متصل بالشبكة، ثم اضبط رابطه ومفتاحه في الإعدادات. سيرسل التطبيق الرسائل من شريحة الهاتف.": "Install the SMS Gateway app on an Android phone connected to the network, then set its URL and key in Settings. The app sends messages from the phone SIM.",
+    "من الحاسوب أو السحابة": "From the computer or cloud",
+    "اضبط رابط واجهة مزوّد SMS في الإعدادات. سيستخدم النظام تلك الواجهة من الحاسوب مباشرة.": "Set the SMS provider API URL in Settings. The system will use it directly from the computer.",
+    "واتساب يدوي": "Manual WhatsApp",
+    "يفتح النظام رابط wa.me لكل ولي برسالة جاهزة. لا يرسل شيئًا نيابة عنك، ولا يحتاج بوابة أو رصيد SMS.": "The system opens a wa.me link for each parent with a ready message. It sends nothing on your behalf and needs no gateway or SMS credit.",
+    "تبقى بيانات التلاميذ على هذا الجهاز. لا تُرسل إلا الرسائل التي توافق عليها.": "Student data stays on this device. Only messages you approve are sent.",
+    "اكتب نص الرسالة هنا… مثال: تحية طيبة من [اسم_المؤسسة]، نذكّر أولياء التلميذ [اسم_التلميذ] بقسم [القسم] بموعد اجتماع الأولياء يوم [التاريخ].": "Write the message here… Example: Greetings from [اسم_المؤسسة]. We remind the parents of student [اسم_التلميذ] in class [القسم] of the parents' meeting on [التاريخ].",
+    "القناة الافتراضية لرسائل الغياب التلقائية": "Default channel for automatic absence messages",
+    "تُستخدم عند إرسال رسالة غياب مفردة من سجل الحضور. يمكن اختيار قناة مختلفة لكل حملة من مركز الرسائل.": "Used when sending a single absence message from the attendance log. You can choose a different channel for each campaign in the Messages Center.",
+    "بوابة أندرويد المحلية على شبكة Wi-Fi": "Local Android gateway on the Wi-Fi network",
+    "رابط بوابة الهاتف": "Phone gateway URL",
+    "عنوان يظهر في تطبيق بوابة SMS على الهاتف، مثل": "The address shown in the SMS Gateway app on the phone, e.g.",
+    "مفتاح بوابة الهاتف (اختياري)": "Phone gateway key (optional)",
+    "نفس المفتاح المضبوط في تطبيق الهاتف. يُرسل في ترويسة": "The same key configured in the phone app. Sent in the header",
+    "واجهة HTTP لمزوّد خدمة SMS": "HTTP API for an SMS provider",
+    "رابط واجهة الحاسوب/السحابة": "Computer/cloud API URL",
+    "واجهة مزوّد SMS التي ستستقبل طلبات الإرسال من الحاسوب.": "The SMS provider API that will receive send requests from the computer.",
+    "مفتاح واجهة الحاسوب/السحابة (اختياري)": "Computer/cloud API key (optional)",
+    "يُرسل وفق إعدادات الترويسات المتقدمة أدناه إن وُجدت.": "Sent according to the advanced headers settings below, if any.",
+    "الافتراضي: تطبيق الهاتف": "Default: phone app",
+    "الافتراضي: الحاسوب/السحابة": "Default: computer/cloud",
+    "إظهار مفتاح بوابة الهاتف": "Show phone gateway key",
+    "إخفاء مفتاح بوابة الهاتف": "Hide phone gateway key",
+    "إظهار مفتاح واجهة الحاسوب/السحابة": "Show computer/cloud API key",
+    "إخفاء مفتاح واجهة الحاسوب/السحابة": "Hide computer/cloud API key",
+    "وضع الاختبار مفعّل": "Test mode is on",
+    "الإرسال الحقيقي مفعّل": "Real sending is on",
+    "الهاتف: مهيأ": "Phone: configured",
+    "الهاتف: محاكاة": "Phone: simulation",
+    "الهاتف: غير مهيأ": "Phone: not configured",
+    "الحاسوب: مهيأ": "Computer: configured",
+    "الحاسوب: محاكاة": "Computer: simulation",
+    "الحاسوب: غير مهيأ": "Computer: not configured",
+    "واتساب: متاح يدويًا": "WhatsApp: manual",
+    "واتساب: معطّل": "WhatsApp: disabled",
+    "جاهزة للإرسال": "Ready to send",
+    "محاكاة فقط": "Simulation only",
+    "غير مهيأة": "Not configured",
+    "واتساب معطّل من إعدادات الرسائل. فعّله لتتمكن من فتح المحادثات.": "WhatsApp is disabled in message settings. Enable it to open chats.",
+    "هذه القناة غير مهيأة. أضف رابط البوابة المناسب من إعدادات الرسائل، أو استخدم وضع الاختبار.": "This channel is not configured. Add the appropriate gateway URL in message settings, or use test mode.",
+    "وضع الاختبار مفعّل: سيتم تسجيل الإرسال كمحاكاة ناجحة فقط، دون اتصال بأي بوابة.": "Test mode is on: sending will be recorded as a successful simulation only, without contacting any gateway.",
+    "واتساب يدوي: لن يرسل النظام أي رسالة. ستفتح محادثة جاهزة لكل ولي وتؤكد الإرسال بنفسك.": "Manual WhatsApp: the system will not send any message. A ready chat opens for each parent and you confirm sending yourself.",
+    "فتح محادثات واتساب": "Open WhatsApp chats",
+    "إرسال SMS عبر الحاسوب": "Send SMS via computer",
+    "إرسال SMS عبر الهاتف": "Send SMS via phone",
+    "لا توجد أقسام متاحة. أضف تلاميذ بأقسام أولًا.": "No classes available. Add students with classes first.",
+    "لا يوجد تلاميذ نشطون. أضف التلاميذ أولًا.": "No active students. Add students first.",
+    "افتح قائمة الاختيار لتحديد تلاميذ بعينهم.": "Open the selection list to choose specific students.",
+    "اختيار التلاميذ": "Select students",
+    "ابحث وحدد من سيستلم الرسالة. يمكنك اختيار أكثر من تلميذ.": "Search and select who will receive the message. You can select more than one student.",
+    "ابحث بالاسم أو رقم التعريف أو الهاتف…": "Search by name, ID number, or phone…",
+    "تحديد كل النتائج": "Select all results",
+    "مسح الكل": "Clear all",
+    "تأكيد الاختيار": "Confirm selection",
+    "جرّب اسمًا آخر أو غيّر القسم.": "Try another name or change the class.",
+    "جارٍ تحميل البيانات…": "Loading data…",
+    "لا يوجد تلاميذ نشطون. أضف التلاميذ من صفحة التلاميذ أولًا.": "No active students. Add students from the Students page first.",
+    "حدّد تلميذًا واحدًا على الأقل.": "Select at least one student.",
+    "لا يوجد مستلمون في النطاق المحدد.": "No recipients in the selected scope.",
+    "لا يوجد تلميذ برقم هاتف صالح لواتساب في النطاق المحدد.": "No student with a valid WhatsApp number in the selected scope.",
+    "لا يوجد تلميذ برقم هاتف صالح في النطاق المحدد.": "No student with a valid phone number in the selected scope.",
+    "القناة غير مهيأة. راجع إعدادات الرسائل.": "The channel is not configured. Check message settings.",
+    "اكتب نص الرسالة قبل المتابعة.": "Write the message text before continuing.",
+    "فعّل مربع الموافقة لتأكيد الإرسال.": "Check the approval box to confirm sending.",
+    "لا يوجد تلاميذ بعد. أضف التلاميذ أولًا من صفحة التلاميذ.": "No students yet. Add students first from the Students page.",
+    "جارٍ تحميل بيانات التلاميذ…": "Loading student data…",
+    "تعذر تحميل بيانات التلاميذ. أعد المحاولة.": "Could not load student data. Try again.",
+    "تعذر تحميل بيانات المستلمين.": "Could not load recipient data.",
+    "حدّد تلاميذ أولًا لعرض المعاينة.": "Select students first to show the preview.",
+    "لا يوجد مستلم مؤهل لعرض معاينة.": "No eligible recipient to preview.",
+    "تعذرت معاينة الرسالة.": "Could not preview the message.",
+    "فعّل مربع الموافقة قبل الإرسال.": "Check the approval box before sending.",
+    "تمت العملية.": "Operation completed.",
+    "تعذر بدء الإرسال.": "Could not start sending.",
+    "محادثات واتساب جاهزة": "WhatsApp chats ready",
+    "واتساب لا يرسل تلقائيًا.": "WhatsApp does not send automatically.",
+    "افتح محادثة كل ولي، راجع النص، ثم اضغط «إرسال» داخل واتساب. لا يغادر جهازك أي شيء قبل ذلك.": "Open each parent's chat, review the text, then press “Send” inside WhatsApp. Nothing leaves your device before that.",
+    "فتح المحادثة": "Open chat",
+    "رقم غير صالح": "Invalid number",
+    "نسخ نص الرسالة": "Copy message text",
+    "اكتملت معالجة الحملة": "Campaign processing completed",
+    "جارٍ إرسال رسائل الحملة": "Sending campaign messages",
+    "اكتملت الحملة.": "Campaign completed.",
+    "تعذر متابعة تقدم الحملة. حدّث الصفحة لعرض النتيجة.": "Could not track campaign progress. Refresh the page to see the result.",
+    "لم تُنشأ أي حملة بعد.": "No campaigns have been created yet.",
+    "لا توجد حملات بعد": "No campaigns yet",
+    "أرسل أول رسالة جماعية وسيظهر سجلها هنا مع النتائج.": "Send your first bulk message and its history will appear here with results.",
+    "تعذر تحميل سجل الحملات": "Could not load campaign history",
+    "تعذر تحميل سجل الحملات.": "Could not load campaign history.",
+    "قيد التنفيذ": "In progress",
+    "جاهزة للإرسال اليدوي": "Ready for manual sending",
+    "مكتملة": "Completed",
+    "حملة واتساب": "WhatsApp campaign",
+    "حملة SMS": "SMS campaign",
+    "في النطاق": "in scope",
+    "مؤهل": "eligible",
+    "مستبعد": "excluded",
+    "هذه الحملة لا ترسل تلقائيًا. استخدم زر واتساب بجانب كل ولي لفتح المحادثة ومراجعتها.": "This campaign does not send automatically. Use the WhatsApp button next to each parent to open and review the chat.",
+    "نص الحملة": "Campaign text",
+    "لا توجد عناصر.": "No items.",
+    "جاهزة": "Ready",
+    "تم نسخ نص الرسالة.": "Message text copied.",
+    "تعذر النسخ التلقائي.": "Could not copy automatically.",
+    "النسخ غير متاح في هذا المتصفح.": "Copying is not available in this browser.",
+    "SMS من الهاتف": "SMS from phone",
+    "SMS من الحاسوب": "SMS from computer",
+    "تلاميذ القسم المحدد": "Students in the selected class",
+    "التلاميذ المحددين": "Selected students",
+    "تطبيق الهاتف": "phone app",
+    "واجهة الحاسوب/السحابة": "computer/cloud API",
+    "الهاتف": "Phone",
+    "هناك حملة رسائل قيد الإرسال. انتظر اكتمالها قبل بدء حملة جديدة.": "A message campaign is already being sent. Wait for it to finish before starting a new one.",
+    "بدأ إرسال الرسائل إلى الأولياء.": "Sending messages to parents has started.",
+    "يجب الموافقة صراحةً قبل تجهيز أو إرسال الرسائل.": "You must approve explicitly before preparing or sending messages.",
+    "قناة الإرسال غير صالحة.": "Invalid sending channel.",
+    "أزرار واتساب معطّلة في الإعدادات. فعّلها أولًا من إعدادات الرسائل.": "WhatsApp buttons are disabled in settings. Enable them first from message settings.",
+    "قناة الإرسال المختارة غير مهيأة. أضف رابط البوابة المناسب من إعدادات الرسائل.": "The selected sending channel is not configured. Add the appropriate gateway URL in message settings.",
+    "لا يوجد مستلمون يحملون رقم هاتف صالحًا في النطاق المحدد. راجع أرقام أولياء التلاميذ.": "No recipients with a valid phone number in the selected scope. Check parent phone numbers.",
+    "يرجى كتابة نص الرسالة قبل المتابعة.": "Please write the message text before continuing.",
+    "نطاق المستلمين غير صالح.": "Invalid recipient scope.",
+    "قائمة التلاميذ المحددين غير صالحة.": "Invalid selected students list.",
+    "يرجى اختيار القسم قبل تجهيز الرسائل.": "Please choose a class before preparing messages.",
+    "يرجى تحديد تلميذ واحد على الأقل.": "Please select at least one student.",
+    "حملة الرسائل غير موجودة.": "Message campaign not found.",
+    "هذه الحملة لا تُرسل آليًا.": "This campaign is not sent automatically.",
+    "لا توجد رسائل معلّقة في هذه الحملة.": "No pending messages in this campaign.",
+    "توقف الإرسال بسبب خطأ غير متوقع. راجع سجل التطبيق.": "Sending stopped due to an unexpected error. Check the application log.",
+    "وضع الاختبار: تمت محاكاة الإرسال دون استخدام الشبكة.": "Test mode: sending was simulated without using the network.",
+    "سيصلهم SMS": "will receive SMS",
+    "لديهم واتساب": "have WhatsApp"
   },
   "patterns": [
     {
@@ -1890,6 +2069,110 @@
     {
       "ar": "{0}: {1}",
       "tr": "{0}: {1}"
+    },
+    {
+      "ar": "تم تحديد {0}",
+      "tr": "{0} selected"
+    },
+    {
+      "ar": "إزالة {0}",
+      "tr": "Remove {0}"
+    },
+    {
+      "ar": "+{0} آخرون",
+      "tr": "+{0} more"
+    },
+    {
+      "ar": "{0} نتيجة · {1} محدد",
+      "tr": "{0} results · {1} selected"
+    },
+    {
+      "ar": "تأكيد الاختيار ({0})",
+      "tr": "Confirm selection ({0})"
+    },
+    {
+      "ar": "تظهر أول {0} نتيجة. استخدم البحث لتضييق القائمة.",
+      "tr": "Showing the first {0} results. Use search to narrow the list."
+    },
+    {
+      "ar": "أوافق على تجهيز محادثة واتساب لكل مستلم في النطاق المحدد (العدد: {0})، وأتحمل مسؤولية مراجعة كل رسالة والضغط على «إرسال» داخل واتساب.",
+      "tr": "I agree to prepare a WhatsApp chat for each recipient in the selected scope (count: {0}), and I am responsible for reviewing each message and pressing “Send” inside WhatsApp."
+    },
+    {
+      "ar": "أوافق على محاكاة إرسال SMS إلى المستلمين في النطاق المحدد (العدد: {0}) في وضع الاختبار، دون استخدام الشبكة أو استهلاك رصيد.",
+      "tr": "I agree to simulate sending SMS to the recipients in the selected scope (count: {0}) in test mode, without using the network or credit."
+    },
+    {
+      "ar": "أوافق صراحةً على إرسال SMS إلى المستلمين في النطاق المحدد (العدد: {0}) عبر {1}.",
+      "tr": "I explicitly agree to send SMS to the recipients in the selected scope (count: {0}) via {1}."
+    },
+    {
+      "ar": "ستُفتح روابط واتساب للمراجعة اليدوية (العدد: {0}).",
+      "tr": "WhatsApp links will open for manual review (count: {0})."
+    },
+    {
+      "ar": "عند الضغط سيبدأ الإرسال إلى المستلمين المؤهلين (العدد: {0}).",
+      "tr": "When you press, sending will start to the eligible recipients (count: {0})."
+    },
+    {
+      "ar": "{0} مقطع تقريبًا",
+      "tr": "About {0} segments"
+    },
+    {
+      "ar": "المستلمون المؤهلون: {0} · لم يُرسل أي شيء بعد",
+      "tr": "Eligible recipients: {0} · nothing has been sent yet"
+    },
+    {
+      "ar": "نسخ رسالة {0}",
+      "tr": "Copy message for {0}"
+    },
+    {
+      "ar": "{0} ناجحة · {1} فاشلة · {2} معلقة",
+      "tr": "{0} sent · {1} failed · {2} pending"
+    },
+    {
+      "ar": "{0} ناجحة · {1} فاشلة · {2} محاكاة",
+      "tr": "{0} sent · {1} failed · {2} simulated"
+    },
+    {
+      "ar": "محادثات جاهزة: {0}",
+      "tr": "Chats ready: {0}"
+    },
+    {
+      "ar": "{0} حملة — الأحدث أولًا",
+      "tr": "{0} campaigns — newest first"
+    },
+    {
+      "ar": "تظهر أول {0} من {1} عنصرًا.",
+      "tr": "Showing the first {0} of {1} items."
+    },
+    {
+      "ar": "{0} ناجحة، {1} فاشلة، {2} معلقة.",
+      "tr": "{0} sent, {1} failed, {2} pending."
+    },
+    {
+      "ar": "سيُستبعد من الإرسال تلاميذ بلا رقم هاتف صالح (العدد: {0}). راجع أرقام الأولياء من صفحة التلاميذ.",
+      "tr": "Students without a valid phone number will be excluded from sending (count: {0}). Check parent numbers on the Students page."
+    },
+    {
+      "ar": "سيُستبعد من المحادثات تلاميذ بلا رقم واتساب صالح (العدد: {0}).",
+      "tr": "Students without a valid WhatsApp number will be excluded from the chats (count: {0})."
+    },
+    {
+      "ar": "{0} — {1} تلميذ",
+      "tr": "{0} — {1} students"
+    },
+    {
+      "ar": "تم تجهيز محادثات واتساب. العدد: {0}. راجع كل رسالة وأرسلها يدويًا من واتساب.",
+      "tr": "WhatsApp chats are ready. Count: {0}. Review each message and send it manually from WhatsApp."
+    },
+    {
+      "ar": "نص الرسالة أطول من الحد المسموح ({0} حرف).",
+      "tr": "Message text exceeds the allowed limit ({0} characters)."
+    },
+    {
+      "ar": "اكتملت المعالجة: {0} ناجحة، {1} فاشلة، {2} متجاوزة.",
+      "tr": "Processing completed: {0} sent, {1} failed, {2} skipped."
     }
   ]
 }

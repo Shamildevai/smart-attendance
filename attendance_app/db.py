@@ -9,7 +9,7 @@ from flask import current_app, g
 
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -123,6 +123,47 @@ CREATE TABLE IF NOT EXISTS period_closures (
     UNIQUE (period_id, closure_date),
     FOREIGN KEY (period_id) REFERENCES periods(id) ON DELETE RESTRICT
 );
+
+CREATE TABLE IF NOT EXISTS message_campaigns (
+    id TEXT PRIMARY KEY,
+    channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp')),
+    scope TEXT NOT NULL CHECK (scope IN ('all', 'class', 'selected')),
+    class_group TEXT,
+    message_template TEXT NOT NULL,
+    recipients_total INTEGER NOT NULL DEFAULT 0,
+    eligible_total INTEGER NOT NULL DEFAULT 0,
+    skipped_total INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'PENDING'
+        CHECK (status IN ('PENDING', 'RUNNING', 'DONE', 'PREPARED')),
+    test_mode INTEGER NOT NULL DEFAULT 0 CHECK (test_mode IN (0, 1)),
+    created_by TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    finished_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_campaigns_created ON message_campaigns(created_at DESC);
+
+CREATE TABLE IF NOT EXISTS message_outbox (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    campaign_id TEXT NOT NULL,
+    student_nin TEXT NOT NULL,
+    student_name TEXT NOT NULL DEFAULT '',
+    class_group TEXT,
+    parent_phone TEXT NOT NULL,
+    message_body TEXT NOT NULL,
+    channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp')),
+    delivery_status TEXT NOT NULL DEFAULT 'PENDING'
+        CHECK (delivery_status IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED', 'MANUAL')),
+    attempts INTEGER NOT NULL DEFAULT 0,
+    error_msg TEXT,
+    gateway TEXT,
+    is_test INTEGER NOT NULL DEFAULT 0 CHECK (is_test IN (0, 1)),
+    sent_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (campaign_id) REFERENCES message_campaigns(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_outbox_campaign ON message_outbox(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_outbox_status ON message_outbox(delivery_status);
 """
 
 DEFAULT_PRINT_CONFIG = {
@@ -158,6 +199,10 @@ DEFAULT_SETTINGS: dict[str, str] = {
     "sms_gateway": "local",
     "sms_api_url": "",
     "sms_api_key": "",
+    "sms_mobile_url": "",
+    "sms_mobile_key": "",
+    "sms_cloud_url": "",
+    "sms_cloud_key": "",
     "sms_headers": "{}",
     "sms_payload_template": '{"phone": "{{phone}}", "message": "{{message}}"}',
     "sms_test_mode": "1",
