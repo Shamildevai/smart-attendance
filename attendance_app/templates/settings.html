@@ -289,7 +289,7 @@
 
         <div class="settings-note">
           <svg class="ico"><use href="#i-whatsapp"></use></svg>
-          <div>روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. تحتاج تطبيق واتساب أو متصفحًا متصلًا بالإنترنت، ولا يرسل النظام أي رسالة دون تأكيدك داخل واتساب.</div>
+          <div>روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. يجب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب لتفتح المحادثات مباشرة. لا يرسل النظام أي رسالة دون تأكيدك داخل واتساب. <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a></div>
         </div>
 
         <div class="sms-template-editor">
@@ -333,8 +333,8 @@
             </div>
             <div class="field">
               <label for="sms-mobile-url">رابط بوابة الهاتف</label>
-              <input class="input mono" id="sms-mobile-url" type="url" inputmode="url" dir="ltr" maxlength="500" placeholder="http://192.168.1.20:8080/send">
-              <span class="field-hint">عنوان يظهر في تطبيق بوابة SMS على الهاتف، مثل <code dir="ltr">http://192.168.1.20:8080/send</code>.</span>
+              <input class="input mono" id="sms-mobile-url" type="text" inputmode="url" dir="ltr" maxlength="500" placeholder="192.168.1.20:8080">
+              <span class="field-hint">عنوان يظهر في تطبيق بوابة SMS على الهاتف. يمكنك لصق <code dir="ltr">http://192.168.1.20:8080/send</code> أو العنوان المختصر <code dir="ltr">192.168.1.20:8080</code>. <a class="inline-link" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">تحميل التطبيق {{ gateway_app_version }}</a></span>
             </div>
             <div class="field">
               <label for="sms-mobile-key">مفتاح بوابة الهاتف (اختياري)</label>
@@ -370,6 +370,27 @@
               </div>
               <span class="field-hint">يُرسل وفق إعدادات الترويسات المتقدمة أدناه إن وُجدت.</span>
             </div>
+          </div>
+        </div>
+
+        <div class="gateway-live" id="sms-gateway-live" aria-live="polite">
+          <div class="gateway-live-head">
+            <span class="gateway-dot is-pending" id="sms-live-dot" aria-hidden="true"></span>
+            <div class="flex-1">
+              <strong id="sms-live-title">جارٍ فحص اتصال الهاتف…</strong>
+              <p id="sms-live-detail">ثبّت تطبيق بوابة الرسائل على هاتف أندرويد وشغّله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" type="button" id="sms-live-check">
+              <svg class="ico"><use href="#i-refresh"></use></svg>
+              <span>فحص الاتصال</span>
+            </button>
+          </div>
+          <p class="gateway-live-hint hidden" id="sms-live-hint"></p>
+          <div class="gateway-live-meta">
+            <span class="chip hidden" id="sms-live-version">تطبيق الهاتف: {{ gateway_app_version }}</span>
+            <span class="chip hidden" id="sms-live-wa">حالة واتساب لسطح المكتب: جارٍ الفحص…</span>
+            <a class="inline-link" id="sms-live-download" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">تحميل تطبيق الهاتف {{ gateway_app_version }}</a>
+            <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a>
           </div>
         </div>
 

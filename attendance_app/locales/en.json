@@ -1247,7 +1247,84 @@
     "توقف الإرسال بسبب خطأ غير متوقع. راجع سجل التطبيق.": "Sending stopped due to an unexpected error. Check the application log.",
     "وضع الاختبار: تمت محاكاة الإرسال دون استخدام الشبكة.": "Test mode: sending was simulated without using the network.",
     "سيصلهم SMS": "will receive SMS",
-    "لديهم واتساب": "have WhatsApp"
+    "لديهم واتساب": "have WhatsApp",
+    "جارٍ فحص اتصال الهاتف…": "Checking phone connection…",
+    "يجب تثبيت تطبيق بوابة الرسائل على هاتف أندرويد وتشغيله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.": "Install the message gateway app on an Android phone and keep it running on the same Wi-Fi network before sending real SMS.",
+    "فحص الاتصال": "Check connection",
+    "تحميل واتساب لسطح المكتب": "Download WhatsApp for desktop",
+    "إرسال الآن": "Send now",
+    "بوابة أندرويد المحلية على نفس شبكة Wi-Fi. ثبّت تطبيق البوابة على الهاتف أولًا، ثم اضغط «فحص الاتصال» أعلى الصفحة.": "Local Android gateway on the same Wi-Fi network. Install the gateway app on the phone first, then press “Check connection” at the top of the page.",
+    "لا يُرسل النظام رسائل واتساب تلقائيًا. يتطلب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب، ثم تفتح محادثة كل ولي بنص الرسالة وتراجعها وتضغط «إرسال» داخل واتساب.": "The system does not send WhatsApp messages automatically. It requires WhatsApp Desktop on this computer; then you open each parent’s chat with the message ready, review it, and press “Send” inside WhatsApp.",
+    "حالة واتساب لسطح المكتب: جارٍ الفحص…": "WhatsApp Desktop status: checking…",
+    "يتطلب تطبيق واتساب لسطح المكتب على هذا الحاسوب. يفتح النظام رابط wa.me لكل ولي برسالة جاهزة، ولا يرسل شيئًا نيابة عنك.": "Requires WhatsApp Desktop on this computer. The system opens a wa.me link for each parent with the message ready, and sends nothing on your behalf.",
+    "ثبّت تطبيق بوابة الرسائل على هاتف أندرويد وشغّله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.": "Install the message gateway app on an Android phone and run it on the same Wi-Fi network before sending real SMS.",
+    "الهاتف متصل وجاهز لإرسال SMS": "Phone connected and ready to send SMS",
+    "الهاتف متصل — يلزم تحديث تطبيق البوابة": "Phone connected — gateway app update required",
+    "الهاتف متصل — مفتاح API مطلوب": "Phone connected — API key required",
+    "الهاتف غير متصل": "Phone not connected",
+    "عنوان البوابة غير صحيح": "Incorrect gateway address",
+    "رابط بوابة الهاتف غير صالح": "Invalid phone gateway URL",
+    "لم يُضبط رابط بوابة الهاتف": "Phone gateway URL not set",
+    "تعذر فحص بوابة الهاتف": "Could not check the phone gateway",
+    "حالة بوابة الهاتف": "Phone gateway status",
+    "جارٍ فحص الاتصال…": "Checking connection…",
+    "الهاتف متصل — محاكاة": "Phone connected — simulation",
+    "الهاتف متصل — جاهز": "Phone connected — ready",
+    "متصل — حدّث تطبيق الهاتف": "Connected — update the phone app",
+    "متصل — مفتاح API مطلوب": "Connected — API key required",
+    "الهاتف غير متصل — محاكاة": "Phone offline — simulation",
+    "ثبّت واتساب لسطح المكتب": "Install WhatsApp Desktop",
+    "واتساب سطح المكتب جاهز": "WhatsApp Desktop ready",
+    "واتساب لسطح المكتب مثبّت": "WhatsApp Desktop installed",
+    "واتساب لسطح المكتب غير مثبّت": "WhatsApp Desktop not installed",
+    "حالة واتساب لسطح المكتب غير معروفة": "WhatsApp Desktop status unknown",
+    "غير متصل (محاكاة)": "Offline (simulation)",
+    "غير متصل": "Offline",
+    "غير مهيأ": "Not configured",
+    "متصل وجاهز": "Connected and ready",
+    "يلزم تحديث التطبيق": "App update required",
+    "مفتاح API مطلوب": "API key required",
+    "محاكاة": "Simulation",
+    "متاح يدويًا": "Available manually",
+    "معطّل": "Disabled",
+    "يلزم تثبيت واتساب": "WhatsApp installation required",
+    "جارٍ الفحص": "Checking",
+    "أعد المحاولة أو تحقق من إعدادات الرسائل.": "Try again or check the message settings.",
+    "تعذر فحص اتصال الهاتف": "Could not check the phone connection",
+    "تعذر فحص اتصال الهاتف.": "Could not check the phone connection.",
+    "جارٍ التحقق من اتصال الهاتف… انتظر لحظة قبل الإرسال.": "Checking the phone connection… wait a moment before sending.",
+    "تطبيق واتساب لسطح المكتب غير مثبّت على هذا الحاسوب. ثبّته من الرابط أسفل البطاقة قبل فتح المحادثات.": "WhatsApp Desktop is not installed on this computer. Install it from the link below the card before opening chats.",
+    "ثبّت تطبيق واتساب لسطح المكتب على هذا الحاسوب قبل فتح المحادثات.": "Install WhatsApp Desktop on this computer before opening chats.",
+    "وضع الاختبار مفعّل، لذا يمكنك تجربة الإرسال دون اتصال؛ عطّله لإرسال SMS حقيقي.": "Test mode is on, so you can try sending without a connection; turn it off to send real SMS.",
+    "رابط بوابة الهاتف يجب أن يكون http:// أو https:// أو عنوان IP:منفذ.": "The phone gateway URL must be http:// or https://, or an IP:port address.",
+    "رابط الواجهة السحابية يجب أن يبدأ بـ http:// أو https://.": "The cloud endpoint URL must start with http:// or https://.",
+    "تطبيق بوابة الرسائل للهاتف": "Phone message gateway app",
+    "مطلوب لإرسال SMS من شريحة الهاتف": "Required to send SMS from the phone SIM",
+    "ثبّت تطبيق البوابة على هاتف أندرويد، واتركه يعمل على نفس شبكة Wi-Fi. لا يسمح النظام بإرسال SMS حقيقي قبل اتصال الهاتف بالبوابة.": "Install the gateway app on an Android phone and keep it running on the same Wi-Fi network. The system does not allow real SMS sending until the phone connects to the gateway.",
+    "تطبيق البوابة": "Gateway app",
+    "عنوان يظهر في تطبيق بوابة SMS على الهاتف. يمكنك لصق": "Address shown in the SMS gateway app on the phone. You can paste",
+    "أو العنوان المختصر": "or the short address",
+    "روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. يجب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب لتفتح المحادثات مباشرة. لا يرسل النظام أي رسالة دون تأكيدك داخل واتساب.": "Official wa.me links need no gateway or credit. WhatsApp Desktop must be installed on this computer to open chats directly. The system sends no message without your confirmation inside WhatsApp.",
+    "لم يتم ضبط رابط بوابة الهاتف بعد.": "The phone gateway URL has not been set yet.",
+    "أدخل عنوان البوابة الظاهر في تطبيق الهاتف، مثل http://192.168.1.20:8080/send.": "Enter the gateway address shown in the phone app, for example http://192.168.1.20:8080/send.",
+    "تعذر الاتصال بالبوابة عبر HTTPS.": "Could not connect to the gateway over HTTPS.",
+    "انتهت مهلة فحص البوابة.": "The gateway check timed out.",
+    "تأكد من أن الهاتف مستيقظ وعلى نفس شبكة الواي فاي ثم أعد الفحص.": "Make sure the phone is awake and on the same Wi-Fi network, then check again.",
+    "شغّل خادم البوابة داخل تطبيق الهاتف، وتأكد من اتصال الحاسوب والهاتف بنفس شبكة الواي فاي، ومن أن المنفذ صحيح (8080 افتراضيًا).": "Start the gateway server inside the phone app, make sure the computer and phone are on the same Wi-Fi network, and confirm the port is correct (8080 by default).",
+    "تعذر الوصول إلى عنوان البوابة. تحقق من الرابط واتصال الشبكة.": "Could not reach the gateway address. Check the URL and network connection.",
+    "تعذر الاتصال ببوابة الهاتف.": "Could not connect to the phone gateway.",
+    "تحقق من صحة الرابط ثم أعد المحاولة.": "Check the URL and try again.",
+    "البوابة متصلة لكنها رفضت الفحص دون مفتاح صالح.": "The gateway is reachable but rejected the check without a valid key.",
+    "انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل.": "Copy the API key from the phone app and paste it into the message settings.",
+    "تأكد من لصق رابط الإرسال الظاهر داخل تطبيق البوابة.": "Make sure you paste the send URL shown inside the gateway app.",
+    "الخادم المحدد لا يبدو بوابة رسائل الحضور.": "The specified server does not look like the attendance message gateway.",
+    "الصق رابط الإرسال الظاهر داخل تطبيق بوابة الرسائل على الهاتف.": "Paste the send URL shown inside the message gateway app on the phone.",
+    "البوابة متصلة وتتطلب مفتاح API.": "The gateway is connected and requires an API key.",
+    "نزّل أحدث إصدار من تطبيق البوابة وثبّته على الهاتف.": "Download the latest gateway app version and install it on the phone.",
+    "بوابة الهاتف متصلة وجاهزة لإرسال SMS.": "The phone gateway is connected and ready to send SMS.",
+    "تطبيق واتساب لسطح المكتب مثبّت على هذا الحاسوب.": "WhatsApp Desktop is installed on this computer.",
+    "لم يُعثر على تطبيق واتساب لسطح المكتب. ثبّته لتفتح روابط الإرسال تلقائيًا، أو استخدم واتساب على الهاتف.": "WhatsApp Desktop was not found. Install it to open send links automatically, or use WhatsApp on the phone.",
+    "يمكن فتح روابط واتساب عبر المتصفح أو تطبيق واتساب إن كان مثبّتًا.": "WhatsApp links can open in the browser or the WhatsApp app if installed."
   },
   "patterns": [
     {
@@ -2173,6 +2250,50 @@
     {
       "ar": "اكتملت المعالجة: {0} ناجحة، {1} فاشلة، {2} متجاوزة.",
       "tr": "Processing completed: {0} sent, {1} failed, {2} skipped."
+    },
+    {
+      "ar": "تحميل تطبيق الهاتف {0}",
+      "tr": "Download phone app {0}"
+    },
+    {
+      "ar": "تحميل التطبيق {0}",
+      "tr": "Download app {0}"
+    },
+    {
+      "ar": "تطبيق الهاتف: {0}",
+      "tr": "Phone app: {0}"
+    },
+    {
+      "ar": "إصدار الهاتف: {0} · المطلوب: {1}",
+      "tr": "Phone version: {0} · required: {1}"
+    },
+    {
+      "ar": "آخر فحص: {0}",
+      "tr": "Last check: {0}"
+    },
+    {
+      "ar": "{0} ثبّت تطبيق الهاتف من الزر أعلى الصفحة وشغّله ثم أعد الفحص.",
+      "tr": "{0} Install the phone app from the button at the top of the page, run it, then check again."
+    },
+    {
+      "ar": "{0} وضع الاختبار مفعّل، لذا يمكنك تجربة الإرسال دون اتصال؛ عطّله لإرسال SMS حقيقي.",
+      "tr": "{0} Test mode is on, so you can try sending without a connection; turn it off to send real SMS."
+    },
+    {
+      "ar": "بوابة الهاتف تعمل عادةً عبر http وليس https. استخدم رابطًا مثل http://{0}:8080/send.",
+      "tr": "The phone gateway usually runs over http, not https. Use a URL such as http://{0}:8080/send."
+    },
+    {
+      "ar": "خطأ في فحص البوابة: {0}",
+      "tr": "Gateway check error: {0}"
+    },
+    {
+      "ar": "استجاب الخادم برمز HTTP {0}.",
+      "tr": "The server responded with HTTP status {0}."
+    },
+    {
+      "ar": "البوابة متصلة لكن إصدارها {0} أقدم من المطلوب {1}.",
+      "tr": "The gateway is connected but its version {0} is older than the required {1}."
     }
   ]
 }

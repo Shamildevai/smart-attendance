@@ -8,6 +8,8 @@
     settings: null,
     periods: [],
     saving: false,
+    gateway: null,
+    gatewayLoading: false,
   };
 
   const SMS_VARIABLES = {
@@ -321,6 +323,78 @@
       : "وضع الاختبار معطّل: ستُرسل رسائل حقيقية عبر البوابة المضبوطة. تأكد من صحة الرابط والمفتاح قبل الإرسال.";
   }
 
+  const GATEWAY_TITLES = {
+    connected: "الهاتف متصل وجاهز لإرسال SMS",
+    outdated: "الهاتف متصل — يلزم تحديث تطبيق البوابة",
+    auth_required: "الهاتف متصل — مفتاح API مطلوب",
+    offline: "الهاتف غير متصل",
+    wrong_service: "عنوان البوابة غير صحيح",
+    invalid_url: "رابط بوابة الهاتف غير صالح",
+    not_configured: "لم يُضبط رابط بوابة الهاتف",
+    error: "تعذر فحص بوابة الهاتف",
+  };
+
+  function renderGatewayStatus() {
+    const gateway = state.gateway;
+    if (!gateway) return;
+    const mobile = gateway.mobile || {};
+    const app = gateway.gateway_app || {};
+    let tone = "is-offline";
+    if (mobile.status === "connected") tone = "is-online";
+    else if (mobile.status === "outdated" || mobile.status === "auth_required") tone = "is-warning";
+    else if (!mobile.configured && gateway.test_mode) tone = "is-pending";
+    $("sms-live-dot").className = `gateway-dot ${tone}`;
+    $("sms-live-title").textContent = GATEWAY_TITLES[mobile.status] || "حالة بوابة الهاتف";
+    let detail = mobile.detail || "";
+    if (gateway.test_mode && mobile.status !== "connected") {
+      detail += " وضع الاختبار مفعّل، لذا يمكنك تجربة الإرسال دون اتصال؛ عطّله لإرسال SMS حقيقي.";
+    }
+    $("sms-live-detail").textContent = detail.trim();
+    $("sms-live-hint").textContent = mobile.hint || "";
+    $("sms-live-hint").classList.toggle("hidden", !mobile.hint);
+    const version = app.version || "";
+    if (mobile.version && version && mobile.version !== version) {
+      $("sms-live-version").textContent = `إصدار الهاتف: ${mobile.version} · المطلوب: ${version}`;
+    } else {
+      $("sms-live-version").textContent = `تطبيق الهاتف: ${version || "—"}`;
+    }
+    $("sms-live-version").classList.remove("hidden");
+    const desktop = gateway.whatsapp_desktop || {};
+    const waChip = $("sms-live-wa");
+    waChip.classList.remove("hidden");
+    if (desktop.installed === true) {
+      waChip.className = "chip is-accent";
+      waChip.textContent = "واتساب لسطح المكتب مثبّت";
+    } else if (desktop.installed === false) {
+      waChip.className = "chip is-danger";
+      waChip.textContent = "واتساب لسطح المكتب غير مثبّت";
+    } else {
+      waChip.className = "chip is-warning";
+      waChip.textContent = "حالة واتساب لسطح المكتب غير معروفة";
+    }
+    if (app.download_url) {
+      $("sms-live-download").href = app.download_url;
+      $("sms-live-download").textContent = `تحميل تطبيق الهاتف ${version}`;
+    }
+  }
+
+  async function loadGatewayStatus(force = false) {
+    if (state.gatewayLoading) return;
+    state.gatewayLoading = true;
+    const button = $("sms-live-check");
+    if (force) A.setBusy(button, true);
+    try {
+      const data = await A.api(`/api/messages/gateway${force ? "?force=1" : ""}`);
+      state.gateway = data.gateway;
+      renderGatewayStatus();
+    } catch (error) {
+      if (force) A.toast(error.message || "تعذر فحص اتصال الهاتف.", "error");
+    } finally {
+      state.gatewayLoading = false;
+      if (force) A.setBusy(button, false);
+    }
+  }
+
   function insertTemplateVariable(variable) {
     const textarea = $("sms-template");
     const start = textarea.selectionStart ?? textarea.value.length;
@@ -343,15 +417,15 @@
     const cloudUrl = $("sms-cloud-url").value.trim();
     const mobileKey = $("sms-mobile-key").value;
     const cloudKey = $("sms-cloud-key").value;
-    for (const [url, fieldId] of [
-      [mobileUrl, "sms-mobile-url"],
-      [cloudUrl, "sms-cloud-url"],
-    ]) {
-      if (url && !/^https?:\/\//i.test(url)) {
-        A.toast("روابط بوابة SMS يجب أن تبدأ بـ http:// أو https://.", "warning");
-        $(fieldId).focus();
-        return null;
-      }
+    if (mobileUrl && /:\/\//.test(mobileUrl) && !/^https?:\/\//i.test(mobileUrl)) {
+      A.toast("رابط بوابة الهاتف يجب أن يكون http:// أو https:// أو عنوان IP:منفذ.", "warning");
+      $("sms-mobile-url").focus();
+      return null;
+    }
+    if (cloudUrl && !/^https?:\/\//i.test(cloudUrl)) {
+      A.toast("رابط الواجهة السحابية يجب أن يبدأ بـ http:// أو https://.", "warning");
+      $("sms-cloud-url").focus();
+      return null;
     }
     const activeUrl = gateway === "cloud" ? cloudUrl : mobileUrl;
     if (!testMode && !activeUrl) {
@@ -440,16 +514,22 @@
         toggle.setAttribute("aria-label", show ? `إخفاء ${label}` : `إظهار ${label}`);
       });
     });
-    $("sms-form").addEventListener("submit", (event) => {
+    $("sms-form").addEventListener("submit", async (event) => {
       event.preventDefault();
       const payload = smsPayload();
       if (!payload) return;
-      saveSettings(
+      const saved = await saveSettings(
         payload,
         $("sms-form").querySelector('button[type="submit"]'),
         "تم حفظ إعدادات رسائل SMS."
       );
+      if (saved) {
+        $("sms-mobile-url").value = (state.settings && state.settings.sms_mobile_url) || "";
+        $("sms-cloud-url").value = (state.settings && state.settings.sms_cloud_url) || "";
+        loadGatewayStatus(true);
+      }
     });
+    $("sms-live-check").addEventListener("click", () => loadGatewayStatus(true));
     $("sms-test-send").addEventListener("click", async () => {
       const phone = $("sms-test-phone").value.trim();
       if (!phone) {
@@ -462,6 +542,7 @@
       const button = $("sms-test-send");
       const saved = await saveSettings(payload, button, "تم حفظ الإعدادات قبل الاختبار.");
       if (!saved) return;
+      loadGatewayStatus(true);
       A.setBusy(button, true);
       try {
         const data = await A.api("/api/settings/test-sms", {
@@ -716,6 +797,7 @@
     bindDataActions();
     initNavSpy();
     loadAll(true);
+    loadGatewayStatus();
   }
 
   init();

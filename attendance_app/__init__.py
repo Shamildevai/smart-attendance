@@ -168,6 +168,10 @@ def create_app(test_config: dict | None = None) -> Flask:
             "app_author_latin": config.APP_AUTHOR_LATIN,
             "app_author_handle": config.APP_AUTHOR_HANDLE,
             "app_location_latin": config.APP_LOCATION_LATIN,
+            "gateway_app_name": config.GATEWAY_APP_NAME,
+            "gateway_app_version": config.GATEWAY_APP_VERSION,
+            "gateway_app_download_url": config.GATEWAY_APP_DOWNLOAD_URL,
+            "whatsapp_download_url": config.WHATSAPP_DOWNLOAD_URL,
             "current_year": __import__("datetime").datetime.now().year,
         }
 

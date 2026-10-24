@@ -7,6 +7,17 @@
 
   const els = {
     statusChips: $("msg-status-chips"),
+    gatewayStrip: $("msg-gateway-strip"),
+    gatewayDot: $("msg-gateway-dot"),
+    gatewayTitle: $("msg-gateway-title"),
+    gatewayDetail: $("msg-gateway-detail"),
+    gatewayHint: $("msg-gateway-hint"),
+    gatewayUrl: $("msg-gateway-url"),
+    gatewayVersion: $("msg-gateway-version"),
+    gatewayTestChip: $("msg-gateway-testchip"),
+    gatewayDownload: $("msg-gateway-download"),
+    gatewayCheck: $("msg-gateway-check"),
+    whatsappDesktopChip: $("msg-whatsapp-desktop-chip"),
     totalChip: $("msg-total-chip"),
     refresh: $("msg-refresh"),
     scope: $("msg-scope"),
@@ -64,6 +75,9 @@
     sending: false,
     historyPage: 1,
     jobWatcher: null,
+    gateway: null,
+    gatewayLoading: false,
+    gatewayTimer: null,
     loading: true,
   };
 
@@ -76,6 +90,15 @@
 
   function channelInfo(id) {
     return (state.channels.channels || []).find((item) => item.id === id) || {};
+  }
+
+  function gatewayMobile() {
+    return state.gateway && state.gateway.mobile ? state.gateway.mobile : null;
+  }
+
+  function gatewayCanSend() {
+    const mobile = gatewayMobile();
+    return Boolean(mobile && mobile.can_send);
   }
 
   function eligible(student, channel) {
@@ -135,6 +158,7 @@
       populateClasses();
       renderStatus();
       renderChannels();
+      renderChannelLiveStates();
       renderScope();
       renderRecipientSummary();
       renderSelected();
@@ -177,11 +201,42 @@
     const mobile = channelInfo("mobile");
     const cloud = channelInfo("cloud");
     const whatsapp = channelInfo("whatsapp");
+    const gateway = gatewayMobile();
+    const desktop = state.gateway && state.gateway.whatsapp_desktop;
+    let mobileTone = "";
+    let mobileText = "جارٍ الفحص";
+    if (!mobile.configured && !testMode) {
+      mobileTone = "is-danger";
+      mobileText = "غير مهيأ";
+    } else if (!state.gateway) {
+      mobileTone = testMode ? "is-warning" : "";
+      mobileText = testMode ? "محاكاة فقط" : "جارٍ الفحص";
+    } else if (gateway.status === "connected") {
+      mobileText = "متصل وجاهز";
+    } else if (gateway.status === "outdated") {
+      mobileTone = "is-warning";
+      mobileText = "يلزم تحديث التطبيق";
+    } else if (gateway.status === "auth_required") {
+      mobileTone = "is-warning";
+      mobileText = "مفتاح API مطلوب";
+    } else if (gateway.status === "not_configured") {
+      mobileTone = testMode ? "is-warning" : "is-danger";
+      mobileText = testMode ? "محاكاة" : "غير مهيأ";
+    } else {
+      mobileTone = testMode ? "is-warning" : "is-danger";
+      mobileText = testMode ? "غير متصل (محاكاة)" : "غير متصل";
+    }
+    let waTone = whatsapp.ready ? "is-accent" : "is-danger";
+    let waText = whatsapp.ready ? "متاح يدويًا" : "معطّل";
+    if (whatsapp.ready && desktop && desktop.installed === false) {
+      waTone = "is-warning";
+      waText = "يلزم تثبيت واتساب";
+    }
     const chips = [
       `<span class="chip ${testMode ? "is-warning" : ""}" id="msg-test-chip">${A.icon(testMode ? "shield-check" : "wifi")} ${testMode ? "وضع الاختبار مفعّل" : "الإرسال الحقيقي مفعّل"}</span>`,
-      `<span class="chip ${mobile.ready ? "" : "is-danger"}">${A.icon("phone")} الهاتف: ${mobile.ready ? (mobile.configured ? "مهيأ" : "محاكاة") : "غير مهيأ"}</span>`,
+      `<span class="chip ${mobileTone}">${A.icon("phone")} الهاتف: ${mobileText}</span>`,
       `<span class="chip ${cloud.ready ? "" : "is-danger"}">${A.icon("dashboard")} الحاسوب: ${cloud.ready ? (cloud.configured ? "مهيأ" : "محاكاة") : "غير مهيأ"}</span>`,
-      `<span class="chip ${whatsapp.ready ? "is-accent" : "is-danger"}">${A.icon("whatsapp")} واتساب: ${whatsapp.ready ? "متاح يدويًا" : "معطّل"}</span>`,
+      `<span class="chip ${waTone}">${A.icon("whatsapp")} واتساب: ${waText}</span>`,
     ];
     els.statusChips.innerHTML = chips.join("");
     els.totalChip.innerHTML = `<strong>${A.formatInt(state.counts.total || 0)}</strong>&nbsp;تلميذ نشط`;
@@ -238,8 +293,21 @@
     if (state.channel !== "whatsapp" && state.channels.test_mode && !info.configured) {
       warnings.push("وضع الاختبار مفعّل: سيتم تسجيل الإرسال كمحاكاة ناجحة فقط، دون اتصال بأي بوابة.");
     }
+    if (state.channel === "mobile" && !state.channels.test_mode) {
+      const mobile = gatewayMobile();
+      if (!state.gateway) {
+        warnings.push("جارٍ التحقق من اتصال الهاتف… انتظر لحظة قبل الإرسال.");
+      } else if (!mobile || !mobile.can_send) {
+        warnings.push(
+          `${(mobile && (mobile.hint || mobile.detail)) || "الهاتف غير متصل."} ثبّت تطبيق الهاتف من الزر أعلى الصفحة وشغّله ثم أعد الفحص.`
+        );
+      }
+    }
     if (state.channel === "whatsapp" && info.ready) {
       warnings.push("واتساب يدوي: لن يرسل النظام أي رسالة. ستفتح محادثة جاهزة لكل ولي وتؤكد الإرسال بنفسك.");
+      if (state.gateway && state.gateway.whatsapp_desktop && state.gateway.whatsapp_desktop.installed === false) {
+        warnings.push("تطبيق واتساب لسطح المكتب غير مثبّت على هذا الحاسوب. ثبّته من الرابط أسفل البطاقة قبل فتح المحادثات.");
+      }
     }
     els.channelWarning.classList.toggle("hidden", warnings.length === 0);
     els.channelWarningText.textContent = warnings.join(" ");
@@ -249,6 +317,162 @@
         ? "إرسال SMS عبر الحاسوب"
         : "إرسال SMS عبر الهاتف";
     els.send.querySelector("span").textContent = label;
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* Phone gateway status                                                    */
+  /* ---------------------------------------------------------------------- */
+
+  const GATEWAY_TITLES = {
+    connected: "الهاتف متصل وجاهز لإرسال SMS",
+    outdated: "الهاتف متصل — يلزم تحديث تطبيق البوابة",
+    auth_required: "الهاتف متصل — مفتاح API مطلوب",
+    offline: "الهاتف غير متصل",
+    wrong_service: "عنوان البوابة غير صحيح",
+    invalid_url: "رابط بوابة الهاتف غير صالح",
+    not_configured: "لم يُضبط رابط بوابة الهاتف",
+    error: "تعذر فحص بوابة الهاتف",
+  };
+
+  function renderGateway() {
+    const gateway = state.gateway;
+    if (!gateway) {
+      els.gatewayDot.className = "gateway-dot is-pending";
+      els.gatewayTitle.textContent = "جارٍ فحص اتصال الهاتف…";
+      els.gatewayDetail.textContent = "يجب تثبيت تطبيق بوابة الرسائل على هاتف أندرويد وتشغيله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.";
+      els.gatewayHint.classList.add("hidden");
+      els.gatewayUrl.classList.add("hidden");
+      els.gatewayVersion.classList.add("hidden");
+      els.gatewayTestChip.classList.add("hidden");
+      return;
+    }
+    const mobile = gateway.mobile || {};
+    const app = gateway.gateway_app || {};
+    let tone = "is-offline";
+    if (mobile.status === "connected") tone = "is-online";
+    else if (mobile.status === "outdated" || mobile.status === "auth_required") tone = "is-warning";
+    else if (!mobile.configured && gateway.test_mode) tone = "is-pending";
+    els.gatewayDot.className = `gateway-dot ${tone}`;
+    els.gatewayTitle.textContent = GATEWAY_TITLES[mobile.status] || "حالة بوابة الهاتف";
+    let detail = mobile.detail || "";
+    if (gateway.test_mode && mobile.status !== "connected") {
+      detail += " وضع الاختبار مفعّل، لذا يمكنك تجربة الإرسال دون اتصال؛ عطّله لإرسال SMS حقيقي.";
+    }
+    els.gatewayDetail.textContent = detail.trim();
+    els.gatewayHint.textContent = mobile.hint || "";
+    els.gatewayHint.classList.toggle("hidden", !mobile.hint);
+    els.gatewayUrl.textContent = mobile.url || "";
+    els.gatewayUrl.classList.toggle("hidden", !mobile.url);
+    const version = app.version || "";
+    if (mobile.version && version && mobile.version !== version) {
+      els.gatewayVersion.textContent = `إصدار الهاتف: ${mobile.version} · المطلوب: ${version}`;
+    } else {
+      els.gatewayVersion.textContent = `تطبيق الهاتف: ${version || "—"}`;
+    }
+    els.gatewayVersion.classList.remove("hidden");
+    els.gatewayTestChip.classList.toggle("hidden", !gateway.test_mode);
+    if (app.download_url) {
+      els.gatewayDownload.href = app.download_url;
+      const label = els.gatewayDownload.querySelector("span");
+      if (label) label.textContent = `تحميل تطبيق الهاتف ${version}`;
+    }
+    els.gatewayStrip.title = gateway.checked_at ? `آخر فحص: ${gateway.checked_at}` : "";
+  }
+
+  function renderChannelLiveStates() {
+    const mobileInfo = channelInfo("mobile");
+    const mobile = gatewayMobile();
+    const testMode = Boolean(state.channels.test_mode);
+    const mobileBadge = document.querySelector('[data-channel-state="mobile"]');
+    if (mobileBadge) {
+      let text = "غير مهيأة";
+      let tone = "is-danger";
+      if (!mobileInfo.configured && testMode) {
+        text = "محاكاة فقط";
+        tone = "is-warning";
+      } else if (!state.gateway) {
+        text = testMode ? "محاكاة فقط" : "جارٍ فحص الاتصال…";
+        tone = testMode ? "is-warning" : "";
+      } else if (mobile.status === "connected") {
+        text = testMode ? "الهاتف متصل — محاكاة" : "الهاتف متصل — جاهز";
+        tone = "is-accent";
+      } else if (mobile.status === "outdated") {
+        text = "متصل — حدّث تطبيق الهاتف";
+        tone = "is-warning";
+      } else if (mobile.status === "auth_required") {
+        text = "متصل — مفتاح API مطلوب";
+        tone = "is-warning";
+      } else if (!mobileInfo.configured) {
+        text = testMode ? "محاكاة فقط" : "غير مهيأة";
+        tone = testMode ? "is-warning" : "is-danger";
+      } else {
+        text = testMode ? "الهاتف غير متصل — محاكاة" : "الهاتف غير متصل";
+        tone = testMode ? "is-warning" : "is-danger";
+      }
+      mobileBadge.className = `channel-state chip ${tone}`.trim();
+      mobileBadge.textContent = text;
+    }
+    const waInfo = channelInfo("whatsapp");
+    const waBadge = document.querySelector('[data-channel-state="whatsapp"]');
+    const desktop = state.gateway && state.gateway.whatsapp_desktop;
+    if (waBadge) {
+      let text = waInfo.ready ? "جاهزة للإرسال" : "غير مهيأة";
+      let tone = waInfo.ready ? "is-accent" : "is-danger";
+      if (waInfo.ready && desktop) {
+        if (desktop.installed === false) {
+          text = "ثبّت واتساب لسطح المكتب";
+          tone = "is-warning";
+        } else if (desktop.installed === true) {
+          text = "واتساب سطح المكتب جاهز";
+          tone = "is-accent";
+        }
+      }
+      waBadge.className = `channel-state chip ${tone}`.trim();
+      waBadge.textContent = text;
+    }
+    if (els.whatsappDesktopChip) {
+      let text = "حالة واتساب لسطح المكتب: جارٍ الفحص…";
+      let tone = "";
+      if (desktop) {
+        if (desktop.installed === true) {
+          text = "واتساب لسطح المكتب مثبّت";
+          tone = "is-accent";
+        } else if (desktop.installed === false) {
+          text = "واتساب لسطح المكتب غير مثبّت";
+          tone = "is-danger";
+        } else {
+          text = "حالة واتساب لسطح المكتب غير معروفة";
+          tone = "is-warning";
+        }
+      }
+      els.whatsappDesktopChip.className = `chip ${tone}`.trim();
+      els.whatsappDesktopChip.textContent = text;
+    }
+  }
+
+  async function loadGateway(force = false) {
+    if (state.gatewayLoading) return;
+    state.gatewayLoading = true;
+    if (force) A.setBusy(els.gatewayCheck, true);
+    try {
+      const data = await A.api(`/api/messages/gateway${force ? "?force=1" : ""}`);
+      state.gateway = data.gateway;
+      renderGateway();
+      renderStatus();
+      renderChannelLiveStates();
+      syncChannelMessage();
+      updateSendState();
+    } catch (error) {
+      if (!state.gateway) {
+        els.gatewayDot.className = "gateway-dot is-offline";
+        els.gatewayTitle.textContent = "تعذر فحص اتصال الهاتف";
+        els.gatewayDetail.textContent = error.message || "أعد المحاولة أو تحقق من إعدادات الرسائل.";
+      }
+      if (force) A.toast(error.message || "تعذر فحص اتصال الهاتف.", "error");
+    } finally {
+      state.gatewayLoading = false;
+      if (force) A.setBusy(els.gatewayCheck, false);
+    }
   }
 
   /* ---------------------------------------------------------------------- */
@@ -483,6 +707,21 @@
     } else if (!info.ready) {
       hint = "القناة غير مهيأة. راجع إعدادات الرسائل.";
       can = false;
+    } else if (state.channel === "mobile" && !state.channels.test_mode && !state.gateway) {
+      hint = "جارٍ التحقق من اتصال الهاتف…";
+      can = false;
+    } else if (state.channel === "mobile" && !state.channels.test_mode && !gatewayCanSend()) {
+      const mobile = gatewayMobile();
+      hint = (mobile && (mobile.hint || mobile.detail)) || "الهاتف غير متصل. شغّل تطبيق البوابة على الهاتف ثم أعد الفحص.";
+      can = false;
+    } else if (
+      state.channel === "whatsapp" &&
+      state.gateway &&
+      state.gateway.whatsapp_desktop &&
+      state.gateway.whatsapp_desktop.installed === false
+    ) {
+      hint = "ثبّت تطبيق واتساب لسطح المكتب على هذا الحاسوب قبل فتح المحادثات.";
+      can = false;
     } else if (!text) {
       hint = "اكتب نص الرسالة قبل المتابعة.";
       can = false;
@@ -600,6 +839,7 @@
       loadHistory();
     } catch (error) {
       A.toast(error.message || "تعذر بدء الإرسال.", "error");
+      loadGateway(true);
     } finally {
       state.sending = false;
       A.setBusy(els.send, false);
@@ -658,6 +898,7 @@
         ${done ? "" : `<div class="sms-progress-bar"><span id="msg-job-bar" style="width:${percent}%"></span></div>`}
       </div>
       <div class="sms-progress-meta">${A.formatInt(job.sent || 0)} ناجحة · ${A.formatInt(job.failed || 0)} فاشلة${job.simulated ? ` · ${A.formatInt(job.simulated)} محاكاة` : ""}${job.error ? ` · ${safe(job.error)}` : ""}</div>
+      ${job.first_error ? `<div class="sms-progress-error">${safe(job.first_error)}</div>` : ""}
     </div>`;
   }
 
@@ -680,6 +921,7 @@
         if (job.status === "done") {
           A.toast(job.message || "اكتملت الحملة.", job.failed ? "warning" : "success");
           loadHistory();
+          loadGateway(true);
           return;
         }
       } catch (error) {
@@ -893,9 +1135,11 @@
     });
     els.approve.addEventListener("change", updateSendState);
     els.send.addEventListener("click", sendCampaign);
+    els.gatewayCheck.addEventListener("click", () => loadGateway(true));
     els.refresh.addEventListener("click", () => {
       loadStudents();
       loadHistory();
+      loadGateway(true);
     });
     els.historyRefresh.addEventListener("click", loadHistory);
     els.history.addEventListener("click", (event) => {
@@ -925,8 +1169,15 @@
     bind();
     els.bodyCount.textContent = "0 / 2000";
     await loadStudents();
+    loadGateway();
     loadHistory();
     resumeJob();
+    state.gatewayTimer = window.setInterval(() => {
+      if (!document.hidden) loadGateway();
+    }, 15000);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) loadGateway();
+    });
   }
 
   if (document.readyState === "loading") {

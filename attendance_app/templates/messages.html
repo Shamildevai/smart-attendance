@@ -33,6 +33,30 @@
     </div>
   </section>
 
+  <section class="card gateway-strip" id="msg-gateway-strip" aria-live="polite">
+    <span class="gateway-dot is-pending" id="msg-gateway-dot" aria-hidden="true"></span>
+    <div class="gateway-strip-copy">
+      <div class="gateway-strip-title">
+        <strong id="msg-gateway-title">جارٍ فحص اتصال الهاتف…</strong>
+        <span class="chip hidden" id="msg-gateway-version">تطبيق الهاتف: {{ gateway_app_version }}</span>
+        <span class="chip is-warning hidden" id="msg-gateway-testchip">وضع الاختبار</span>
+      </div>
+      <p id="msg-gateway-detail">يجب تثبيت تطبيق بوابة الرسائل على هاتف أندرويد وتشغيله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.</p>
+      <p class="gateway-strip-hint hidden" id="msg-gateway-hint"></p>
+      <span class="gateway-url hidden" id="msg-gateway-url" dir="ltr"></span>
+    </div>
+    <div class="gateway-strip-actions">
+      <a class="btn btn-primary btn-sm" id="msg-gateway-download" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">
+        <svg class="ico"><use href="#i-download"></use></svg>
+        <span>تحميل تطبيق الهاتف {{ gateway_app_version }}</span>
+      </a>
+      <button class="btn btn-secondary btn-sm" type="button" id="msg-gateway-check">
+        <svg class="ico"><use href="#i-refresh"></use></svg>
+        <span>فحص الاتصال</span>
+      </button>
+    </div>
+  </section>
+
   <div class="messages-layout">
     <section class="card messages-composer">
       <div class="messages-step">
@@ -108,7 +132,7 @@
               <div><strong>SMS عبر تطبيق الهاتف</strong><small>يرسل من شريحة الهاتف المتصلة</small></div>
               <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
             </div>
-            <p>بوابة أندرويد المحلية على نفس شبكة Wi-Fi. اخترها لإرسال الرسائل من هاتفك دون رصيد على الحاسوب.</p>
+            <p>بوابة أندرويد المحلية على نفس شبكة Wi-Fi. ثبّت تطبيق البوابة على الهاتف أولًا، ثم اضغط «فحص الاتصال» أعلى الصفحة.</p>
             <span class="channel-state chip" data-channel-state="mobile">جارٍ التحقق…</span>
           </label>
           <label class="channel-card" data-channel="cloud">
@@ -128,8 +152,12 @@
               <div><strong>واتساب</strong><small>فتح محادثة جاهزة لكل ولي</small></div>
               <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
             </div>
-            <p>لا يُرسل النظام رسائل واتساب تلقائيًا. ستفتح محادثة كل ولي بنص الرسالة، وتراجعها وتضغط «إرسال» داخل واتساب.</p>
+            <p>لا يُرسل النظام رسائل واتساب تلقائيًا. يتطلب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب، ثم تفتح محادثة كل ولي بنص الرسالة وتراجعها وتضغط «إرسال» داخل واتساب.</p>
             <span class="channel-state chip" data-channel-state="whatsapp">جارٍ التحقق…</span>
+            <span class="channel-extra">
+              <span class="chip" id="msg-whatsapp-desktop-chip">حالة واتساب لسطح المكتب: جارٍ الفحص…</span>
+              <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a>
+            </span>
           </label>
         </div>
         <div class="test-mode-note hidden" id="msg-test-note">
@@ -181,7 +209,7 @@
           <div class="messages-submit-hint" id="msg-submit-hint">اختر المستلمين واكتب الرسالة أولًا.</div>
           <button class="btn btn-primary" type="button" id="msg-send" disabled>
             <svg class="ico"><use href="#i-send"></use></svg>
-            <span>متابعة الإرسال</span>
+            <span>إرسال الآن</span>
           </button>
         </div>
       </div>
@@ -213,7 +241,7 @@
         <ul class="messages-help-list">
           <li>
             <span class="help-dot is-mobile"></span>
-            <div><strong>من الهاتف</strong><p>ثبّت تطبيق بوابة SMS على هاتف أندرويد متصل بالشبكة، ثم اضبط رابطه ومفتاحه في الإعدادات. سيرسل التطبيق الرسائل من شريحة الهاتف.</p></div>
+            <div><strong>من الهاتف</strong><p>ثبّت تطبيق بوابة SMS على هاتف أندرويد متصل بالشبكة، ثم اضبط رابطه ومفتاحه في الإعدادات. سيرسل التطبيق الرسائل من شريحة الهاتف. <a class="inline-link" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">تحميل تطبيق الهاتف {{ gateway_app_version }}</a></p></div>
           </li>
           <li>
             <span class="help-dot is-cloud"></span>
@@ -221,7 +249,7 @@
           </li>
           <li>
             <span class="help-dot is-whatsapp"></span>
-            <div><strong>واتساب يدوي</strong><p>يفتح النظام رابط wa.me لكل ولي برسالة جاهزة. لا يرسل شيئًا نيابة عنك، ولا يحتاج بوابة أو رصيد SMS.</p></div>
+            <div><strong>واتساب يدوي</strong><p>يتطلب تطبيق واتساب لسطح المكتب على هذا الحاسوب. يفتح النظام رابط wa.me لكل ولي برسالة جاهزة، ولا يرسل شيئًا نيابة عنك. <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a></p></div>
           </li>
         </ul>
         <p class="messages-help-foot">تبقى بيانات التلاميذ على هذا الجهاز. لا تُرسل إلا الرسائل التي توافق عليها.</p>

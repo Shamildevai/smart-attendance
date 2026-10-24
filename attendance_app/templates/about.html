@@ -87,6 +87,31 @@
     </section>
   </div>
 
+  <section class="card about-panel about-gateway">
+    <div class="card-header">
+      <svg class="ico"><use href="#i-phone"></use></svg>
+      <div>
+        <h2>تطبيق بوابة الرسائل للهاتف</h2>
+        <p>مطلوب لإرسال SMS من شريحة الهاتف</p>
+      </div>
+      <span class="chip is-accent">الإصدار {{ gateway_app_version }}</span>
+    </div>
+    <div class="card-body about-gateway-body">
+      <p>ثبّت تطبيق البوابة على هاتف أندرويد، واتركه يعمل على نفس شبكة Wi-Fi. لا يسمح النظام بإرسال SMS حقيقي قبل اتصال الهاتف بالبوابة.</p>
+      <div class="about-gateway-actions">
+        <a class="btn btn-primary" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">
+          <svg class="ico"><use href="#i-download"></use></svg>
+          <span>تحميل تطبيق الهاتف {{ gateway_app_version }}</span>
+        </a>
+        <a class="btn btn-secondary" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">
+          <svg class="ico"><use href="#i-whatsapp"></use></svg>
+          <span>تحميل واتساب لسطح المكتب</span>
+        </a>
+      </div>
+      <code class="about-gateway-url" dir="ltr">{{ gateway_app_download_url }}</code>
+    </div>
+  </section>
+
   <section class="card about-panel">
     <div class="card-header">
       <svg class="ico"><use href="#i-database"></use></svg>
@@ -102,6 +127,7 @@
         <div class="about-tech-item"><span>التشغيل</span><strong>محلي دون إنترنت</strong></div>
         <div class="about-tech-item"><span>قاعدة البيانات</span><strong>SQLite محلية</strong></div>
         <div class="about-tech-item"><span>رسائل الأولياء</span><strong>إرسال بموافقة يدوية</strong></div>
+        <div class="about-tech-item"><span>تطبيق البوابة</span><strong>{{ gateway_app_version }}</strong></div>
         <div class="about-tech-item"><span>وضع الاختبار</span><strong>مفعّل افتراضيًا</strong></div>
       </div>
       <div class="about-links">

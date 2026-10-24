@@ -1247,7 +1247,84 @@
     "توقف الإرسال بسبب خطأ غير متوقع. راجع سجل التطبيق.": "L'envoi s'est arrêté suite à une erreur inattendue. Consultez le journal de l'application.",
     "وضع الاختبار: تمت محاكاة الإرسال دون استخدام الشبكة.": "Mode test : l'envoi a été simulé sans utiliser le réseau.",
     "سيصلهم SMS": "recevront un SMS",
-    "لديهم واتساب": "ont WhatsApp"
+    "لديهم واتساب": "ont WhatsApp",
+    "جارٍ فحص اتصال الهاتف…": "Vérification de la connexion du téléphone…",
+    "يجب تثبيت تطبيق بوابة الرسائل على هاتف أندرويد وتشغيله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.": "Installez l’application passerelle de messages sur un téléphone Android et laissez-la fonctionner sur le même réseau Wi-Fi avant d’envoyer de vrais SMS.",
+    "فحص الاتصال": "Vérifier la connexion",
+    "تحميل واتساب لسطح المكتب": "Télécharger WhatsApp pour ordinateur",
+    "إرسال الآن": "Envoyer maintenant",
+    "بوابة أندرويد المحلية على نفس شبكة Wi-Fi. ثبّت تطبيق البوابة على الهاتف أولًا، ثم اضغط «فحص الاتصال» أعلى الصفحة.": "Passerelle Android locale sur le même réseau Wi-Fi. Installez d’abord l’application passerelle sur le téléphone, puis appuyez sur « Vérifier la connexion » en haut de la page.",
+    "لا يُرسل النظام رسائل واتساب تلقائيًا. يتطلب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب، ثم تفتح محادثة كل ولي بنص الرسالة وتراجعها وتضغط «إرسال» داخل واتساب.": "Le système n’envoie pas de messages WhatsApp automatiquement. Il nécessite WhatsApp pour ordinateur sur cet ordinateur ; vous ouvrez ensuite la conversation de chaque parent avec le message prêt, le vérifiez et appuyez sur « Envoyer » dans WhatsApp.",
+    "حالة واتساب لسطح المكتب: جارٍ الفحص…": "État de WhatsApp pour ordinateur : vérification…",
+    "يتطلب تطبيق واتساب لسطح المكتب على هذا الحاسوب. يفتح النظام رابط wa.me لكل ولي برسالة جاهزة، ولا يرسل شيئًا نيابة عنك.": "Nécessite WhatsApp pour ordinateur sur cet ordinateur. Le système ouvre un lien wa.me pour chaque parent avec le message prêt, et n’envoie rien en votre nom.",
+    "ثبّت تطبيق بوابة الرسائل على هاتف أندرويد وشغّله على نفس شبكة Wi-Fi قبل إرسال SMS حقيقي.": "Installez l’application passerelle de messages sur un téléphone Android et lancez-la sur le même réseau Wi-Fi avant d’envoyer de vrais SMS.",
+    "الهاتف متصل وجاهز لإرسال SMS": "Téléphone connecté et prêt à envoyer des SMS",
+    "الهاتف متصل — يلزم تحديث تطبيق البوابة": "Téléphone connecté — mise à jour de l’application passerelle requise",
+    "الهاتف متصل — مفتاح API مطلوب": "Téléphone connecté — clé API requise",
+    "الهاتف غير متصل": "Téléphone non connecté",
+    "عنوان البوابة غير صحيح": "Adresse de la passerelle incorrecte",
+    "رابط بوابة الهاتف غير صالح": "URL de la passerelle téléphone non valide",
+    "لم يُضبط رابط بوابة الهاتف": "URL de la passerelle téléphone non définie",
+    "تعذر فحص بوابة الهاتف": "Impossible de vérifier la passerelle téléphone",
+    "حالة بوابة الهاتف": "État de la passerelle téléphone",
+    "جارٍ فحص الاتصال…": "Vérification de la connexion…",
+    "الهاتف متصل — محاكاة": "Téléphone connecté — simulation",
+    "الهاتف متصل — جاهز": "Téléphone connecté — prêt",
+    "متصل — حدّث تطبيق الهاتف": "Connecté — mettez à jour l’application téléphone",
+    "متصل — مفتاح API مطلوب": "Connecté — clé API requise",
+    "الهاتف غير متصل — محاكاة": "Téléphone hors ligne — simulation",
+    "ثبّت واتساب لسطح المكتب": "Installer WhatsApp pour ordinateur",
+    "واتساب سطح المكتب جاهز": "WhatsApp pour ordinateur prêt",
+    "واتساب لسطح المكتب مثبّت": "WhatsApp pour ordinateur installé",
+    "واتساب لسطح المكتب غير مثبّت": "WhatsApp pour ordinateur non installé",
+    "حالة واتساب لسطح المكتب غير معروفة": "État de WhatsApp pour ordinateur inconnu",
+    "غير متصل (محاكاة)": "Hors ligne (simulation)",
+    "غير متصل": "Hors ligne",
+    "غير مهيأ": "Non configuré",
+    "متصل وجاهز": "Connecté et prêt",
+    "يلزم تحديث التطبيق": "Mise à jour de l’application requise",
+    "مفتاح API مطلوب": "Clé API requise",
+    "محاكاة": "Simulation",
+    "متاح يدويًا": "Disponible manuellement",
+    "معطّل": "Désactivé",
+    "يلزم تثبيت واتساب": "Installation de WhatsApp requise",
+    "جارٍ الفحص": "Vérification",
+    "أعد المحاولة أو تحقق من إعدادات الرسائل.": "Réessayez ou vérifiez les paramètres des messages.",
+    "تعذر فحص اتصال الهاتف": "Impossible de vérifier la connexion du téléphone",
+    "تعذر فحص اتصال الهاتف.": "Impossible de vérifier la connexion du téléphone.",
+    "جارٍ التحقق من اتصال الهاتف… انتظر لحظة قبل الإرسال.": "Vérification de la connexion du téléphone… patientez un instant avant l’envoi.",
+    "تطبيق واتساب لسطح المكتب غير مثبّت على هذا الحاسوب. ثبّته من الرابط أسفل البطاقة قبل فتح المحادثات.": "WhatsApp pour ordinateur n’est pas installé sur cet ordinateur. Installez-le depuis le lien sous la carte avant d’ouvrir les conversations.",
+    "ثبّت تطبيق واتساب لسطح المكتب على هذا الحاسوب قبل فتح المحادثات.": "Installez WhatsApp pour ordinateur sur cet ordinateur avant d’ouvrir les conversations.",
+    "وضع الاختبار مفعّل، لذا يمكنك تجربة الإرسال دون اتصال؛ عطّله لإرسال SMS حقيقي.": "Le mode test est activé : vous pouvez essayer l’envoi sans connexion ; désactivez-le pour envoyer de vrais SMS.",
+    "رابط بوابة الهاتف يجب أن يكون http:// أو https:// أو عنوان IP:منفذ.": "L’URL de la passerelle téléphone doit être http:// ou https://, ou une adresse IP:port.",
+    "رابط الواجهة السحابية يجب أن يبدأ بـ http:// أو https://.": "L’URL de l’interface cloud doit commencer par http:// ou https://.",
+    "تطبيق بوابة الرسائل للهاتف": "Application passerelle de messages pour téléphone",
+    "مطلوب لإرسال SMS من شريحة الهاتف": "Requis pour envoyer des SMS depuis la carte SIM du téléphone",
+    "ثبّت تطبيق البوابة على هاتف أندرويد، واتركه يعمل على نفس شبكة Wi-Fi. لا يسمح النظام بإرسال SMS حقيقي قبل اتصال الهاتف بالبوابة.": "Installez l’application passerelle sur un téléphone Android et laissez-la fonctionner sur le même réseau Wi-Fi. Le système n’autorise l’envoi de vrais SMS qu’une fois le téléphone connecté à la passerelle.",
+    "تطبيق البوابة": "Application passerelle",
+    "عنوان يظهر في تطبيق بوابة SMS على الهاتف. يمكنك لصق": "Adresse affichée dans l’application passerelle SMS sur le téléphone. Vous pouvez coller",
+    "أو العنوان المختصر": "ou l’adresse courte",
+    "روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. يجب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب لتفتح المحادثات مباشرة. لا يرسل النظام أي رسالة دون تأكيدك داخل واتساب.": "Les liens officiels wa.me ne nécessitent ni passerelle ni crédit. WhatsApp pour ordinateur doit être installé sur cet ordinateur pour ouvrir directement les conversations. Le système n’envoie aucun message sans votre confirmation dans WhatsApp.",
+    "لم يتم ضبط رابط بوابة الهاتف بعد.": "L’URL de la passerelle téléphone n’est pas encore définie.",
+    "أدخل عنوان البوابة الظاهر في تطبيق الهاتف، مثل http://192.168.1.20:8080/send.": "Saisissez l’adresse affichée dans l’application téléphone, par exemple http://192.168.1.20:8080/send.",
+    "تعذر الاتصال بالبوابة عبر HTTPS.": "Impossible de joindre la passerelle via HTTPS.",
+    "انتهت مهلة فحص البوابة.": "Le délai de vérification de la passerelle a expiré.",
+    "تأكد من أن الهاتف مستيقظ وعلى نفس شبكة الواي فاي ثم أعد الفحص.": "Vérifiez que le téléphone est réveillé et connecté au même réseau Wi-Fi, puis relancez la vérification.",
+    "شغّل خادم البوابة داخل تطبيق الهاتف، وتأكد من اتصال الحاسوب والهاتف بنفس شبكة الواي فاي، ومن أن المنفذ صحيح (8080 افتراضيًا).": "Lancez le serveur passerelle dans l’application téléphone, vérifiez que l’ordinateur et le téléphone sont sur le même réseau Wi-Fi et que le port est correct (8080 par défaut).",
+    "تعذر الوصول إلى عنوان البوابة. تحقق من الرابط واتصال الشبكة.": "Impossible d’atteindre l’adresse de la passerelle. Vérifiez l’URL et la connexion réseau.",
+    "تعذر الاتصال ببوابة الهاتف.": "Impossible de se connecter à la passerelle téléphone.",
+    "تحقق من صحة الرابط ثم أعد المحاولة.": "Vérifiez l’URL puis réessayez.",
+    "البوابة متصلة لكنها رفضت الفحص دون مفتاح صالح.": "La passerelle est joignable mais a refusé la vérification sans clé valide.",
+    "انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل.": "Copiez la clé API depuis l’application téléphone et collez-la dans les paramètres des messages.",
+    "تأكد من لصق رابط الإرسال الظاهر داخل تطبيق البوابة.": "Vérifiez que vous avez collé l’URL d’envoi affichée dans l’application passerelle.",
+    "الخادم المحدد لا يبدو بوابة رسائل الحضور.": "Le serveur indiqué ne semble pas être la passerelle de messages de présence.",
+    "الصق رابط الإرسال الظاهر داخل تطبيق بوابة الرسائل على الهاتف.": "Collez l’URL d’envoi affichée dans l’application passerelle de messages sur le téléphone.",
+    "البوابة متصلة وتتطلب مفتاح API.": "La passerelle est connectée et exige une clé API.",
+    "نزّل أحدث إصدار من تطبيق البوابة وثبّته على الهاتف.": "Téléchargez la dernière version de l’application passerelle et installez-la sur le téléphone.",
+    "بوابة الهاتف متصلة وجاهزة لإرسال SMS.": "La passerelle téléphone est connectée et prête à envoyer des SMS.",
+    "تطبيق واتساب لسطح المكتب مثبّت على هذا الحاسوب.": "WhatsApp pour ordinateur est installé sur cet ordinateur.",
+    "لم يُعثر على تطبيق واتساب لسطح المكتب. ثبّته لتفتح روابط الإرسال تلقائيًا، أو استخدم واتساب على الهاتف.": "WhatsApp pour ordinateur est introuvable. Installez-le pour ouvrir automatiquement les liens d’envoi, ou utilisez WhatsApp sur le téléphone.",
+    "يمكن فتح روابط واتساب عبر المتصفح أو تطبيق واتساب إن كان مثبّتًا.": "Les liens WhatsApp peuvent s’ouvrir dans le navigateur ou dans l’application WhatsApp si elle est installée."
   },
   "patterns": [
     {
@@ -2173,6 +2250,50 @@
     {
       "ar": "اكتملت المعالجة: {0} ناجحة، {1} فاشلة، {2} متجاوزة.",
       "tr": "Traitement terminé : {0} envoyés, {1} échoués, {2} ignorés."
+    },
+    {
+      "ar": "تحميل تطبيق الهاتف {0}",
+      "tr": "Télécharger l’application téléphone {0}"
+    },
+    {
+      "ar": "تحميل التطبيق {0}",
+      "tr": "Télécharger l’application {0}"
+    },
+    {
+      "ar": "تطبيق الهاتف: {0}",
+      "tr": "Application téléphone : {0}"
+    },
+    {
+      "ar": "إصدار الهاتف: {0} · المطلوب: {1}",
+      "tr": "Version du téléphone : {0} · requise : {1}"
+    },
+    {
+      "ar": "آخر فحص: {0}",
+      "tr": "Dernière vérification : {0}"
+    },
+    {
+      "ar": "{0} ثبّت تطبيق الهاتف من الزر أعلى الصفحة وشغّله ثم أعد الفحص.",
+      "tr": "{0} Installez l’application téléphone depuis le bouton en haut de la page, lancez-la, puis vérifiez à nouveau."
+    },
+    {
+      "ar": "{0} وضع الاختبار مفعّل، لذا يمكنك تجربة الإرسال دون اتصال؛ عطّله لإرسال SMS حقيقي.",
+      "tr": "{0} Le mode test est activé : vous pouvez essayer l’envoi sans connexion ; désactivez-le pour envoyer de vrais SMS."
+    },
+    {
+      "ar": "بوابة الهاتف تعمل عادةً عبر http وليس https. استخدم رابطًا مثل http://{0}:8080/send.",
+      "tr": "La passerelle téléphone fonctionne généralement en http, pas en https. Utilisez une URL telle que http://{0}:8080/send."
+    },
+    {
+      "ar": "خطأ في فحص البوابة: {0}",
+      "tr": "Erreur de vérification de la passerelle : {0}"
+    },
+    {
+      "ar": "استجاب الخادم برمز HTTP {0}.",
+      "tr": "Le serveur a répondu avec le code HTTP {0}."
+    },
+    {
+      "ar": "البوابة متصلة لكن إصدارها {0} أقدم من المطلوب {1}.",
+      "tr": "La passerelle est connectée mais sa version {0} est antérieure à la version requise {1}."
     }
   ]
 }

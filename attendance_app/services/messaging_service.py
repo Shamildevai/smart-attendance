@@ -9,6 +9,12 @@ import uuid
 from datetime import date, datetime
 from typing import Any
 
+from ..config import (
+    APP_VERSION,
+    GATEWAY_APP_DOWNLOAD_URL,
+    GATEWAY_APP_NAME,
+    GATEWAY_APP_VERSION,
+)
 from ..db import bool_setting, get_settings, int_setting
 from ..utils import (
     ValidationError,
@@ -18,7 +24,14 @@ from ..utils import (
     sms_variables,
 )
 from . import whatsapp_service
-from .sms_service import MAX_ERROR_LEN, SmsGatewayError, send_via_gateway
+from .sms_service import (
+    MAX_ERROR_LEN,
+    SmsConnectionError,
+    SmsGatewayError,
+    normalize_mobile_url,
+    probe_gateway,
+    send_via_gateway,
+)
 
 MAX_MESSAGE_LENGTH = 2000
 
@@ -76,6 +89,7 @@ def resolve_channel_settings(settings: dict[str, str], channel: str) -> dict[str
         if not url and settings.get("sms_gateway") == "local":
             url = (settings.get("sms_api_url") or "").strip()
             key = settings.get("sms_api_key") or ""
+        url = normalize_mobile_url(url)
         resolved["sms_gateway"] = "local"
     else:
         url = (settings.get("sms_cloud_url") or "").strip()
@@ -87,6 +101,37 @@ def resolve_channel_settings(settings: dict[str, str], channel: str) -> dict[str
     resolved["sms_api_url"] = url
     resolved["sms_api_key"] = key
     return resolved
+
+
+def gateway_app_payload() -> dict[str, str]:
+    return {
+        "name": GATEWAY_APP_NAME,
+        "version": GATEWAY_APP_VERSION,
+        "download_url": GATEWAY_APP_DOWNLOAD_URL,
+        "pc_version": APP_VERSION,
+    }
+
+
+def gateway_status(settings: dict[str, str], *, force: bool = False) -> dict[str, Any]:
+    """Live status of the phone gateway plus desktop prerequisites."""
+    resolved = resolve_channel_settings(settings, "mobile")
+    test_mode = settings.get("sms_test_mode", "1") == "1"
+    timeout = min(int_setting(settings, "sms_timeout", 10, 3, 120), 6)
+    probe = probe_gateway(
+        resolved.get("sms_api_url", ""),
+        resolved.get("sms_api_key", ""),
+        force=force,
+        timeout=timeout,
+    )
+    probe["configured"] = bool((resolved.get("sms_api_url") or "").strip())
+    return {
+        "mobile": probe,
+        "test_mode": test_mode,
+        "ready_for_real_send": bool(probe.get("can_send")),
+        "whatsapp_desktop": whatsapp_service.desktop_status(force=force),
+        "gateway_app": gateway_app_payload(),
+        "checked_at": datetime.now().strftime("%H:%M:%S"),
+    }
 
 
 def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
@@ -120,6 +165,7 @@ def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
         "test_mode": test_mode,
         "whatsapp_enabled": whatsapp_enabled,
         "country_code": settings.get("whatsapp_country_code", "213"),
+        "gateway_app": gateway_app_payload(),
     }
 
 
@@ -309,6 +355,18 @@ def create_campaign(
             raise ValidationError(
                 "قناة الإرسال المختارة غير مهيأة. أضف رابط البوابة المناسب من إعدادات الرسائل."
             )
+        if channel == "mobile":
+            probe = probe_gateway(
+                resolved.get("sms_api_url", ""),
+                resolved.get("sms_api_key", ""),
+                force=True,
+                timeout=min(int_setting(settings, "sms_timeout", 10, 3, 120), 6),
+            )
+            if not probe.get("can_send"):
+                reason = probe.get("hint") or probe.get("detail") or "تعذر الوصول إلى بوابة الهاتف."
+                raise ValidationError(
+                    f"{reason} ثبّت تطبيق بوابة الرسائل وشغّله على الهاتف ثم أعد المحاولة."
+                )
     recipients = fetch_recipients(
         conn,
         scope=scope,
@@ -560,6 +618,8 @@ class MessageJobManager:
                 "message": "جارٍ تحضير قائمة المستلمين…",
                 "test_mode": False,
                 "error": None,
+                "first_error": None,
+                "last_error": None,
             }
             self._jobs[job_id] = job
             self._current_id = job_id
@@ -638,6 +698,49 @@ class MessageJobManager:
                     return
 
                 counts = {"sent": 0, "failed": 0, "cancelled": 0, "simulated": 0}
+                first_error = ""
+                last_error = ""
+                connection_failures = 0
+                aborted = False
+                if channel == "mobile" and not test_mode:
+                    probe = probe_gateway(
+                        send_settings.get("sms_api_url", ""),
+                        send_settings.get("sms_api_key", ""),
+                        force=True,
+                        timeout=min(int_setting(settings, "sms_timeout", 10, 3, 120), 6),
+                    )
+                    if not probe.get("can_send"):
+                        reason = (
+                            probe.get("hint")
+                            or probe.get("detail")
+                            or "تعذر الوصول إلى بوابة الهاتف."
+                        )[:MAX_ERROR_LEN]
+                        with conn:
+                            conn.execute(
+                                """UPDATE message_outbox
+                                   SET delivery_status = 'FAILED', error_msg = ?,
+                                       updated_at = datetime('now', 'localtime')
+                                   WHERE campaign_id = ? AND delivery_status = 'PENDING'""",
+                                (reason, campaign_id),
+                            )
+                            conn.execute(
+                                """UPDATE message_campaigns SET status = 'DONE',
+                                       finished_at = datetime('now', 'localtime')
+                                   WHERE id = ?""",
+                                (campaign_id,),
+                            )
+                        self._update(
+                            job_id,
+                            status="done",
+                            processed=len(rows),
+                            failed=len(rows),
+                            first_error=reason,
+                            last_error=reason,
+                            current_name="",
+                            finished_at=datetime.now().strftime("%H:%M:%S"),
+                            message=f"لم يُرسل أي SMS: {reason}",
+                        )
+                        return
                 for index, row in enumerate(rows, start=1):
                     self._update(job_id, current_name=row["student_name"])
                     fresh = conn.execute(
@@ -651,6 +754,7 @@ class MessageJobManager:
                     simulated = False
                     last_error = ""
                     gateway_label = ""
+                    connection_failed = False
                     for attempt in range(1, retry_max + 1):
                         with conn:
                             conn.execute(
@@ -667,6 +771,7 @@ class MessageJobManager:
                             break
                         except SmsGatewayError as exc:
                             last_error = str(exc)[:MAX_ERROR_LEN]
+                            connection_failed = isinstance(exc, SmsConnectionError)
                             app.logger.warning(
                                 "Message attempt %s/%s failed for %s: %s",
                                 attempt,
@@ -681,6 +786,7 @@ class MessageJobManager:
                             app.logger.exception("Unexpected bulk message error")
                             break
                     if success:
+                        connection_failures = 0
                         with conn:
                             conn.execute(
                                 """UPDATE message_outbox
@@ -711,25 +817,80 @@ class MessageJobManager:
                                 (last_error or "فشل غير معروف", gateway_label, row["id"]),
                             )
                         counts["failed"] += 1
-                    self._update(job_id, processed=index, **counts)
-                with conn:
-                    conn.execute(
-                        """UPDATE message_campaigns SET status = 'DONE',
-                               finished_at = datetime('now', 'localtime')
-                           WHERE id = ?""",
-                        (campaign_id,),
+                        if not first_error:
+                            first_error = last_error or "فشل غير معروف"
+                        connection_failures = connection_failures + 1 if connection_failed else 0
+                        if connection_failures >= 2:
+                            remaining = [
+                                item["id"] for item in rows[index:] if item["id"] != row["id"]
+                            ]
+                            if remaining:
+                                placeholders = ",".join("?" for _ in remaining)
+                                with conn:
+                                    conn.execute(
+                                        f"""UPDATE message_outbox
+                                            SET delivery_status = 'FAILED', error_msg = ?,
+                                                updated_at = datetime('now', 'localtime')
+                                            WHERE id IN ({placeholders})
+                                              AND delivery_status = 'PENDING'""",
+                                        [first_error, *remaining],
+                                    )
+                                counts["failed"] += len(remaining)
+                            with conn:
+                                conn.execute(
+                                    """UPDATE message_campaigns SET status = 'DONE',
+                                           finished_at = datetime('now', 'localtime')
+                                       WHERE id = ?""",
+                                    (campaign_id,),
+                                )
+                            aborted = True
+                            self._update(
+                                job_id,
+                                status="done",
+                                processed=len(rows),
+                                first_error=first_error,
+                                last_error=last_error,
+                                current_name="",
+                                finished_at=datetime.now().strftime("%H:%M:%S"),
+                                message=(
+                                    "توقف الإرسال بعد انقطاع الاتصال بالبوابة. "
+                                    f"راجع الاتصال ثم أعد المحاولة. آخر خطأ: {first_error}"
+                                ),
+                                **counts,
+                            )
+                    if aborted:
+                        break
+                    self._update(
+                        job_id,
+                        processed=index,
+                        last_error=last_error or None,
+                        first_error=first_error or None,
+                        **counts,
                     )
-                self._update(
-                    job_id,
-                    status="done",
-                    finished_at=datetime.now().strftime("%H:%M:%S"),
-                    message=(
+                if not aborted:
+                    with conn:
+                        conn.execute(
+                            """UPDATE message_campaigns SET status = 'DONE',
+                                   finished_at = datetime('now', 'localtime')
+                               WHERE id = ?""",
+                            (campaign_id,),
+                        )
+                    summary = (
                         "اكتملت المعالجة: "
                         f"{counts['sent']} ناجحة، {counts['failed']} فاشلة، "
                         f"{counts['cancelled']} متجاوزة."
-                    ),
-                    current_name="",
-                )
+                    )
+                    if first_error:
+                        summary += f" آخر خطأ: {first_error}"
+                    self._update(
+                        job_id,
+                        status="done",
+                        finished_at=datetime.now().strftime("%H:%M:%S"),
+                        message=summary,
+                        first_error=first_error or None,
+                        last_error=last_error or None,
+                        current_name="",
+                    )
         except Exception as exc:  # pragma: no cover - defensive
             app.logger.exception("Bulk message dispatch job failed")
             self._update(

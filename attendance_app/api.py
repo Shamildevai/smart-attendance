@@ -309,6 +309,11 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         updates["sms_gateway"] = data["sms_gateway"]
     for url_key in ("sms_api_url", "sms_mobile_url", "sms_cloud_url"):
         if url_key in updates and updates[url_key]:
+            if url_key == "sms_mobile_url" and "://" not in updates[url_key]:
+                normalized = sms_service.normalize_mobile_url(updates[url_key])
+                if not normalized:
+                    raise ApiError("رابط بوابة الهاتف غير صالح.", 400)
+                updates[url_key] = normalized
             if not re.match(r"^https?://", updates[url_key], re.IGNORECASE):
                 raise ApiError("رابط بوابة SMS يجب أن يبدأ بـ http:// أو https://.", 400)
     if "sms_headers" in data:
@@ -1141,6 +1146,13 @@ def _message_scope(data: dict[str, Any]) -> dict[str, Any]:
         "student_nins": student_nins,
         "query": str(data.get("q") or "").strip() or None,
     }
+
+
+@api_bp.get("/messages/gateway")
+def message_gateway_api():
+    force = str(request.args.get("force") or "").lower() in ("1", "true", "yes")
+    status = messaging_service.gateway_status(get_settings(get_db()), force=force)
+    return ok(gateway=status)
 
 
 @api_bp.get("/messages/students")

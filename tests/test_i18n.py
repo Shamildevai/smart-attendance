@@ -4,9 +4,10 @@ import json
 import re
 from pathlib import Path
 
-from attendance_app import i18n
+from attendance_app import config, i18n
 
 LOCALES_DIR = Path(__file__).resolve().parents[1] / "attendance_app" / "locales"
+ARABIC_INDIC_DIGITS = re.compile(r"[\u0660-\u0669\u06F0-\u06F9]")
 
 
 def test_language_switch_sets_cookie_and_local_redirect(client):
@@ -113,3 +114,37 @@ def test_translation_keeps_trailing_punctuation():
         "The period is open and not yet closed."
     )
     assert i18n.translate("الفترة مفتوحة ولم تُغلق بعد.", "fr").endswith("clôturée.")
+
+
+def test_catalogs_use_western_digits_only():
+    for code in ("en", "fr"):
+        data = json.loads((LOCALES_DIR / f"{code}.json").read_text(encoding="utf-8"))
+        for key, value in data["strings"].items():
+            assert not ARABIC_INDIC_DIGITS.search(key), f"{code} key: {key}"
+            assert not ARABIC_INDIC_DIGITS.search(value), f"{code} value: {value}"
+        for pattern in data["patterns"]:
+            assert not ARABIC_INDIC_DIGITS.search(pattern["ar"]), (
+                f"{code} pattern source: {pattern['ar']}"
+            )
+            assert not ARABIC_INDIC_DIGITS.search(pattern["tr"]), (
+                f"{code} pattern translation: {pattern['tr']}"
+            )
+
+
+def test_rendered_pages_use_western_digits_only(client):
+    pages = ("/", "/messages", "/settings", "/about", "/attendance", "/reports")
+    for lang in ("ar", "en", "fr"):
+        client.set_cookie(i18n.LANG_COOKIE, lang)
+        for path in pages:
+            response = client.get(path)
+            assert response.status_code == 200, (lang, path)
+            html = response.get_data(as_text=True)
+            found = ARABIC_INDIC_DIGITS.search(html)
+            assert not found, f"{lang} {path} rendered {found.group()!r}"
+
+
+def test_version_and_gateway_links_render_with_western_digits(client):
+    html = client.get("/about").get_data(as_text=True)
+    assert config.APP_VERSION in html
+    assert config.GATEWAY_APP_VERSION in html
+    assert config.GATEWAY_APP_DOWNLOAD_URL in html

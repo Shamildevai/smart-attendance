@@ -8,10 +8,16 @@ import time
 import uuid
 from datetime import date, datetime
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import requests
 
+from ..config import (
+    APP_VERSION,
+    GATEWAY_APP_DOWNLOAD_URL,
+    GATEWAY_APP_NAME,
+    GATEWAY_APP_VERSION,
+)
 from ..db import bool_setting, get_settings, int_setting
 from .whatsapp_service import build_links
 from ..utils import (
@@ -30,6 +36,10 @@ MAX_ERROR_LEN = 500
 
 class SmsGatewayError(RuntimeError):
     pass
+
+
+class SmsConnectionError(SmsGatewayError):
+    """Raised when the gateway cannot be reached at the transport level."""
 
 
 def _json_object(raw: str, label: str) -> dict[str, Any]:
@@ -63,6 +73,208 @@ def _validate_url(url: str) -> str:
     return url
 
 
+def normalize_mobile_url(value: Any) -> str:
+    """Accept a bare IP/host and always return a concrete /send endpoint."""
+    url = str(value or "").strip()
+    if not url:
+        return ""
+    if "://" in url and not re.match(r"^https?://", url, re.IGNORECASE):
+        return ""
+    if not re.match(r"^https?://", url, re.IGNORECASE):
+        url = "http://" + url
+    parsed = urlparse(url)
+    if not parsed.hostname:
+        return ""
+    path = parsed.path.rstrip("/")
+    if path in ("", "/health"):
+        path = "/send"
+    query = f"?{parsed.query}" if parsed.query else ""
+    return f"{parsed.scheme.lower()}://{parsed.netloc}{path or '/send'}{query}"
+
+
+def _version_tuple(value: Any) -> tuple[int, ...]:
+    parts = re.findall(r"\d+", str(value or ""))
+    return tuple(int(part) for part in parts[:4]) if parts else ()
+
+
+def _is_private_host(host: str) -> bool:
+    host = (host or "").lower()
+    if host in ("localhost", "127.0.0.1", "::1"):
+        return True
+    return bool(
+        re.fullmatch(r"10\.\d{1,3}\.\d{1,3}\.\d{1,3}", host)
+        or re.fullmatch(r"192\.168\.\d{1,3}\.\d{1,3}", host)
+        or re.fullmatch(r"172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}", host)
+    )
+
+
+_PROBE_CACHE: dict[tuple[str, bool], tuple[float, dict[str, Any]]] = {}
+_PROBE_CACHE_SECONDS = 8.0
+
+
+def probe_gateway(
+    url: str,
+    api_key: str = "",
+    *,
+    force: bool = False,
+    timeout: float = 4.0,
+) -> dict[str, Any]:
+    """Check the phone gateway over HTTP and report an actionable status."""
+    endpoint = normalize_mobile_url(url)
+    if not endpoint:
+        return {
+            "status": "not_configured" if not str(url or "").strip() else "invalid_url",
+            "connected": False,
+            "can_send": False,
+            "detail": "لم يتم ضبط رابط بوابة الهاتف بعد.",
+            "hint": "أدخل عنوان البوابة الظاهر في تطبيق الهاتف، مثل http://192.168.1.20:8080/send.",
+            "url": str(url or ""),
+            "version": "",
+            "outdated": False,
+            "auth_required": False,
+            "download_url": GATEWAY_APP_DOWNLOAD_URL,
+        }
+    parsed = urlparse(endpoint)
+    health_url = f"{parsed.scheme}://{parsed.netloc}/health"
+    cache_key = (endpoint, bool(api_key))
+    now = time.monotonic()
+    if not force:
+        cached = _PROBE_CACHE.get(cache_key)
+        if cached and now - cached[0] < _PROBE_CACHE_SECONDS:
+            return dict(cached[1])
+
+    timeout = max(1.5, min(float(timeout or 4.0), 12.0))
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": f"SmartAttendance/{APP_VERSION}",
+        "X-Client-App": "SmartAttendance",
+    }
+    result: dict[str, Any] = {
+        "status": "offline",
+        "connected": False,
+        "can_send": False,
+        "detail": "",
+        "hint": "",
+        "url": endpoint,
+        "health_url": health_url,
+        "version": "",
+        "app": "",
+        "outdated": False,
+        "auth_required": False,
+        "auth_configured": bool(api_key),
+        "download_url": GATEWAY_APP_DOWNLOAD_URL,
+        "required_version": GATEWAY_APP_VERSION,
+    }
+    try:
+        response = requests.get(
+            health_url, headers=headers, timeout=timeout, allow_redirects=False
+        )
+    except requests.exceptions.SSLError:
+        result.update(
+            status="offline",
+            detail="تعذر الاتصال بالبوابة عبر HTTPS.",
+            hint=(
+                "بوابة الهاتف تعمل عادةً عبر http وليس https. "
+                f"استخدم رابطًا مثل http://{parsed.hostname}:8080/send."
+            ),
+        )
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+    except requests.exceptions.Timeout:
+        result.update(
+            detail="انتهت مهلة فحص البوابة.",
+            hint="تأكد من أن الهاتف مستيقظ وعلى نفس شبكة الواي فاي ثم أعد الفحص.",
+        )
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+    except requests.exceptions.ConnectionError:
+        if _is_private_host(parsed.hostname or ""):
+            hint = (
+                "شغّل خادم البوابة داخل تطبيق الهاتف، وتأكد من اتصال الحاسوب والهاتف "
+                "بنفس شبكة الواي فاي، ومن أن المنفذ صحيح (8080 افتراضيًا)."
+            )
+        else:
+            hint = "تعذر الوصول إلى عنوان البوابة. تحقق من الرابط واتصال الشبكة."
+        result.update(detail="تعذر الاتصال ببوابة الهاتف.", hint=hint)
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+    except requests.RequestException as exc:
+        result.update(
+            detail=f"خطأ في فحص البوابة: {exc}",
+            hint="تحقق من صحة الرابط ثم أعد المحاولة.",
+        )
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+
+    if response.status_code in (401, 403):
+        result.update(
+            status="auth_required",
+            connected=True,
+            auth_required=True,
+            detail="البوابة متصلة لكنها رفضت الفحص دون مفتاح صالح.",
+            hint="انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل.",
+        )
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+    payload: dict[str, Any] = {}
+    try:
+        parsed_payload = response.json()
+        if isinstance(parsed_payload, dict):
+            payload = parsed_payload
+    except ValueError:
+        payload = {}
+    if response.status_code >= 400:
+        result.update(
+            status="wrong_service" if not payload else "error",
+            detail=f"استجاب الخادم برمز HTTP {response.status_code}.",
+            hint="تأكد من لصق رابط الإرسال الظاهر داخل تطبيق البوابة.",
+        )
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+    app_name = str(payload.get("app") or "")
+    gateway_ok = bool(payload.get("ok", True))
+    if not payload or not gateway_ok or (app_name and app_name != GATEWAY_APP_NAME):
+        result.update(
+            status="wrong_service",
+            connected=True,
+            detail="الخادم المحدد لا يبدو بوابة رسائل الحضور.",
+            hint="الصق رابط الإرسال الظاهر داخل تطبيق بوابة الرسائل على الهاتف.",
+        )
+        _PROBE_CACHE[cache_key] = (now, dict(result))
+        return result
+
+    version = str(payload.get("version") or "")
+    auth_required = bool(payload.get("authRequired", payload.get("auth_required", False)))
+    outdated = bool(
+        version and _version_tuple(version) and _version_tuple(version) < _version_tuple(GATEWAY_APP_VERSION)
+    )
+    if auth_required and not api_key:
+        status = "auth_required"
+        detail = "البوابة متصلة وتتطلب مفتاح API."
+        hint = "انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل."
+    elif outdated:
+        status = "outdated"
+        detail = f"البوابة متصلة لكن إصدارها {version} أقدم من المطلوب {GATEWAY_APP_VERSION}."
+        hint = "نزّل أحدث إصدار من تطبيق البوابة وثبّته على الهاتف."
+    else:
+        status = "connected"
+        detail = "بوابة الهاتف متصلة وجاهزة لإرسال SMS."
+        hint = ""
+    result.update(
+        status=status,
+        connected=True,
+        can_send=status in ("connected", "outdated"),
+        detail=detail,
+        hint=hint,
+        version=version,
+        app=app_name,
+        outdated=outdated,
+        auth_required=auth_required,
+    )
+    _PROBE_CACHE[cache_key] = (now, dict(result))
+    return result
+
+
 def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict[str, Any]:
     if settings.get("sms_test_mode", "1") == "1":
         return {
@@ -73,12 +285,25 @@ def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict
         }
 
     gateway = settings.get("sms_gateway", "local")
-    url = _validate_url(settings.get("sms_api_url", ""))
+    raw_url = (settings.get("sms_api_url") or "").strip()
+    if gateway == "local":
+        url = normalize_mobile_url(raw_url)
+        if not url:
+            raise SmsGatewayError(
+                "رابط بوابة الهاتف غير صالح. أدخل عنوانًا مثل http://192.168.1.20:8080/send."
+            )
+    else:
+        url = _validate_url(raw_url)
     timeout = int_setting(settings, "sms_timeout", 10, 3, 120)
     api_key = settings.get("sms_api_key", "")
 
     if gateway == "local":
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": f"SmartAttendance/{APP_VERSION}",
+            "X-Client-App": "SmartAttendance",
+        }
         if api_key:
             headers["X-Api-Key"] = api_key
         payload = {"phone": phone, "message": message}
@@ -101,13 +326,27 @@ def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict
 
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=timeout, allow_redirects=False)
+    except requests.exceptions.SSLError as exc:
+        raise SmsConnectionError(
+            "تعذر الاتصال ببوابة الهاتف عبر HTTPS. استخدم رابط http:// كما يظهر في تطبيق الهاتف."
+        ) from exc
     except requests.Timeout as exc:
-        raise SmsGatewayError("انتهت مهلة الاتصال ببوابة الرسائل.") from exc
+        raise SmsConnectionError(
+            "انتهت مهلة الاتصال ببوابة الرسائل. تأكد من أن الهاتف مستيقظ وعلى نفس شبكة الواي فاي."
+        ) from exc
     except requests.ConnectionError as exc:
-        raise SmsGatewayError("تعذر الاتصال ببوابة الرسائل. تحقق من عنوان الخدمة والشبكة.") from exc
+        raise SmsConnectionError(
+            "تعذر الاتصال ببوابة الهاتف. شغّل خادم البوابة داخل التطبيق وتأكد من الشبكة والمنفذ، "
+            "ثم راجع حالة الاتصال في مركز الرسائل."
+        ) from exc
     except requests.RequestException as exc:
         raise SmsGatewayError(f"خطأ في الاتصال ببوابة الرسائل: {exc}") from exc
 
+    if response.status_code in (401, 403):
+        raise SmsGatewayError(
+            f"رفضت البوابة مفتاح API (HTTP {response.status_code}). "
+            "انسخ المفتاح الصحيح من تطبيق الهاتف إلى إعدادات الرسائل."
+        )
     if not (200 <= response.status_code < 300):
         snippet = (response.text or "").strip().replace("\n", " ")[:220]
         raise SmsGatewayError(f"رفضت البوابة الطلب (HTTP {response.status_code}){': ' + snippet if snippet else ''}")

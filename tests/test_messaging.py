@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import json
 import time
 
+import requests
+
+from attendance_app import config
+from attendance_app.services import messaging_service, sms_service
 from attendance_app.services.messaging_service import (
     channels_payload,
     resolve_channel_settings,
@@ -244,3 +249,211 @@ def test_messages_page_renders(client):
     assert "msg-channels" in html
     assert "msg-body" in html
     assert "msg-approve" in html
+
+
+class _FakeResponse:
+    def __init__(self, status_code=200, payload=None):
+        self.status_code = status_code
+        self._payload = payload
+        self.text = json.dumps(payload) if payload is not None else ""
+
+    def json(self):
+        if self._payload is None:
+            raise ValueError("no json payload")
+        return self._payload
+
+
+def _health_payload(**overrides):
+    payload = {
+        "ok": True,
+        "app": config.GATEWAY_APP_NAME,
+        "version": config.GATEWAY_APP_VERSION,
+        "status": "running",
+        "authRequired": False,
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_normalize_mobile_url_accepts_bare_host_and_health_path():
+    assert sms_service.normalize_mobile_url("") == ""
+    assert sms_service.normalize_mobile_url("ftp://192.168.1.20") == ""
+    assert (
+        sms_service.normalize_mobile_url("192.168.1.20:8080")
+        == "http://192.168.1.20:8080/send"
+    )
+    assert (
+        sms_service.normalize_mobile_url("192.168.1.20:8080/")
+        == "http://192.168.1.20:8080/send"
+    )
+    assert (
+        sms_service.normalize_mobile_url("http://192.168.1.20:8080/health")
+        == "http://192.168.1.20:8080/send"
+    )
+    assert (
+        sms_service.normalize_mobile_url("https://gateway.example/api/send?mode=sms")
+        == "https://gateway.example/api/send?mode=sms"
+    )
+
+
+def test_probe_gateway_reports_connected_with_identity_headers(monkeypatch):
+    captured = {}
+
+    def fake_get(url, **kwargs):
+        captured["url"] = url
+        captured["headers"] = kwargs.get("headers", {})
+        return _FakeResponse(200, _health_payload())
+
+    monkeypatch.setattr(sms_service.requests, "get", fake_get)
+    result = sms_service.probe_gateway(
+        "http://192.168.1.50:8080/send", "", force=True
+    )
+    assert result["status"] == "connected"
+    assert result["connected"] is True
+    assert result["can_send"] is True
+    assert result["version"] == config.GATEWAY_APP_VERSION
+    assert result["health_url"] == "http://192.168.1.50:8080/health"
+    assert captured["url"] == result["health_url"]
+    assert captured["headers"]["X-Client-App"] == "SmartAttendance"
+    assert captured["headers"]["User-Agent"] == f"SmartAttendance/{config.APP_VERSION}"
+
+
+def test_probe_gateway_flags_outdated_version(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests,
+        "get",
+        lambda url, **kwargs: _FakeResponse(200, _health_payload(version="0.9.0")),
+    )
+    result = sms_service.probe_gateway("http://192.168.1.51:8080/send", "", force=True)
+    assert result["status"] == "outdated"
+    assert result["outdated"] is True
+    assert result["can_send"] is True
+    assert "0.9.0" in result["detail"]
+
+
+def test_probe_gateway_requires_key_when_gateway_asks_for_it(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests,
+        "get",
+        lambda url, **kwargs: _FakeResponse(200, _health_payload(authRequired=True)),
+    )
+    result = sms_service.probe_gateway("http://192.168.1.52:8080/send", "", force=True)
+    assert result["status"] == "auth_required"
+    assert result["auth_required"] is True
+    assert result["can_send"] is False
+
+    monkeypatch.setattr(
+        sms_service.requests,
+        "get",
+        lambda url, **kwargs: _FakeResponse(401),
+    )
+    rejected = sms_service.probe_gateway("http://192.168.1.53:8080/send", "", force=True)
+    assert rejected["status"] == "auth_required"
+    assert rejected["connected"] is True
+    assert rejected["can_send"] is False
+
+
+def test_probe_gateway_rejects_wrong_service(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests,
+        "get",
+        lambda url, **kwargs: _FakeResponse(200, {"ok": True, "app": "Some Other Server"}),
+    )
+    result = sms_service.probe_gateway("http://192.168.1.54:8080/send", "", force=True)
+    assert result["status"] == "wrong_service"
+    assert result["can_send"] is False
+
+
+def test_probe_gateway_reports_offline_with_actionable_hint(monkeypatch):
+    def fail(url, **kwargs):
+        raise requests.exceptions.ConnectionError("refused")
+
+    monkeypatch.setattr(sms_service.requests, "get", fail)
+    result = sms_service.probe_gateway("http://192.168.1.55:8080/send", "", force=True)
+    assert result["status"] == "offline"
+    assert result["connected"] is False
+    assert result["can_send"] is False
+    assert "8080" in result["hint"]
+
+
+def test_probe_gateway_requires_configured_url():
+    result = sms_service.probe_gateway("", "", force=True)
+    assert result["status"] == "not_configured"
+    invalid = sms_service.probe_gateway("ftp://gateway", "", force=True)
+    assert invalid["status"] == "invalid_url"
+    assert invalid["can_send"] is False
+
+
+def test_gateway_endpoint_exposes_phone_app_metadata(client):
+    response = client.get("/api/messages/gateway")
+    assert response.status_code == 200
+    gateway = response.get_json()["gateway"]
+    assert gateway["gateway_app"]["name"] == config.GATEWAY_APP_NAME
+    assert gateway["gateway_app"]["version"] == config.GATEWAY_APP_VERSION
+    assert (
+        gateway["gateway_app"]["download_url"]
+        == f"https://fetsync.org/Update/Attendance-SMS-Gateway-{config.GATEWAY_APP_VERSION}.apk"
+    )
+    assert gateway["mobile"]["status"] == "not_configured"
+    assert gateway["mobile"]["can_send"] is False
+    assert "installed" in gateway["whatsapp_desktop"]
+    assert gateway["whatsapp_desktop"]["download_url"] == config.WHATSAPP_DOWNLOAD_URL
+
+
+def test_settings_normalize_bare_mobile_gateway_host(client, csrf):
+    response = client.put(
+        "/api/settings",
+        json={"sms_mobile_url": "192.168.1.20:8080"},
+        headers=csrf,
+    )
+    assert response.status_code == 200, response.get_json()
+    assert (
+        response.get_json()["settings"]["sms_mobile_url"]
+        == "http://192.168.1.20:8080/send"
+    )
+
+
+def test_real_mobile_campaign_blocked_when_gateway_unreachable(
+    client, csrf, make_student, monkeypatch
+):
+    make_student(student_nin="2099000861", parent_phone="0550123456")
+    saved = client.put(
+        "/api/settings",
+        json={
+            "sms_mobile_url": "http://192.168.1.20:8080/send",
+            "sms_test_mode": False,
+        },
+        headers=csrf,
+    )
+    assert saved.status_code == 200, saved.get_json()
+    probed = {}
+
+    def fake_probe(url, api_key="", **kwargs):
+        probed["url"] = url
+        probed["api_key"] = api_key
+        return {
+            "status": "offline",
+            "connected": False,
+            "can_send": False,
+            "detail": "تعذر الاتصال ببوابة الهاتف.",
+            "hint": "شغّل خادم البوابة داخل تطبيق الهاتف.",
+        }
+
+    monkeypatch.setattr(messaging_service, "probe_gateway", fake_probe)
+    response = client.post(
+        "/api/messages/send",
+        json={"scope": "all", "channel": "mobile", "message": "اختبار", "approved": True},
+        headers=csrf,
+    )
+    assert response.status_code == 400
+    error = response.get_json()["error"]["message"]
+    assert "ثبّت تطبيق بوابة الرسائل" in error
+    assert probed["url"] == "http://192.168.1.20:8080/send"
+    assert client.get("/api/messages/campaigns").get_json()["total"] == 0
+
+
+def test_pages_expose_phone_app_and_whatsapp_download_links(client):
+    for path in ("/messages", "/settings", "/about"):
+        html = client.get(path).get_data(as_text=True)
+        assert config.GATEWAY_APP_DOWNLOAD_URL in html, path
+        assert config.WHATSAPP_DOWNLOAD_URL in html, path
