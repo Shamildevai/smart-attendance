@@ -16,6 +16,12 @@
     "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
   };
 
+  // French AZERTY keyboards report these symbols for unshifted digit keys.
+  const AZERTY_DIGITS = {
+    "&": "1", "é": "2", '"': "3", "'": "4", "(": "5",
+    "-": "6", "è": "7", "_": "8", "ç": "9", "à": "0",
+  };
+
   const state = {
     periodId: null,
     periods: [],
@@ -451,6 +457,17 @@
       .trim();
   }
 
+  // Physical codes are layout-independent, so HID scans survive AZERTY and Arabic layouts.
+  function scanDigit(event) {
+    const physical = /^(?:Digit|Numpad)(\d)$/.exec(event.code || "");
+    if (physical) return physical[1];
+    if (SCAN_DIGITS[event.key]) return SCAN_DIGITS[event.key];
+    if (Object.prototype.hasOwnProperty.call(AZERTY_DIGITS, event.key)) {
+      return AZERTY_DIGITS[event.key];
+    }
+    return "";
+  }
+
   function modalOpen() {
     const root = $("modal-root");
     return Boolean(root && root.childElementCount) || document.body.style.overflow === "hidden";
@@ -485,8 +502,8 @@
       return true;
     }
     if (typeof event.key !== "string" || event.key.length !== 1) return false;
-    const digit = SCAN_DIGITS[event.key];
-    if (!digit && !/[A-Za-z0-9_-]/.test(event.key)) {
+    const digit = scanDigit(event);
+    if (!digit && !/[A-Za-z0-9]/.test(event.key)) {
       // A slow human keypress breaks the burst; fast foreign symbols are ignored.
       if (Date.now() - state.lastKeyAt > HID_GAP_MS) resetBuffer();
       return false;
