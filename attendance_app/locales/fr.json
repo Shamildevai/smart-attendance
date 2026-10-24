@@ -1324,7 +1324,11 @@
     "بوابة الهاتف متصلة وجاهزة لإرسال SMS.": "La passerelle téléphone est connectée et prête à envoyer des SMS.",
     "تطبيق واتساب لسطح المكتب مثبّت على هذا الحاسوب.": "WhatsApp pour ordinateur est installé sur cet ordinateur.",
     "لم يُعثر على تطبيق واتساب لسطح المكتب. ثبّته لتفتح روابط الإرسال تلقائيًا، أو استخدم واتساب على الهاتف.": "WhatsApp pour ordinateur est introuvable. Installez-le pour ouvrir automatiquement les liens d’envoi, ou utilisez WhatsApp sur le téléphone.",
-    "يمكن فتح روابط واتساب عبر المتصفح أو تطبيق واتساب إن كان مثبّتًا.": "Les liens WhatsApp peuvent s’ouvrir dans le navigateur ou dans l’application WhatsApp si elle est installée."
+    "يمكن فتح روابط واتساب عبر المتصفح أو تطبيق واتساب إن كان مثبّتًا.": "Les liens WhatsApp peuvent s’ouvrir dans le navigateur ou dans l’application WhatsApp si elle est installée.",
+    "البوابة متصلة لكن مفتاح API غير صحيح.": "La passerelle est connectée mais la clé API est incorrecte.",
+    "انسخ مفتاح API الحالي من تطبيق الهاتف إلى إعدادات الرسائل ثم أعد الفحص.": "Copiez la clé API actuelle depuis l’application téléphone vers les réglages des messages, puis vérifiez à nouveau.",
+    "بوابة الهاتف متصلة، لكن تعذر التحقق من مفتاح API.": "La passerelle du téléphone est connectée, mais la clé API n’a pas pu être vérifiée.",
+    "تأكد من أن مفتاح API في الإعدادات مطابق للمفتاح الظاهر في تطبيق الهاتف.": "Vérifiez que la clé API des réglages correspond à celle affichée dans l’application téléphone."
   },
   "patterns": [
     {

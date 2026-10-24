@@ -112,6 +112,47 @@ _PROBE_CACHE: dict[tuple[str, bool], tuple[float, dict[str, Any]]] = {}
 _PROBE_CACHE_SECONDS = 8.0
 
 
+def _verify_gateway_key(
+    endpoint: str,
+    api_key: str,
+    headers: dict[str, str],
+    timeout: float,
+) -> bool | None:
+    """Validate the key through the send endpoint without sending an SMS.
+
+    The phone rejects an invalid phone number before touching the SIM, so a
+    validation response proves the key while a 401/403 proves it is wrong.
+    """
+    probe_headers = dict(headers)
+    probe_headers["X-Api-Key"] = api_key
+    probe_headers["Connection"] = "close"
+    try:
+        response = requests.post(
+            endpoint,
+            json={"phone": "0", "message": ""},
+            headers=probe_headers,
+            timeout=timeout,
+            allow_redirects=False,
+            stream=True,
+        )
+    except requests.RequestException:
+        return None
+    try:
+        status = response.status_code
+    except requests.RequestException:
+        return None
+    finally:
+        try:
+            response.close()
+        except Exception:
+            pass
+    if status in (401, 403):
+        return False
+    if status in (200, 400, 422):
+        return True
+    return None
+
+
 def probe_gateway(
     url: str,
     api_key: str = "",
@@ -162,6 +203,7 @@ def probe_gateway(
         "outdated": False,
         "auth_required": False,
         "auth_configured": bool(api_key),
+        "auth_valid": None,
         "download_url": GATEWAY_APP_DOWNLOAD_URL,
         "required_version": GATEWAY_APP_VERSION,
     }
@@ -211,6 +253,7 @@ def probe_gateway(
             status="auth_required",
             connected=True,
             auth_required=True,
+            auth_valid=False,
             detail="البوابة متصلة لكنها رفضت الفحص دون مفتاح صالح.",
             hint="انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل.",
         )
@@ -248,10 +291,21 @@ def probe_gateway(
     outdated = bool(
         version and _version_tuple(version) and _version_tuple(version) < _version_tuple(GATEWAY_APP_VERSION)
     )
+    auth_valid: bool | None = None
+    if auth_required and api_key:
+        auth_valid = _verify_gateway_key(endpoint, api_key, headers, timeout)
     if auth_required and not api_key:
         status = "auth_required"
         detail = "البوابة متصلة وتتطلب مفتاح API."
         hint = "انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل."
+    elif auth_required and auth_valid is False:
+        status = "auth_required"
+        detail = "البوابة متصلة لكن مفتاح API غير صحيح."
+        hint = "انسخ مفتاح API الحالي من تطبيق الهاتف إلى إعدادات الرسائل ثم أعد الفحص."
+    elif auth_required and auth_valid is None:
+        status = "connected"
+        detail = "بوابة الهاتف متصلة، لكن تعذر التحقق من مفتاح API."
+        hint = "تأكد من أن مفتاح API في الإعدادات مطابق للمفتاح الظاهر في تطبيق الهاتف."
     elif outdated:
         status = "outdated"
         detail = f"البوابة متصلة لكن إصدارها {version} أقدم من المطلوب {GATEWAY_APP_VERSION}."
@@ -270,6 +324,7 @@ def probe_gateway(
         app=app_name,
         outdated=outdated,
         auth_required=auth_required,
+        auth_valid=auth_valid,
     )
     _PROBE_CACHE[cache_key] = (now, dict(result))
     return result
@@ -325,7 +380,14 @@ def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict
         label = "واجهة سحابية"
 
     try:
-        response = requests.post(url, json=payload, headers=headers, timeout=timeout, allow_redirects=False)
+        response = requests.post(
+            url,
+            json=payload,
+            headers=headers,
+            timeout=timeout,
+            allow_redirects=False,
+            stream=True,
+        )
     except requests.exceptions.SSLError as exc:
         raise SmsConnectionError(
             "تعذر الاتصال ببوابة الهاتف عبر HTTPS. استخدم رابط http:// كما يظهر في تطبيق الهاتف."
@@ -342,19 +404,26 @@ def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict
     except requests.RequestException as exc:
         raise SmsGatewayError(f"خطأ في الاتصال ببوابة الرسائل: {exc}") from exc
 
-    if response.status_code in (401, 403):
+    status_code = response.status_code
+    try:
+        body_text = (response.text or "").strip()
+    except requests.RequestException:
+        body_text = ""
+    finally:
+        response.close()
+    if status_code in (401, 403):
         raise SmsGatewayError(
-            f"رفضت البوابة مفتاح API (HTTP {response.status_code}). "
+            f"رفضت البوابة مفتاح API (HTTP {status_code}). "
             "انسخ المفتاح الصحيح من تطبيق الهاتف إلى إعدادات الرسائل."
         )
-    if not (200 <= response.status_code < 300):
-        snippet = (response.text or "").strip().replace("\n", " ")[:220]
-        raise SmsGatewayError(f"رفضت البوابة الطلب (HTTP {response.status_code}){': ' + snippet if snippet else ''}")
+    if not (200 <= status_code < 300):
+        snippet = body_text.replace("\n", " ")[:220]
+        raise SmsGatewayError(f"رفضت البوابة الطلب (HTTP {status_code}){': ' + snippet if snippet else ''}")
     return {
         "ok": True,
         "simulated": False,
         "gateway": "local" if gateway == "local" else "cloud",
-        "detail": f"{label} — HTTP {response.status_code}",
+        "detail": f"{label} — HTTP {status_code}",
     }
 
 

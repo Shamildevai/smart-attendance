@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import time
 
+import pytest
 import requests
 
 from attendance_app import config
@@ -11,6 +12,7 @@ from attendance_app.services.messaging_service import (
     channels_payload,
     resolve_channel_settings,
 )
+from attendance_app.services.sms_service import SmsGatewayError
 
 
 def _wait_for_job(client, job_id: str, timeout: float = 8.0) -> dict:
@@ -262,6 +264,9 @@ class _FakeResponse:
             raise ValueError("no json payload")
         return self._payload
 
+    def close(self):
+        pass
+
 
 def _health_payload(**overrides):
     payload = {
@@ -351,6 +356,70 @@ def test_probe_gateway_requires_key_when_gateway_asks_for_it(monkeypatch):
     assert rejected["status"] == "auth_required"
     assert rejected["connected"] is True
     assert rejected["can_send"] is False
+
+
+def test_probe_gateway_rejects_wrong_api_key_without_sending_sms(monkeypatch):
+    captured = {}
+
+    def fake_post(url, **kwargs):
+        captured["url"] = url
+        captured["json"] = kwargs.get("json")
+        captured["headers"] = kwargs.get("headers", {})
+        return _FakeResponse(401)
+
+    monkeypatch.setattr(
+        sms_service.requests,
+        "get",
+        lambda url, **kwargs: _FakeResponse(200, _health_payload(authRequired=True)),
+    )
+    monkeypatch.setattr(sms_service.requests, "post", fake_post)
+    result = sms_service.probe_gateway(
+        "http://192.168.1.56:8080/send", "wrong-key", force=True
+    )
+    assert result["status"] == "auth_required"
+    assert result["auth_valid"] is False
+    assert result["can_send"] is False
+    assert "غير صحيح" in result["detail"]
+    assert captured["url"] == "http://192.168.1.56:8080/send"
+    assert captured["json"] == {"phone": "0", "message": ""}
+    assert captured["headers"]["X-Api-Key"] == "wrong-key"
+
+
+def test_probe_gateway_accepts_valid_api_key(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests,
+        "get",
+        lambda url, **kwargs: _FakeResponse(200, _health_payload(authRequired=True)),
+    )
+    monkeypatch.setattr(
+        sms_service.requests,
+        "post",
+        lambda url, **kwargs: _FakeResponse(400, {"ok": False, "error": "Invalid phone number"}),
+    )
+    result = sms_service.probe_gateway(
+        "http://192.168.1.57:8080/send", "good-key", force=True
+    )
+    assert result["status"] == "connected"
+    assert result["auth_valid"] is True
+    assert result["can_send"] is True
+
+
+def test_send_via_gateway_reports_rejected_key(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests,
+        "post",
+        lambda url, **kwargs: _FakeResponse(401),
+    )
+    settings = {
+        "sms_gateway": "local",
+        "sms_test_mode": "0",
+        "sms_api_url": "http://192.168.1.58:8288/send",
+        "sms_api_key": "wrong-key",
+    }
+    with pytest.raises(SmsGatewayError) as error:
+        sms_service.send_via_gateway(settings, "0550123456", "اختبار")
+    assert "مفتاح API" in str(error.value)
+    assert "HTTP 401" in str(error.value)
 
 
 def test_probe_gateway_rejects_wrong_service(monkeypatch):

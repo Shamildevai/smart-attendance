@@ -2,10 +2,10 @@
 
 Run after building the EXE/setup:
 
-    python scripts/sign_update.py --version 1.1.6 \
+    python scripts/sign_update.py --version 1.1.7 \
         --notes "إصلاحات وتحسينات" \
         --portable dist/SmartAttendance.exe \
-        --setup dist/SmartAttendance_Setup_1.1.6.exe \
+        --setup dist/SmartAttendance_Setup_1.1.7.exe \
         --out dist/update/latest.json
 
 Then upload latest.json plus the artifact files to https://update.fetsync.org
@@ -65,7 +65,7 @@ def build_entry(kind: str, path: Path, base_url: str) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Sign a SmartAttendance update manifest")
-    parser.add_argument("--version", required=True, help="target version, e.g. 1.1.6")
+    parser.add_argument("--version", required=True, help="target version, e.g. 1.1.7")
     parser.add_argument("--notes", default="", help="release notes shown in the app")
     parser.add_argument("--notes-file", help="read release notes from a UTF-8 text file")
     parser.add_argument("--portable", help="portable SmartAttendance.exe")

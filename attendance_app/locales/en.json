@@ -1324,7 +1324,11 @@
     "بوابة الهاتف متصلة وجاهزة لإرسال SMS.": "The phone gateway is connected and ready to send SMS.",
     "تطبيق واتساب لسطح المكتب مثبّت على هذا الحاسوب.": "WhatsApp Desktop is installed on this computer.",
     "لم يُعثر على تطبيق واتساب لسطح المكتب. ثبّته لتفتح روابط الإرسال تلقائيًا، أو استخدم واتساب على الهاتف.": "WhatsApp Desktop was not found. Install it to open send links automatically, or use WhatsApp on the phone.",
-    "يمكن فتح روابط واتساب عبر المتصفح أو تطبيق واتساب إن كان مثبّتًا.": "WhatsApp links can open in the browser or the WhatsApp app if installed."
+    "يمكن فتح روابط واتساب عبر المتصفح أو تطبيق واتساب إن كان مثبّتًا.": "WhatsApp links can open in the browser or the WhatsApp app if installed.",
+    "البوابة متصلة لكن مفتاح API غير صحيح.": "The gateway is connected but the API key is incorrect.",
+    "انسخ مفتاح API الحالي من تطبيق الهاتف إلى إعدادات الرسائل ثم أعد الفحص.": "Copy the current API key from the phone app into the message settings, then check again.",
+    "بوابة الهاتف متصلة، لكن تعذر التحقق من مفتاح API.": "The phone gateway is connected, but the API key could not be verified.",
+    "تأكد من أن مفتاح API في الإعدادات مطابق للمفتاح الظاهر في تطبيق الهاتف.": "Make sure the API key in settings matches the key shown in the phone app."
   },
   "patterns": [
     {
