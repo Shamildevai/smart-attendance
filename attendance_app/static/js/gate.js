@@ -9,6 +9,13 @@
   const RESULT_LIFETIME_MS = 12000;
   const CAMERA_DUPLICATE_MS = 3500;
 
+  const SCAN_DIGITS = {
+    "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4",
+    "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9",
+    "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4",
+    "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9",
+  };
+
   const state = {
     periodId: null,
     periods: [],
@@ -194,7 +201,7 @@
   /* ---------------------------------------------------------------------- */
 
   async function processCode(rawCode, source) {
-    const code = String(rawCode || "").trim();
+    const code = normalizeScanCode(rawCode);
     if (!code || state.busy) return;
     state.busy = true;
     clearResultTimer();
@@ -398,7 +405,13 @@
 
   function isTypingTarget(target) {
     if (!target || !(target instanceof Element)) return false;
-    return Boolean(target.closest("input, textarea, select, [contenteditable='true'], [contenteditable='']"));
+    return Boolean(target.closest("input, textarea, [contenteditable='true'], [contenteditable='']"));
+  }
+
+  function normalizeScanCode(value) {
+    return String(value || "")
+      .replace(/[٠-٩۰-۹]/g, (digit) => SCAN_DIGITS[digit] || digit)
+      .trim();
   }
 
   function modalOpen() {
@@ -435,7 +448,8 @@
       return true;
     }
     if (typeof event.key !== "string" || event.key.length !== 1) return false;
-    if (!/[A-Za-z0-9_-]/.test(event.key)) {
+    const digit = SCAN_DIGITS[event.key];
+    if (!digit && !/[A-Za-z0-9_-]/.test(event.key)) {
       // A slow human keypress breaks the burst; fast foreign symbols are ignored.
       if (Date.now() - state.lastKeyAt > HID_GAP_MS) resetBuffer();
       return false;
@@ -447,7 +461,7 @@
     }
     event.preventDefault();
     if (state.buffer.length >= HID_MAX_LENGTH) state.buffer = "";
-    state.buffer += event.key;
+    state.buffer += digit || event.key;
     state.lastKeyAt = now;
     setBufferHint();
     return true;

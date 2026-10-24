@@ -10,6 +10,7 @@ data_*/
 .venv/
 build/
 build_*/
+!build_assets/
 dist/
 dist_*/
 backup/

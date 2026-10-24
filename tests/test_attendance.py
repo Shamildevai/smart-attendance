@@ -100,6 +100,20 @@ def test_gate_api_flow(client, csrf, make_student, period):
     assert inactive.get_json()["action"] == "inactive"
 
 
+def test_gate_api_accepts_arabic_indic_digits(client, csrf, make_student, period):
+    student = make_student(student_nin="2099000313")
+    arabic_digits = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
+    response = client.post(
+        "/api/gate/scan",
+        json={"code": student["student_nin"].translate(arabic_digits), "period_id": period["id"]},
+        headers=csrf,
+    )
+    payload = response.get_json()
+    assert response.status_code == 200
+    assert payload["student"]["student_nin"] == student["student_nin"]
+    assert payload["action"] in ("present", "late")
+
+
 def test_absent_to_arrival_cancels_pending_sms(db, make_student, period):
     pending_student = make_student(student_nin="2099000321")
     _insert_absent(db, pending_student["student_nin"], period["id"], sms_status="PENDING")

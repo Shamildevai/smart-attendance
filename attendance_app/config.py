@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 APP_NAME = "SmartAttendance"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.1.1"
 APP_TITLE = "نظام متابعة الحضور"
 APP_SUBTITLE = "الحضور بالباركود وإشعار الأولياء"
 APP_AUTHOR = "د. بوزويرة عزيز"
