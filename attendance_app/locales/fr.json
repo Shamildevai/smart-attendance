@@ -346,6 +346,14 @@
     "مسجل مسبقًا": "Déjà enregistré",
     "غير نشط": "Inactif",
     "باركود غير مسجل": "Code-barres non enregistré",
+    "بطاقة معاينة": "Carte d'aperçu",
+    "بطاقة معاينة تجريبية": "Carte d'aperçu de démonstration",
+    "هذه بطاقة معاينة تجريبية من استوديو الطباعة، وليست بطاقة تلميذ حقيقي. افتح استوديو الطباعة، اختر التلميذ الفعلي، ثم اطبع بطاقته من جديد.": "Il s’agit d’une carte d’aperçu de démonstration, pas d’une carte d’élève réelle. Ouvrez l’atelier d’impression, sélectionnez le bon élève et réimprimez sa carte.",
+    "معاينة بدون باركود": "Aperçu sans code-barres",
+    "بحث في التلاميذ": "Rechercher des élèves",
+    "قائمة التلاميذ": "Liste des élèves",
+    "هل تقصد أحد هؤلاء التلاميذ؟": "Vouliez-vous dire l'un de ces élèves ?",
+    "لم يُسجَّل أي حضور. افتح ملف التلميذ الصحيح ثم أعد المسح أو سجّل الحضور يدويًا.": "Aucune présence n'a été enregistrée. Ouvrez la fiche du bon élève, puis scannez à nouveau ou saisissez la présence manuellement.",
     "وقت التسجيل": "Heure de pointage",
     "حضور اليوم": "Présence du jour",
     "مسح تالٍ": "Scan suivant",
@@ -1166,6 +1174,26 @@
     {
       "ar": "يتم عرض أول {0} من {1} فقط. صحح الملف ثم أعد التحليل لرؤية الباقي.",
       "tr": "Seuls les {0} premiers sur {1} sont affichés. Corrigez le fichier puis relancez l'analyse pour voir le reste."
+    },
+    {
+      "ar": "الرمز المقروء: {0}",
+      "tr": "Code lu : {0}"
+    },
+    {
+      "ar": "الباركود «{0}» غير مسجل في قاعدة البيانات. تحقق من آخر أرقام الرمز في قائمة التلاميذ أو أعد طباعة البطاقة من التلميذ الصحيح.",
+      "tr": "Le code-barres « {0} » n’est pas enregistré dans la base. Vérifiez les derniers chiffres dans la liste des élèves ou réimprimez la carte du bon élève."
+    },
+    {
+      "ar": "تم التعرف على البطاقة تلقائيًا رغم وجود أحرف زائدة في القراءة، ورقم التعريف هو {0}.",
+      "tr": "La carte a été reconnue automatiquement malgré des caractères supplémentaires. Le numéro d’identification est {0}."
+    },
+    {
+      "ar": "معاينة تصميم بدون باركود — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "Aperçu du design sans code-barres — CR80 · 85,6 × 54 mm · {0} cartes sur une page A4"
+    },
+    {
+      "ar": "معاينة تصميم بدون باركود — ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Aperçu du design sans code-barres — étiquette 65 × {0} mm · {1} étiquettes sur une page A4"
     },
     {
       "ar": "معاينة توضيحية — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",

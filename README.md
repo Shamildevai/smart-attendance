@@ -81,10 +81,10 @@
 
 ```bat
 .venv\Scripts\python.exe scripts\sign_update.py ^
-  --version 1.1.1 ^
+  --version 1.1.2 ^
   --notes "ملاحظات الإصدار" ^
   --portable dist\SmartAttendance.exe ^
-  --setup dist\SmartAttendance_Setup_1.1.1.exe ^
+  --setup dist\SmartAttendance_Setup_1.1.2.exe ^
   --out dist\update\latest.json
 ```
 
@@ -168,7 +168,7 @@ build_setup.bat
 يُنشئ السكربت ملف التثبيت:
 
 ```text
-dist\SmartAttendance_Setup_1.1.1.exe
+dist\SmartAttendance_Setup_1.1.2.exe
 ```
 
 - معالج تثبيت عربي RTL مع اختصار في قائمة ابدأ واختصار اختياري على سطح المكتب وأداة إزالة تثبيت.

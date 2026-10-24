@@ -269,6 +269,7 @@
     if (action === "already_recorded") return { icon: "check", label: "مسجل مسبقًا" };
     if (action === "excused") return { icon: "shield", label: "غياب مبرر" };
     if (action === "inactive") return { icon: "user", label: "غير نشط" };
+    if (action === "preview_card") return { icon: "barcode", label: "بطاقة معاينة" };
     if (action === "not_found") return { icon: "warning", label: "غير معروف" };
     return { icon: data.success ? "check" : "warning", label: data.success ? "تم" : "تنبيه" };
   }
@@ -284,13 +285,18 @@
     const headClass = headClassFor(data);
     const status = data.attendance && data.attendance.status;
     const messageClass = data.flash === "error" ? "is-error" : data.flash === "warning" ? "is-warning" : "";
-    const name = student ? student.full_name || `${student.first_name || ""} ${student.last_name || ""}`.trim() : "باركود غير مسجل";
+    const scannedCode = data.scanned_code || submittedCode;
+    const name = student
+      ? student.full_name || `${student.first_name || ""} ${student.last_name || ""}`.trim()
+      : data.action === "preview_card"
+        ? "بطاقة معاينة تجريبية"
+        : "باركود غير مسجل";
     const subBits = [];
     if (student) {
       subBits.push(student.class_group || "بدون قسم");
       subBits.push(student.student_nin);
     } else {
-      subBits.push(`الرمز: ${submittedCode}`);
+      subBits.push(`الرمز المقروء: ${scannedCode}`);
     }
     const meta = `
       <div class="scan-meta">
@@ -315,19 +321,48 @@
     const smsNote = data.sms_notice
       ? `<div class="scan-sms-note">${A.icon("message")}<span>${safe(data.sms_notice)}</span></div>`
       : "";
+    const lookupNote = data.lookup_note
+      ? `<div class="scan-sms-note">${A.icon("barcode")}<span>${safe(data.lookup_note)}</span></div>`
+      : "";
+    const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
+    const suggestHtml = suggestions.length
+      ? `<div class="scan-suggest">
+           <strong>هل تقصد أحد هؤلاء التلاميذ؟</strong>
+           <div class="scan-suggest-list">
+             ${suggestions
+               .map(
+                 (item) => `<a class="scan-suggest-item" href="/students?q=${encodeURIComponent(item.student_nin)}&profile=1">
+                   <span>${safe(item.full_name)}</span>
+                   <b class="mono">${safe(item.student_nin)}</b>
+                   <em>${safe(item.class_group || "بدون قسم")}</em>
+                 </a>`
+               )
+               .join("")}
+           </div>
+           <small>لم يُسجَّل أي حضور. افتح ملف التلميذ الصحيح ثم أعد المسح أو سجّل الحضور يدويًا.</small>
+         </div>`
+      : "";
     let actions = '<button class="btn btn-secondary btn-sm" type="button" data-scan-clear>مسح تالٍ</button>';
     if (student) {
       actions += `<a class="btn btn-secondary btn-sm" href="/attendance?date=${encodeURIComponent(data.date || "")}&period_id=${encodeURIComponent(
         period ? period.id : ""
       )}">سجل الفترة</a>`;
       actions += `<a class="btn btn-ghost btn-sm" href="/students?q=${encodeURIComponent(student.student_nin)}&profile=1">ملف التلميذ</a>`;
+    } else if (data.action === "preview_card") {
+      actions += `<a class="btn btn-primary btn-sm" href="/print">استوديو الطباعة</a>`;
+      actions += `<a class="btn btn-ghost btn-sm" href="/students">قائمة التلاميذ</a>`;
     } else if (data.action === "not_found") {
-      actions += `<a class="btn btn-primary btn-sm" href="/students?new=1&nin=${encodeURIComponent(submittedCode)}">إضافة التلميذ</a>`;
+      actions += `<a class="btn btn-secondary btn-sm" href="/students?q=${encodeURIComponent(scannedCode)}">بحث في التلاميذ</a>`;
+      actions += `<a class="btn btn-primary btn-sm" href="/students?new=1&nin=${encodeURIComponent(scannedCode)}">إضافة التلميذ</a>`;
     }
     resultEl.innerHTML = `
       <article class="scan-result" data-flash="${safe(data.flash || "")}">
         <header class="scan-card-head ${headClass}">
-          ${student ? A.avatar(student) : `<div class="avatar" aria-hidden="true">${A.icon("warning")}</div>`}
+          ${
+            student
+              ? A.avatar(student)
+              : `<div class="avatar" aria-hidden="true">${A.icon(data.action === "preview_card" ? "barcode" : "warning")}</div>`
+          }
           <div class="scan-person">
             <h3>${safe(name)}</h3>
             <p>${subBits.map((bit) => safe(bit)).join(" · ")}</p>
@@ -340,7 +375,9 @@
         <div class="scan-card-body">
           <div class="scan-message ${messageClass}">${safe(data.message || "")}</div>
           ${meta}
+          ${suggestHtml}
           ${todayHtml}
+          ${lookupNote}
           ${smsNote}
           <div class="scan-actions">${actions}</div>
         </div>

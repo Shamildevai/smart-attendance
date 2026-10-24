@@ -100,6 +100,76 @@ def test_gate_api_flow(client, csrf, make_student, period):
     assert inactive.get_json()["action"] == "inactive"
 
 
+def test_gate_scan_recovers_scanner_prefix(client, csrf, make_student, period):
+    student = make_student(student_nin="2099000314")
+    response = client.post(
+        "/api/gate/scan",
+        json={"code": f"\x02]C1{student['student_nin']}\x03", "period_id": period["id"]},
+        headers=csrf,
+    )
+    payload = response.get_json()
+    assert response.status_code == 200
+    assert payload["action"] in ("present", "late")
+    assert payload["scanned_code"] == student["student_nin"]
+    assert payload["attendance"]["student_nin"] == student["student_nin"]
+
+
+def test_gate_scan_recovers_missing_leading_zero(client, csrf, make_student, period):
+    student = make_student(student_nin="01099000315")
+    response = client.post(
+        "/api/gate/scan",
+        json={"code": student["student_nin"].lstrip("0"), "period_id": period["id"]},
+        headers=csrf,
+    )
+    payload = response.get_json()
+    assert response.status_code == 200
+    assert payload["lookup"] == "recovered"
+    assert payload["student"]["student_nin"] == student["student_nin"]
+    assert payload["attendance"]["student_nin"] == student["student_nin"]
+    assert "تم التعرف" in payload["lookup_note"]
+
+
+def test_gate_scan_suggests_near_match_without_recording(client, csrf, make_student, period):
+    student = make_student(student_nin="2099000316")
+    response = client.post(
+        "/api/gate/scan",
+        json={"code": "2099000317", "period_id": period["id"]},
+        headers=csrf,
+    )
+    payload = response.get_json()
+    assert response.status_code == 200
+    assert payload["action"] == "not_found"
+    assert payload["attendance"] is None
+    assert payload["suggestions"][0]["student_nin"] == student["student_nin"]
+
+
+def test_gate_scan_does_not_guess_unrelated_embedded_nin(client, csrf, make_student, period):
+    student = make_student(student_nin="2099000318")
+    response = client.post(
+        "/api/gate/scan",
+        json={"code": f"X{student['student_nin']}Y", "period_id": period["id"]},
+        headers=csrf,
+    )
+    payload = response.get_json()
+    assert response.status_code == 200
+    assert payload["action"] == "not_found"
+    assert payload["student"] is None
+    assert payload["attendance"] is None
+
+
+def test_gate_scan_reports_legacy_preview_card(client, csrf, period):
+    response = client.post(
+        "/api/gate/scan",
+        json={"code": "000000000000000001", "period_id": period["id"]},
+        headers=csrf,
+    )
+    payload = response.get_json()
+    assert response.status_code == 200
+    assert payload["action"] == "preview_card"
+    assert payload["student"] is None
+    assert "معاينة" in payload["message"]
+
+
 def test_gate_api_accepts_arabic_indic_digits(client, csrf, make_student, period):
     student = make_student(student_nin="2099000313")
     arabic_digits = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")

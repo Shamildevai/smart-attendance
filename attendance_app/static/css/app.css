@@ -1628,6 +1628,14 @@ kbd {
 .scan-actions .btn { flex: 1; }
 .scan-sms-note { display: flex; align-items: flex-start; gap: 7px; font-size: 10px; color: var(--warning); padding: 7px 9px; background: var(--warning-soft); border-radius: 8px; line-height: 1.5; }
 .scan-sms-note .ico { width: 14px; height: 14px; flex: 0 0 14px; margin-top: 1px; }
+.scan-suggest { display: grid; gap: 6px; padding: 9px 10px; border-radius: 9px; background: var(--surface-2); border: 1px dashed var(--border); }
+.scan-suggest > strong { font-size: 10.5px; color: var(--text); }
+.scan-suggest-list { display: grid; gap: 5px; }
+.scan-suggest-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 7px; background: var(--surface); border: 1px solid var(--border); font-size: 10.5px; text-decoration: none; color: var(--text); }
+.scan-suggest-item:hover { border-color: var(--accent); }
+.scan-suggest-item b { direction: ltr; font-size: 9.5px; color: var(--text-muted); font-weight: 600; }
+.scan-suggest-item em { margin-inline-start: auto; font-style: normal; font-size: 9px; color: var(--text-muted); }
+.scan-suggest small { font-size: 9px; color: var(--text-muted); line-height: 1.5; }
 
 .gate-side { display: grid; gap: 18px; align-content: start; }
 .gate-side .card-body { padding: 18px; }

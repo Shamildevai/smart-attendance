@@ -50,12 +50,15 @@
       }
     : { school: "اسم المؤسسة التعليمية", year: "", principal: "مدير المؤسسة", logo: "", stamp: "" };
 
-  const DEMO_STUDENTS = [
-    { student_nin: "000000000000000001", first_name: "أمين", last_name: "بن طالب", class_group: "1AS1", birth_date: "2008-03-14", photo_url: "" },
-    { student_nin: "000000000000000002", first_name: "سارة", last_name: "مرابط", class_group: "2AS2", birth_date: "2007-11-02", photo_url: "" },
-    { student_nin: "000000000000000003", first_name: "يوسف", last_name: "حداد", class_group: "1AS1", birth_date: "2008-06-21", photo_url: "" },
-    { student_nin: "000000000000000004", first_name: "لينة", last_name: "بوزيان", class_group: "3AS1", birth_date: "2006-01-09", photo_url: "" },
-  ].map((student) => ({ ...student, full_name: `${student.first_name} ${student.last_name}` }));
+  const PREVIEW_STUDENT = {
+    student_nin: "",
+    first_name: "اسم",
+    last_name: "التلميذ",
+    class_group: "القسم",
+    birth_date: "",
+    photo_url: "",
+    full_name: "اسم التلميذ",
+  };
 
   const state = {
     mode: "cards",
@@ -142,7 +145,8 @@
     const accent = safeColor(c.accent_color, "#0e7c66");
     const header = safeColor(c.header_color, "#0b3b31");
     const nin = student.student_nin || "";
-    const safeNin = escape(nin);
+    const hasNin = Boolean(nin);
+    const safeNin = escape(nin || "—");
     const barcodeUrl = `/api/barcode/${encodeURIComponent(nin)}`;
     const qrUrl = `/api/qr/${encodeURIComponent(nin)}`;
     const className = student.class_group || "بدون قسم";
@@ -181,14 +185,18 @@
             ${c.show_birth_date ? `<div class="pc-meta"><span>تاريخ الميلاد</span><b>${escape(birth)}</b></div>` : ""}
           </div>
           ${
-            c.show_qr
+            c.show_qr && hasNin
               ? `<div class="pc-qr" style="border-color:${escape(hexToRgba(accent, 0.28))}"><img src="${qrUrl}" alt="رمز QR"></div>`
               : ""
           }
         </div>
         <div class="pc-foot">
           <div class="pc-barcode">
-            <img src="${barcodeUrl}" alt="باركود ${safeNin}">
+            ${
+              hasNin
+                ? `<img src="${barcodeUrl}" alt="باركود ${safeNin}">`
+                : `<span style="font-size:6.5pt;color:#7a8a85">معاينة بدون باركود</span>`
+            }
             <span class="pc-nin">${safeNin}</span>
           </div>
           ${
@@ -209,7 +217,8 @@
     const accent = safeColor(c.accent_color, "#0e7c66");
     const header = safeColor(c.header_color, "#0b3b31");
     const nin = student.student_nin || "";
-    const safeNin = escape(nin);
+    const hasNin = Boolean(nin);
+    const safeNin = escape(nin || "—");
     const logo = c.show_logo ? school.logo : "";
     return `
       <div class="preview-sticker" style="--pc-accent:${escape(accent)};--pc-header:${escape(header)}">
@@ -219,7 +228,11 @@
         </div>
         <strong>${escape(studentName(student))}</strong>
         <span class="st-class">${escape(student.class_group || "بدون قسم")}</span>
-        <img class="st-barcode" src="/api/barcode/${encodeURIComponent(nin)}" alt="باركود ${safeNin}">
+        ${
+          hasNin
+            ? `<img class="st-barcode" src="/api/barcode/${encodeURIComponent(nin)}" alt="باركود ${safeNin}">`
+            : `<span style="font-size:7pt;color:#7a8a85">معاينة بدون باركود</span>`
+        }
         <span class="st-nin">${safeNin}</span>
       </div>`;
   }
@@ -228,14 +241,18 @@
     const c = state.config;
     const demo = isDemo();
     if (state.mode === "cards") {
-      const student = state.students[0] || DEMO_STUDENTS[0];
+      const student = state.students[0] || PREVIEW_STUDENT;
       els.preview.innerHTML = `<div class="preview-card-shell">${cardMarkup(student)}</div>`;
-      els.previewLabel.textContent = A.t(`${demo ? "معاينة توضيحية — " : ""}CR80 · 85.6 × 54 مم · ${c.card_layout} بطاقات في صفحة A4`);
+      els.previewLabel.textContent = A.t(
+        `${demo ? "معاينة تصميم بدون باركود — " : ""}CR80 · 85.6 × 54 مم · ${c.card_layout} بطاقات في صفحة A4`
+      );
     } else {
-      const students = demo ? DEMO_STUDENTS.slice(0, 4) : state.students.slice(0, 4);
+      const students = demo ? [PREVIEW_STUDENT] : state.students.slice(0, 4);
       els.preview.innerHTML = `<div class="preview-sticker-wrap">${students.map(stickerMarkup).join("")}</div>`;
       const height = c.sticker_layout === 30 ? "27" : "34";
-      els.previewLabel.textContent = A.t(`${demo ? "معاينة توضيحية — " : ""}ملصق 65 × ${height} مم · ${c.sticker_layout} ملصقًا في صفحة A4`);
+      els.previewLabel.textContent = A.t(
+        `${demo ? "معاينة تصميم بدون باركود — " : ""}ملصق 65 × ${height} مم · ${c.sticker_layout} ملصقًا في صفحة A4`
+      );
     }
   }
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import sqlite3
 import threading
 from datetime import date, datetime, time
@@ -22,6 +23,98 @@ from ..utils import (
 # All attendance writes funnel through this lock (gate scans, period closing, excuses).
 # It keeps the read-then-write anti-passback/upsert logic atomic inside one process.
 _ATTENDANCE_WRITE_LOCK = threading.RLock()
+
+# USB scanners occasionally prepend an AIM symbology identifier (e.g. "]C1") or
+# control characters, and some cards were printed from the old print-studio
+# preview with fake all-zero IDs. Detect both so the gate can explain the scan.
+_AIM_PREFIX_RE = re.compile(r"^\]\^?[A-Za-z0-9]{2}")
+_CONTROL_CHARS_RE = re.compile(r"[\x00-\x1f\x7f]")
+_PREVIEW_NIN_RE = re.compile(r"^0{12,}\d{0,6}$")
+_PARTIAL_MATCH_MIN = 8
+_PARTIAL_MATCH_MAX_EXTRA = 4
+
+
+def _scan_candidates(raw_code: Any) -> list[str]:
+    normalized = normalize_nin(raw_code)
+    cleaned = _CONTROL_CHARS_RE.sub("", normalized).strip("*")
+    stripped = _AIM_PREFIX_RE.sub("", cleaned)
+    candidates: list[str] = []
+    for value in (stripped, cleaned, normalized):
+        if value and value not in candidates:
+            candidates.append(value)
+    return candidates
+
+
+def _resolve_student(
+    conn: sqlite3.Connection, candidates: list[str]
+) -> tuple[sqlite3.Row | None, str, str]:
+    for candidate in candidates:
+        row = conn.execute(
+            "SELECT * FROM students WHERE student_nin = ?", (candidate,)
+        ).fetchone()
+        if row:
+            return row, candidate, "exact"
+    for candidate in candidates:
+        if len(candidate) < _PARTIAL_MATCH_MIN:
+            continue
+        matches = []
+        for row in conn.execute("SELECT * FROM students").fetchall():
+            nin = row["student_nin"]
+            extra = abs(len(candidate) - len(nin))
+            if extra == 0 or extra > _PARTIAL_MATCH_MAX_EXTRA:
+                continue
+            if len(candidate) > len(nin):
+                matched = candidate.startswith(nin) or candidate.endswith(nin)
+            else:
+                matched = (nin.startswith(candidate) or nin.endswith(candidate)) and extra <= 2
+            if matched:
+                matches.append(row)
+        if len(matches) == 1:
+            row = matches[0]
+            return row, row["student_nin"], "recovered"
+    return None, candidates[0] if candidates else "", "none"
+
+
+def _edit_distance(left: str, right: str, limit: int = 2) -> int:
+    if abs(len(left) - len(right)) > limit:
+        return limit + 1
+    previous = list(range(len(right) + 1))
+    for row_index, left_char in enumerate(left, 1):
+        current = [row_index]
+        row_min = row_index
+        for column_index, right_char in enumerate(right, 1):
+            value = min(
+                previous[column_index] + 1,
+                current[column_index - 1] + 1,
+                previous[column_index - 1] + (left_char != right_char),
+            )
+            current.append(value)
+            row_min = min(row_min, value)
+        if row_min > limit:
+            return limit + 1
+        previous = current
+    return previous[-1]
+
+
+def _near_matches(
+    conn: sqlite3.Connection, code: str, limit: int = 3
+) -> list[dict[str, Any]]:
+    if len(code) < 6:
+        return []
+    rows = conn.execute("SELECT * FROM students WHERE is_active = 1").fetchall()
+    ranked = []
+    for row in rows:
+        nin = row["student_nin"]
+        distance = _edit_distance(code, nin)
+        suffix = 0
+        for left, right in zip(reversed(code), reversed(nin)):
+            if left != right:
+                break
+            suffix += 1
+        if distance <= 2 or suffix >= 8:
+            ranked.append((distance, -suffix, row))
+    ranked.sort(key=lambda item: (item[0], item[1]))
+    return [student_public(row) for _, _, row in ranked[:limit]]
 
 
 def period_public(row: sqlite3.Row | dict) -> dict[str, Any]:
@@ -246,6 +339,10 @@ def _scan_base(
         "action": "",
         "flash": "error",
         "message": "",
+        "scanned_code": "",
+        "lookup": "none",
+        "lookup_note": "",
+        "suggestions": [],
         "student": student,
         "period": period,
         "attendance": None,
@@ -269,8 +366,9 @@ def scan_student(
 ) -> dict[str, Any]:
     at = now or datetime.now()
     day_iso = at.date().isoformat()
-    code = normalize_nin(raw_code)
-    if not code:
+    candidates = _scan_candidates(raw_code)
+    display_code = candidates[0] if candidates else ""
+    if not display_code:
         raise ValidationError("الباركود فارغ أو غير صالح.")
 
     period = choose_period(conn, period_id, require_active=True)
@@ -278,20 +376,40 @@ def scan_student(
         raise ValidationError("لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.")
 
     with _ATTENDANCE_WRITE_LOCK:
-        student_row = conn.execute(
-            "SELECT * FROM students WHERE student_nin = ?", (code,)
-        ).fetchone()
+        student_row, code, lookup = _resolve_student(conn, candidates)
         closure = get_closure(conn, period["id"], day_iso)
         base = _scan_base(student_public(student_row) if student_row else None, period, at)
+        base["scanned_code"] = display_code
+        base["lookup"] = lookup
         base["closure"] = closure_public(closure)
 
         if not student_row:
-            base.update(
-                action="not_found",
-                flash="error",
-                message=f"الباركود «{code}» غير مسجل في قاعدة البيانات.",
-            )
+            if _PREVIEW_NIN_RE.match(display_code):
+                base.update(
+                    action="preview_card",
+                    flash="warning",
+                    message=(
+                        "هذه بطاقة معاينة تجريبية من استوديو الطباعة، وليست بطاقة تلميذ حقيقي. "
+                        "افتح استوديو الطباعة، اختر التلميذ الفعلي، ثم اطبع بطاقته من جديد."
+                    ),
+                )
+            else:
+                base.update(
+                    action="not_found",
+                    flash="error",
+                    message=(
+                        f"الباركود «{display_code}» غير مسجل في قاعدة البيانات. "
+                        "تحقق من آخر أرقام الرمز في قائمة التلاميذ أو أعد طباعة البطاقة من التلميذ الصحيح."
+                    ),
+                    suggestions=_near_matches(conn, display_code),
+                )
             return _finalize_scan(conn, base, period["id"], day_iso, None)
+
+        if lookup == "recovered":
+            base["lookup_note"] = (
+                f"تم التعرف على البطاقة تلقائيًا رغم وجود أحرف زائدة في القراءة، "
+                f"ورقم التعريف هو {code}."
+            )
 
         student = student_public(student_row)
         if not student["is_active"]:

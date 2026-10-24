@@ -863,6 +863,13 @@ def gate_scan_api():
         period_id=period_id,
         anti_passback_minutes=int_setting(settings, "anti_passback_minutes", 5, 1, 60),
     )
+    if result["action"] in ("not_found", "preview_card"):
+        current_app.logger.info(
+            "Gate scan unrecognized: action=%s code=%r lookup=%s",
+            result["action"],
+            result.get("scanned_code"),
+            result.get("lookup"),
+        )
     result["server_time"] = datetime.now().strftime("%H:%M:%S")
     return ok(**result)
 

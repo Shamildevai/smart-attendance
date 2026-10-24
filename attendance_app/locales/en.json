@@ -346,6 +346,14 @@
     "مسجل مسبقًا": "Already recorded",
     "غير نشط": "Inactive",
     "باركود غير مسجل": "Unregistered barcode",
+    "بطاقة معاينة": "Preview card",
+    "بطاقة معاينة تجريبية": "Sample preview card",
+    "هذه بطاقة معاينة تجريبية من استوديو الطباعة، وليست بطاقة تلميذ حقيقي. افتح استوديو الطباعة، اختر التلميذ الفعلي، ثم اطبع بطاقته من جديد.": "This is a sample print-studio preview card, not a real student card. Open Print Studio, select the actual student, and print the card again.",
+    "معاينة بدون باركود": "Preview without barcode",
+    "بحث في التلاميذ": "Search students",
+    "قائمة التلاميذ": "Student list",
+    "هل تقصد أحد هؤلاء التلاميذ؟": "Did you mean one of these students?",
+    "لم يُسجَّل أي حضور. افتح ملف التلميذ الصحيح ثم أعد المسح أو سجّل الحضور يدويًا.": "No attendance was recorded. Open the correct student profile, then scan again or record attendance manually.",
     "وقت التسجيل": "Check-in time",
     "حضور اليوم": "Today's attendance",
     "مسح تالٍ": "Next scan",
@@ -1166,6 +1174,26 @@
     {
       "ar": "يتم عرض أول {0} من {1} فقط. صحح الملف ثم أعد التحليل لرؤية الباقي.",
       "tr": "Only the first {0} of {1} are shown. Fix the file and re-run the analysis to see the rest."
+    },
+    {
+      "ar": "الرمز المقروء: {0}",
+      "tr": "Scanned code: {0}"
+    },
+    {
+      "ar": "الباركود «{0}» غير مسجل في قاعدة البيانات. تحقق من آخر أرقام الرمز في قائمة التلاميذ أو أعد طباعة البطاقة من التلميذ الصحيح.",
+      "tr": "Barcode “{0}” is not registered in the database. Check the last digits in the student list or reprint the card from the correct student."
+    },
+    {
+      "ar": "تم التعرف على البطاقة تلقائيًا رغم وجود أحرف زائدة في القراءة، ورقم التعريف هو {0}.",
+      "tr": "The card was recognized automatically despite extra characters in the scan. The ID number is {0}."
+    },
+    {
+      "ar": "معاينة تصميم بدون باركود — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
+      "tr": "Design preview without barcode — CR80 · 85.6 × 54 mm · {0} cards on an A4 page"
+    },
+    {
+      "ar": "معاينة تصميم بدون باركود — ملصق 65 × {0} مم · {1} ملصقًا في صفحة A4",
+      "tr": "Design preview without barcode — 65 × {0} mm sticker · {1} stickers on an A4 page"
     },
     {
       "ar": "معاينة توضيحية — CR80 · 85.6 × 54 مم · {0} بطاقات في صفحة A4",
