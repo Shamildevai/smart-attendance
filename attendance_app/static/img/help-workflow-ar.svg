@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1160" viewBox="0 0 1600 1160" xml:lang="ar" font-family="Cairo, 'Segoe UI', Tahoma, Arial, sans-serif">
+  <defs>
+    <filter id="cardShadow" x="-12%" y="-12%" width="124%" height="132%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0e2c24" flood-opacity="0.08"/>
+    </filter>
+    <linearGradient id="phoneFrame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e3b32"/>
+      <stop offset="1" stop-color="#071f1a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="1160" rx="34" fill="#f3f8f6"/>
+  <circle cx="1540" cy="40" r="150" fill="#e0f3ed" opacity="0.55"/>
+  <circle cx="60" cy="1120" r="180" fill="#fbf0df" opacity="0.55"/>
+
+  <!-- Header -->
+  <rect x="1372" y="40" width="148" height="34" rx="17" fill="#e0f3ed"/>
+  <text x="1446" y="63" text-anchor="middle" font-size="15" font-weight="700" fill="#0e7c66">دليل مصوّر</text>
+  <text x="1520" y="126" text-anchor="end" font-size="38" font-weight="800" fill="#10211c">من البطاقة إلى هاتف ولي الأمر</text>
+  <text x="1520" y="166" text-anchor="end" font-size="19" fill="#48615a">خمس خطوات لتسجيل الحضور وإرسال رسالة واضحة إلى الأولياء.</text>
+
+  <!-- Step 1 -->
+  <g transform="translate(1288,208)">
+    <rect width="272" height="268" rx="22" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="196" y="20" width="52" height="52" rx="16" fill="#e0f3ed"/>
+    <g transform="translate(222,46)" stroke="#0e7c66" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="-6" cy="-7" r="5.5"/>
+      <path d="M-17 13c0-6 5-10 11-10s11 4 11 10"/>
+      <circle cx="9" cy="-4" r="4"/>
+      <path d="M17 12c0-4-3-7-7-7"/>
+    </g>
+    <text x="170" y="45" text-anchor="end" font-size="15" font-weight="700" fill="#0e7c66">الخطوة 1</text>
+    <text x="248" y="113" text-anchor="end" font-size="23" font-weight="700" fill="#10211c">جهّز المؤسسة</text>
+    <text x="248" y="153" text-anchor="end" font-size="18" fill="#48615a">أدخل اسم المؤسسة والسنة</text>
+    <text x="248" y="182" text-anchor="end" font-size="18" fill="#48615a">الدراسية، وأضف الفترات</text>
+    <text x="248" y="211" text-anchor="end" font-size="18" fill="#48615a">وحدد أوقات الدوام.</text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(976,208)">
+    <rect width="272" height="268" rx="22" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="196" y="20" width="52" height="52" rx="16" fill="#e8f1fb"/>
+    <g transform="translate(222,46)" stroke="#2f71b7" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="-12" y="-1" width="24" height="13" rx="3"/>
+      <path d="M-7 -1v-9h14v9M-8 12v6h16v-6"/>
+      <path d="M-12 5h-3v6h3"/>
+    </g>
+    <text x="170" y="45" text-anchor="end" font-size="15" font-weight="700" fill="#2f71b7">الخطوة 2</text>
+    <text x="248" y="113" text-anchor="end" font-size="23" font-weight="700" fill="#10211c">أضف التلاميذ</text>
+    <text x="248" y="153" text-anchor="end" font-size="18" fill="#48615a">استورد قائمة XLS أو XLSX</text>
+    <text x="248" y="182" text-anchor="end" font-size="18" fill="#48615a">أو أضف التلاميذ يدويًا</text>
+    <text x="248" y="211" text-anchor="end" font-size="18" fill="#48615a">مع أرقام هواتف الأولياء.</text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(664,208)">
+    <rect width="272" height="268" rx="22" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="196" y="20" width="52" height="52" rx="16" fill="#fbf0df"/>
+    <g transform="translate(222,46)" stroke="#d98a2b" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-12 -11v22M-8 -11v22M-2 -11v17M3 -11v22M8 -11v17M12 -11v22"/>
+      <path d="M-16 -16h6M-16 16h6M10 -16h6M10 16h6"/>
+    </g>
+    <text x="170" y="45" text-anchor="end" font-size="15" font-weight="700" fill="#d98a2b">الخطوة 3</text>
+    <text x="248" y="113" text-anchor="end" font-size="23" font-weight="700" fill="#10211c">اطبع البطاقات</text>
+    <text x="248" y="153" text-anchor="end" font-size="18" fill="#48615a">اختر القسم ونوع البطاقة</text>
+    <text x="248" y="182" text-anchor="end" font-size="18" fill="#48615a">ثم اطبع بطاقات الباركود</text>
+    <text x="248" y="211" text-anchor="end" font-size="18" fill="#48615a">أو ملصقات التعريف.</text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(352,208)">
+    <rect width="272" height="268" rx="22" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="196" y="20" width="52" height="52" rx="16" fill="#f0ebfa"/>
+    <g transform="translate(222,46)" stroke="#7b5cc4" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-14 -10h15M-14 0h15M-14 10h9"/>
+      <circle cx="9" cy="9" r="6"/>
+      <path d="M6 9l2.4 2.4L12.5 6.5"/>
+    </g>
+    <text x="170" y="45" text-anchor="end" font-size="15" font-weight="700" fill="#7b5cc4">الخطوة 4</text>
+    <text x="248" y="113" text-anchor="end" font-size="23" font-weight="700" fill="#10211c">امسح وسجّل</text>
+    <text x="248" y="153" text-anchor="end" font-size="18" fill="#48615a">امسح البطاقة بماسح USB</text>
+    <text x="248" y="182" text-anchor="end" font-size="18" fill="#48615a">أو بكاميرا الجهاز. يسجل</text>
+    <text x="248" y="211" text-anchor="end" font-size="18" fill="#48615a">النظام الحضور فورًا.</text>
+  </g>
+
+  <!-- Step 5 -->
+  <g transform="translate(40,208)">
+    <rect width="272" height="268" rx="22" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <rect x="196" y="20" width="52" height="52" rx="16" fill="#e0f5eb"/>
+    <g transform="translate(222,46)" stroke="#168a60" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-14 -10h25a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-12l-8 6v-6h-5a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3Z"/>
+      <path d="M-6 -2h14M-6 4h9"/>
+    </g>
+    <text x="170" y="45" text-anchor="end" font-size="15" font-weight="700" fill="#168a60">الخطوة 5</text>
+    <text x="248" y="113" text-anchor="end" font-size="23" font-weight="700" fill="#10211c">أرسل وأتابع</text>
+    <text x="248" y="153" text-anchor="end" font-size="18" fill="#48615a">راجع الغياب وأرسل الرسائل</text>
+    <text x="248" y="182" text-anchor="end" font-size="18" fill="#48615a">بعد موافقتك، ثم صدّر</text>
+    <text x="248" y="211" text-anchor="end" font-size="18" fill="#48615a">التقارير واطبعها.</text>
+  </g>
+
+  <!-- Flow arrows (RTL) -->
+  <g fill="none" stroke="#9cc7bb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1282 332l-20 10 20 10"/>
+    <path d="M970 332l-20 10 20 10"/>
+    <path d="M658 332l-20 10 20 10"/>
+    <path d="M346 332l-20 10 20 10"/>
+  </g>
+
+  <!-- Phone mockup -->
+  <g transform="translate(90,540)">
+    <rect width="352" height="574" rx="44" fill="url(#phoneFrame)" filter="url(#cardShadow)"/>
+    <rect x="10" y="10" width="332" height="554" rx="35" fill="#f7fbf9"/>
+    <rect x="136" y="20" width="80" height="9" rx="4.5" fill="#0a3029"/>
+    <text x="30" y="46" font-size="13" font-weight="700" fill="#10211c" direction="ltr">9:41</text>
+    <g fill="#10211c" opacity="0.6">
+      <rect x="296" y="36" width="3" height="7" rx="1"/>
+      <rect x="301" y="33" width="3" height="10" rx="1"/>
+      <rect x="306" y="30" width="3" height="13" rx="1"/>
+      <rect x="313" y="34" width="10" height="8" rx="2"/>
+    </g>
+
+    <circle cx="300" cy="88" r="17" fill="#0e7c66"/>
+    <path d="M294 94v-5l4-4 3 3 4-6 3 4v8" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="276" y="85" text-anchor="end" font-size="15" font-weight="700" fill="#10211c">المؤسسة</text>
+    <text x="276" y="102" text-anchor="end" font-size="11" fill="#7a9089">رسائل SMS</text>
+
+    <line x1="26" y1="120" x2="326" y2="120" stroke="#e3ebe7" stroke-width="1.5"/>
+    <text x="176" y="144" text-anchor="middle" font-size="11" fill="#7a9089">اليوم · 08:15</text>
+
+    <text x="316" y="170" text-anchor="end" font-size="10.5" font-weight="600" fill="#7a9089">SMS · الآن</text>
+    <rect x="52" y="180" width="274" height="172" rx="17" fill="#ffffff" stroke="#e3ebe7" stroke-width="1.5"/>
+    <g text-anchor="end" font-size="14.5" fill="#24342f">
+      <text x="310" y="208">تعلـمكم إدارة مؤسسة الأمل</text>
+      <text x="310" y="232">أن التلميذ(ة) محمد — القسم الثاني</text>
+      <text x="310" y="256">قد تغيب عن الحصة الأولى</text>
+      <text x="310" y="280">ليوم &#x2066;2026-10-25&#x2069;.</text>
+      <text x="310" y="304">يرجى التقرب من الإدارة</text>
+      <text x="310" y="328">لتبرير الغياب.</text>
+    </g>
+
+    <text x="316" y="376" text-anchor="end" font-size="10.5" font-weight="600" fill="#168a60">WhatsApp · الآن</text>
+    <rect x="52" y="386" width="274" height="72" rx="17" fill="#d9fdd3" stroke="#bfe9b4" stroke-width="1.5"/>
+    <g text-anchor="end" font-size="14.5" fill="#1d3b2a">
+      <text x="310" y="414">حضور مؤكد — الحصة الأولى 08:15</text>
+      <text x="310" y="438">شكرًا لتعاونكم.</text>
+    </g>
+
+    <rect x="30" y="500" width="292" height="36" rx="18" fill="#e9f1ee"/>
+    <text x="306" y="523" text-anchor="end" font-size="12" fill="#7a9089">اكتب رسالة…</text>
+    <circle cx="44" cy="518" r="13" fill="#0e7c66"/>
+    <path d="M48 518H38M42 513l-5 5 5 5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="126" y="552" width="100" height="4" rx="2" fill="#0a3029" opacity="0.22"/>
+  </g>
+
+  <!-- Right-hand explanation -->
+  <text x="1520" y="580" text-anchor="end" font-size="14" font-weight="700" fill="#0e7c66">مثال الرسالة</text>
+  <text x="1520" y="620" text-anchor="end" font-size="30" font-weight="800" fill="#10211c">رسالة تصل إلى هاتف ولي الأمر</text>
+  <text x="1520" y="654" text-anchor="end" font-size="18" fill="#48615a">نص واضح يتضمن اسم التلميذ والقسم والفترة والتاريخ،</text>
+  <text x="1520" y="681" text-anchor="end" font-size="18" fill="#48615a">ويُرسل عبر القناة التي تختارها من مركز الرسائل.</text>
+
+  <!-- Message variable tiles -->
+  <g>
+    <rect x="1280" y="706" width="240" height="70" rx="16" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <text x="1496" y="732" text-anchor="end" font-size="14" fill="#7a9089">اسم التلميذ</text>
+    <text x="1496" y="759" text-anchor="end" font-size="20" font-weight="700" fill="#10211c">محمد</text>
+
+    <rect x="1024" y="706" width="240" height="70" rx="16" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <text x="1240" y="732" text-anchor="end" font-size="14" fill="#7a9089">القسم</text>
+    <text x="1240" y="759" text-anchor="end" font-size="20" font-weight="700" fill="#10211c">الثاني</text>
+
+    <rect x="768" y="706" width="240" height="70" rx="16" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <text x="984" y="732" text-anchor="end" font-size="14" fill="#7a9089">الفترة</text>
+    <text x="984" y="759" text-anchor="end" font-size="20" font-weight="700" fill="#10211c">الحصة الأولى</text>
+
+    <rect x="512" y="706" width="240" height="70" rx="16" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <text x="728" y="732" text-anchor="end" font-size="14" fill="#7a9089">التاريخ</text>
+    <text x="728" y="759" text-anchor="end" font-size="20" font-weight="700" fill="#10211c" direction="ltr">2026-10-25</text>
+  </g>
+
+  <text x="1520" y="824" text-anchor="end" font-size="20" font-weight="700" fill="#10211c">ثلاث قنوات إرسال</text>
+
+  <g>
+    <rect x="1196" y="842" width="324" height="118" rx="18" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <circle cx="1488" cy="872" r="8" fill="#0e7c66"/>
+    <text x="1468" y="877" text-anchor="end" font-size="17" font-weight="700" fill="#10211c">SMS عبر الهاتف</text>
+    <text x="1496" y="904" text-anchor="end" font-size="14.5" fill="#48615a">تطبيق البوابة على نفس شبكة Wi-Fi،</text>
+    <text x="1496" y="928" text-anchor="end" font-size="14.5" fill="#48615a">مع اقتران برمز من 4 أرقام.</text>
+
+    <rect x="848" y="842" width="324" height="118" rx="18" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <circle cx="1140" cy="872" r="8" fill="#2f71b7"/>
+    <text x="1120" y="877" text-anchor="end" font-size="17" font-weight="700" fill="#10211c">SMS سحابي</text>
+    <text x="1148" y="904" text-anchor="end" font-size="14.5" fill="#48615a">رابط مزوّد SMS ومفتاحه</text>
+    <text x="1148" y="928" text-anchor="end" font-size="14.5" fill="#48615a">من إعدادات الرسائل.</text>
+
+    <rect x="500" y="842" width="324" height="118" rx="18" fill="#ffffff" stroke="#dbe8e3" stroke-width="1.5"/>
+    <circle cx="792" cy="872" r="8" fill="#168a60"/>
+    <text x="772" y="877" text-anchor="end" font-size="17" font-weight="700" fill="#10211c">واتساب</text>
+    <text x="800" y="904" text-anchor="end" font-size="14.5" fill="#48615a">يدوي عبر واتساب لسطح المكتب،</text>
+    <text x="800" y="928" text-anchor="end" font-size="14.5" fill="#48615a">أو تلقائي عبر Meta Cloud API.</text>
+  </g>
+
+  <!-- Approval note -->
+  <rect x="500" y="982" width="1020" height="78" rx="18" fill="#fdf2df" stroke="#f0d9b0" stroke-width="1.5"/>
+  <circle cx="1486" cy="1021" r="17" fill="#f3d9a8"/>
+  <path d="M1480 1021v-6a6 6 0 0 1 12 0v6M1478 1021h16v11h-16Z" fill="none" stroke="#8a5a12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1452" y="1017" text-anchor="end" font-size="17" font-weight="700" fill="#6f4a0e">لا تُرسل أي رسالة قبل موافقتك الصريحة.</text>
+  <text x="1452" y="1043" text-anchor="end" font-size="14.5" fill="#8a6420">وضع الاختبار مفعّل افتراضيًا: يحاكي الإرسال دون استهلاك رصيد.</text>
+
+  <text x="1520" y="1132" text-anchor="end" font-size="13" fill="#7a9089">نظام متابعة الحضور — البيانات محفوظة على جهازك</text>
+  <text x="40" y="1132" text-anchor="start" font-size="13" fill="#7a9089">دليل الاستخدام</text>
+</svg>

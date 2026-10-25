@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="help-layout" dir="rtl" lang="ar">
+  {% if lang == 'en' %}
+  <div class="info-banner">
+    <svg class="ico"><use href="#i-info"></use></svg>
+    <div>
+      <strong>This guide is available in Arabic.</strong>
+      <p>The diagrams and message examples are in Arabic to match the school's working language.</p>
+    </div>
+  </div>
+  {% elif lang == 'fr' %}
+  <div class="info-banner">
+    <svg class="ico"><use href="#i-info"></use></svg>
+    <div>
+      <strong>Ce guide est disponible en arabe.</strong>
+      <p>Les schémas et les exemples de messages sont en arabe, la langue de travail de l'établissement.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <section class="card help-hero">
+    <div class="help-hero-icon" aria-hidden="true">
+      <svg class="ico"><use href="#i-help"></use></svg>
+    </div>
+    <div class="help-hero-text">
+      <span class="chip is-accent">
+        <svg class="ico"><use href="#i-sparkle"></use></svg>
+        <span>دليل عملي</span>
+      </span>
+      <h2>من البطاقة إلى هاتف ولي الأمر</h2>
+      <p>
+        يشرح هذا الدليل دورة العمل الكاملة: تجهيز المؤسسة، إضافة التلاميذ، طباعة البطاقات،
+        تسجيل الحضور بالباركود، ثم إرسال رسالة واضحة إلى ولي الأمر بعد موافقتك.
+      </p>
+      <div class="help-hero-actions">
+        <a class="btn btn-primary" href="{{ url_for('views.gate_page') }}">
+          <svg class="ico"><use href="#i-scan"></use></svg>
+          <span>فتح بوابة المسح</span>
+        </a>
+        <a class="btn btn-secondary" href="{{ url_for('views.messages_page') }}">
+          <svg class="ico"><use href="#i-message"></use></svg>
+          <span>مركز الرسائل</span>
+        </a>
+        {% if is_admin %}
+        <a class="btn btn-secondary" href="{{ url_for('views.settings_page') }}">
+          <svg class="ico"><use href="#i-settings"></use></svg>
+          <span>الإعدادات</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="help-hero-meta">
+      <span class="chip"><svg class="ico"><use href="#i-wifi"></use></svg> يعمل دون إنترنت</span>
+      <span class="chip"><svg class="ico"><use href="#i-database"></use></svg> البيانات على جهازك</span>
+      <span class="chip"><svg class="ico"><use href="#i-shield-check"></use></svg> إرسال بموافقة صريحة</span>
+    </div>
+  </section>
+
+  <figure class="card help-figure-card">
+    <div class="card-header">
+      <div class="help-card-heading">
+        <svg class="ico"><use href="#i-eye"></use></svg>
+        <div>
+          <h2>خريطة سير العمل</h2>
+          <p>الخطوات الخمس، ومثال الرسالة التي تصل إلى هاتف ولي الأمر، وقنوات الإرسال الثلاث.</p>
+        </div>
+      </div>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('static', filename='img/help-workflow-ar.svg') }}" target="_blank" rel="noopener">
+        <svg class="ico"><use href="#i-eye"></use></svg>
+        <span>فتح الصورة بحجم كامل</span>
+      </a>
+    </div>
+    <div class="help-figure-body">
+      <img
+        class="help-figure"
+        src="{{ url_for('static', filename='img/help-workflow-ar.svg') }}"
+        alt="مخطط يوضح خطوات إضافة التلاميذ وطباعة البطاقات ومسح الباركود ثم إرسال رسالة SMS أو واتساب إلى هاتف ولي الأمر"
+        width="1600"
+        height="1160"
+        loading="lazy">
+    </div>
+    <figcaption class="help-figure-caption">
+      <svg class="ico"><use href="#i-info"></use></svg>
+      <span>مثال الرسالة تعليمي فقط. يعتمد النص الفعلي على القالب الذي تضبطه في الإعدادات وعلى حالة التلميذ.</span>
+    </figcaption>
+  </figure>
+
+  <section class="help-steps" aria-label="خطوات التشغيل">
+    <div class="section-title">
+      <h2>خطوات التشغيل بالتفصيل</h2>
+      <p>ابدأ بالخطوة الأولى، أو انتقل مباشرة إلى ما تحتاجه.</p>
+    </div>
+    <div class="help-step-grid">
+      <article class="card help-step">
+        <div class="help-step-top">
+          <span class="help-step-num">1</span>
+          <span class="help-step-icon"><svg class="ico"><use href="#i-settings"></use></svg></span>
+        </div>
+        <h3>جهّز المؤسسة والفترات</h3>
+        <p>من الإعدادات أدخل اسم المؤسسة والسنة الدراسية واسم المدير، ثم أضف الفترات الدراسية وحدد أوقاتها.</p>
+        <ul>
+          <li>ارفع الشعار والختم لاستخدامهما في البطاقات والتقارير.</li>
+          <li>حدد فترة نشطة واحدة على الأقل قبل بدء المسح.</li>
+        </ul>
+        {% if is_admin %}
+        <a class="help-step-link" href="{{ url_for('views.settings_page') }}">
+          <span>فتح الإعدادات</span>
+          <svg class="ico"><use href="#i-arrow-left"></use></svg>
+        </a>
+        {% endif %}
+      </article>
+
+      <article class="card help-step">
+        <div class="help-step-top">
+          <span class="help-step-num">2</span>
+          <span class="help-step-icon is-info"><svg class="ico"><use href="#i-users"></use></svg></span>
+        </div>
+        <h3>أضف التلاميذ وأرقام الأولياء</h3>
+        <p>استورد قائمة XLS أو XLSX أو HTML مع ربط الأعمدة، أو أضف التلميذ يدويًا. تأكد من رقم هاتف الولي.</p>
+        <ul>
+          <li>يُقبل الرقم المحلي أو الدولي من 8 إلى 15 رقمًا.</li>
+          <li>رقم التعريف والباركود يُنشآن تلقائيًا عند الحاجة.</li>
+        </ul>
+        <div class="help-step-links">
+          <a class="help-step-link" href="{{ url_for('views.import_page') }}"><span>الاستيراد الذكي</span><svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+          <a class="help-step-link" href="{{ url_for('views.students_page') }}"><span>التلاميذ</span><svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+        </div>
+      </article>
+
+      <article class="card help-step">
+        <div class="help-step-top">
+          <span class="help-step-num">3</span>
+          <span class="help-step-icon is-accent"><svg class="ico"><use href="#i-printer"></use></svg></span>
+        </div>
+        <h3>اطبع بطاقات الباركود</h3>
+        <p>من استوديو الطباعة اختر القسم ونوع البطاقة، عاين النموذج، ثم اطبع البطاقات أو ملصقات التعريف.</p>
+        <ul>
+          <li>كل تلميذ يحصل على باركود أو رمز QR خاص به.</li>
+          <li>جرّب مسح بطاقة واحدة قبل طباعة القسم كاملًا.</li>
+        </ul>
+        <a class="help-step-link" href="{{ url_for('views.print_studio_page') }}">
+          <span>استوديو الطباعة</span>
+          <svg class="ico"><use href="#i-arrow-left"></use></svg>
+        </a>
+      </article>
+
+      <article class="card help-step">
+        <div class="help-step-top">
+          <span class="help-step-num">4</span>
+          <span class="help-step-icon is-purple"><svg class="ico"><use href="#i-scan"></use></svg></span>
+        </div>
+        <h3>سجّل الحضور بالمسح</h3>
+        <p>افتح بوابة المسح وامسح بطاقة التلميذ بماسح USB أو بكاميرا الجهاز. يسجل النظام الحضور في الفترة النشطة فورًا.</p>
+        <ul>
+          <li>اختصار F2 يفتح بوابة المسح من أي صفحة.</li>
+          <li>يمنع النظام التسجيل المزدوج لنفس التلميذ في الفترة نفسها.</li>
+        </ul>
+        <a class="help-step-link" href="{{ url_for('views.gate_page') }}">
+          <span>فتح بوابة المسح</span>
+          <svg class="ico"><use href="#i-arrow-left"></use></svg>
+        </a>
+      </article>
+
+      <article class="card help-step">
+        <div class="help-step-top">
+          <span class="help-step-num">5</span>
+          <span class="help-step-icon"><svg class="ico"><use href="#i-list"></use></svg></span>
+        </div>
+        <h3>راجع الغياب وبرّره</h3>
+        <p>أغلق الفترة ليرصد النظام الغائبين، ثم راجع سجل الحضور وبرّر الغيابات المقبولة، وصدّر التقارير.</p>
+        <ul>
+          <li>تقرير يومي وتقرير شهري جاهزان للطباعة أو PDF.</li>
+          <li>يمكن تصدير البيانات إلى ملف Excel.</li>
+        </ul>
+        <div class="help-step-links">
+          <a class="help-step-link" href="{{ url_for('views.attendance_page') }}"><span>سجل الحضور</span><svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+          <a class="help-step-link" href="{{ url_for('views.reports_page') }}"><span>التقارير</span><svg class="ico"><use href="#i-arrow-left"></use></svg></a>
+        </div>
+      </article>
+
+      <article class="card help-step">
+        <div class="help-step-top">
+          <span class="help-step-num">6</span>
+          <span class="help-step-icon is-success"><svg class="ico"><use href="#i-message"></use></svg></span>
+        </div>
+        <h3>أرسل الرسائل إلى الأولياء</h3>
+        <p>من مركز الرسائل اختر النطاق: كل التلاميذ أو قسمًا أو تلاميذ محددين، ثم اختر القناة وراجع المعاينة وأكّد الإرسال.</p>
+        <ul>
+          <li>لا تُرسل أي رسالة قبل موافقتك الصريحة.</li>
+          <li>وضع الاختبار يحاكي الإرسال دون استهلاك رصيد.</li>
+        </ul>
+        <a class="help-step-link" href="{{ url_for('views.messages_page') }}">
+          <span>مركز الرسائل</span>
+          <svg class="ico"><use href="#i-arrow-left"></use></svg>
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <section class="help-messaging" aria-label="إعداد الرسائل">
+    <article class="card help-channels-card">
+      <div class="card-header">
+        <div class="help-card-heading">
+          <svg class="ico"><use href="#i-phone"></use></svg>
+          <div>
+            <h2>قنوات إرسال الرسائل</h2>
+            <p>اختر القناة المناسبة لبيئة المؤسسة.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body help-channel-list">
+        <div class="help-channel">
+          <span class="help-channel-icon"><svg class="ico"><use href="#i-phone"></use></svg></span>
+          <div>
+            <h3>SMS عبر الهاتف <span class="chip is-accent">الأكثر استعمالًا</span></h3>
+            <p>
+              ثبّت تطبيق بوابة الرسائل {{ gateway_app_version }} على هاتف أندرويد متصل بنفس شبكة Wi-Fi،
+              وافتح التطبيق ليظهر رمز اقتران من 4 أرقام. أدخل الرمز في الإعدادات ثم اضغط «اقتران»،
+              فيُحفظ مفتاح الاتصال تلقائيًا. ستظهر حالة الهاتف متصلة عندما يكون جاهزًا للإرسال.
+            </p>
+            <a class="inline-link" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">
+              تحميل تطبيق البوابة {{ gateway_app_version }}
+            </a>
+          </div>
+        </div>
+        <div class="help-channel">
+          <span class="help-channel-icon is-info"><svg class="ico"><use href="#i-dashboard"></use></svg></span>
+          <div>
+            <h3>SMS عبر الحاسوب أو السحابة</h3>
+            <p>
+              مناسب عند وجود مزوّد SMS يوفّر رابط واجهة API. أدخل رابط الواجهة والمفتاح في إعدادات
+              رسائل الأولياء، ثم استخدم زر الاختبار للتأكد من الاستجابة قبل الإرسال الجماعي.
+            </p>
+            {% if is_admin %}
+            <a class="inline-link" href="{{ url_for('views.settings_page') }}#settings-sms">ضبط القناة السحابية</a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="help-channel">
+          <span class="help-channel-icon is-whatsapp"><svg class="ico"><use href="#i-whatsapp"></use></svg></span>
+          <div>
+            <h3>واتساب</h3>
+            <p>
+              يدويًا: ثبّت واتساب لسطح المكتب، وسيفتح النظام محادثة جاهزة لكل ولي دون أن يرسل نيابة عنك.
+              أو تلقائيًا عبر Meta WhatsApp Cloud API بعد ضبط Phone number ID ورمز الوصول الدائم
+              والقالب المعتمد ولغته. يبقى الإرسال التلقائي خاضعًا لموافقتك في مركز الرسائل.
+            </p>
+            <div class="help-channel-links">
+              <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a>
+              {% if is_admin %}
+              <a class="inline-link" href="{{ url_for('views.settings_page') }}#settings-sms">إعدادات واتساب</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card help-template-card">
+      <div class="card-header">
+        <div class="help-card-heading">
+          <svg class="ico"><use href="#i-file"></use></svg>
+          <div>
+            <h2>قالب رسالة الغياب</h2>
+            <p>متغيّرات تُستبدل تلقائيًا لكل تلميذ.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="help-vars">
+          <code class="help-var">[اسم_المؤسسة]</code>
+          <code class="help-var">[اسم_التلميذ]</code>
+          <code class="help-var">[القسم]</code>
+          <code class="help-var">[اسم_الفترة]</code>
+          <code class="help-var">[التاريخ]</code>
+          <code class="help-var">[السنة_الدراسية]</code>
+        </div>
+        <blockquote class="help-template-quote">
+          تعلـمكم إدارة [اسم_المؤسسة] أن التلميذ(ة) [اسم_التلميذ] القسـم [القسم]
+          قد تغيب عن [اسم_الفترة] ليوم [التاريخ]. يرجى التقرب من الإدارة لتبرير الغياب.
+        </blockquote>
+        <p class="help-template-hint">
+          عدّل القالب من <strong>الإعدادات ← رسائل الأولياء</strong>. تظهر معاينة الرسالة قبل الإرسال،
+          ويمكنك اختيار نطاق المستلمين والقناة في كل مرة.
+        </p>
+      </div>
+    </article>
+  </section>
+
+  <section class="card help-faq" aria-label="الأسئلة الشائعة">
+    <div class="card-header">
+      <div class="help-card-heading">
+        <svg class="ico"><use href="#i-info"></use></svg>
+        <div>
+          <h2>أسئلة شائعة</h2>
+          <p>حلول سريعة للمشكلات المتكررة.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-body help-faq-list">
+      <details>
+        <summary>الهاتف يظهر «غير متصل» رغم أنه على الشبكة</summary>
+        <p>
+          تأكد من تشغيل تطبيق البوابة وتركه مفتوحًا، ومن أن الهاتف والحاسوب على شبكة Wi-Fi واحدة.
+          تحقق من عنوان البوابة في الإعدادات (مثل <span dir="ltr">http://192.168.1.4:8288/send</span>)
+          ومن أن المنفذ غير محجوب. استخدم زر فحص الاتصال بعد كل تغيير.
+        </p>
+      </details>
+      <details>
+        <summary>ظهرت رسالة «قناة الإرسال غير صالحة» عند اختبار SMS</summary>
+        <p>
+          كانت هذه المشكلة في الإصدارات السابقة عند اختبار الرسائل من الإعدادات، وتم إصلاحها في
+          الإصدار 1.1.9. حدّث التطبيق ثم أعد المحاولة. تأكد أيضًا من اختيار قناة صحيحة في مركز الرسائل.
+        </p>
+      </details>
+      <details>
+        <summary>لم تُرسل الرسالة إلى بعض الأولياء</summary>
+        <p>
+          راجع أن رقم الهاتف مسجل للتلميذ بصيغة صحيحة، وأن وضع الاختبار غير مفعّل إذا أردت إرسالًا حقيقيًا،
+          وأنك أكّدت الإرسال صراحةً. في قناة الهاتف تحقق من حالة الاتصال والرصيد، وفي القناة السحابية
+          راجع استجابة المزوّد.
+        </p>
+      </details>
+      <details>
+        <summary>أين تُحفظ بيانات المؤسسة؟</summary>
+        <p>
+          تُحفظ قاعدة البيانات والصور والسجلات في مجلد البيانات المحلي. في النسخة المحمولة يوجد
+          المجلد بجانب ملف التشغيل، وفي النسخة المثبّتة تحت <span dir="ltr">%LOCALAPPDATA%\SmartStudentAttendance\data</span>.
+          لا تُرسل البيانات إلى أي خدمة خارجية إلا رسائل SMS أو واتساب التي توافق عليها.
+        </p>
+      </details>
+      <details>
+        <summary>كيف أنسخ احتياطيًا وأستعيد البيانات؟</summary>
+        <p>
+          افتح <strong>الإعدادات ← البيانات والنظام</strong> لتنزيل نسخة احتياطية. احفظ النسخة على
+          قرص خارجي أو مساحة آمنة، ولا تشاركها لأنها تحتوي بيانات التلاميذ وأرقام الأولياء.
+        </p>
+      </details>
+      <details>
+        <summary>من يستطيع الوصول إلى الإعدادات والمستخدمين والتحديثات؟</summary>
+        <p>
+          حساب المدير فقط. أما المستخدمون العاديون فيديرون العمليات اليومية: التلاميذ، المسح،
+          سجل الحضور، الرسائل والتقارير، دون الوصول إلى صفحات النظام.
+        </p>
+      </details>
+    </div>
+  </section>
+
+  <section class="card help-links-card">
+    <div class="help-card-heading">
+      <svg class="ico"><use href="#i-sparkle"></use></svg>
+      <div>
+        <h2>روابط سريعة</h2>
+        <p>انتقل مباشرة إلى القسم الذي تحتاجه.</p>
+      </div>
+    </div>
+    <div class="help-links">
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.students_page') }}"><svg class="ico"><use href="#i-users"></use></svg><span>التلاميذ</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.import_page') }}"><svg class="ico"><use href="#i-upload"></use></svg><span>الاستيراد</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.print_studio_page') }}"><svg class="ico"><use href="#i-printer"></use></svg><span>الطباعة</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.gate_page') }}"><svg class="ico"><use href="#i-scan"></use></svg><span>بوابة المسح</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.attendance_page') }}"><svg class="ico"><use href="#i-list"></use></svg><span>سجل الحضور</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.messages_page') }}"><svg class="ico"><use href="#i-message"></use></svg><span>الرسائل</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.reports_page') }}"><svg class="ico"><use href="#i-chart"></use></svg><span>التقارير</span></a>
+      {% if is_admin %}
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.settings_page') }}"><svg class="ico"><use href="#i-settings"></use></svg><span>الإعدادات</span></a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('views.users_page') }}"><svg class="ico"><use href="#i-user"></use></svg><span>المستخدمون</span></a>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

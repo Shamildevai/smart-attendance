@@ -133,6 +133,18 @@ def users_page():
     )
 
 
+@views_bp.get("/help")
+def help_page():
+    return render_template(
+        "help.html",
+        **_page_context(
+            "help",
+            "دليل الاستخدام",
+            "شرح مصوّر لطريقة عمل النظام وإرسال رسائل الأولياء",
+        ),
+    )
+
+
 @views_bp.get("/about")
 def about_page():
     return render_template(

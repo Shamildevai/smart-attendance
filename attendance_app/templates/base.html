@@ -69,6 +69,9 @@
           <svg class="ico"><use href="#i-user"></use></svg><span>المستخدمون</span>
         </a>
         {% endif %}
+        <a class="nav-link {% if active == 'help' %}is-active{% endif %}" href="{{ url_for('views.help_page') }}">
+          <svg class="ico"><use href="#i-help"></use></svg><span>دليل الاستخدام</span>
+        </a>
         <a class="nav-link {% if active == 'about' %}is-active{% endif %}" href="{{ url_for('views.about_page') }}">
           <svg class="ico"><use href="#i-info"></use></svg><span>حول التطبيق</span>
         </a>

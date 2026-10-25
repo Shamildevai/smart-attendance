@@ -132,7 +132,7 @@ def test_catalogs_use_western_digits_only():
 
 
 def test_rendered_pages_use_western_digits_only(client):
-    pages = ("/", "/messages", "/settings", "/about", "/attendance", "/reports")
+    pages = ("/", "/messages", "/settings", "/about", "/help", "/attendance", "/reports")
     for lang in ("ar", "en", "fr"):
         client.set_cookie(i18n.LANG_COOKIE, lang)
         for path in pages:

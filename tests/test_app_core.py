@@ -23,12 +23,30 @@ def test_health_and_security_headers(client):
 
 @pytest.mark.parametrize(
     "path",
-    ["/", "/gate", "/students", "/import", "/attendance", "/reports", "/print", "/settings", "/about"],
+    ["/", "/gate", "/students", "/import", "/attendance", "/reports", "/print", "/settings", "/help", "/about"],
 )
 def test_main_pages_render(client, path):
     response = client.get(path)
     assert response.status_code == 200
     assert "text/html" in response.content_type
+
+
+def test_help_page_links_nav_and_infographic(client):
+    response = client.get("/help")
+    assert response.status_code == 200
+    html = response.get_data(as_text=True)
+    assert 'href="/help"' in html
+    assert "دليل الاستخدام" in html
+    assert "خريطة سير العمل" in html
+    assert "/static/img/help-workflow-ar.svg" in html
+    assert 'id="i-help"' in html
+
+    svg = client.get("/static/img/help-workflow-ar.svg")
+    assert svg.status_code == 200
+    assert "image/svg+xml" in svg.content_type
+    body = svg.get_data(as_text=True)
+    assert "ولي الأمر" in body
+    assert "المؤسسة" in body
 
 
 def test_about_page_attribution_and_dedication(client):
