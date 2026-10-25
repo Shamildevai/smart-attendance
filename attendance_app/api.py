@@ -471,9 +471,8 @@ def test_sms_api():
     data = _payload()
     phone = normalize_phone(data.get("phone"))
     settings = get_settings(conn)
-    resolved = messaging_service.resolve_channel_settings(
-        settings, settings.get("sms_gateway", "local")
-    )
+    channel = "cloud" if settings.get("sms_gateway") == "cloud" else "mobile"
+    resolved = messaging_service.resolve_channel_settings(settings, channel)
     result = sms_service.test_gateway(resolved, phone)
     return ok(result=result)
 

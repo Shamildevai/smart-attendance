@@ -469,6 +469,55 @@ def test_gateway_endpoint_exposes_phone_app_metadata(client):
     assert gateway["whatsapp_desktop"]["download_url"] == config.WHATSAPP_DOWNLOAD_URL
 
 
+def test_test_sms_endpoint_uses_mobile_channel_for_local_gateway(
+    client, csrf, monkeypatch
+):
+    captured = {}
+
+    def fake_test_gateway(resolved, phone):
+        captured.update(resolved)
+        captured["phone"] = phone
+        return {"sent": False, "simulated": True, "message": "ok"}
+
+    monkeypatch.setattr(sms_service, "test_gateway", fake_test_gateway)
+    response = client.post(
+        "/api/settings/test-sms", json={"phone": "0550123456"}, headers=csrf
+    )
+    assert response.status_code == 200, response.get_json()
+    assert captured["sms_gateway"] == "local"
+    assert captured["phone"] == "0550123456"
+
+
+def test_test_sms_endpoint_uses_cloud_channel_for_cloud_gateway(
+    client, csrf, db, monkeypatch
+):
+    from attendance_app.db import save_settings
+
+    with db:
+        save_settings(
+            db,
+            {
+                "sms_gateway": "cloud",
+                "sms_cloud_url": "https://sms.example.test/send",
+                "sms_cloud_key": "cloud-key",
+            },
+        )
+    captured = {}
+
+    def fake_test_gateway(resolved, phone):
+        captured.update(resolved)
+        return {"sent": False, "simulated": True, "message": "ok"}
+
+    monkeypatch.setattr(sms_service, "test_gateway", fake_test_gateway)
+    response = client.post(
+        "/api/settings/test-sms", json={"phone": "0550123456"}, headers=csrf
+    )
+    assert response.status_code == 200, response.get_json()
+    assert captured["sms_gateway"] == "cloud"
+    assert captured["sms_api_url"] == "https://sms.example.test/send"
+    assert captured["sms_api_key"] == "cloud-key"
+
+
 def test_settings_normalize_bare_mobile_gateway_host(client, csrf):
     response = client.put(
         "/api/settings",
