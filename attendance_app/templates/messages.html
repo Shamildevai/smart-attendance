@@ -46,7 +46,11 @@
       <span class="gateway-url hidden" id="msg-gateway-url" dir="ltr"></span>
     </div>
     <div class="gateway-strip-actions">
-      <a class="btn btn-primary btn-sm" id="msg-gateway-download" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">
+      <button class="btn btn-primary btn-sm" type="button" id="msg-gateway-pair">
+        <svg class="ico"><use href="#i-shield-check"></use></svg>
+        <span>اقتران الهاتف برمز</span>
+      </button>
+      <a class="btn btn-secondary btn-sm" id="msg-gateway-download" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">
         <svg class="ico"><use href="#i-download"></use></svg>
         <span>تحميل تطبيق الهاتف {{ gateway_app_version }}</span>
       </a>
@@ -149,12 +153,12 @@
             <input type="radio" name="msg-channel" value="whatsapp">
             <div class="channel-head">
               <span class="channel-icon is-whatsapp"><svg class="ico"><use href="#i-whatsapp"></use></svg></span>
-              <div><strong>واتساب</strong><small>فتح محادثة جاهزة لكل ولي</small></div>
+              <div><strong>واتساب</strong><small id="msg-whatsapp-subtitle">إرسال يدوي أو تلقائي حسب الإعدادات</small></div>
               <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
             </div>
-            <p>لا يُرسل النظام رسائل واتساب تلقائيًا. يتطلب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب، ثم تفتح محادثة كل ولي بنص الرسالة وتراجعها وتضغط «إرسال» داخل واتساب.</p>
+            <p id="msg-whatsapp-desc">يُضبط نمط واتساب من إعدادات الرسائل: فتح محادثة جاهزة لكل ولي، أو إرسال تلقائي عبر Meta WhatsApp Cloud API.</p>
             <span class="channel-state chip" data-channel-state="whatsapp">جارٍ التحقق…</span>
-            <span class="channel-extra">
+            <span class="channel-extra" id="msg-whatsapp-desktop-extra">
               <span class="chip" id="msg-whatsapp-desktop-chip">حالة واتساب لسطح المكتب: جارٍ الفحص…</span>
               <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a>
             </span>
@@ -162,7 +166,7 @@
         </div>
         <div class="test-mode-note hidden" id="msg-test-note">
           <svg class="ico"><use href="#i-shield-check"></use></svg>
-          <div>وضع الاختبار مفعّل: ستُحاكى رسائل SMS دون استخدام الشبكة أو استهلاك رصيد. أما واتساب فيُفتح يدويًا دائمًا.</div>
+          <div>وضع الاختبار مفعّل: ستُحاكى رسائل SMS وواتساب دون استخدام الشبكة أو استهلاك رصيد. أما واتساب اليدوي فيُفتح دائمًا بنفسك.</div>
         </div>
         <div class="info-banner is-warning hidden" id="msg-channel-warning">
           <svg class="ico"><use href="#i-warning"></use></svg>
@@ -249,7 +253,7 @@
           </li>
           <li>
             <span class="help-dot is-whatsapp"></span>
-            <div><strong>واتساب يدوي</strong><p>يتطلب تطبيق واتساب لسطح المكتب على هذا الحاسوب. يفتح النظام رابط wa.me لكل ولي برسالة جاهزة، ولا يرسل شيئًا نيابة عنك. <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a></p></div>
+            <div><strong>واتساب</strong><p>يدوي: يتطلب تطبيق واتساب لسطح المكتب، ويفتح النظام رابط wa.me لكل ولي برسالة جاهزة دون إرسال نيابة عنك. <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a> أو تلقائي عبر Meta WhatsApp Cloud API بعد ضبط القالب والرمز من الإعدادات.</p></div>
           </li>
         </ul>
         <p class="messages-help-foot">تبقى بيانات التلاميذ على هذا الجهاز. لا تُرسل إلا الرسائل التي توافق عليها.</p>

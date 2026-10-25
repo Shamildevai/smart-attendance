@@ -253,7 +253,7 @@
         <div class="settings-head-icon"><svg class="ico"><use href="#i-message"></use></svg></div>
         <div class="flex-1">
           <h2>رسائل الأولياء (SMS وواتساب)</h2>
-          <p>قالب الرسالة وبوابة الإرسال وإعدادات المحاولات والمشاركة اليدوية عبر واتساب.</p>
+          <p>قالب الرسالة وبوابة SMS وإعدادات واتساب اليدوي أو التلقائي عبر Meta Cloud API.</p>
         </div>
         <span class="chip is-accent" id="sms-gateway-badge">بوابة محلية</span>
       </div>
@@ -267,7 +267,7 @@
           <span class="switch-track"></span>
           <span class="switch-text">
             <strong>وضع الاختبار</strong>
-            <span>أبقِه مفعّلًا أثناء التجارب. عند تعطيله ستحتاج إلى رابط بوابة صالح في الإعدادات. لا يؤثر على روابط واتساب اليدوية.</span>
+            <span>أبقِه مفعّلًا أثناء التجارب. عند تعطيله ستحتاج إلى رابط بوابة صالح أو بيانات Meta WhatsApp Cloud API مكتملة. لا يؤثر على الإرسال اليدوي عبر واتساب.</span>
           </span>
         </label>
 
@@ -276,8 +276,8 @@
             <input type="checkbox" id="whatsapp-enabled" {% if settings.get('whatsapp_enabled', '1') == '1' %}checked{% endif %}>
             <span class="switch-track"></span>
             <span class="switch-text">
-              <strong>إظهار أزرار واتساب</strong>
-              <span>تظهر في سجل الغياب وصندوق الرسائل. الضغط يفتح واتساب بنص الرسالة جاهزًا، ثم تراجع النص وتضغط «إرسال» داخل واتساب.</span>
+              <strong>تفعيل قناة واتساب</strong>
+              <span>تظهر أزرار واتساب في سجل الغياب (النمط اليدوي)، وتتوفر قناة واتساب في مركز الرسائل حسب النمط المختار أدناه.</span>
             </span>
           </label>
           <div class="field">
@@ -287,9 +287,71 @@
           </div>
         </div>
 
-        <div class="settings-note">
+        <div class="field">
+          <label for="whatsapp-provider">طريقة إرسال واتساب</label>
+          <select class="select" id="whatsapp-provider">
+            <option value="manual" {% if settings.get('whatsapp_provider', 'manual') == 'manual' %}selected{% endif %}>يدوي عبر تطبيق واتساب لسطح المكتب (wa.me)</option>
+            <option value="cloud" {% if settings.get('whatsapp_provider') == 'cloud' %}selected{% endif %}>تلقائي عبر Meta WhatsApp Cloud API</option>
+          </select>
+          <span class="field-hint">النمط اليدوي مجاني ولا يحتاج رصيدًا. النمط التلقائي يتطلب حساب Meta Business وقالب رسالة معتمدًا.</span>
+        </div>
+
+        <div class="settings-note" id="whatsapp-manual-note">
           <svg class="ico"><use href="#i-whatsapp"></use></svg>
           <div>روابط واتساب رسمية عبر wa.me ولا تحتاج بوابة أو رصيدًا. يجب تثبيت تطبيق واتساب لسطح المكتب على هذا الحاسوب لتفتح المحادثات مباشرة. لا يرسل النظام أي رسالة دون تأكيدك داخل واتساب. <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a></div>
+        </div>
+
+        <div class="whatsapp-cloud-panel" id="whatsapp-cloud-panel">
+          <div class="settings-note">
+            <svg class="ico"><use href="#i-shield-check"></use></svg>
+            <div>Meta WhatsApp Cloud API يرسل تلقائيًا بعد موافقتك. يجب أن يكون القالب معتمدًا في Meta ويحتوي متغيرًا واحدًا في نص الرسالة (<code dir="ltr">{{ '{{1}}' }}</code>). الحد الأقصى لنص الرسالة 1024 حرفًا، وتُرسل بيانات الرسالة إلى خوادم Meta. في وضع الاختبار تُحاكى العملية فقط.</div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="whatsapp-phone-number-id">Phone Number ID</label>
+              <input class="input mono" id="whatsapp-phone-number-id" type="text" inputmode="numeric" dir="ltr" maxlength="30" placeholder="123456789012345" value="{{ settings.get('whatsapp_phone_number_id', '') }}">
+              <span class="field-hint">من لوحة Meta for Developers ← WhatsApp ← API Setup.</span>
+            </div>
+            <div class="field">
+              <label for="whatsapp-api-version">إصدار Graph API</label>
+              <input class="input mono" id="whatsapp-api-version" type="text" dir="ltr" maxlength="20" placeholder="v23.0" value="{{ settings.get('whatsapp_api_version', 'v23.0') }}">
+              <span class="field-hint">اتركه على القيمة الافتراضية إلا إذا طلبت Meta إصدارًا أحدث.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="whatsapp-access-token">رمز الوصول الدائم (Access Token)</label>
+            <div class="input-group">
+              <svg class="ico"><use href="#i-shield-check"></use></svg>
+              <input class="input mono" id="whatsapp-access-token" type="password" dir="ltr" maxlength="1000" autocomplete="off" placeholder="EAAG...">
+              <button class="input-action" type="button" id="whatsapp-token-toggle" aria-label="إظهار رمز وصول واتساب" title="إظهار الرمز">
+                <svg class="ico"><use href="#i-eye"></use></svg>
+              </button>
+            </div>
+            <span class="field-hint">أنشئ رمز وصول دائمًا من Meta Business وضعه هنا. لا تشاركه مع أحد.</span>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="whatsapp-template-name">اسم القالب المعتمد</label>
+              <input class="input mono" id="whatsapp-template-name" type="text" dir="ltr" maxlength="120" placeholder="absence_notice" value="{{ settings.get('whatsapp_template_name', 'absence_notice') }}">
+              <span class="field-hint">حروف إنجليزية صغيرة وأرقام وشرطات سفلية فقط.</span>
+            </div>
+            <div class="field">
+              <label for="whatsapp-template-lang">لغة القالب</label>
+              <input class="input mono" id="whatsapp-template-lang" type="text" dir="ltr" maxlength="20" placeholder="ar" value="{{ settings.get('whatsapp_template_lang', 'ar') }}">
+              <span class="field-hint">رمز اللغة المعتمد في Meta، مثل <code dir="ltr">ar</code> أو <code dir="ltr">en_US</code>.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="whatsapp-test-phone">رقم اختباري لواتساب</label>
+            <div class="flex flex-wrap">
+              <input class="input mono flex-1" id="whatsapp-test-phone" type="tel" dir="ltr" inputmode="tel" placeholder="0550123456" maxlength="20" style="min-width:150px">
+              <button class="btn btn-secondary btn-sm" type="button" id="whatsapp-test-send">
+                <svg class="ico"><use href="#i-send"></use></svg>
+                <span>إرسال اختبار واتساب</span>
+              </button>
+            </div>
+            <span class="field-hint">يحفظ الإعدادات أولًا. في وضع الاختبار تُحاكى العملية دون إرسال حقيقي.</span>
+          </div>
         </div>
 
         <div class="sms-template-editor">
@@ -337,15 +399,16 @@
               <span class="field-hint">عنوان يظهر في تطبيق بوابة SMS على الهاتف. يمكنك لصق <code dir="ltr">http://192.168.1.20:8080/send</code> أو العنوان المختصر <code dir="ltr">192.168.1.20:8080</code>. <a class="inline-link" href="{{ gateway_app_download_url }}" target="_blank" rel="noopener noreferrer">تحميل التطبيق {{ gateway_app_version }}</a></span>
             </div>
             <div class="field">
-              <label for="sms-mobile-key">مفتاح بوابة الهاتف (اختياري)</label>
-              <div class="input-group">
-                <svg class="ico"><use href="#i-shield-check"></use></svg>
-                <input class="input mono" id="sms-mobile-key" type="password" dir="ltr" maxlength="1000" placeholder="X-Api-Key">
-                <button class="input-action" type="button" id="sms-mobile-key-toggle" aria-label="إظهار مفتاح بوابة الهاتف" title="إظهار المفتاح">
-                  <svg class="ico"><use href="#i-eye"></use></svg>
+              <label for="sms-pair-pin">الاقتران برمز 4 أرقام</label>
+              <div class="flex flex-wrap">
+                <input class="input mono pin-input flex-1" id="sms-pair-pin" type="text" inputmode="numeric" dir="ltr" maxlength="4" autocomplete="one-time-code" placeholder="0000">
+                <button class="btn btn-secondary btn-sm" type="button" id="sms-pair-now">
+                  <svg class="ico"><use href="#i-shield-check"></use></svg>
+                  <span>اقتران الهاتف</span>
                 </button>
               </div>
-              <span class="field-hint">نفس المفتاح المضبوط في تطبيق الهاتف. يُرسل في ترويسة <code>X-Api-Key</code>.</span>
+              <span class="field-hint">افتح تطبيق البوابة على الهاتف واضغط بطاقة رمز الاقتران لعرض رمز من 4 أرقام، ثم أدخله هنا. يُحفظ المفتاح الطويل تلقائيًا ولا تحتاج لنسخه.</span>
+              <span class="chip" id="sms-pair-state">لم يتم الاقتران بعد</span>
             </div>
           </div>
 

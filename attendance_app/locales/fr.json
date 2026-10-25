@@ -1328,7 +1328,112 @@
     "البوابة متصلة لكن مفتاح API غير صحيح.": "La passerelle est connectée mais la clé API est incorrecte.",
     "انسخ مفتاح API الحالي من تطبيق الهاتف إلى إعدادات الرسائل ثم أعد الفحص.": "Copiez la clé API actuelle depuis l’application téléphone vers les réglages des messages, puis vérifiez à nouveau.",
     "بوابة الهاتف متصلة، لكن تعذر التحقق من مفتاح API.": "La passerelle du téléphone est connectée, mais la clé API n’a pas pu être vérifiée.",
-    "تأكد من أن مفتاح API في الإعدادات مطابق للمفتاح الظاهر في تطبيق الهاتف.": "Vérifiez que la clé API des réglages correspond à celle affichée dans l’application téléphone."
+    "تأكد من أن مفتاح API في الإعدادات مطابق للمفتاح الظاهر في تطبيق الهاتف.": "Vérifiez que la clé API des réglages correspond à celle affichée dans l’application téléphone.",
+    "قالب الرسالة وبوابة SMS وإعدادات واتساب اليدوي أو التلقائي عبر Meta Cloud API.": "Modèle de message, passerelle SMS et WhatsApp manuel ou automatique via Meta Cloud API.",
+    "أبقِه مفعّلًا أثناء التجارب. عند تعطيله ستحتاج إلى رابط بوابة صالح أو بيانات Meta WhatsApp Cloud API مكتملة. لا يؤثر على الإرسال اليدوي عبر واتساب.": "Laissez-le activé pendant les tests. Une fois désactivé, vous aurez besoin d'une URL de passerelle valide ou de données Meta WhatsApp Cloud API complètes. Cela n'affecte pas l'envoi manuel via WhatsApp.",
+    "تفعيل قناة واتساب": "Activer le canal WhatsApp",
+    "تظهر أزرار واتساب في سجل الغياب (النمط اليدوي)، وتتوفر قناة واتساب في مركز الرسائل حسب النمط المختار أدناه.": "Les boutons WhatsApp apparaissent dans le journal des absences (mode manuel), et le canal WhatsApp est disponible dans le centre de messages selon le mode choisi ci-dessous.",
+    "طريقة إرسال واتساب": "Mode d'envoi WhatsApp",
+    "يدوي عبر تطبيق واتساب لسطح المكتب (wa.me)": "Manuel via WhatsApp Desktop (wa.me)",
+    "تلقائي عبر Meta WhatsApp Cloud API": "Automatique via Meta WhatsApp Cloud API",
+    "النمط اليدوي مجاني ولا يحتاج رصيدًا. النمط التلقائي يتطلب حساب Meta Business وقالب رسالة معتمدًا.": "Le mode manuel est gratuit et ne nécessite aucun crédit. Le mode automatique nécessite un compte Meta Business et un modèle de message approuvé.",
+    "Meta WhatsApp Cloud API يرسل تلقائيًا بعد موافقتك. يجب أن يكون القالب معتمدًا في Meta ويحتوي متغيرًا واحدًا في نص الرسالة (": "Meta WhatsApp Cloud API envoie automatiquement après votre approbation. Le modèle doit être approuvé dans Meta et contenir une variable dans le corps du message (",
+    "). الحد الأقصى لنص الرسالة 1024 حرفًا، وتُرسل بيانات الرسالة إلى خوادم Meta. في وضع الاختبار تُحاكى العملية فقط.": "). La limite du corps du message est de 1024 caractères, et les données du message sont envoyées aux serveurs de Meta. En mode test, l'opération est uniquement simulée.",
+    "من لوحة Meta for Developers ← WhatsApp ← API Setup.": "Depuis le tableau de bord Meta for Developers → WhatsApp → API Setup.",
+    "إصدار Graph API": "Version de l'API Graph",
+    "اتركه على القيمة الافتراضية إلا إذا طلبت Meta إصدارًا أحدث.": "Laissez la valeur par défaut, sauf si Meta demande une version plus récente.",
+    "رمز الوصول الدائم (Access Token)": "Jeton d'accès permanent",
+    "إظهار رمز وصول واتساب": "Afficher le jeton d'accès WhatsApp",
+    "إظهار الرمز": "Afficher le jeton",
+    "أنشئ رمز وصول دائمًا من Meta Business وضعه هنا. لا تشاركه مع أحد.": "Créez un jeton d'accès permanent depuis Meta Business et placez-le ici. Ne le partagez avec personne.",
+    "اسم القالب المعتمد": "Nom du modèle approuvé",
+    "حروف إنجليزية صغيرة وأرقام وشرطات سفلية فقط.": "Lettres anglaises minuscules, chiffres et traits de soulignement uniquement.",
+    "لغة القالب": "Langue du modèle",
+    "رمز اللغة المعتمد في Meta، مثل": "Le code de langue approuvé dans Meta, par exemple",
+    "أو": "ou",
+    "رقم اختباري لواتساب": "Numéro de test WhatsApp",
+    "إرسال اختبار واتساب": "Envoyer un test WhatsApp",
+    "يحفظ الإعدادات أولًا. في وضع الاختبار تُحاكى العملية دون إرسال حقيقي.": "Enregistre d'abord les paramètres. En mode test, l'opération est simulée sans envoi réel.",
+    "الاقتران برمز 4 أرقام": "Appairer avec un code à 4 chiffres",
+    "اقتران الهاتف": "Appairer le téléphone",
+    "افتح تطبيق البوابة على الهاتف واضغط بطاقة رمز الاقتران لعرض رمز من 4 أرقام، ثم أدخله هنا. يُحفظ المفتاح الطويل تلقائيًا ولا تحتاج لنسخه.": "Ouvrez l'application passerelle sur le téléphone, touchez la carte du code d'appairage pour afficher un code à 4 chiffres, puis saisissez-le ici. La clé longue est enregistrée automatiquement et vous n'avez pas besoin de la copier.",
+    "لم يتم الاقتران بعد": "Pas encore appairé",
+    "الهاتف مقترن — المفتاح محفوظ": "Téléphone appairé — clé enregistrée",
+    "الهاتف متصل — يلزم الاقتران برمز 4 أرقام": "Téléphone connecté — appairage avec un code à 4 chiffres requis",
+    "يلزم الاقتران برمز": "Appairage requis",
+    "متصل — يلزم الاقتران برمز": "Connecté — appairage requis",
+    "Meta Cloud — محاكاة": "Meta Cloud — simulation",
+    "مهيأ": "Prêt",
+    "Meta Cloud جاهز": "Meta Cloud prêt",
+    "Meta Cloud API مهيأ": "Meta Cloud API prêt",
+    "Meta Cloud API غير مكتمل — وضع الاختبار مفعّل": "Meta Cloud API incomplet — mode test activé",
+    "Meta Cloud API غير مكتمل": "Meta Cloud API incomplet",
+    "اقتران الهاتف برمز": "Appairer le téléphone par code",
+    "إرسال يدوي أو تلقائي حسب الإعدادات": "Envoi manuel ou automatique selon les paramètres",
+    "يُضبط نمط واتساب من إعدادات الرسائل: فتح محادثة جاهزة لكل ولي، أو إرسال تلقائي عبر Meta WhatsApp Cloud API.": "Le mode WhatsApp se configure dans les paramètres des messages : ouvrir une conversation prête pour chaque parent, ou envoyer automatiquement via Meta WhatsApp Cloud API.",
+    "وضع الاختبار مفعّل: ستُحاكى رسائل SMS وواتساب دون استخدام الشبكة أو استهلاك رصيد. أما واتساب اليدوي فيُفتح دائمًا بنفسك.": "Le mode test est activé : les messages SMS et WhatsApp sont simulés sans utiliser le réseau ni de crédit. WhatsApp manuel est toujours ouvert par vous.",
+    "يدوي: يتطلب تطبيق واتساب لسطح المكتب، ويفتح النظام رابط wa.me لكل ولي برسالة جاهزة دون إرسال نيابة عنك.": "Manuel : nécessite WhatsApp Desktop ; le système ouvre un lien wa.me pour chaque parent avec un message prêt, sans envoyer à votre place.",
+    "أو تلقائي عبر Meta WhatsApp Cloud API بعد ضبط القالب والرمز من الإعدادات.": "Ou automatique via Meta WhatsApp Cloud API après avoir configuré le modèle et le jeton dans les paramètres.",
+    "إرسال تلقائي عبر Meta WhatsApp Cloud API": "Envoi automatique via Meta WhatsApp Cloud API",
+    "يرسل النظام رسائل واتساب تلقائيًا بعد موافقتك عبر Meta Cloud API باستخدام قالب معتمد ومتغير واحد. اضبط Phone Number ID والرمز والقالب من إعدادات الرسائل.": "Le système envoie automatiquement des messages WhatsApp après votre approbation via Meta Cloud API en utilisant un modèle approuvé et une variable. Configurez le Phone Number ID, le jeton et le modèle dans les paramètres des messages.",
+    "لا يُرسل النظام رسائل واتساب تلقائيًا في النمط اليدوي. يتطلب تثبيت تطبيق واتساب لسطح المكتب، ثم تفتح محادثة كل ولي بنص الرسالة وتراجعها وتضغط «إرسال» داخل واتساب.": "Le système n'envoie pas automatiquement de messages WhatsApp en mode manuel. WhatsApp Desktop est requis ; vous ouvrez la conversation de chaque parent avec le texte, le vérifiez et appuyez sur « Envoyer » dans WhatsApp.",
+    "جاهزة للإرسال التلقائي": "Prêt pour l'envoi automatique",
+    "إعدادات Meta WhatsApp Cloud API غير مكتملة. أكمل Phone Number ID ورمز الوصول والقالب من إعدادات الرسائل، أو فعّل وضع الاختبار.": "Les paramètres Meta WhatsApp Cloud API sont incomplets. Complétez le Phone Number ID, le jeton d'accès et le modèle dans les paramètres des messages, ou activez le mode test.",
+    "سيُرسل النظام رسائل واتساب تلقائيًا عبر Meta Cloud API بعد الموافقة. القالب المعتمد وحدود 1024 حرفًا مطبقة.": "Le système enverra automatiquement des messages WhatsApp via Meta Cloud API après approbation. Le modèle approuvé et la limite de 1024 caractères s'appliquent.",
+    "إرسال واتساب تلقائيًا": "Envoyer WhatsApp automatiquement",
+    "اقتران الهاتف برمز 4 أرقام": "Appairer le téléphone avec un code à 4 chiffres",
+    "بدل نسخ مفتاح API الطويل، أدخل الرمز الظاهر في تطبيق البوابة.": "Au lieu de copier la longue clé API, saisissez le code affiché dans l'application passerelle.",
+    "كيف يعمل الاقتران؟": "Comment fonctionne l'appairage ?",
+    "افتح تطبيق بوابة SMS على هاتف أندرويد، واضغط بطاقة «رمز الاقتران» لعرض رمز من 4 أرقام. أدخله هنا ليحفظ الحاسوب المفتاح الطويل تلقائيًا.": "Ouvrez l'application passerelle SMS sur le téléphone Android et touchez la carte « Code d'appairage » pour afficher un code à 4 chiffres. Saisissez-le ici pour que l'ordinateur enregistre automatiquement la clé longue.",
+    "العنوان الظاهر في تطبيق الهاتف. يمكنك تركه كما هو إن كان الهاتف على نفس الشبكة.": "L'adresse affichée dans l'application du téléphone. Vous pouvez la laisser telle quelle si le téléphone est sur le même réseau.",
+    "رمز الاقتران (4 أرقام)": "Code d'appairage (4 chiffres)",
+    "الرمز يتغير عند تجديده من الهاتف. بعد نجاح الاقتران لا تحتاج لإدخاله مجددًا.": "Le code change lorsqu'il est régénéré depuis le téléphone. Après un appairage réussi, vous n'avez plus besoin de le saisir.",
+    "أدخل رمز الاقتران المكوّن من 4 أرقام.": "Saisissez le code d'appairage à 4 chiffres.",
+    "أدخل رمز الاقتران المكوّن من 4 أرقام الظاهر في تطبيق الهاتف.": "Saisissez le code d'appairage à 4 chiffres affiché dans l'application du téléphone.",
+    "تم اقتران الهاتف بنجاح وحفظ المفتاح تلقائيًا.": "Téléphone appairé avec succès et clé enregistrée automatiquement.",
+    "تعذر إكمال الاقتران. تحقق من الرمز والرابط ثم أعد المحاولة.": "L'appairage n'a pas pu être terminé. Vérifiez le code et l'URL, puis réessayez.",
+    "تم اقتران الهاتف وحفظ المفتاح تلقائيًا.": "Téléphone appairé et clé enregistrée automatiquement.",
+    "تعذر إكمال اقتران الهاتف.": "L'appairage du téléphone n'a pas pu être terminé.",
+    "أدخل رقم هاتف لإجراء اختبار واتساب.": "Saisissez un numéro de téléphone pour lancer un test WhatsApp.",
+    "اكتمل اختبار واتساب.": "Test WhatsApp terminé.",
+    "اختبار واتساب": "Test WhatsApp",
+    "فشل اختبار واتساب.": "Le test WhatsApp a échoué.",
+    "أدخل رابط واجهة الحاسوب/السحابة أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار.": "Saisissez l'URL de l'interface ordinateur/cloud ou complétez les données Meta WhatsApp Cloud API avant de désactiver le mode test.",
+    "أدخل رابط بوابة الهاتف أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار.": "Saisissez l'URL de la passerelle téléphone ou complétez les données Meta WhatsApp Cloud API avant de désactiver le mode test.",
+    "جارٍ التحقق من اتصال الهاتف…": "Vérification de la connexion du téléphone…",
+    "الهاتف غير متصل. شغّل تطبيق البوابة على الهاتف ثم أعد الفحص.": "Le téléphone est hors ligne. Lancez l'application passerelle sur le téléphone, puis vérifiez à nouveau.",
+    "تعذر تحميل تفاصيل الحملة.": "Impossible de charger les détails de la campagne.",
+    "مفتاح واجهة الحاسوب/السحابة": "Clé API ordinateur/cloud",
+    "إظهار مفتاح الواجهة السحابية": "Afficher la clé API cloud",
+    "رمز الاقتران يجب أن يتكون من 4 أرقام.": "Le code d'appairage doit comporter 4 chiffres.",
+    "تعذر الوصول إلى بوابة الهاتف. شغّل خادم البوابة داخل التطبيق وتأكد من الشبكة والمنفذ ثم أعد المحاولة.": "Impossible d'atteindre la passerelle téléphone. Lancez le serveur passerelle dans l'application, vérifiez le réseau et le port, puis réessayez.",
+    "انتهت مهلة الاقتران. تأكد من أن الهاتف مستيقظ وعلى نفس شبكة الواي فاي ثم أعد المحاولة.": "L'appairage a expiré. Assurez-vous que le téléphone est éveillé et sur le même réseau Wi-Fi, puis réessayez.",
+    "رمز الاقتران غير صحيح. تحقق من الرمز الظاهر في تطبيق الهاتف.": "Le code d'appairage est incorrect. Vérifiez le code affiché dans l'application du téléphone.",
+    "استجابت البوابة دون مفتاح صالح. حدّث تطبيق الهاتف ثم أعد المحاولة.": "La passerelle a répondu sans clé valide. Mettez à jour l'application du téléphone, puis réessayez.",
+    "تعذر الاتصال ببوابة الهاتف عبر HTTPS. استخدم رابط http:// كما يظهر في تطبيق الهاتف.": "Impossible de se connecter à la passerelle téléphone via HTTPS. Utilisez une URL http:// comme indiqué dans l'application du téléphone.",
+    "رقم هاتف الولي غير صالح لواتساب.": "Le numéro de téléphone du parent n'est pas valide pour WhatsApp.",
+    "لا يمكن إرسال رسالة واتساب فارغة.": "Un message WhatsApp vide ne peut pas être envoyé.",
+    "نص الرسالة يتجاوز حد واتساب (1024 حرف). اختصر النص ثم أعد المحاولة.": "Le texte du message dépasse la limite WhatsApp (1024 caractères). Raccourcissez-le et réessayez.",
+    "اسم قالب واتساب غير مضبوط في الإعدادات.": "Le nom du modèle WhatsApp n'est pas défini dans les paramètres.",
+    "اختر «تلقائي عبر Meta WhatsApp Cloud API» في إعدادات واتساب أولًا.": "Sélectionnez d'abord « Automatique via Meta WhatsApp Cloud API » dans les paramètres WhatsApp.",
+    "قناة واتساب معطّلة في إعدادات الرسائل.": "Le canal WhatsApp est désactivé dans les paramètres des messages.",
+    "رمز وصول Meta غير مضبوط. أضف رمز وصول دائمًا من إعدادات واتساب.": "Le jeton d'accès Meta n'est pas défini. Ajoutez un jeton d'accès permanent depuis les paramètres WhatsApp.",
+    "Phone Number ID غير مضبوط. انسخه من لوحة Meta for Developers إلى الإعدادات.": "Le Phone Number ID n'est pas défini. Copiez-le depuis le tableau de bord Meta for Developers dans les paramètres.",
+    "انتهت مهلة الاتصال بخدمة واتساب. تحقق من اتصال الإنترنت ثم أعد المحاولة.": "La connexion à WhatsApp a expiré. Vérifiez la connexion Internet, puis réessayez.",
+    "تعذر الاتصال بخدمة واتساب. تحقق من اتصال الإنترنت ثم أعد المحاولة.": "Impossible de se connecter à WhatsApp. Vérifiez la connexion Internet, puis réessayez.",
+    "رفضت Meta رمز الوصول. ولّد رمز وصول دائمًا صالحًا وضعه في إعدادات واتساب.": "Meta a refusé le jeton d'accès. Générez un jeton d'accès permanent valide et placez-le dans les paramètres WhatsApp.",
+    "Phone Number ID أو إصدار Graph API غير صحيح. راجع بيانات Meta Cloud API.": "Le Phone Number ID ou la version de l'API Graph est incorrect. Vérifiez les données Meta Cloud API.",
+    "تجاوزت حدود إرسال واتساب مؤقتًا. انتظر قليلًا ثم أعد المحاولة.": "Les limites d'envoi WhatsApp ont été temporairement dépassées. Attendez un moment et réessayez.",
+    "خدمة واتساب غير متاحة مؤقتًا. أعد المحاولة بعد قليل.": "WhatsApp est temporairement indisponible. Réessayez dans un instant.",
+    "اختر «تلقائي عبر Meta WhatsApp Cloud API» في إعدادات واتساب قبل الاختبار.": "Sélectionnez « Automatique via Meta WhatsApp Cloud API » dans les paramètres WhatsApp avant le test.",
+    "وضع الاختبار مفعّل: تمت محاكاة إرسال واتساب ولم تُرسل رسالة حقيقية.": "Le mode test est activé : l'envoi WhatsApp a été simulé et aucun message réel n'a été envoyé.",
+    "تم إرسال رسالة واتساب التجريبية عبر Meta Cloud API.": "Le message de test WhatsApp a été envoyé via Meta Cloud API.",
+    "وضع الاختبار مفعّل: يمكن تجربة واتساب كمحاكاة رغم نقص بيانات Cloud API.": "Le mode test est activé : WhatsApp peut être testé en simulation malgré des données Cloud API incomplètes.",
+    "الإرسال اليدوي عبر واتساب لسطح المكتب مفعّل.": "L'envoi manuel via WhatsApp Desktop est activé.",
+    "قناة واتساب معطّلة.": "Le canal WhatsApp est désactivé.",
+    "إرسال واتساب معطّل من الإعدادات.": "L'envoi WhatsApp est désactivé dans les paramètres.",
+    "وضع الاختبار مفعّل: ستُحاكى رسائل واتساب دون إرسال حقيقي عبر Meta.": "Le mode test est activé : les messages WhatsApp seront simulés sans envoi réel via Meta.",
+    "رمز وصول واتساب": "Jeton d'accès WhatsApp"
   },
   "patterns": [
     {
@@ -2298,6 +2403,78 @@
     {
       "ar": "البوابة متصلة لكن إصدارها {0} أقدم من المطلوب {1}.",
       "tr": "La passerelle est connectée mais sa version {0} est antérieure à la version requise {1}."
+    },
+    {
+      "ar": "تم اقتران الهاتف بنجاح (الإصدار {0}). حُفظ مفتاح البوابة تلقائيًا ولا حاجة لنسخه يدويًا.",
+      "tr": "Téléphone appairé avec succès (version {0}). La clé de la passerelle a été enregistrée automatiquement ; aucune copie manuelle n'est nécessaire."
+    },
+    {
+      "ar": "تم اقتران الهاتف بنجاح (الإصدار {0}). حُفظ مفتاح البوابة تلقائيًا ولا حاجة لنسخه يدويًا. يلزم تحديث تطبيق الهاتف إلى {1} من الرابط أسفل البطاقة.",
+      "tr": "Téléphone appairé avec succès (version {0}). La clé de la passerelle a été enregistrée automatiquement ; aucune copie manuelle n'est nécessaire. Mettez à jour l'application du téléphone vers {1} depuis le lien sous la carte."
+    },
+    {
+      "ar": "أوافق على محاكاة إرسال رسائل واتساب عبر Meta Cloud API إلى المستلمين في النطاق المحدد (العدد: {0}) في وضع الاختبار، دون استخدام الشبكة.",
+      "tr": "J'accepte de simuler l'envoi de messages WhatsApp via Meta Cloud API aux destinataires de la portée sélectionnée (nombre : {0}) en mode test, sans utiliser le réseau."
+    },
+    {
+      "ar": "أوافق صراحةً على إرسال رسائل واتساب تلقائيًا عبر Meta Cloud API إلى المستلمين في النطاق المحدد (العدد: {0}).",
+      "tr": "J'accepte explicitement d'envoyer automatiquement des messages WhatsApp via Meta Cloud API aux destinataires de la portée sélectionnée (nombre : {0})."
+    },
+    {
+      "ar": "نص رسالة واتساب التلقائية يتجاوز 1024 حرفًا ({0}). اختصر النص ثم أعد المحاولة.",
+      "tr": "Le texte du message WhatsApp automatique dépasse 1024 caractères ({0}). Raccourcissez-le et réessayez."
+    },
+    {
+      "ar": "محاكاة إرسال واتساب عبر Meta Cloud API (العدد: {0}).",
+      "tr": "Simuler l'envoi de WhatsApp via Meta Cloud API (nombre : {0})."
+    },
+    {
+      "ar": "سيبدأ إرسال واتساب تلقائيًا عبر Meta Cloud API (العدد: {0}).",
+      "tr": "L'envoi automatique de WhatsApp via Meta Cloud API va commencer (nombre : {0})."
+    },
+    {
+      "ar": "{0} / 1024 حرفًا",
+      "tr": "{0} / 1024 caractères"
+    },
+    {
+      "ar": "Meta Cloud API مهيأ — القالب {0}",
+      "tr": "Meta Cloud API prêt — modèle {0}"
+    },
+    {
+      "ar": "محاولات اقتران كثيرة. انتظر {0} ثانية ثم أعد المحاولة.",
+      "tr": "Trop de tentatives d'appairage. Attendez {0} secondes, puis réessayez."
+    },
+    {
+      "ar": "تطبيق الهاتف لا يدعم الاقتران. حدّث تطبيق البوابة إلى الإصدار {0} أو أحدث ثم أعد المحاولة.",
+      "tr": "L'application du téléphone ne prend pas en charge l'appairage. Mettez à jour l'application passerelle vers la version {0} ou plus récente, puis réessayez."
+    },
+    {
+      "ar": "Meta Cloud API جاهز: القالب {0} ({1}).",
+      "tr": "Meta Cloud API prêt : modèle {0} ({1})."
+    },
+    {
+      "ar": "Meta Cloud API مهيأ: القالب {0} ({1}) — وضع الاختبار مفعّل.",
+      "tr": "Meta Cloud API prêt : modèle {0} ({1}) — mode test activé."
+    },
+    {
+      "ar": "بيانات Meta WhatsApp Cloud API غير مكتملة: {0}. أكملها من إعدادات الرسائل قبل الإرسال الحقيقي.",
+      "tr": "Les données Meta WhatsApp Cloud API sont incomplètes : {0}. Complétez-les dans les paramètres des messages avant l'envoi réel."
+    },
+    {
+      "ar": "لم تُرسل أي رسالة: {0}",
+      "tr": "Aucun message n'a été envoyé : {0}"
+    },
+    {
+      "ar": "إخفاء {0}",
+      "tr": "Masquer {0}"
+    },
+    {
+      "ar": "إظهار {0}",
+      "tr": "Afficher {0}"
+    },
+    {
+      "ar": "{0} استخدم زر «اقتران الهاتف برمز» أو أعد الفحص بعد تشغيل تطبيق البوابة.",
+      "tr": "{0} Utilisez le bouton « Appairer le téléphone par code » ou vérifiez à nouveau après avoir lancé l'application passerelle."
     }
   ]
 }

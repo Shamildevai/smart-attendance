@@ -148,3 +148,25 @@ def test_version_and_gateway_links_render_with_western_digits(client):
     assert config.APP_VERSION in html
     assert config.GATEWAY_APP_VERSION in html
     assert config.GATEWAY_APP_DOWNLOAD_URL in html
+
+
+def test_pairing_and_cloud_ui_strings_are_translated(client):
+    assert i18n.translate("اقتران الهاتف برمز", "en") == "Pair phone with code"
+    assert i18n.translate("الاقتران برمز 4 أرقام", "fr").startswith("Appairer")
+    approval = i18n.translate(
+        "أوافق على محاكاة إرسال رسائل واتساب عبر Meta Cloud API إلى المستلمين "
+        "في النطاق المحدد (العدد: 5) في وضع الاختبار، دون استخدام الشبكة.",
+        "en",
+    )
+    assert approval.startswith("I agree to simulate") and "(count: 5)" in approval
+    assert i18n.translate("Meta Cloud API مهيأ — القالب absence_notice", "en") == (
+        "Meta Cloud API ready — template absence_notice"
+    )
+
+    client.set_cookie(i18n.LANG_COOKIE, "en")
+    settings_html = client.get("/settings").get_data(as_text=True)
+    assert "Pair with a 4-digit code" in settings_html
+    assert "Permanent access token" in settings_html
+    messages_html = client.get("/messages").get_data(as_text=True)
+    assert "Pair phone with code" in messages_html
+    assert "Manual or automatic sending, per settings" in messages_html

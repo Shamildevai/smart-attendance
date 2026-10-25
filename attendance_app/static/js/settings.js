@@ -96,12 +96,18 @@
     $("sms-gateway").value = gateway;
     $("sms-mobile-url").value =
       s.sms_mobile_url || (gateway === "local" ? s.sms_api_url || "" : "");
-    $("sms-mobile-key").value =
-      s.sms_mobile_key || (gateway === "local" ? s.sms_api_key || "" : "");
     $("sms-cloud-url").value =
       s.sms_cloud_url || (gateway === "cloud" ? s.sms_api_url || "" : "");
     $("sms-cloud-key").value =
       s.sms_cloud_key || (gateway === "cloud" ? s.sms_api_key || "" : "");
+    const paired = Boolean(s.sms_mobile_key || (gateway === "local" && s.sms_api_key));
+    const pairState = $("sms-pair-state");
+    if (pairState) {
+      pairState.className = `chip ${paired ? "is-accent" : "is-warning"}`;
+      pairState.textContent = paired
+        ? "الهاتف مقترن — المفتاح محفوظ"
+        : "لم يتم الاقتران بعد";
+    }
     $("sms-timeout").value = s.sms_timeout || 10;
     $("sms-retry").value = s.sms_retry_max || 3;
     $("sms-headers").value = s.sms_headers || "{}";
@@ -109,10 +115,17 @@
     $("sms-test-mode").checked = Boolean(s.sms_test_mode);
     $("whatsapp-enabled").checked = s.whatsapp_enabled !== false;
     $("whatsapp-country-code").value = s.whatsapp_country_code || "213";
+    $("whatsapp-provider").value = s.whatsapp_provider === "cloud" ? "cloud" : "manual";
+    $("whatsapp-phone-number-id").value = s.whatsapp_phone_number_id || "";
+    $("whatsapp-access-token").value = s.whatsapp_access_token || "";
+    $("whatsapp-template-name").value = s.whatsapp_template_name || "absence_notice";
+    $("whatsapp-template-lang").value = s.whatsapp_template_lang || "ar";
+    $("whatsapp-api-version").value = s.whatsapp_api_version || "v23.0";
 
     renderBrand("logo");
     renderBrand("stamp");
     syncGatewayUI();
+    syncWhatsAppUI();
     updateTemplateMeta();
   }
 
@@ -323,10 +336,16 @@
       : "وضع الاختبار معطّل: ستُرسل رسائل حقيقية عبر البوابة المضبوطة. تأكد من صحة الرابط والمفتاح قبل الإرسال.";
   }
 
+  function syncWhatsAppUI() {
+    const cloud = $("whatsapp-provider").value === "cloud";
+    $("whatsapp-manual-note").classList.toggle("hidden", cloud);
+    $("whatsapp-cloud-panel").classList.toggle("hidden", !cloud);
+  }
+
   const GATEWAY_TITLES = {
     connected: "الهاتف متصل وجاهز لإرسال SMS",
     outdated: "الهاتف متصل — يلزم تحديث تطبيق البوابة",
-    auth_required: "الهاتف متصل — مفتاح API مطلوب",
+    auth_required: "الهاتف متصل — يلزم الاقتران برمز 4 أرقام",
     offline: "الهاتف غير متصل",
     wrong_service: "عنوان البوابة غير صحيح",
     invalid_url: "رابط بوابة الهاتف غير صالح",
@@ -360,9 +379,21 @@
     }
     $("sms-live-version").classList.remove("hidden");
     const desktop = gateway.whatsapp_desktop || {};
+    const waCloud = gateway.whatsapp_cloud || {};
     const waChip = $("sms-live-wa");
     waChip.classList.remove("hidden");
-    if (desktop.installed === true) {
+    if ($("whatsapp-provider").value === "cloud") {
+      if (waCloud.configured) {
+        waChip.className = "chip is-accent";
+        waChip.textContent = `Meta Cloud API مهيأ — القالب ${waCloud.template_name || ""}`;
+      } else if (gateway.test_mode) {
+        waChip.className = "chip is-warning";
+        waChip.textContent = "Meta Cloud API غير مكتمل — وضع الاختبار مفعّل";
+      } else {
+        waChip.className = "chip is-danger";
+        waChip.textContent = "Meta Cloud API غير مكتمل";
+      }
+    } else if (desktop.installed === true) {
       waChip.className = "chip is-accent";
       waChip.textContent = "واتساب لسطح المكتب مثبّت";
     } else if (desktop.installed === false) {
@@ -404,6 +435,28 @@
     updateTemplateMeta();
   }
 
+  const PAIR_DIGITS = "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹";
+  const WEST_DIGITS = "01234567890123456789";
+
+  function normalizePin(value) {
+    return String(value || "")
+      .split("")
+      .map((char) => {
+        const index = PAIR_DIGITS.indexOf(char);
+        return index >= 0 ? WEST_DIGITS[index] : char;
+      })
+      .join("")
+      .replace(/\D/g, "")
+      .slice(0, 4);
+  }
+
+  function setPairState(paired) {
+    const chip = $("sms-pair-state");
+    if (!chip) return;
+    chip.className = `chip ${paired ? "is-accent" : "is-warning"}`;
+    chip.textContent = paired ? "الهاتف مقترن — المفتاح محفوظ" : "لم يتم الاقتران بعد";
+  }
+
   function smsPayload() {
     const template = $("sms-template").value.trim();
     if (!template) {
@@ -415,8 +468,13 @@
     const testMode = $("sms-test-mode").checked;
     const mobileUrl = $("sms-mobile-url").value.trim();
     const cloudUrl = $("sms-cloud-url").value.trim();
-    const mobileKey = $("sms-mobile-key").value;
     const cloudKey = $("sms-cloud-key").value;
+    const whatsappProvider = $("whatsapp-provider").value === "cloud" ? "cloud" : "manual";
+    const whatsappPhoneId = $("whatsapp-phone-number-id").value.replace(/\D/g, "");
+    const whatsappToken = $("whatsapp-access-token").value;
+    const whatsappTemplate = $("whatsapp-template-name").value.trim();
+    const whatsappLang = $("whatsapp-template-lang").value.trim() || "ar";
+    const whatsappApiVersion = $("whatsapp-api-version").value.trim() || "v23.0";
     if (mobileUrl && /:\/\//.test(mobileUrl) && !/^https?:\/\//i.test(mobileUrl)) {
       A.toast("رابط بوابة الهاتف يجب أن يكون http:// أو https:// أو عنوان IP:منفذ.", "warning");
       $("sms-mobile-url").focus();
@@ -428,11 +486,14 @@
       return null;
     }
     const activeUrl = gateway === "cloud" ? cloudUrl : mobileUrl;
-    if (!testMode && !activeUrl) {
+    const whatsappCloudReady = Boolean(
+      whatsappProvider === "cloud" && whatsappPhoneId && whatsappToken && whatsappTemplate
+    );
+    if (!testMode && !activeUrl && !whatsappCloudReady) {
       A.toast(
         gateway === "cloud"
-          ? "أدخل رابط واجهة الحاسوب/السحابة قبل تعطيل وضع الاختبار."
-          : "أدخل رابط بوابة الهاتف قبل تعطيل وضع الاختبار.",
+          ? "أدخل رابط واجهة الحاسوب/السحابة أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار."
+          : "أدخل رابط بوابة الهاتف أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار.",
         "warning"
       );
       $(gateway === "cloud" ? "sms-cloud-url" : "sms-mobile-url").focus();
@@ -460,9 +521,7 @@
       sms_template: template,
       sms_gateway: gateway,
       sms_api_url: activeUrl,
-      sms_api_key: gateway === "cloud" ? cloudKey : mobileKey,
       sms_mobile_url: mobileUrl,
-      sms_mobile_key: mobileKey,
       sms_cloud_url: cloudUrl,
       sms_cloud_key: cloudKey,
       sms_test_mode: testMode,
@@ -470,7 +529,16 @@
       sms_retry_max: Math.floor(retry),
       whatsapp_enabled: $("whatsapp-enabled").checked,
       whatsapp_country_code: whatsappCountry,
+      whatsapp_provider: whatsappProvider,
+      whatsapp_phone_number_id: whatsappPhoneId,
+      whatsapp_access_token: whatsappToken,
+      whatsapp_template_name: whatsappTemplate,
+      whatsapp_template_lang: whatsappLang,
+      whatsapp_api_version: whatsappApiVersion,
     };
+    if (gateway === "cloud") {
+      payload.sms_api_key = cloudKey;
+    }
     if (gateway === "cloud") {
       const headersRaw = $("sms-headers").value.trim() || "{}";
       const templateRaw = $("sms-payload").value.trim() || '{"phone": "{{phone}}", "message": "{{message}}"}';
@@ -498,12 +566,13 @@
     $("sms-template").addEventListener("input", updateTemplateMeta);
     $("sms-gateway").addEventListener("change", syncGatewayUI);
     $("sms-test-mode").addEventListener("change", syncTestModeNote);
+    $("whatsapp-provider").addEventListener("change", syncWhatsAppUI);
     document.querySelectorAll(".var-chip").forEach((button) => {
       button.addEventListener("click", () => insertTemplateVariable(button.dataset.var || ""));
     });
     [
-      ["sms-mobile-key-toggle", "sms-mobile-key", "مفتاح بوابة الهاتف"],
       ["sms-cloud-key-toggle", "sms-cloud-key", "مفتاح واجهة الحاسوب/السحابة"],
+      ["whatsapp-token-toggle", "whatsapp-access-token", "رمز وصول واتساب"],
     ].forEach(([toggleId, inputId, label]) => {
       const toggle = $(toggleId);
       if (!toggle) return;
@@ -513,6 +582,69 @@
         input.type = show ? "text" : "password";
         toggle.setAttribute("aria-label", show ? `إخفاء ${label}` : `إظهار ${label}`);
       });
+    });
+    $("sms-pair-now").addEventListener("click", async () => {
+      const pin = normalizePin($("sms-pair-pin").value);
+      if (pin.length !== 4) {
+        A.toast("أدخل رمز الاقتران المكوّن من 4 أرقام الظاهر في تطبيق الهاتف.", "warning");
+        $("sms-pair-pin").focus();
+        return;
+      }
+      const button = $("sms-pair-now");
+      A.setBusy(button, true);
+      try {
+        const data = await A.api("/api/messages/gateway/pair", {
+          method: "POST",
+          body: { pin, url: $("sms-mobile-url").value.trim() },
+        });
+        state.settings = state.settings || {};
+        state.settings.sms_mobile_url = data.pairing.endpoint;
+        state.settings.sms_mobile_key = "paired";
+        $("sms-mobile-url").value = data.pairing.endpoint;
+        $("sms-pair-pin").value = "";
+        setPairState(true);
+        state.gateway = data.gateway;
+        renderGatewayStatus();
+        A.toast(data.message || "تم اقتران الهاتف وحفظ المفتاح تلقائيًا.", data.pairing.outdated ? "warning" : "success", "اقتران الهاتف");
+      } catch (error) {
+        A.toast(error.message || "تعذر إكمال اقتران الهاتف.", "error");
+      } finally {
+        A.setBusy(button, false);
+      }
+    });
+    $("sms-pair-pin").addEventListener("input", () => {
+      $("sms-pair-pin").value = normalizePin($("sms-pair-pin").value);
+    });
+    $("sms-pair-pin").addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      $("sms-pair-now").click();
+    });
+    $("whatsapp-test-send").addEventListener("click", async () => {
+      const phone = $("whatsapp-test-phone").value.trim();
+      if (!phone) {
+        A.toast("أدخل رقم هاتف لإجراء اختبار واتساب.", "warning");
+        $("whatsapp-test-phone").focus();
+        return;
+      }
+      const payload = smsPayload();
+      if (!payload) return;
+      const button = $("whatsapp-test-send");
+      const saved = await saveSettings(payload, button, "تم حفظ الإعدادات قبل الاختبار.");
+      if (!saved) return;
+      A.setBusy(button, true);
+      try {
+        const data = await A.api("/api/settings/test-whatsapp", {
+          method: "POST",
+          body: { phone },
+        });
+        const result = data.result || {};
+        A.toast(result.message || "اكتمل اختبار واتساب.", result.sent ? "success" : "info", "اختبار واتساب");
+      } catch (error) {
+        A.toast(error.message || "فشل اختبار واتساب.", "error");
+      } finally {
+        A.setBusy(button, false);
+      }
     });
     $("sms-form").addEventListener("submit", async (event) => {
       event.preventDefault();

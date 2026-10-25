@@ -106,6 +106,11 @@ def test_non_admin_cannot_reach_admin_pages_or_apis(app, client, csrf):
     assert non_admin.get("/api/users").status_code == 403
     assert non_admin.post("/api/system/shutdown", headers=csrf).status_code == 403
     assert non_admin.post("/api/update/check", headers=csrf).status_code == 403
+    pair = non_admin.post(
+        "/api/messages/gateway/pair", json={"pin": "1234"}, headers=csrf
+    )
+    assert pair.status_code == 403
+    assert pair.get_json()["error"]["code"] == "forbidden"
 
     assert non_admin.get("/").status_code == 200
     assert non_admin.get("/api/students").status_code == 200

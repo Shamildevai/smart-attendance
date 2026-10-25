@@ -38,7 +38,7 @@ MAX_MESSAGE_LENGTH = 2000
 CHANNEL_LABELS = {
     "mobile": "SMS عبر تطبيق الهاتف",
     "cloud": "SMS عبر الحاسوب أو السحابة",
-    "whatsapp": "واتساب (إرسال يدوي)",
+    "whatsapp": "واتساب",
 }
 
 CAMPAIGN_STATUS_LABELS = {
@@ -80,6 +80,8 @@ def _eligible(student: dict[str, Any], channel: str, settings: dict[str, str]) -
 
 def resolve_channel_settings(settings: dict[str, str], channel: str) -> dict[str, str]:
     """Return a settings copy pointing at the endpoint for the requested channel."""
+    if channel == "whatsapp":
+        return dict(settings)
     if channel not in ("mobile", "cloud"):
         raise ValidationError("قناة الإرسال غير صالحة.")
     resolved = dict(settings)
@@ -129,6 +131,7 @@ def gateway_status(settings: dict[str, str], *, force: bool = False) -> dict[str
         "test_mode": test_mode,
         "ready_for_real_send": bool(probe.get("can_send")),
         "whatsapp_desktop": whatsapp_service.desktop_status(force=force),
+        "whatsapp_cloud": whatsapp_service.cloud_status(settings),
         "gateway_app": gateway_app_payload(),
         "checked_at": datetime.now().strftime("%H:%M:%S"),
     }
@@ -137,6 +140,8 @@ def gateway_status(settings: dict[str, str], *, force: bool = False) -> dict[str
 def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
     test_mode = settings.get("sms_test_mode", "1") == "1"
     whatsapp_enabled = bool_setting(settings, "whatsapp_enabled", True)
+    whatsapp_provider = "cloud" if settings.get("whatsapp_provider") == "cloud" else "manual"
+    cloud = whatsapp_service.cloud_status(settings)
     channels = []
     for channel in ("mobile", "cloud"):
         resolved = resolve_channel_settings(settings, channel)
@@ -150,13 +155,22 @@ def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
                 "test_mode": test_mode,
             }
         )
+    if whatsapp_provider == "cloud":
+        whatsapp_configured = cloud["configured"]
+        whatsapp_ready = bool(whatsapp_enabled and (whatsapp_configured or test_mode))
+        whatsapp_label = "واتساب (Meta Cloud API)"
+    else:
+        whatsapp_configured = whatsapp_enabled
+        whatsapp_ready = whatsapp_enabled
+        whatsapp_label = "واتساب (إرسال يدوي)"
     channels.append(
         {
             "id": "whatsapp",
-            "label": CHANNEL_LABELS["whatsapp"],
-            "configured": whatsapp_enabled,
-            "ready": whatsapp_enabled,
-            "test_mode": False,
+            "label": whatsapp_label,
+            "configured": whatsapp_configured,
+            "ready": whatsapp_ready,
+            "test_mode": test_mode if whatsapp_provider == "cloud" else False,
+            "mode": whatsapp_provider,
         }
     )
     return {
@@ -164,6 +178,8 @@ def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
         "default_channel": settings.get("sms_gateway", "local"),
         "test_mode": test_mode,
         "whatsapp_enabled": whatsapp_enabled,
+        "whatsapp_provider": whatsapp_provider,
+        "whatsapp_cloud": cloud,
         "country_code": settings.get("whatsapp_country_code", "213"),
         "gateway_app": gateway_app_payload(),
     }
@@ -282,6 +298,8 @@ def preview_campaign(
         raise ValidationError("قناة الإرسال غير صالحة.")
     text = _validate_message(message)
     settings = get_settings(conn)
+    whatsapp_provider = "cloud" if settings.get("whatsapp_provider") == "cloud" else "manual"
+    is_whatsapp_cloud = channel == "whatsapp" and whatsapp_provider == "cloud"
     recipients = fetch_recipients(
         conn,
         scope=scope,
@@ -300,7 +318,7 @@ def preview_campaign(
             "parent_phone": student["parent_phone"],
             "message_body": body,
         }
-        if channel == "whatsapp":
+        if channel == "whatsapp" and not is_whatsapp_cloud:
             sample.update(
                 whatsapp_service.build_links(
                     student["parent_phone"],
@@ -324,6 +342,9 @@ def preview_campaign(
         "segments": _segment_count(text) if channel != "whatsapp" else 0,
         "test_mode": settings.get("sms_test_mode", "1") == "1",
         "whatsapp_enabled": bool_setting(settings, "whatsapp_enabled", True),
+        "whatsapp_provider": whatsapp_provider,
+        "whatsapp_send_mode": "cloud" if is_whatsapp_cloud else ("manual" if channel == "whatsapp" else ""),
+        "cloud_body_limit": whatsapp_service.MAX_CLOUD_BODY if is_whatsapp_cloud else 0,
         "channels": channels_payload(settings),
     }
 
@@ -346,8 +367,11 @@ def create_campaign(
         raise ValidationError("قناة الإرسال غير صالحة.")
     text = _validate_message(message)
     settings = get_settings(conn)
+    whatsapp_provider = "cloud" if settings.get("whatsapp_provider") == "cloud" else "manual"
+    is_whatsapp_cloud = channel == "whatsapp" and whatsapp_provider == "cloud"
+    is_manual_whatsapp = channel == "whatsapp" and not is_whatsapp_cloud
     if channel == "whatsapp" and not bool_setting(settings, "whatsapp_enabled", True):
-        raise ValidationError("أزرار واتساب معطّلة في الإعدادات. فعّلها أولًا من إعدادات الرسائل.")
+        raise ValidationError("قناة واتساب معطّلة في الإعدادات. فعّلها أولًا من إعدادات الرسائل.")
     test_mode = settings.get("sms_test_mode", "1") == "1"
     if channel in ("mobile", "cloud") and not test_mode:
         resolved = resolve_channel_settings(settings, channel)
@@ -367,6 +391,13 @@ def create_campaign(
                 raise ValidationError(
                     f"{reason} ثبّت تطبيق بوابة الرسائل وشغّله على الهاتف ثم أعد المحاولة."
                 )
+    elif is_whatsapp_cloud and not test_mode and not whatsapp_service.cloud_configured(settings):
+        missing = whatsapp_service.cloud_status(settings)["missing"]
+        raise ValidationError(
+            "بيانات Meta WhatsApp Cloud API غير مكتملة: "
+            + "، ".join(missing)
+            + ". أكملها من إعدادات الرسائل قبل الإرسال الحقيقي."
+        )
     recipients = fetch_recipients(
         conn,
         scope=scope,
@@ -379,11 +410,20 @@ def create_campaign(
         raise ValidationError(
             "لا يوجد مستلمون يحملون رقم هاتف صالحًا في النطاق المحدد. راجع أرقام أولياء التلاميذ."
         )
+    rendered: list[tuple[dict[str, Any], str]] = []
+    for student in eligible:
+        body = _render_message(text, student, settings)
+        if is_whatsapp_cloud and len(body) > whatsapp_service.MAX_CLOUD_BODY:
+            raise ValidationError(
+                f"رسالة التلميذ {student['full_name']} أطول من حد واتساب "
+                f"({whatsapp_service.MAX_CLOUD_BODY} حرف). اختصر النص ثم أعد المحاولة."
+            )
+        rendered.append((student, body))
     campaign_id = uuid.uuid4().hex[:12]
     outbox_ids: list[int] = []
     items: list[dict[str, Any]] = []
-    status = "MANUAL" if channel == "whatsapp" else "PENDING"
-    campaign_status = "PREPARED" if channel == "whatsapp" else "PENDING"
+    status = "MANUAL" if is_manual_whatsapp else "PENDING"
+    campaign_status = "PREPARED" if is_manual_whatsapp else "PENDING"
     with conn:
         conn.execute(
             """INSERT INTO message_campaigns
@@ -400,12 +440,11 @@ def create_campaign(
                 len(eligible),
                 len(recipients) - len(eligible),
                 campaign_status,
-                1 if test_mode and channel != "whatsapp" else 0,
+                1 if test_mode and not is_manual_whatsapp else 0,
                 created_by,
             ),
         )
-        for student in eligible:
-            body = _render_message(text, student, settings)
+        for student, body in rendered:
             cursor = conn.execute(
                 """INSERT INTO message_outbox
                    (campaign_id, student_nin, student_name, class_group, parent_phone,
@@ -424,7 +463,7 @@ def create_campaign(
             )
             if status == "PENDING" and cursor.lastrowid:
                 outbox_ids.append(int(cursor.lastrowid))
-            if channel == "whatsapp":
+            if is_manual_whatsapp:
                 item = {
                     "id": cursor.lastrowid,
                     "student_nin": student["student_nin"],
@@ -446,7 +485,7 @@ def create_campaign(
         "campaign": campaign,
         "outbox_ids": outbox_ids,
         "items": items,
-        "test_mode": test_mode and channel != "whatsapp",
+        "test_mode": test_mode and not is_manual_whatsapp,
     }
 
 
@@ -543,12 +582,13 @@ def campaign_detail(
     ).fetchall()
     settings = get_settings(conn)
     whatsapp_enabled = bool_setting(settings, "whatsapp_enabled", True)
+    whatsapp_manual = settings.get("whatsapp_provider") != "cloud"
     country_code = settings.get("whatsapp_country_code", "213")
     items = []
     for row in rows:
         item = dict(row)
         item["status_label"] = OUTBOX_STATUS_LABELS.get(item["delivery_status"], item["delivery_status"])
-        if whatsapp_enabled:
+        if whatsapp_enabled and whatsapp_manual:
             item.update(whatsapp_service.build_links(item["parent_phone"], item["message_body"], country_code))
         items.append(item)
     return {
@@ -659,7 +699,11 @@ class MessageJobManager:
                     )
                     return
                 channel = campaign["channel"]
-                if channel not in ("mobile", "cloud"):
+                is_whatsapp = channel == "whatsapp"
+                is_whatsapp_cloud = (
+                    is_whatsapp and settings.get("whatsapp_provider") == "cloud"
+                )
+                if channel not in ("mobile", "cloud") and not is_whatsapp_cloud:
                     self._update(
                         job_id,
                         status="done",
@@ -667,7 +711,11 @@ class MessageJobManager:
                         message="هذه الحملة لا تُرسل آليًا.",
                     )
                     return
-                send_settings = resolve_channel_settings(settings, channel)
+                send_settings = (
+                    dict(settings)
+                    if is_whatsapp_cloud
+                    else resolve_channel_settings(settings, channel)
+                )
                 test_mode = settings.get("sms_test_mode", "1") == "1"
                 retry_max = int_setting(settings, "sms_retry_max", 3, 1, 10)
                 self._update(job_id, test_mode=test_mode)
@@ -702,6 +750,7 @@ class MessageJobManager:
                 last_error = ""
                 connection_failures = 0
                 aborted = False
+                preflight_error = ""
                 if channel == "mobile" and not test_mode:
                     probe = probe_gateway(
                         send_settings.get("sms_api_url", ""),
@@ -710,37 +759,50 @@ class MessageJobManager:
                         timeout=min(int_setting(settings, "sms_timeout", 10, 3, 120), 6),
                     )
                     if not probe.get("can_send"):
-                        reason = (
+                        preflight_error = (
                             probe.get("hint")
                             or probe.get("detail")
                             or "تعذر الوصول إلى بوابة الهاتف."
                         )[:MAX_ERROR_LEN]
-                        with conn:
-                            conn.execute(
-                                """UPDATE message_outbox
-                                   SET delivery_status = 'FAILED', error_msg = ?,
-                                       updated_at = datetime('now', 'localtime')
-                                   WHERE campaign_id = ? AND delivery_status = 'PENDING'""",
-                                (reason, campaign_id),
-                            )
-                            conn.execute(
-                                """UPDATE message_campaigns SET status = 'DONE',
-                                       finished_at = datetime('now', 'localtime')
-                                   WHERE id = ?""",
-                                (campaign_id,),
-                            )
-                        self._update(
-                            job_id,
-                            status="done",
-                            processed=len(rows),
-                            failed=len(rows),
-                            first_error=reason,
-                            last_error=reason,
-                            current_name="",
-                            finished_at=datetime.now().strftime("%H:%M:%S"),
-                            message=f"لم يُرسل أي SMS: {reason}",
+                elif (
+                    is_whatsapp_cloud
+                    and not test_mode
+                    and not whatsapp_service.cloud_configured(settings)
+                ):
+                    missing = whatsapp_service.cloud_status(settings)["missing"]
+                    preflight_error = (
+                        "بيانات Meta WhatsApp Cloud API غير مكتملة: "
+                        + "، ".join(missing)
+                        + ". أكملها من إعدادات الرسائل."
+                    )[:MAX_ERROR_LEN]
+                if preflight_error:
+                    reason = preflight_error
+                    with conn:
+                        conn.execute(
+                            """UPDATE message_outbox
+                               SET delivery_status = 'FAILED', error_msg = ?,
+                                   updated_at = datetime('now', 'localtime')
+                               WHERE campaign_id = ? AND delivery_status = 'PENDING'""",
+                            (reason, campaign_id),
                         )
-                        return
+                        conn.execute(
+                            """UPDATE message_campaigns SET status = 'DONE',
+                                   finished_at = datetime('now', 'localtime')
+                               WHERE id = ?""",
+                            (campaign_id,),
+                        )
+                    self._update(
+                        job_id,
+                        status="done",
+                        processed=len(rows),
+                        failed=len(rows),
+                        first_error=reason,
+                        last_error=reason,
+                        current_name="",
+                        finished_at=datetime.now().strftime("%H:%M:%S"),
+                        message=f"لم تُرسل أي رسالة: {reason}",
+                    )
+                    return
                 for index, row in enumerate(rows, start=1):
                     self._update(job_id, current_name=row["student_name"])
                     fresh = conn.execute(
@@ -762,16 +824,33 @@ class MessageJobManager:
                                 (row["id"],),
                             )
                         try:
-                            result = send_via_gateway(
-                                send_settings, row["parent_phone"], row["message_body"]
-                            )
+                            if is_whatsapp_cloud:
+                                result = whatsapp_service.send_via_cloud(
+                                    send_settings,
+                                    row["parent_phone"],
+                                    row["message_body"],
+                                    timeout=min(
+                                        int_setting(settings, "sms_timeout", 10, 3, 120), 60
+                                    ),
+                                )
+                            else:
+                                result = send_via_gateway(
+                                    send_settings, row["parent_phone"], row["message_body"]
+                                )
                             success = True
                             simulated = bool(result.get("simulated"))
                             gateway_label = str(result.get("gateway") or "")
                             break
-                        except SmsGatewayError as exc:
+                        except (SmsGatewayError, whatsapp_service.WhatsAppError) as exc:
                             last_error = str(exc)[:MAX_ERROR_LEN]
-                            connection_failed = isinstance(exc, SmsConnectionError)
+                            connection_failed = isinstance(
+                                exc,
+                                (
+                                    SmsConnectionError,
+                                    whatsapp_service.WhatsAppConfigError,
+                                    whatsapp_service.WhatsAppConnectionError,
+                                ),
+                            )
                             app.logger.warning(
                                 "Message attempt %s/%s failed for %s: %s",
                                 attempt,
@@ -853,8 +932,9 @@ class MessageJobManager:
                                 current_name="",
                                 finished_at=datetime.now().strftime("%H:%M:%S"),
                                 message=(
-                                    "توقف الإرسال بعد انقطاع الاتصال بالبوابة. "
-                                    f"راجع الاتصال ثم أعد المحاولة. آخر خطأ: {first_error}"
+                                    "توقف الإرسال بعد انقطاع الاتصال بـ"
+                                    + ("خدمة واتساب. " if is_whatsapp_cloud else "البوابة. ")
+                                    + f"راجع الاتصال ثم أعد المحاولة. آخر خطأ: {first_error}"
                                 ),
                                 **counts,
                             )

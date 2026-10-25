@@ -44,6 +44,7 @@ PUBLIC_ENDPOINTS = {
 
 ADMIN_API_PREFIXES = ("/api/settings", "/api/uploads", "/api/users")
 ADMIN_API_PATHS = {
+    "/api/messages/gateway/pair",
     "/api/system/backup",
     "/api/system/shutdown",
     "/api/update/check",

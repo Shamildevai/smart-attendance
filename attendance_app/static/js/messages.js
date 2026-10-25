@@ -17,6 +17,10 @@
     gatewayTestChip: $("msg-gateway-testchip"),
     gatewayDownload: $("msg-gateway-download"),
     gatewayCheck: $("msg-gateway-check"),
+    gatewayPair: $("msg-gateway-pair"),
+    whatsappSubtitle: $("msg-whatsapp-subtitle"),
+    whatsappDesc: $("msg-whatsapp-desc"),
+    whatsappDesktopExtra: $("msg-whatsapp-desktop-extra"),
     whatsappDesktopChip: $("msg-whatsapp-desktop-chip"),
     totalChip: $("msg-total-chip"),
     refresh: $("msg-refresh"),
@@ -90,6 +94,24 @@
 
   function channelInfo(id) {
     return (state.channels.channels || []).find((item) => item.id === id) || {};
+  }
+
+  function whatsappProvider() {
+    return state.channels.whatsapp_provider === "cloud" || channelInfo("whatsapp").mode === "cloud"
+      ? "cloud"
+      : "manual";
+  }
+
+  function whatsappCloud() {
+    return whatsappProvider() === "cloud";
+  }
+
+  function bodyLimit() {
+    return whatsappCloud() && state.channel === "whatsapp" ? 1024 : 2000;
+  }
+
+  function renderBodyCount() {
+    els.bodyCount.textContent = `${A.formatInt(els.body.value.length)} / ${A.formatInt(bodyLimit())}`;
   }
 
   function gatewayMobile() {
@@ -218,7 +240,7 @@
       mobileText = "يلزم تحديث التطبيق";
     } else if (gateway.status === "auth_required") {
       mobileTone = "is-warning";
-      mobileText = "مفتاح API مطلوب";
+      mobileText = "يلزم الاقتران برمز";
     } else if (gateway.status === "not_configured") {
       mobileTone = testMode ? "is-warning" : "is-danger";
       mobileText = testMode ? "محاكاة" : "غير مهيأ";
@@ -227,8 +249,12 @@
       mobileText = testMode ? "غير متصل (محاكاة)" : "غير متصل";
     }
     let waTone = whatsapp.ready ? "is-accent" : "is-danger";
-    let waText = whatsapp.ready ? "متاح يدويًا" : "معطّل";
-    if (whatsapp.ready && desktop && desktop.installed === false) {
+    let waText = whatsapp.ready
+      ? whatsappCloud()
+        ? (state.channels.test_mode ? "Meta Cloud — محاكاة" : "Meta Cloud جاهز")
+        : "متاح يدويًا"
+      : "معطّل";
+    if (!whatsappCloud() && whatsapp.ready && desktop && desktop.installed === false) {
       waTone = "is-warning";
       waText = "يلزم تثبيت واتساب";
     }
@@ -245,6 +271,20 @@
   }
 
   function renderChannels() {
+    const cloudMode = whatsappCloud();
+    if (els.whatsappSubtitle) {
+      els.whatsappSubtitle.textContent = cloudMode
+        ? "إرسال تلقائي عبر Meta WhatsApp Cloud API"
+        : "فتح محادثة جاهزة لكل ولي";
+    }
+    if (els.whatsappDesc) {
+      els.whatsappDesc.textContent = cloudMode
+        ? "يرسل النظام رسائل واتساب تلقائيًا بعد موافقتك عبر Meta Cloud API باستخدام قالب معتمد ومتغير واحد. اضبط Phone Number ID والرمز والقالب من إعدادات الرسائل."
+        : "لا يُرسل النظام رسائل واتساب تلقائيًا في النمط اليدوي. يتطلب تثبيت تطبيق واتساب لسطح المكتب، ثم تفتح محادثة كل ولي بنص الرسالة وتراجعها وتضغط «إرسال» داخل واتساب.";
+    }
+    if (els.whatsappDesktopExtra) {
+      els.whatsappDesktopExtra.classList.toggle("hidden", cloudMode);
+    }
     let firstReady = "";
     els.channelCards.forEach((card) => {
       const id = card.dataset.channel;
@@ -256,12 +296,25 @@
       card.classList.toggle("is-disabled", !ready);
       radio.disabled = !ready;
       if (badge) {
-        badge.className = `channel-state chip ${ready ? (configured ? "is-accent" : "is-warning") : "is-danger"}`;
-        badge.textContent = ready
-          ? configured
-            ? "جاهزة للإرسال"
-            : "محاكاة فقط"
-          : "غير مهيأة";
+        if (id === "whatsapp" && cloudMode) {
+          if (!ready) {
+            badge.className = "channel-state chip is-danger";
+            badge.textContent = "غير مهيأة";
+          } else if (configured) {
+            badge.className = "channel-state chip is-accent";
+            badge.textContent = state.channels.test_mode ? "Meta Cloud — محاكاة" : "جاهزة للإرسال التلقائي";
+          } else {
+            badge.className = "channel-state chip is-warning";
+            badge.textContent = "محاكاة فقط";
+          }
+        } else {
+          badge.className = `channel-state chip ${ready ? (configured ? "is-accent" : "is-warning") : "is-danger"}`;
+          badge.textContent = ready
+            ? configured
+              ? "جاهزة للإرسال"
+              : "محاكاة فقط"
+            : "غير مهيأة";
+        }
       }
       if (ready && !firstReady) firstReady = id;
     });
@@ -272,6 +325,7 @@
     if (selected && !selected.disabled) selected.checked = true;
     syncChannelCards();
     syncChannelMessage();
+    renderBodyCount();
   }
 
   function syncChannelCards() {
@@ -282,11 +336,14 @@
 
   function syncChannelMessage() {
     const info = channelInfo(state.channel);
+    const cloudMode = whatsappCloud();
     const warnings = [];
     if (!info.ready) {
       warnings.push(
         state.channel === "whatsapp"
-          ? "واتساب معطّل من إعدادات الرسائل. فعّله لتتمكن من فتح المحادثات."
+          ? cloudMode
+            ? "إعدادات Meta WhatsApp Cloud API غير مكتملة. أكمل Phone Number ID ورمز الوصول والقالب من إعدادات الرسائل، أو فعّل وضع الاختبار."
+            : "واتساب معطّل من إعدادات الرسائل. فعّله لتتمكن من فتح المحادثات."
           : "هذه القناة غير مهيأة. أضف رابط البوابة المناسب من إعدادات الرسائل، أو استخدم وضع الاختبار."
       );
     }
@@ -299,11 +356,18 @@
         warnings.push("جارٍ التحقق من اتصال الهاتف… انتظر لحظة قبل الإرسال.");
       } else if (!mobile || !mobile.can_send) {
         warnings.push(
-          `${(mobile && (mobile.hint || mobile.detail)) || "الهاتف غير متصل."} ثبّت تطبيق الهاتف من الزر أعلى الصفحة وشغّله ثم أعد الفحص.`
+          `${(mobile && (mobile.hint || mobile.detail)) || "الهاتف غير متصل."} استخدم زر «اقتران الهاتف برمز» أو أعد الفحص بعد تشغيل تطبيق البوابة.`
         );
       }
     }
-    if (state.channel === "whatsapp" && info.ready) {
+    if (state.channel === "whatsapp" && info.ready && cloudMode) {
+      if (state.channels.test_mode) {
+        warnings.push("وضع الاختبار مفعّل: ستُحاكى رسائل واتساب دون إرسال حقيقي عبر Meta.");
+      } else {
+        warnings.push("سيُرسل النظام رسائل واتساب تلقائيًا عبر Meta Cloud API بعد الموافقة. القالب المعتمد وحدود 1024 حرفًا مطبقة.");
+      }
+    }
+    if (state.channel === "whatsapp" && info.ready && !cloudMode) {
       warnings.push("واتساب يدوي: لن يرسل النظام أي رسالة. ستفتح محادثة جاهزة لكل ولي وتؤكد الإرسال بنفسك.");
       if (state.gateway && state.gateway.whatsapp_desktop && state.gateway.whatsapp_desktop.installed === false) {
         warnings.push("تطبيق واتساب لسطح المكتب غير مثبّت على هذا الحاسوب. ثبّته من الرابط أسفل البطاقة قبل فتح المحادثات.");
@@ -312,7 +376,9 @@
     els.channelWarning.classList.toggle("hidden", warnings.length === 0);
     els.channelWarningText.textContent = warnings.join(" ");
     const label = state.channel === "whatsapp"
-      ? "فتح محادثات واتساب"
+      ? cloudMode
+        ? "إرسال واتساب تلقائيًا"
+        : "فتح محادثات واتساب"
       : state.channel === "cloud"
         ? "إرسال SMS عبر الحاسوب"
         : "إرسال SMS عبر الهاتف";
@@ -326,7 +392,7 @@
   const GATEWAY_TITLES = {
     connected: "الهاتف متصل وجاهز لإرسال SMS",
     outdated: "الهاتف متصل — يلزم تحديث تطبيق البوابة",
-    auth_required: "الهاتف متصل — مفتاح API مطلوب",
+    auth_required: "الهاتف متصل — يلزم الاقتران برمز 4 أرقام",
     offline: "الهاتف غير متصل",
     wrong_service: "عنوان البوابة غير صحيح",
     invalid_url: "رابط بوابة الهاتف غير صالح",
@@ -400,7 +466,7 @@
         text = "متصل — حدّث تطبيق الهاتف";
         tone = "is-warning";
       } else if (mobile.status === "auth_required") {
-        text = "متصل — مفتاح API مطلوب";
+        text = "متصل — يلزم الاقتران برمز";
         tone = "is-warning";
       } else if (!mobileInfo.configured) {
         text = testMode ? "محاكاة فقط" : "غير مهيأة";
@@ -415,10 +481,22 @@
     const waInfo = channelInfo("whatsapp");
     const waBadge = document.querySelector('[data-channel-state="whatsapp"]');
     const desktop = state.gateway && state.gateway.whatsapp_desktop;
+    const cloudMode = whatsappCloud();
     if (waBadge) {
       let text = waInfo.ready ? "جاهزة للإرسال" : "غير مهيأة";
       let tone = waInfo.ready ? "is-accent" : "is-danger";
-      if (waInfo.ready && desktop) {
+      if (cloudMode) {
+        if (!waInfo.ready) {
+          text = "غير مهيأة";
+          tone = "is-danger";
+        } else if (waInfo.configured) {
+          text = state.channels.test_mode ? "Meta Cloud — محاكاة" : "Meta Cloud جاهز";
+          tone = "is-accent";
+        } else {
+          text = "محاكاة فقط";
+          tone = "is-warning";
+        }
+      } else if (waInfo.ready && desktop) {
         if (desktop.installed === false) {
           text = "ثبّت واتساب لسطح المكتب";
           tone = "is-warning";
@@ -473,6 +551,107 @@
       state.gatewayLoading = false;
       if (force) A.setBusy(els.gatewayCheck, false);
     }
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* Pairing                                                                 */
+  /* ---------------------------------------------------------------------- */
+
+  const PAIR_DIGITS = "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹";
+  const WEST_DIGITS = "01234567890123456789";
+
+  function normalizePin(value) {
+    return String(value || "")
+      .split("")
+      .map((char) => {
+        const index = PAIR_DIGITS.indexOf(char);
+        return index >= 0 ? WEST_DIGITS[index] : char;
+      })
+      .join("")
+      .replace(/\D/g, "")
+      .slice(0, 4);
+  }
+
+  function openPairing() {
+    const mobile = gatewayMobile() || {};
+    const currentUrl = mobile.url || "";
+    const modal = A.openModal({
+      title: "اقتران الهاتف برمز 4 أرقام",
+      subtitle: "بدل نسخ مفتاح API الطويل، أدخل الرمز الظاهر في تطبيق البوابة.",
+      icon: "shield-check",
+      body: `
+        <div class="info-banner is-success">
+          ${A.icon("shield-check")}
+          <div><strong>كيف يعمل الاقتران؟</strong> افتح تطبيق بوابة SMS على هاتف أندرويد، واضغط بطاقة «رمز الاقتران» لعرض رمز من 4 أرقام. أدخله هنا ليحفظ الحاسوب المفتاح الطويل تلقائيًا.</div>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="pair-url">رابط بوابة الهاتف</label>
+          <input class="input mono" id="pair-url" type="text" inputmode="url" dir="ltr" maxlength="500" placeholder="192.168.1.20:8080" value="${safe(currentUrl)}">
+          <span class="field-hint">العنوان الظاهر في تطبيق الهاتف. يمكنك تركه كما هو إن كان الهاتف على نفس الشبكة.</span>
+        </div>
+        <div class="field">
+          <label for="pair-pin">رمز الاقتران (4 أرقام)</label>
+          <input class="input mono pin-input" id="pair-pin" type="text" inputmode="numeric" dir="ltr" maxlength="4" autocomplete="one-time-code" placeholder="0000">
+          <span class="field-hint">الرمز يتغير عند تجديده من الهاتف. بعد نجاح الاقتران لا تحتاج لإدخاله مجددًا.</span>
+        </div>
+        <div class="info-banner is-warning hidden" id="pair-error">
+          ${A.icon("warning")}
+          <div id="pair-error-text"></div>
+        </div>`,
+      footer: `<button class="btn btn-secondary" type="button" data-modal-close>إلغاء</button>
+               <button class="btn btn-primary" type="button" id="pair-submit">${A.icon("shield-check")} اقتران الهاتف</button>`,
+    });
+    const body = modal.element;
+    const pinInput = body.querySelector("#pair-pin");
+    const urlInput = body.querySelector("#pair-url");
+    const errorBox = body.querySelector("#pair-error");
+    const errorText = body.querySelector("#pair-error-text");
+    const submit = body.querySelector("#pair-submit");
+    pinInput.focus();
+
+    async function submitPairing() {
+      const pin = normalizePin(pinInput.value);
+      const url = urlInput.value.trim();
+      if (pin.length !== 4) {
+        errorText.textContent = "أدخل رمز الاقتران المكوّن من 4 أرقام.";
+        errorBox.classList.remove("hidden");
+        pinInput.focus();
+        return;
+      }
+      A.setBusy(submit, true);
+      errorBox.classList.add("hidden");
+      try {
+        const data = await A.api("/api/messages/gateway/pair", {
+          method: "POST",
+          body: { pin, url },
+        });
+        state.gateway = data.gateway;
+        A.closeModal();
+        renderGateway();
+        renderStatus();
+        renderChannelLiveStates();
+        syncChannelMessage();
+        updateSendState();
+        A.toast(data.message || "تم اقتران الهاتف بنجاح وحفظ المفتاح تلقائيًا.", "success");
+        loadStudents({ silent: true });
+      } catch (error) {
+        errorText.textContent = error.message || "تعذر إكمال الاقتران. تحقق من الرمز والرابط ثم أعد المحاولة.";
+        errorBox.classList.remove("hidden");
+      } finally {
+        A.setBusy(submit, false);
+      }
+    }
+
+    submit.addEventListener("click", submitPairing);
+    pinInput.addEventListener("input", () => {
+      pinInput.value = normalizePin(pinInput.value);
+    });
+    pinInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        submitPairing();
+      }
+    });
   }
 
   /* ---------------------------------------------------------------------- */
@@ -674,7 +853,11 @@
 
   function updateApprovalText() {
     const count = eligibleRecipients().length;
-    if (state.channel === "whatsapp") {
+    if (state.channel === "whatsapp" && whatsappCloud()) {
+      els.approvalText.textContent = state.channels.test_mode
+        ? `أوافق على محاكاة إرسال رسائل واتساب عبر Meta Cloud API إلى المستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}) في وضع الاختبار، دون استخدام الشبكة.`
+        : `أوافق صراحةً على إرسال رسائل واتساب تلقائيًا عبر Meta Cloud API إلى المستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}).`;
+    } else if (state.channel === "whatsapp") {
       els.approvalText.textContent = `أوافق على تجهيز محادثة واتساب لكل مستلم في النطاق المحدد (العدد: ${A.formatInt(count)})، وأتحمل مسؤولية مراجعة كل رسالة والضغط على «إرسال» داخل واتساب.`;
     } else if (state.channels.test_mode) {
       els.approvalText.textContent = `أوافق على محاكاة إرسال SMS إلى المستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}) في وضع الاختبار، دون استخدام الشبكة أو استهلاك رصيد.`;
@@ -716,6 +899,7 @@
       can = false;
     } else if (
       state.channel === "whatsapp" &&
+      !whatsappCloud() &&
       state.gateway &&
       state.gateway.whatsapp_desktop &&
       state.gateway.whatsapp_desktop.installed === false
@@ -725,9 +909,16 @@
     } else if (!text) {
       hint = "اكتب نص الرسالة قبل المتابعة.";
       can = false;
+    } else if (state.channel === "whatsapp" && whatsappCloud() && text.length > 1024) {
+      hint = `نص رسالة واتساب التلقائية يتجاوز 1024 حرفًا (${A.formatInt(text.length)}). اختصر النص ثم أعد المحاولة.`;
+      can = false;
     } else if (!approved) {
       hint = "فعّل مربع الموافقة لتأكيد الإرسال.";
       can = false;
+    } else if (state.channel === "whatsapp" && whatsappCloud()) {
+      hint = state.channels.test_mode
+        ? `محاكاة إرسال واتساب عبر Meta Cloud API (العدد: ${A.formatInt(count)}).`
+        : `سيبدأ إرسال واتساب تلقائيًا عبر Meta Cloud API (العدد: ${A.formatInt(count)}).`;
     } else {
       hint = state.channel === "whatsapp"
         ? `ستُفتح روابط واتساب للمراجعة اليدوية (العدد: ${A.formatInt(count)}).`
@@ -786,8 +977,11 @@
         `<div class="preview-recipient"><strong>${safe(sample.full_name)}</strong>` +
         `<span>${safe(sample.class_group)} · <span class="mono" dir="ltr">${safe(sample.parent_phone)}</span></span></div>` +
         `<p class="preview-message">${safe(sample.message_body)}</p>`;
-      if (state.channel === "whatsapp") {
+      if (state.channel === "whatsapp" && !whatsappCloud()) {
         els.segmentChip.classList.add("hidden");
+      } else if (state.channel === "whatsapp") {
+        els.segmentChip.classList.remove("hidden");
+        els.segmentChip.textContent = `${A.formatInt((sample.message_body || "").length)} / 1024 حرفًا`;
       } else {
         els.segmentChip.classList.remove("hidden");
         els.segmentChip.textContent = `${A.formatInt(data.preview.segments || 1)} مقطع تقريبًا`;
@@ -829,7 +1023,7 @@
         body: campaignBody(),
       });
       els.approve.checked = false;
-      if (data.campaign && data.campaign.channel === "whatsapp") {
+      if (data.campaign && data.campaign.status === "PREPARED") {
         openWhatsappResult(data);
       } else if (data.job) {
         els.progress.innerHTML = jobMarkup(data.job);
@@ -971,7 +1165,7 @@
 
   function campaignStats(campaign) {
     const counts = campaign.counts || {};
-    if (campaign.channel === "whatsapp") {
+    if (campaign.channel === "whatsapp" && campaign.status === "PREPARED") {
       return `محادثات جاهزة: ${A.formatInt(counts.MANUAL || 0)}`;
     }
     return `${A.formatInt(counts.SENT || 0)} ناجحة · ${A.formatInt(counts.FAILED || 0)} فاشلة${counts.PENDING ? ` · ${A.formatInt(counts.PENDING)} معلقة` : ""}`;
@@ -1023,6 +1217,7 @@
     const counts = campaign.counts || {};
     const items = Array.isArray(data.items) ? data.items : [];
     const isWhatsapp = campaign.channel === "whatsapp";
+    const manualWhatsapp = isWhatsapp && campaign.status === "PREPARED";
     const rows = items
       .map((item) => {
         const link = item.whatsapp_url
@@ -1052,11 +1247,11 @@
           <div><strong>${A.formatInt(campaign.eligible_total || 0)}</strong><span>مؤهل</span></div>
           <div><strong>${A.formatInt(campaign.skipped_total || 0)}</strong><span>مستبعد</span></div>
         </div>
-        <div class="info-banner ${isWhatsapp ? "is-warning" : "is-success"}">
+        <div class="info-banner ${manualWhatsapp ? "is-warning" : "is-success"}">
           ${A.icon(isWhatsapp ? "whatsapp" : "send")}
           <div>
             <strong>${safe(campaign.channel_label)}</strong>
-            ${isWhatsapp
+            ${manualWhatsapp
               ? " هذه الحملة لا ترسل تلقائيًا. استخدم زر واتساب بجانب كل ولي لفتح المحادثة ومراجعتها."
               : ` ${A.formatInt(counts.SENT || 0)} ناجحة، ${A.formatInt(counts.FAILED || 0)} فاشلة، ${A.formatInt(counts.PENDING || 0)} معلقة.`}
           </div>
@@ -1116,7 +1311,7 @@
       });
     });
     els.body.addEventListener("input", () => {
-      els.bodyCount.textContent = `${A.formatInt(els.body.value.length)} / 2000`;
+      renderBodyCount();
       updateApprovalText();
       updateSendState();
       schedulePreview();
@@ -1136,6 +1331,7 @@
     els.approve.addEventListener("change", updateSendState);
     els.send.addEventListener("click", sendCampaign);
     els.gatewayCheck.addEventListener("click", () => loadGateway(true));
+    if (els.gatewayPair) els.gatewayPair.addEventListener("click", openPairing);
     els.refresh.addEventListener("click", () => {
       loadStudents();
       loadHistory();
@@ -1167,7 +1363,7 @@
 
   async function init() {
     bind();
-    els.bodyCount.textContent = "0 / 2000";
+    renderBodyCount();
     await loadStudents();
     loadGateway();
     loadHistory();

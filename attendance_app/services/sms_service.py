@@ -42,6 +42,10 @@ class SmsConnectionError(SmsGatewayError):
     """Raised when the gateway cannot be reached at the transport level."""
 
 
+class GatewayPairError(SmsGatewayError):
+    """Raised when a 4-digit pairing code cannot be exchanged for the key."""
+
+
 def _json_object(raw: str, label: str) -> dict[str, Any]:
     try:
         value = json.loads(raw or "{}")
@@ -90,6 +94,15 @@ def normalize_mobile_url(value: Any) -> str:
         path = "/send"
     query = f"?{parsed.query}" if parsed.query else ""
     return f"{parsed.scheme.lower()}://{parsed.netloc}{path or '/send'}{query}"
+
+
+_PAIR_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
+
+
+def normalize_pair_pin(value: Any) -> str:
+    text = str(value or "").translate(_PAIR_DIGITS)
+    digits = re.sub(r"[\s\-]", "", text)
+    return digits if re.fullmatch(r"\d{4}", digits) else ""
 
 
 def _version_tuple(value: Any) -> tuple[int, ...]:
@@ -173,6 +186,7 @@ def probe_gateway(
             "version": "",
             "outdated": False,
             "auth_required": False,
+            "pairing": False,
             "download_url": GATEWAY_APP_DOWNLOAD_URL,
         }
     parsed = urlparse(endpoint)
@@ -202,6 +216,7 @@ def probe_gateway(
         "app": "",
         "outdated": False,
         "auth_required": False,
+        "pairing": False,
         "auth_configured": bool(api_key),
         "auth_valid": None,
         "download_url": GATEWAY_APP_DOWNLOAD_URL,
@@ -255,7 +270,7 @@ def probe_gateway(
             auth_required=True,
             auth_valid=False,
             detail="البوابة متصلة لكنها رفضت الفحص دون مفتاح صالح.",
-            hint="انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل.",
+            hint="افتح مركز الرسائل واضغط «اقتران الهاتف» ثم أدخل رمز الاقتران المكوّن من 4 أرقام.",
         )
         _PROBE_CACHE[cache_key] = (now, dict(result))
         return result
@@ -288,6 +303,7 @@ def probe_gateway(
 
     version = str(payload.get("version") or "")
     auth_required = bool(payload.get("authRequired", payload.get("auth_required", False)))
+    pairing = bool(payload.get("pairing", False))
     outdated = bool(
         version and _version_tuple(version) and _version_tuple(version) < _version_tuple(GATEWAY_APP_VERSION)
     )
@@ -296,16 +312,16 @@ def probe_gateway(
         auth_valid = _verify_gateway_key(endpoint, api_key, headers, timeout)
     if auth_required and not api_key:
         status = "auth_required"
-        detail = "البوابة متصلة وتتطلب مفتاح API."
-        hint = "انسخ مفتاح API من تطبيق الهاتف والصقه في إعدادات الرسائل."
+        detail = "البوابة متصلة وتتطلب اقترانًا برمز 4 أرقام."
+        hint = "اضغط «اقتران الهاتف» في مركز الرسائل وأدخل الرمز المكوّن من 4 أرقام."
     elif auth_required and auth_valid is False:
         status = "auth_required"
-        detail = "البوابة متصلة لكن مفتاح API غير صحيح."
-        hint = "انسخ مفتاح API الحالي من تطبيق الهاتف إلى إعدادات الرسائل ثم أعد الفحص."
+        detail = "البوابة متصلة لكن مفتاح الاقتران غير صحيح."
+        hint = "أعد اقتران الهاتف برمز الاقتران المكوّن من 4 أرقام لاستعادة المفتاح الصحيح."
     elif auth_required and auth_valid is None:
         status = "connected"
-        detail = "بوابة الهاتف متصلة، لكن تعذر التحقق من مفتاح API."
-        hint = "تأكد من أن مفتاح API في الإعدادات مطابق للمفتاح الظاهر في تطبيق الهاتف."
+        detail = "بوابة الهاتف متصلة، لكن تعذر التحقق من مفتاح الاقتران."
+        hint = "أعد اقتران الهاتف برمز الاقتران المكوّن من 4 أرقام من مركز الرسائل."
     elif outdated:
         status = "outdated"
         detail = f"البوابة متصلة لكن إصدارها {version} أقدم من المطلوب {GATEWAY_APP_VERSION}."
@@ -324,10 +340,121 @@ def probe_gateway(
         app=app_name,
         outdated=outdated,
         auth_required=auth_required,
+        pairing=pairing,
         auth_valid=auth_valid,
     )
     _PROBE_CACHE[cache_key] = (now, dict(result))
     return result
+
+
+def pair_gateway(url: str, pin: Any, *, timeout: float = 8.0) -> dict[str, Any]:
+    """Exchange the 4-digit code shown on the phone for its long API key."""
+    endpoint = normalize_mobile_url(url)
+    if not endpoint:
+        raise GatewayPairError(
+            "رابط بوابة الهاتف غير صالح. أدخل عنوانًا مثل http://192.168.1.20:8080/send."
+        )
+    normalized_pin = normalize_pair_pin(pin)
+    if not normalized_pin:
+        raise GatewayPairError("رمز الاقتران يجب أن يتكون من 4 أرقام.")
+    parsed = urlparse(endpoint)
+    pair_url = f"{parsed.scheme}://{parsed.netloc}/pair"
+    timeout = max(3.0, min(float(timeout or 8.0), 20.0))
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "User-Agent": f"SmartAttendance/{APP_VERSION}",
+        "X-Client-App": "SmartAttendance",
+    }
+    try:
+        response = requests.post(
+            pair_url,
+            json={"pin": normalized_pin, "client": f"SmartAttendance/{APP_VERSION}"},
+            headers=headers,
+            timeout=timeout,
+            allow_redirects=False,
+            stream=True,
+        )
+    except requests.exceptions.SSLError as exc:
+        raise GatewayPairError(
+            "تعذر الاتصال ببوابة الهاتف عبر HTTPS. استخدم رابط http:// كما يظهر في تطبيق الهاتف."
+        ) from exc
+    except requests.Timeout as exc:
+        raise GatewayPairError(
+            "انتهت مهلة الاقتران. تأكد من أن الهاتف مستيقظ وعلى نفس شبكة الواي فاي ثم أعد المحاولة."
+        ) from exc
+    except requests.ConnectionError as exc:
+        raise GatewayPairError(
+            "تعذر الوصول إلى بوابة الهاتف. شغّل خادم البوابة داخل التطبيق وتأكد من الشبكة "
+            "والمنفذ ثم أعد المحاولة."
+        ) from exc
+    except requests.RequestException as exc:
+        raise GatewayPairError(f"خطأ في الاتصال ببوابة الهاتف: {exc}") from exc
+
+    status_code = response.status_code
+    try:
+        body_text = (response.text or "").strip()
+    except requests.RequestException:
+        body_text = ""
+    finally:
+        response.close()
+    payload: dict[str, Any] = {}
+    if body_text:
+        try:
+            parsed_body = json.loads(body_text)
+            if isinstance(parsed_body, dict):
+                payload = parsed_body
+        except ValueError:
+            payload = {}
+
+    if status_code in (401, 403):
+        raise GatewayPairError(
+            "رمز الاقتران غير صحيح. تحقق من الرمز الظاهر في تطبيق الهاتف."
+        )
+    if status_code == 429:
+        message = "محاولات اقتران كثيرة."
+        try:
+            seconds = int(payload.get("retryAfter"))
+        except (TypeError, ValueError):
+            seconds = 0
+        if seconds > 0:
+            message += f" انتظر {seconds} ثانية ثم أعد المحاولة."
+        raise GatewayPairError(message)
+    if status_code == 404:
+        raise GatewayPairError(
+            "تطبيق الهاتف لا يدعم الاقتران. حدّث تطبيق البوابة إلى الإصدار "
+            f"{GATEWAY_APP_VERSION} أو أحدث ثم أعد المحاولة."
+        )
+    if not (200 <= status_code < 300):
+        snippet = body_text.replace("\n", " ")[:180]
+        raise GatewayPairError(
+            f"رفضت البوابة طلب الاقتران (HTTP {status_code}){': ' + snippet if snippet else ''}"
+        )
+
+    api_key = str(payload.get("apiKey") or payload.get("api_key") or "").strip()
+    if not re.fullmatch(r"[A-Za-z0-9_\-]{8,128}", api_key):
+        raise GatewayPairError(
+            "استجابت البوابة دون مفتاح صالح. حدّث تطبيق الهاتف ثم أعد المحاولة."
+        )
+    for cache_key in list(_PROBE_CACHE):
+        if cache_key[0] == endpoint:
+            _PROBE_CACHE.pop(cache_key, None)
+    version = str(payload.get("version") or "")
+    return {
+        "api_key": api_key,
+        "app": str(payload.get("app") or GATEWAY_APP_NAME),
+        "version": version,
+        "port": payload.get("port") or parsed.port or 8080,
+        "pair_url": pair_url,
+        "endpoint": endpoint,
+        "outdated": bool(
+            version
+            and _version_tuple(version)
+            and _version_tuple(version) < _version_tuple(GATEWAY_APP_VERSION)
+        ),
+        "download_url": GATEWAY_APP_DOWNLOAD_URL,
+        "required_version": GATEWAY_APP_VERSION,
+    }
 
 
 def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict[str, Any]:
@@ -414,7 +541,7 @@ def send_via_gateway(settings: dict[str, str], phone: str, message: str) -> dict
     if status_code in (401, 403):
         raise SmsGatewayError(
             f"رفضت البوابة مفتاح API (HTTP {status_code}). "
-            "انسخ المفتاح الصحيح من تطبيق الهاتف إلى إعدادات الرسائل."
+            "أعد اقتران الهاتف برمز الاقتران المكوّن من 4 أرقام من مركز الرسائل."
         )
     if not (200 <= status_code < 300):
         snippet = body_text.replace("\n", " ")[:220]

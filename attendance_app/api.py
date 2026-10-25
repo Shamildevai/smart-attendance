@@ -17,6 +17,7 @@ from barcode.writer import SVGWriter
 from flask import Blueprint, Response, current_app, g, jsonify, request, send_file
 
 from .auth import AccountError, create_user, delete_user, list_users, update_user
+from .config import GATEWAY_APP_VERSION
 from .db import (
     DEFAULT_PRINT_CONFIG,
     bool_setting,
@@ -204,6 +205,12 @@ def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
         "sms_retry_max": int_setting(settings, "sms_retry_max", 3, 1, 10),
         "whatsapp_enabled": bool_setting(settings, "whatsapp_enabled", True),
         "whatsapp_country_code": settings.get("whatsapp_country_code", "213"),
+        "whatsapp_provider": settings.get("whatsapp_provider", "manual"),
+        "whatsapp_phone_number_id": settings.get("whatsapp_phone_number_id", ""),
+        "whatsapp_access_token": settings.get("whatsapp_access_token", ""),
+        "whatsapp_template_name": settings.get("whatsapp_template_name", ""),
+        "whatsapp_template_lang": settings.get("whatsapp_template_lang", "ar"),
+        "whatsapp_api_version": settings.get("whatsapp_api_version", "v23.0"),
         "school_weekdays": [
             int(part) for part in settings.get("school_weekdays", "0,1,2,3,4").split(",")
             if part.strip().isdigit()
@@ -291,6 +298,11 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         "sms_mobile_key": 1000,
         "sms_cloud_url": 500,
         "sms_cloud_key": 1000,
+        "whatsapp_phone_number_id": 30,
+        "whatsapp_access_token": 1000,
+        "whatsapp_template_name": 120,
+        "whatsapp_template_lang": 20,
+        "whatsapp_api_version": 20,
         "update_feed_url": 500,
     }
     for key, limit in text_limits.items():
@@ -343,6 +355,35 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         if not code or len(code) > 4:
             raise ApiError("رمز الدولة يجب أن يتكون من 1 إلى 4 أرقام.", 400)
         updates["whatsapp_country_code"] = code
+    if "whatsapp_provider" in data:
+        provider = str(data.get("whatsapp_provider") or "").strip().lower()
+        if provider not in ("manual", "cloud"):
+            raise ApiError("طريقة إرسال واتساب غير صالحة.", 400)
+        updates["whatsapp_provider"] = provider
+    if "whatsapp_phone_number_id" in updates:
+        phone_id = re.sub(r"\D", "", updates["whatsapp_phone_number_id"])
+        if updates["whatsapp_phone_number_id"] and not phone_id:
+            raise ApiError("Phone Number ID يجب أن يتكون من أرقام فقط.", 400)
+        updates["whatsapp_phone_number_id"] = phone_id
+    if "whatsapp_template_name" in updates:
+        template_name = updates["whatsapp_template_name"]
+        if template_name and not re.fullmatch(r"[a-z0-9_]{1,120}", template_name):
+            raise ApiError(
+                "اسم قالب واتساب يجب أن يحتوي حروفًا إنجليزية صغيرة وأرقامًا وشرطات سفلية فقط.",
+                400,
+            )
+    if "whatsapp_template_lang" in updates:
+        lang = updates["whatsapp_template_lang"] or "ar"
+        if not re.fullmatch(r"[A-Za-z]{2,3}(?:_[A-Za-z]{2})?", lang):
+            raise ApiError("لغة قالب واتساب غير صالحة (مثال: ar أو en_US).", 400)
+        updates["whatsapp_template_lang"] = lang
+    if "whatsapp_api_version" in updates:
+        version = updates["whatsapp_api_version"] or "v23.0"
+        if re.fullmatch(r"\d{1,2}\.\d", version):
+            version = f"v{version}"
+        if not re.fullmatch(r"v\d{1,2}\.\d", version):
+            raise ApiError("إصدار Graph API غير صالح (مثال: v23.0).", 400)
+        updates["whatsapp_api_version"] = version
     for key, label, low, high in (
         ("sms_timeout", "مهلة بوابة SMS", 3, 120),
         ("sms_retry_max", "عدد محاولات الإرسال", 1, 10),
@@ -367,11 +408,21 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
             days.add(day)
         updates["school_weekdays"] = ",".join(str(day) for day in sorted(days))
     merged = {**get_settings(conn), **updates}
-    if merged.get("sms_test_mode", "1") != "1" and not any(
-        merged.get(key)
-        for key in ("sms_api_url", "sms_mobile_url", "sms_cloud_url")
+    if (
+        merged.get("sms_test_mode", "1") != "1"
+        and not any(
+            merged.get(key)
+            for key in ("sms_api_url", "sms_mobile_url", "sms_cloud_url")
+        )
+        and not (
+            merged.get("whatsapp_provider") == "cloud"
+            and whatsapp_service.cloud_configured(merged)
+        )
     ):
-        raise ApiError("أدخل رابط بوابة SMS واحدة على الأقل قبل تعطيل وضع الاختبار.", 400)
+        raise ApiError(
+            "أدخل رابط بوابة SMS واحدة أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار.",
+            400,
+        )
     return updates
 
 
@@ -420,7 +471,26 @@ def test_sms_api():
     data = _payload()
     phone = normalize_phone(data.get("phone"))
     settings = get_settings(conn)
-    result = sms_service.test_gateway(settings, phone)
+    resolved = messaging_service.resolve_channel_settings(
+        settings, settings.get("sms_gateway", "local")
+    )
+    result = sms_service.test_gateway(resolved, phone)
+    return ok(result=result)
+
+
+@api_bp.post("/settings/test-whatsapp")
+def test_whatsapp_api():
+    conn = get_db()
+    data = _payload()
+    phone = normalize_phone(data.get("phone"))
+    if not re.fullmatch(r"\+?\d{8,15}", phone or ""):
+        raise ApiError("رقم الهاتف التجريبي غير صالح.", 400)
+    try:
+        result = whatsapp_service.test_cloud(get_settings(conn), phone)
+    except whatsapp_service.WhatsAppConfigError as error:
+        raise ApiError(str(error), 400, "whatsapp_config") from error
+    except whatsapp_service.WhatsAppError as error:
+        raise ApiError(str(error), 502, "whatsapp") from error
     return ok(result=result)
 
 
@@ -1155,6 +1225,44 @@ def message_gateway_api():
     return ok(gateway=status)
 
 
+@api_bp.post("/messages/gateway/pair")
+def pair_gateway_api():
+    data = _payload()
+    conn = get_db()
+    settings = get_settings(conn)
+    url = str(data.get("url") or "").strip()
+    if not url:
+        resolved = messaging_service.resolve_channel_settings(settings, "mobile")
+        url = resolved.get("sms_api_url", "")
+    try:
+        result = sms_service.pair_gateway(
+            url,
+            data.get("pin"),
+            timeout=min(int_setting(settings, "sms_timeout", 10, 3, 120), 15),
+        )
+    except sms_service.GatewayPairError as error:
+        raise ApiError(str(error), 400, "pairing") from error
+    updates = {
+        "sms_mobile_url": result["endpoint"],
+        "sms_mobile_key": result["api_key"],
+    }
+    if settings.get("sms_gateway", "local") == "local":
+        updates["sms_api_url"] = result["endpoint"]
+        updates["sms_api_key"] = result["api_key"]
+    with conn:
+        save_settings(conn, updates)
+    status = messaging_service.gateway_status(get_settings(conn), force=True)
+    message = (
+        f"تم اقتران الهاتف بنجاح (الإصدار {result['version'] or '—'}). "
+        "حُفظ مفتاح البوابة تلقائيًا ولا حاجة لنسخه يدويًا."
+    )
+    if result["outdated"]:
+        message += (
+            f" يلزم تحديث تطبيق الهاتف إلى {GATEWAY_APP_VERSION} من الرابط أسفل البطاقة."
+        )
+    return ok(gateway=status, pairing=result, message=message)
+
+
 @api_bp.get("/messages/students")
 def message_students_api():
     conn = get_db()
@@ -1215,7 +1323,12 @@ def send_message_campaign_api():
     conn = get_db()
     manager: messaging_service.MessageJobManager = current_app.extensions["message_jobs"]
     channel = str(data.get("channel") or "mobile")
-    if channel != "whatsapp" and manager.current():
+    settings = get_settings(conn)
+    manual_whatsapp = (
+        channel == "whatsapp"
+        and settings.get("whatsapp_provider", "manual") != "cloud"
+    )
+    if not manual_whatsapp and manager.current():
         raise ApiError(
             "هناك حملة رسائل قيد الإرسال. انتظر اكتمالها قبل بدء حملة جديدة.",
             409,
@@ -1237,8 +1350,9 @@ def send_message_campaign_api():
         "campaign": campaign,
         "test_mode": result["test_mode"],
     }
-    if campaign["channel"] == "whatsapp":
+    if campaign["status"] == "PREPARED":
         response["items"] = result["items"]
+        response["whatsapp_provider"] = "manual"
         response["message"] = (
             f"تم تجهيز محادثات واتساب. العدد: {len(result['items'])}. راجع كل رسالة وأرسلها يدويًا من واتساب."
         )
@@ -1253,7 +1367,11 @@ def send_message_campaign_api():
             )
         response["job"] = job
         response["job_started"] = True
-        response["message"] = "بدأ إرسال الرسائل إلى الأولياء."
+        if campaign["channel"] == "whatsapp":
+            response["whatsapp_provider"] = "cloud"
+            response["message"] = "بدأ إرسال رسائل واتساب عبر Meta Cloud API إلى الأولياء."
+        else:
+            response["message"] = "بدأ إرسال الرسائل إلى الأولياء."
     return ok(**response)
 
 

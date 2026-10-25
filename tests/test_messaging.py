@@ -526,3 +526,268 @@ def test_pages_expose_phone_app_and_whatsapp_download_links(client):
         html = client.get(path).get_data(as_text=True)
         assert config.GATEWAY_APP_DOWNLOAD_URL in html, path
         assert config.WHATSAPP_DOWNLOAD_URL in html, path
+
+
+def test_normalize_pair_pin_accepts_local_and_western_digits():
+    assert sms_service.normalize_pair_pin("2983") == "2983"
+    assert sms_service.normalize_pair_pin(" ٢٩٨٣ ") == "2983"
+    assert sms_service.normalize_pair_pin("۲۹۸۳") == "2983"
+    assert sms_service.normalize_pair_pin("29-83") == "2983"
+    assert sms_service.normalize_pair_pin("298") == ""
+    assert sms_service.normalize_pair_pin("abcd") == ""
+    assert sms_service.normalize_pair_pin(None) == ""
+
+
+def test_pair_gateway_exchanges_pin_for_api_key(monkeypatch):
+    captured = {}
+
+    def fake_post(url, **kwargs):
+        captured["url"] = url
+        captured["json"] = kwargs.get("json")
+        captured["headers"] = kwargs.get("headers", {})
+        return _FakeResponse(
+            200,
+            {
+                "ok": True,
+                "apiKey": "paired-secret-key-123456",
+                "app": config.GATEWAY_APP_NAME,
+                "version": config.GATEWAY_APP_VERSION,
+                "port": 8080,
+                "authRequired": True,
+                "pairing": True,
+            },
+        )
+
+    monkeypatch.setattr(sms_service.requests, "post", fake_post)
+    result = sms_service.pair_gateway("192.168.1.20:8080", "٢٩٨٣")
+    assert captured["url"] == "http://192.168.1.20:8080/pair"
+    assert captured["json"] == {
+        "pin": "2983",
+        "client": f"SmartAttendance/{config.APP_VERSION}",
+    }
+    assert captured["headers"]["X-Client-App"] == "SmartAttendance"
+    assert captured["headers"]["User-Agent"] == f"SmartAttendance/{config.APP_VERSION}"
+    assert result["api_key"] == "paired-secret-key-123456"
+    assert result["endpoint"] == "http://192.168.1.20:8080/send"
+    assert result["pair_url"] == "http://192.168.1.20:8080/pair"
+    assert result["outdated"] is False
+
+
+def test_pair_gateway_flags_outdated_phone_app(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests,
+        "post",
+        lambda url, **kwargs: _FakeResponse(
+            200, {"apiKey": "paired-secret-key-123456", "version": "0.9.0"}
+        ),
+    )
+    result = sms_service.pair_gateway("http://192.168.1.20:8080/send", "2983")
+    assert result["outdated"] is True
+
+
+def test_pair_gateway_maps_wrong_pin_rate_limit_and_bad_response(monkeypatch):
+    monkeypatch.setattr(
+        sms_service.requests, "post", lambda url, **kwargs: _FakeResponse(401)
+    )
+    with pytest.raises(sms_service.GatewayPairError) as wrong_pin:
+        sms_service.pair_gateway("http://192.168.1.20:8080/send", "2983")
+    assert "رمز الاقتران غير صحيح" in str(wrong_pin.value)
+
+    monkeypatch.setattr(
+        sms_service.requests,
+        "post",
+        lambda url, **kwargs: _FakeResponse(429, {"error": "too many", "retryAfter": 60}),
+    )
+    with pytest.raises(sms_service.GatewayPairError) as limited:
+        sms_service.pair_gateway("http://192.168.1.20:8080/send", "2983")
+    assert "60" in str(limited.value)
+
+    monkeypatch.setattr(
+        sms_service.requests,
+        "post",
+        lambda url, **kwargs: _FakeResponse(200, {"ok": True}),
+    )
+    with pytest.raises(sms_service.GatewayPairError) as missing_key:
+        sms_service.pair_gateway("http://192.168.1.20:8080/send", "2983")
+    assert "دون مفتاح صالح" in str(missing_key.value)
+
+    with pytest.raises(sms_service.GatewayPairError) as invalid_pin:
+        sms_service.pair_gateway("http://192.168.1.20:8080/send", "12ab")
+    assert "4 أرقام" in str(invalid_pin.value)
+
+
+def test_pair_endpoint_saves_key_and_updates_default_gateway(
+    client, csrf, monkeypatch
+):
+    pair_calls = {}
+
+    def fake_pair(url, pin, **kwargs):
+        pair_calls["url"] = url
+        pair_calls["pin"] = pin
+        return {
+            "api_key": "paired-secret-key-123456",
+            "app": config.GATEWAY_APP_NAME,
+            "version": config.GATEWAY_APP_VERSION,
+            "port": 8080,
+            "pair_url": "http://192.168.1.20:8080/pair",
+            "endpoint": "http://192.168.1.20:8080/send",
+            "outdated": False,
+            "download_url": config.GATEWAY_APP_DOWNLOAD_URL,
+            "required_version": config.GATEWAY_APP_VERSION,
+        }
+
+    monkeypatch.setattr(sms_service, "pair_gateway", fake_pair)
+    monkeypatch.setattr(
+        messaging_service,
+        "gateway_status",
+        lambda settings, force=False: {"mobile": {"status": "connected"}},
+    )
+    response = client.post(
+        "/api/messages/gateway/pair",
+        json={"url": "192.168.1.20:8080", "pin": "2983"},
+        headers=csrf,
+    )
+    assert response.status_code == 200, response.get_json()
+    data = response.get_json()
+    assert data["gateway"]["mobile"]["status"] == "connected"
+    assert data["pairing"]["api_key"] == "paired-secret-key-123456"
+    assert "اقتران الهاتف بنجاح" in data["message"]
+    assert "لا حاجة لنسخه يدويًا" in data["message"]
+    assert pair_calls == {"url": "192.168.1.20:8080", "pin": "2983"}
+
+    settings = client.get("/api/settings").get_json()["settings"]
+    assert settings["sms_mobile_url"] == "http://192.168.1.20:8080/send"
+    assert settings["sms_mobile_key"] == "paired-secret-key-123456"
+    assert settings["sms_api_url"] == "http://192.168.1.20:8080/send"
+    assert settings["sms_api_key"] == "paired-secret-key-123456"
+
+
+def test_pair_endpoint_reports_pairing_errors(client, csrf, monkeypatch):
+    def fail_pair(url, pin, **kwargs):
+        raise sms_service.GatewayPairError("رمز الاقتران غير صحيح. تحقق من الرمز الظاهر في تطبيق الهاتف.")
+
+    monkeypatch.setattr(sms_service, "pair_gateway", fail_pair)
+    response = client.post(
+        "/api/messages/gateway/pair",
+        json={"url": "192.168.1.20:8080", "pin": "0000"},
+        headers=csrf,
+    )
+    assert response.status_code == 400
+    assert response.get_json()["error"]["code"] == "pairing"
+    assert "رمز الاقتران غير صحيح" in response.get_json()["error"]["message"]
+
+
+def test_pair_endpoint_uses_saved_mobile_url_when_omitted(client, csrf, monkeypatch):
+    saved = client.put(
+        "/api/settings",
+        json={"sms_mobile_url": "http://192.168.1.21:8080/send"},
+        headers=csrf,
+    )
+    assert saved.status_code == 200, saved.get_json()
+    seen = {}
+
+    def fake_pair(url, pin, **kwargs):
+        seen["url"] = url
+        return {
+            "api_key": "paired-secret-key-123456",
+            "app": config.GATEWAY_APP_NAME,
+            "version": config.GATEWAY_APP_VERSION,
+            "port": 8080,
+            "pair_url": "http://192.168.1.21:8080/pair",
+            "endpoint": "http://192.168.1.21:8080/send",
+            "outdated": False,
+            "download_url": config.GATEWAY_APP_DOWNLOAD_URL,
+            "required_version": config.GATEWAY_APP_VERSION,
+        }
+
+    monkeypatch.setattr(sms_service, "pair_gateway", fake_pair)
+    monkeypatch.setattr(
+        messaging_service,
+        "gateway_status",
+        lambda settings, force=False: {"mobile": {"status": "connected"}},
+    )
+    response = client.post(
+        "/api/messages/gateway/pair", json={"pin": "2983"}, headers=csrf
+    )
+    assert response.status_code == 200, response.get_json()
+    assert seen["url"] == "http://192.168.1.21:8080/send"
+
+
+def test_whatsapp_cloud_settings_validation_and_defaults(client, csrf):
+    response = client.put(
+        "/api/settings",
+        json={
+            "whatsapp_provider": "cloud",
+            "whatsapp_phone_number_id": "123 456 789",
+            "whatsapp_access_token": "EAAG-test-token",
+            "whatsapp_template_name": "absence_notice",
+            "whatsapp_template_lang": "ar",
+            "whatsapp_api_version": "23.0",
+        },
+        headers=csrf,
+    )
+    assert response.status_code == 200, response.get_json()
+    settings = response.get_json()["settings"]
+    assert settings["whatsapp_provider"] == "cloud"
+    assert settings["whatsapp_phone_number_id"] == "123456789"
+    assert settings["whatsapp_api_version"] == "v23.0"
+    assert settings["whatsapp_template_lang"] == "ar"
+
+    assert (
+        client.put(
+            "/api/settings", json={"whatsapp_provider": "email"}, headers=csrf
+        ).status_code
+        == 400
+    )
+    assert (
+        client.put(
+            "/api/settings",
+            json={"whatsapp_template_name": "Absence Notice"},
+            headers=csrf,
+        ).status_code
+        == 400
+    )
+    assert (
+        client.put(
+            "/api/settings", json={"whatsapp_template_lang": "ar-EG!"}, headers=csrf
+        ).status_code
+        == 400
+    )
+    assert (
+        client.put(
+            "/api/settings", json={"whatsapp_api_version": "latest"}, headers=csrf
+        ).status_code
+        == 400
+    )
+
+
+def test_channels_payload_reports_cloud_mode(client, csrf):
+    saved = client.put(
+        "/api/settings",
+        json={
+            "whatsapp_provider": "cloud",
+            "whatsapp_phone_number_id": "123456789",
+            "whatsapp_access_token": "EAAG-test-token",
+            "whatsapp_template_name": "absence_notice",
+        },
+        headers=csrf,
+    )
+    assert saved.status_code == 200, saved.get_json()
+    data = client.get("/api/messages/students").get_json()
+    whatsapp = next(
+        item for item in data["channels"]["channels"] if item["id"] == "whatsapp"
+    )
+    assert data["channels"]["whatsapp_provider"] == "cloud"
+    assert data["channels"]["whatsapp_cloud"]["configured"] is True
+    assert whatsapp["mode"] == "cloud"
+    assert "Meta" in whatsapp["label"]
+
+
+def test_messages_page_exposes_pairing_and_cloud_controls(client):
+    html = client.get("/messages").get_data(as_text=True)
+    assert "msg-gateway-pair" in html
+    assert "whatsapp" in html
+    settings_html = client.get("/settings").get_data(as_text=True)
+    assert "sms-pair-pin" in settings_html
+    assert "whatsapp-provider" in settings_html
+    assert "whatsapp-access-token" in settings_html

@@ -2,12 +2,12 @@
 ; Build with: build_setup.bat  (or ISCC.exe installer\SmartAttendance.iss)
 
 #define MyAppName "نظام متابعة الحضور"
-#define MyAppVersion "1.1.7"
+#define MyAppVersion "1.1.8"
 #define MyAppPublisher "د. بوزويرة عزيز (shamildev)"
 #define MyAppExeName "SmartAttendance.exe"
 #define MyAppCopyright "© 2026 د. بوزويرة عزيز — shamildev. جميع الحقوق محفوظة."
 #ifndef SourceExe
-  #define SourceExe "..\dist\{#MyAppExeName}"
+  #define SourceExe "..\dist\SmartAttendance.exe"
 #endif
 
 [Setup]
@@ -18,7 +18,7 @@ AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppCopyright={#MyAppCopyright}
 AppComments=صدقة عن والدي المرحوم بوزويرة قادة
-VersionInfoVersion=1.1.7.0
+VersionInfoVersion=1.1.8.0
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoDescription=مثبت {#MyAppName}
 VersionInfoCopyright={#MyAppCopyright}
