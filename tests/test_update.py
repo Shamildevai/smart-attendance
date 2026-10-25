@@ -9,6 +9,8 @@ import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
+from attendance_app import config
+from attendance_app.db import DEFAULT_SETTINGS, LEGACY_UPDATE_FEED_URL, connect, init_db
 from attendance_app.services import update_service
 from attendance_app.services.update_service import (
     UpdateError,
@@ -38,7 +40,7 @@ def build_manifest(private, version="9.9.9", payload=b"exe-bytes", kind="portabl
         "files": [
             {
                 "kind": kind,
-                "url": f"https://update.fetsync.org/builds/{kind}.exe",
+                "url": f"https://fetsync.org/Update/builds/{kind}.exe",
                 "sha256": hashlib.sha256(payload).hexdigest(),
                 "size": len(payload),
                 "name": "SmartAttendance.exe",
@@ -55,6 +57,78 @@ def test_version_comparison():
     assert not is_newer("1.1.0", "1.1.0")
     assert not is_newer("1.0.9", "1.1.0")
     assert not is_newer("bad", "1.1.0")
+
+
+def test_default_feed_points_to_public_update_path():
+    assert config.UPDATE_FEED_URL == "https://fetsync.org/Update/latest.json"
+    assert DEFAULT_SETTINGS["update_feed_url"] == config.UPDATE_FEED_URL
+
+
+def _write_feed_setting(db_path, value):
+    conn = connect(db_path)
+    conn.execute("UPDATE settings SET value = ? WHERE key = 'update_feed_url'", (value,))
+    conn.commit()
+    conn.close()
+
+
+def _read_feed_setting(db_path):
+    conn = connect(db_path)
+    try:
+        return conn.execute("SELECT value FROM settings WHERE key = 'update_feed_url'").fetchone()[0]
+    finally:
+        conn.close()
+
+
+def test_init_db_migrates_legacy_feed_default(tmp_path):
+    db_path = tmp_path / "legacy.db"
+    init_db(db_path)
+    _write_feed_setting(db_path, LEGACY_UPDATE_FEED_URL)
+
+    init_db(db_path)
+
+    assert _read_feed_setting(db_path) == config.UPDATE_FEED_URL
+
+
+def test_init_db_keeps_custom_feed(tmp_path):
+    db_path = tmp_path / "custom.db"
+    init_db(db_path)
+    custom = "https://example.org/updates/latest.json"
+    _write_feed_setting(db_path, custom)
+
+    init_db(db_path)
+
+    assert _read_feed_setting(db_path) == custom
+
+
+def test_fetch_manifest_retries_transient_failure(monkeypatch):
+    feed = "https://fetsync.org/Update/latest.json"
+    payload = json.dumps({"version": "1.1.11"}).encode("utf-8")
+    calls = {"count": 0}
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_exc):
+            return False
+
+        def geturl(self):
+            return feed
+
+        def read(self, _limit):
+            return payload
+
+    def fake_urlopen(_request, timeout):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise TimeoutError("timed out")
+        return Response()
+
+    monkeypatch.setattr(update_service, "urlopen", fake_urlopen)
+    monkeypatch.setattr(update_service, "FETCH_RETRY_DELAY", 0)
+
+    assert update_service.fetch_manifest(feed)["version"] == "1.1.11"
+    assert calls["count"] == 2
 
 
 def test_valid_signature_is_accepted(signing_key):
@@ -87,7 +161,7 @@ def test_insecure_artifact_url_is_rejected(signing_key):
         "files": [
             {
                 "kind": "portable",
-                "url": "http://update.fetsync.org/builds/app.exe",
+                "url": "http://fetsync.org/Update/builds/app.exe",
                 "sha256": hashlib.sha256(b"x").hexdigest(),
                 "size": 1,
                 "name": "app.exe",
@@ -141,8 +215,8 @@ def test_check_update_reports_bad_signature(app, client, signing_key, monkeypatc
 def test_select_asset_prefers_setup_for_installed_build(monkeypatch):
     manifest = {
         "files": [
-            {"kind": "portable", "url": "https://update.fetsync.org/builds/app.exe"},
-            {"kind": "setup", "url": "https://update.fetsync.org/builds/setup.exe"},
+            {"kind": "portable", "url": "https://fetsync.org/Update/builds/app.exe"},
+            {"kind": "setup", "url": "https://fetsync.org/Update/builds/setup.exe"},
         ]
     }
     monkeypatch.setattr(update_service.sys, "frozen", True, raising=False)

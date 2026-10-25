@@ -28,6 +28,8 @@ CHUNK_SIZE = 128 * 1024
 AUTO_INSTALL_DELAY = 120
 IDLE_MINUTES = 15
 RETRY_SECONDS = 30 * 60
+FETCH_ATTEMPTS = 2
+FETCH_RETRY_DELAY = 1.0
 VERSION_RE = re.compile(r"^\d{1,4}\.\d{1,4}\.\d{1,4}$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 KINDS = {"portable", "setup"}
@@ -139,20 +141,28 @@ def fetch_manifest(feed_url: str) -> dict:
             "Cache-Control": "no-cache",
         },
     )
-    try:
-        with urlopen(request, timeout=15) as response:
-            final_url = getattr(response, "geturl", lambda: feed_url)()
-            if urlsplit(final_url).scheme != "https":
-                raise UpdateError("أعاد خادم التحديثات اتصالًا غير آمن.")
-            raw = response.read(MAX_MANIFEST_BYTES + 1)
-    except UpdateError:
-        raise
-    except HTTPError as error:
-        if error.code == 404:
-            raise UpdateError("لم يُنشر أي تحديث على الخادم حتى الآن.") from error
-        raise UpdateError("تعذر الاتصال بخادم التحديثات. تحقق من الاتصال بالإنترنت.") from error
-    except Exception as error:
-        raise UpdateError("تعذر الاتصال بخادم التحديثات. تحقق من الاتصال بالإنترنت.") from error
+    raw = None
+    last_error: Exception | None = None
+    for attempt in range(FETCH_ATTEMPTS):
+        try:
+            with urlopen(request, timeout=15) as response:
+                final_url = getattr(response, "geturl", lambda: feed_url)()
+                if urlsplit(final_url).scheme != "https":
+                    raise UpdateError("أعاد خادم التحديثات اتصالًا غير آمن.")
+                raw = response.read(MAX_MANIFEST_BYTES + 1)
+            break
+        except UpdateError:
+            raise
+        except HTTPError as error:
+            if error.code == 404:
+                raise UpdateError("لم يُنشر أي تحديث على الخادم حتى الآن.") from error
+            last_error = error
+        except Exception as error:
+            last_error = error
+        if attempt + 1 < FETCH_ATTEMPTS:
+            time.sleep(FETCH_RETRY_DELAY)
+    if raw is None:
+        raise UpdateError("تعذر الاتصال بخادم التحديثات. تحقق من الاتصال بالإنترنت.") from last_error
     if len(raw) > MAX_MANIFEST_BYTES:
         raise UpdateError("ملف التحديث أكبر من الحد المسموح.")
     try:

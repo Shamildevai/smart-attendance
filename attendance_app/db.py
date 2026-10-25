@@ -221,9 +221,11 @@ DEFAULT_SETTINGS: dict[str, str] = {
     "anti_passback_minutes": "5",
     "print_config": dump_json(DEFAULT_PRINT_CONFIG),
     "auto_update": "1",
-    "update_feed_url": "https://update.fetsync.org/latest.json",
+    "update_feed_url": "https://fetsync.org/Update/latest.json",
     "update_last_check": "",
 }
+
+LEGACY_UPDATE_FEED_URL = "https://update.fetsync.org/latest.json"
 
 SEED_PERIODS = [
     {
@@ -277,6 +279,11 @@ def init_db(db_path: str | Path) -> None:
                 "INSERT INTO settings(key, value) VALUES(?, ?) ON CONFLICT(key) DO NOTHING",
                 (key, value),
             )
+        # Installs that never customised the feed still point at the retired host.
+        conn.execute(
+            "UPDATE settings SET value = ? WHERE key = 'update_feed_url' AND value = ?",
+            (DEFAULT_SETTINGS["update_feed_url"], LEGACY_UPDATE_FEED_URL),
+        )
 
         user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
         if user_count == 0:

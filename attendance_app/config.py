@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 APP_NAME = "SmartAttendance"
-APP_VERSION = "1.1.10"
+APP_VERSION = "1.1.11"
 APP_TITLE = "نظام متابعة الحضور"
 APP_SUBTITLE = "الحضور بالباركود وإشعار الأولياء"
 APP_AUTHOR = "د. بوزويرة عزيز"
@@ -18,7 +18,7 @@ APP_LOCATION_LATIN = "Saida, Algeria"
 APP_DEDICATION = "صدقة عن والدي المرحوم بوزويرة قادة"
 APP_REPO_URL = "https://github.com/Shamildevai/smart-attendance"
 
-UPDATE_FEED_URL = "https://update.fetsync.org/latest.json"
+UPDATE_FEED_URL = "https://fetsync.org/Update/latest.json"
 UPDATE_PUBLIC_KEY = "wfjSP8we/c/RCTDi0DsC7xKYb+pKtzD1RZJLU8DT/sA="
 UPDATE_CHECK_INTERVAL = 6 * 60 * 60
 
