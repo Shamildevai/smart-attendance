@@ -19,9 +19,19 @@
   }).filter(Boolean);
 
   var ARABIC = /[\u0600-\u06FF]/;
+  var ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹";
+  var ARABIC_DIGIT_RE = /[\u0660-\u0669\u06F0-\u06F9]/;
   var PLACEHOLDER = /\{(\d+)\}/g;
   var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, CODE: 1, PRE: 1 };
   var ATTRS = ["placeholder", "title", "aria-label", "alt"];
+
+  function latinDigits(value) {
+    if (!value || typeof value !== "string" || !ARABIC_DIGIT_RE.test(value)) return value;
+    return value.replace(/[\u0660-\u0669\u06F0-\u06F9]/g, function (digit) {
+      var index = ARABIC_DIGITS.indexOf(digit);
+      return index < 0 ? digit : String(index % 10);
+    });
+  }
 
   function translateValue(value, depth) {
     if (!value || typeof value !== "string" || !ARABIC.test(value)) return value;
@@ -66,7 +76,7 @@
 
   function translateTextNode(node) {
     var value = node.nodeValue;
-    var translated = translateValue(value, 0);
+    var translated = latinDigits(translateValue(value, 0));
     if (translated !== value) node.nodeValue = translated;
   }
 
@@ -75,7 +85,7 @@
       var name = ATTRS[index];
       if (!element.hasAttribute(name)) continue;
       var value = element.getAttribute(name);
-      var translated = translateValue(value, 0);
+      var translated = latinDigits(translateValue(value, 0));
       if (translated !== value) element.setAttribute(name, translated);
     }
   }
@@ -104,7 +114,7 @@
     walk(document.documentElement, false);
   }
 
-  data.translate = function (value) { return translateValue(value, 0); };
+  data.translate = function (value) { return latinDigits(translateValue(value, 0)); };
   window.translateUiText = data.translate;
 
   if (document.readyState === "loading") {
@@ -113,7 +123,7 @@
     localizeExisting();
   }
 
-  if (data.lang !== "ar" && typeof MutationObserver !== "undefined") {
+  if (typeof MutationObserver !== "undefined") {
     var observer = new MutationObserver(function (records) {
       for (var index = 0; index < records.length; index += 1) {
         var record = records[index];

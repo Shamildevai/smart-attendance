@@ -131,8 +131,19 @@ def test_catalogs_use_western_digits_only():
             )
 
 
+def test_western_digits_helper_handles_none_and_mixed_text():
+    from attendance_app.utils import western_digits
+
+    assert western_digits(None) == ""
+    assert western_digits("صفحة ١٢ من ۲۰") == "صفحة 12 من 20"
+
+
 def test_rendered_pages_use_western_digits_only(client):
-    pages = ("/", "/messages", "/settings", "/about", "/help", "/attendance", "/reports")
+    pages = (
+        "/", "/messages", "/settings", "/about", "/help", "/attendance", "/reports",
+        "/students", "/users", "/gate", "/import", "/print", "/print/sheet",
+        "/reports/print", "/entry-slip", "/entry-slip/verify",
+    )
     for lang in ("ar", "en", "fr"):
         client.set_cookie(i18n.LANG_COOKIE, lang)
         for path in pages:
@@ -141,6 +152,46 @@ def test_rendered_pages_use_western_digits_only(client):
             html = response.get_data(as_text=True)
             found = ARABIC_INDIC_DIGITS.search(html)
             assert not found, f"{lang} {path} rendered {found.group()!r}"
+
+
+def test_json_responses_use_western_digits_only(client):
+    endpoints = (
+        "/api/dashboard", "/api/students", "/api/attendance/list", "/api/periods",
+        "/api/settings", "/api/reports/daily", "/api/messages/campaigns", "/api/users",
+        "/api/entry-slip/context", "/api/gate/context",
+    )
+    for lang in ("ar", "en", "fr"):
+        client.set_cookie(i18n.LANG_COOKIE, lang)
+        for path in endpoints:
+            response = client.get(path)
+            assert response.status_code == 200, (lang, path)
+            body = response.get_data(as_text=True)
+            found = ARABIC_INDIC_DIGITS.search(body)
+            assert not found, f"{lang} {path} rendered {found.group()!r}"
+
+
+def test_response_filter_converts_arabic_digits(app, client):
+    def html_probe():
+        return "<p>العدد ١٢٣٤٥٦٧٨٩٠ والفارسي ۱۲۳۴۵۶۷۸۹۰</p>"
+
+    def json_probe():
+        return {"note": "العدد ١٢٣", "value": 12}
+
+    def binary_probe():
+        return b"\x00\xd9\xa7\xd9\xa2\xff", 200, {"Content-Type": "application/octet-stream"}
+
+    app.add_url_rule("/__digits_html", "digits_html", html_probe)
+    app.add_url_rule("/__digits_json", "digits_json", json_probe)
+    app.add_url_rule("/__digits_binary", "digits_binary", binary_probe)
+
+    html = client.get("/__digits_html").get_data(as_text=True)
+    assert html.count("1234567890") == 2
+    assert not ARABIC_INDIC_DIGITS.search(html)
+
+    payload = client.get("/__digits_json").get_json()
+    assert payload == {"note": "العدد 123", "value": 12}
+
+    assert client.get("/__digits_binary").data == b"\x00\xd9\xa7\xd9\xa2\xff"
 
 
 def test_version_and_gateway_links_render_with_western_digits(client):

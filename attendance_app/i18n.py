@@ -10,6 +10,8 @@ from typing import Any
 from flask import g, has_request_context, request
 from jinja2 import pass_context
 
+from .utils import western_digits
+
 LANG_COOKIE = "attendance_lang"
 DEFAULT_LANG = "ar"
 LANGUAGES = {
@@ -28,6 +30,15 @@ _ATTR_RE = re.compile(
 )
 _TAG_NAME_RE = re.compile(r"</?\s*([a-zA-Z][\w:.-]*)")
 _END_TAG_RE = re.compile(r"</\s*([a-zA-Z][\w:.-]*)\s*>")
+_TEXTUAL_MIMETYPES = {
+    "text/html",
+    "text/plain",
+    "text/csv",
+    "text/javascript",
+    "application/json",
+    "application/javascript",
+    "image/svg+xml",
+}
 
 
 def normalize_lang(value: Any) -> str:
@@ -331,6 +342,17 @@ def init_app(app) -> None:
         g.lang = normalize_lang(request.cookies.get(LANG_COOKIE))
         g.lang_dir = lang_dir(g.lang)
 
+    def _westernize_response(response) -> None:
+        if response.direct_passthrough or response.mimetype not in _TEXTUAL_MIMETYPES:
+            return
+        try:
+            body = response.get_data(as_text=True)
+        except (RuntimeError, UnicodeDecodeError):
+            return
+        normalized = western_digits(body)
+        if normalized != body:
+            response.set_data(normalized)
+
     @app.after_request
     def _localize_response(response):
         lang = getattr(g, "lang", DEFAULT_LANG)
@@ -351,6 +373,7 @@ def init_app(app) -> None:
                         response.mimetype = "application/json"
             except Exception:
                 pass
+        _westernize_response(response)
         response.headers["Content-Language"] = lang
         response.headers.add("Vary", "Cookie")
         return response

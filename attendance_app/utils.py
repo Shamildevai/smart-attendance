@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 from typing import Any
 
 ARABIC_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
+_ARABIC_DIGIT_RE = re.compile("[\u0660-\u0669\u06F0-\u06F9]")
 
 STATUS_AR = {
     "PRESENT": "حاضر",
@@ -64,8 +65,13 @@ def now_stamp() -> str:
     return now_local().strftime("%Y-%m-%d %H:%M:%S")
 
 
+def western_digits(value: Any) -> str:
+    text = "" if value is None else str(value)
+    return text.translate(ARABIC_DIGITS) if _ARABIC_DIGIT_RE.search(text) else text
+
+
 def normalize_digits(value: str) -> str:
-    return (value or "").translate(ARABIC_DIGITS)
+    return western_digits(value)
 
 
 def squash(value: Any) -> str:

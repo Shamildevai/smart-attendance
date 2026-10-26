@@ -28,9 +28,21 @@
       .replace(/'/g, "&#039;");
   }
 
-  function translateUi(value) {
+  const ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹";
+  const ARABIC_DIGIT_RE = /[\u0660-\u0669\u06F0-\u06F9]/;
+
+  function latinDigits(value) {
     const text = String(value === null || value === undefined ? "" : value);
-    return typeof window.translateUiText === "function" ? window.translateUiText(text) : text;
+    if (!ARABIC_DIGIT_RE.test(text)) return text;
+    return text.replace(/[\u0660-\u0669\u06F0-\u06F9]/g, (digit) => {
+      const index = ARABIC_DIGITS.indexOf(digit);
+      return index < 0 ? digit : String(index % 10);
+    });
+  }
+
+  function translateUi(value) {
+    const text = latinDigits(value);
+    return typeof window.translateUiText === "function" ? latinDigits(window.translateUiText(text)) : text;
   }
 
   function initials(first, last) {
@@ -412,7 +424,32 @@
     });
   }
 
+  function westernizeField(input) {
+    if (!input || typeof input.value !== "string") return;
+    const next = latinDigits(input.value);
+    if (next === input.value) return;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    input.value = next;
+    try {
+      input.setSelectionRange(start, end);
+    } catch (error) {
+      /* inputs without selection support (number/date) */
+    }
+  }
+
+  function bindDigitInputs() {
+    const selector = "input[type='text'], input[type='tel'], input[type='search'], input[type='number'], textarea";
+    const handler = (event) => {
+      const target = event.target;
+      if (target && target.matches && target.matches(selector)) westernizeField(target);
+    };
+    document.addEventListener("input", handler, true);
+    document.addEventListener("change", handler, true);
+  }
+
   function initShell() {
+    bindDigitInputs();
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => btn.addEventListener("click", toggleTheme));
     document.addEventListener("error", (event) => {
       if (event.target && event.target.matches && event.target.matches("[data-avatar-img]")) {
@@ -463,6 +500,7 @@
     apiUrl,
     icon,
     escapeHtml,
+    latinDigits,
     t: translateUi,
     initials,
     formatInt,
