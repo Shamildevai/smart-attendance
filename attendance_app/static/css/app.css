@@ -1636,6 +1636,21 @@ kbd {
 .scan-suggest-item b { direction: ltr; font-size: 9.5px; color: var(--text-muted); font-weight: 600; }
 .scan-suggest-item em { margin-inline-start: auto; font-style: normal; font-size: 9px; color: var(--text-muted); }
 .scan-suggest small { font-size: 9px; color: var(--text-muted); line-height: 1.5; }
+.scan-previous {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: var(--danger-soft);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.scan-previous > .ico { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 1px; color: var(--danger); }
+.scan-previous-body { display: grid; gap: 4px; flex: 1; min-width: 0; }
+.scan-previous-body strong { font-size: 11px; color: var(--danger); }
+.scan-previous-body p { font-size: 10px; line-height: 1.5; color: var(--text-soft); }
+.scan-previous-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+.scan-previous-actions .btn { flex: 1; min-width: 130px; }
 
 .gate-side { display: grid; gap: 18px; align-content: start; }
 .gate-side .card-body { padding: 18px; }

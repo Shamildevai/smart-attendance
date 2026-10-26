@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import html as html_lib
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 
 from attendance_app.db import SCHEMA_VERSION
 from attendance_app.services import attendance_service, entry_slip_service
@@ -388,4 +388,97 @@ def test_entry_slip_issue_requires_csrf_header(client, db, make_student, period)
         json={"code": student["student_nin"], "period_id": period["id"], "reason": "سبب"},
     )
     assert response.status_code == 403
+    assert db.execute("SELECT COUNT(*) FROM entry_slips").fetchone()[0] == 0
+
+
+def test_entry_slip_backdated_regularization(client, csrf, db, make_student, period):
+    student = make_student(student_nin="3099000501")
+    nin = student["student_nin"]
+    target = (date.today() - timedelta(days=2)).isoformat()
+    with db:
+        db.execute(
+            """INSERT INTO attendance_logs
+               (student_nin, period_id, attendance_date, status, source, note)
+               VALUES (?, ?, ?, 'ABSENT', 'SWEEP', 'رصد آلي')""",
+            (nin, period["id"], target),
+        )
+        db.execute(
+            """INSERT INTO sms_logs
+               (student_nin, period_id, attendance_date, parent_phone, message_body, delivery_status)
+               VALUES (?, ?, ?, '0550123456', 'رسالة غياب تجريبية', 'PENDING')""",
+            (nin, period["id"], target),
+        )
+
+    lookup = client.post(
+        "/api/entry-slip/lookup",
+        json={"code": nin, "period_id": period["id"], "date": target},
+        headers=csrf,
+    )
+    assert lookup.status_code == 200
+    found = lookup.get_json()
+    assert found["is_backdated"] is True
+    assert found["date"] == target
+    assert found["action"] == "absent"
+    assert found["new_status_preview"] == "PRESENT"
+    assert found["can_issue"] is True
+
+    issued = client.post(
+        "/api/entry-slip",
+        json={
+            "code": nin,
+            "period_id": period["id"],
+            "reason": "ظرف عائلي",
+            "date": target,
+        },
+        headers=csrf,
+    )
+    assert issued.status_code == 200
+    slip = issued.get_json()["slip"]
+    assert slip["slip_date"] == target
+    assert slip["new_status"] == "PRESENT"
+    assert slip["check_in_time"] == f"{period['start_time']}:00"
+    assert slip["slip_code"].startswith(f"ES-{target.replace('-', '')}-")
+
+    log = db.execute(
+        """SELECT * FROM attendance_logs
+           WHERE student_nin = ? AND attendance_date = ?""",
+        (nin, target),
+    ).fetchone()
+    assert log["status"] == "PRESENT"
+    assert log["source"] == "ENTRY_SLIP"
+    assert "تسوية غياب" in log["note"]
+    assert db.execute(
+        "SELECT delivery_status FROM sms_logs WHERE student_nin = ? AND attendance_date = ?",
+        (nin, target),
+    ).fetchone()[0] == "CANCELLED"
+
+    verified = client.get(
+        "/api/entry-slip/verify", query_string={"code": slip["qr_payload"]}
+    ).get_json()
+    assert verified["valid"] is True
+
+    page = client.get(f"/entry-slip?code={nin}&date={target}")
+    assert page.status_code == 200
+
+
+def test_entry_slip_rejects_future_date(client, csrf, db, make_student, period):
+    student = make_student(student_nin="3099000511")
+    future = (date.today() + timedelta(days=1)).isoformat()
+    lookup = client.post(
+        "/api/entry-slip/lookup",
+        json={"code": student["student_nin"], "period_id": period["id"], "date": future},
+        headers=csrf,
+    )
+    assert lookup.status_code == 400
+    issued = client.post(
+        "/api/entry-slip",
+        json={
+            "code": student["student_nin"],
+            "period_id": period["id"],
+            "reason": "سبب",
+            "date": future,
+        },
+        headers=csrf,
+    )
+    assert issued.status_code == 400
     assert db.execute("SELECT COUNT(*) FROM entry_slips").fetchone()[0] == 0

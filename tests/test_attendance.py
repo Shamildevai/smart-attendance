@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 
 from attendance_app.db import get_settings
 from attendance_app.services import attendance_service, sms_service
@@ -302,3 +302,130 @@ def test_period_close_queue_and_excuse(client, csrf, db, make_student, period):
         headers=csrf,
     )
     assert not_excusable.status_code == 400
+
+
+def _insert_absent_on(db, nin: str, period_id: int, day_iso: str, sms_status: str | None = None) -> int:
+    with db:
+        cursor = db.execute(
+            """INSERT INTO attendance_logs
+               (student_nin, period_id, attendance_date, status, source, note)
+               VALUES (?, ?, ?, 'ABSENT', 'SWEEP', 'رصد آلي')""",
+            (nin, period_id, day_iso),
+        )
+        log_id = cursor.lastrowid
+        if sms_status:
+            db.execute(
+                """INSERT INTO sms_logs
+                   (student_nin, period_id, attendance_date, parent_phone, message_body, delivery_status)
+                   VALUES (?, ?, ?, '0550123456', 'رسالة غياب تجريبية', ?)""",
+                (nin, period_id, day_iso, sms_status),
+            )
+    return log_id
+
+
+def test_previous_school_day_skips_weekend():
+    assert attendance_service.previous_school_day(date(2026, 10, 26)) == date(2026, 10, 25)
+    assert attendance_service.previous_school_day(date(2026, 10, 25)) == date(2026, 10, 22)
+    assert attendance_service.previous_school_day(date(2026, 10, 24)) == date(2026, 10, 22)
+
+
+def test_gate_scan_flags_unregularized_previous_absence(db, make_student, period):
+    student = make_student(student_nin="2099000321")
+    nin = student["student_nin"]
+    scan_day = date.today()
+    previous = attendance_service.previous_school_day(scan_day)
+    assert previous is not None
+    _insert_absent_on(db, nin, period["id"], previous.isoformat(), sms_status="PENDING")
+
+    result = attendance_service.scan_student(
+        db, nin, period_id=period["id"], now=datetime.combine(scan_day, time(7, 50))
+    )
+    assert result["success"] is True
+    flagged = result["previous_absence"]
+    assert flagged is not None
+    assert flagged["date"] == previous.isoformat()
+    assert flagged["count"] == 1
+    assert flagged["periods"][0]["period_id"] == period["id"]
+
+    regularized = attendance_service.regularize_previous_absence(
+        db, nin, previous.isoformat()
+    )
+    assert regularized["count"] == 1
+    assert regularized["previous_absence"] is None
+    log = db.execute(
+        """SELECT * FROM attendance_logs
+           WHERE student_nin = ? AND attendance_date = ?""",
+        (nin, previous.isoformat()),
+    ).fetchone()
+    assert log["status"] == "PRESENT"
+    assert log["source"] == "GATE_REGULARIZED"
+    assert db.execute(
+        "SELECT delivery_status FROM sms_logs WHERE student_nin = ? AND attendance_date = ?",
+        (nin, previous.isoformat()),
+    ).fetchone()[0] == "CANCELLED"
+
+    rescan = attendance_service.scan_student(
+        db, nin, period_id=period["id"], now=datetime.combine(scan_day, time(8, 10))
+    )
+    assert rescan["previous_absence"] is None
+
+
+def test_gate_regularize_api_rejects_today_and_future(client, csrf, db, make_student, period):
+    student = make_student(student_nin="2099000331")
+    today = date.today().isoformat()
+    tomorrow = (date.today() + timedelta(days=1)).isoformat()
+    for value in (today, tomorrow, "not-a-date"):
+        response = client.post(
+            "/api/gate/regularize-absence",
+            json={"code": student["student_nin"], "date": value},
+            headers=csrf,
+        )
+        assert response.status_code == 400
+    response = client.post(
+        "/api/gate/regularize-absence",
+        json={"code": student["student_nin"], "date": "2026-01-05"},
+        headers=csrf,
+    )
+    assert response.status_code == 400
+    assert "غياب" in response.get_json()["error"]["message"]
+
+
+def test_gate_api_regularizes_previous_absence(client, csrf, db, make_student, period):
+    student = make_student(student_nin="2099000341")
+    nin = student["student_nin"]
+    previous = attendance_service.previous_school_day(date.today())
+    _insert_absent_on(db, nin, period["id"], previous.isoformat(), sms_status="PENDING")
+
+    scan = client.post(
+        "/api/gate/scan",
+        json={"code": nin, "period_id": period["id"]},
+        headers=csrf,
+    )
+    assert scan.status_code == 200
+    payload = scan.get_json()
+    assert payload["previous_absence"]["date"] == previous.isoformat()
+
+    regularized = client.post(
+        "/api/gate/regularize-absence",
+        json={"code": nin, "date": previous.isoformat()},
+        headers=csrf,
+    )
+    assert regularized.status_code == 200
+    result = regularized.get_json()
+    assert result["count"] == 1
+    assert result["previous_absence"] is None
+    assert result["sms_notice"]
+    log = db.execute(
+        """SELECT * FROM attendance_logs
+           WHERE student_nin = ? AND attendance_date = ?""",
+        (nin, previous.isoformat()),
+    ).fetchone()
+    assert log["status"] == "PRESENT"
+    assert log["source"] == "GATE_REGULARIZED"
+
+    repeat = client.post(
+        "/api/gate/regularize-absence",
+        json={"code": nin, "date": previous.isoformat()},
+        headers=csrf,
+    )
+    assert repeat.status_code == 400

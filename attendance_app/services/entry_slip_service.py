@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import sqlite3
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from ..utils import (
@@ -12,6 +12,7 @@ from ..utils import (
     clean_name,
     short_date,
     time_to_seconds,
+    validate_iso_date,
 )
 from . import attendance_service as attendance
 
@@ -190,14 +191,25 @@ def _status_for_now(period: dict[str, Any], at: datetime) -> str:
     return "PRESENT" if now_seconds <= time_to_seconds(period["on_time_cutoff"]) else "LATE"
 
 
+def _resolve_target_date(target_date: str | None, at: datetime) -> str:
+    if not target_date:
+        return at.date().isoformat()
+    day_iso = validate_iso_date(str(target_date))
+    if date.fromisoformat(day_iso) > at.date():
+        raise ValidationError("لا يمكن اختيار تاريخ مستقبلي لورقة الدخول.")
+    return day_iso
+
+
 def lookup_entry(
     conn: sqlite3.Connection,
     raw_code: str,
     period_id: int | None = None,
     now: datetime | None = None,
+    target_date: str | None = None,
 ) -> dict[str, Any]:
     at = now or datetime.now()
-    day_iso = at.date().isoformat()
+    day_iso = _resolve_target_date(target_date, at)
+    is_backdated = day_iso != at.date().isoformat()
     period = attendance.choose_period(conn, period_id, require_active=True)
     if not period:
         raise ValidationError("لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.")
@@ -220,6 +232,7 @@ def lookup_entry(
         "date": day_iso,
         "date_display": short_date(day_iso),
         "scan_time": at.strftime("%H:%M:%S"),
+        "is_backdated": is_backdated,
     }
     if not student:
         base.update(
@@ -265,17 +278,19 @@ def lookup_entry(
             )
             return base
 
-    status_preview = _status_for_now(period, at)
+    status_preview = "PRESENT" if is_backdated else _status_for_now(period, at)
+    if is_backdated:
+        message = f"تسوية غياب يوم سابق ({short_date(day_iso)}). ستُسجَّل الورقة حضوره في هذه الفترة."
+    elif log:
+        message = "التلميذ غائب في هذه الفترة. راجع سبب الدخول ثم أصدر ورقة الدخول."
+    else:
+        message = "لا يوجد تسجيل بعد لهذه الفترة. ستُسجَّل ورقة الدخول حسب وقت الوصول."
     base.update(
         action="absent" if log else "not_recorded",
         can_issue=True,
         new_status_preview=status_preview,
         new_status_label=STATUS_AR[status_preview],
-        message=(
-            "التلميذ غائب في هذه الفترة. راجع سبب الدخول ثم أصدر ورقة الدخول."
-            if log
-            else "لا يوجد تسجيل بعد لهذه الفترة. ستُسجَّل ورقة الدخول حسب وقت الوصول."
-        ),
+        message=message,
     )
     return base
 
@@ -289,9 +304,11 @@ def issue_slip(
     issued_by: str,
     secret: str,
     now: datetime | None = None,
+    target_date: str | None = None,
 ) -> dict[str, Any]:
     at = now or datetime.now()
-    day_iso = at.date().isoformat()
+    day_iso = _resolve_target_date(target_date, at)
+    is_backdated = day_iso != at.date().isoformat()
     reason = clean_name(reason)
     note = clean_name(note)
     if len(reason) < 2:
@@ -330,10 +347,14 @@ def issue_slip(
         if log and log["status"] == "EXCUSED":
             raise ValidationError("غياب التلميذ مبرر مسبقًا. راجع مستشار التربية قبل تغيير الحالة.")
 
-        new_status = _status_for_now(period, at)
+        new_status = "PRESENT" if is_backdated else _status_for_now(period, at)
         previous_status = log["status"] if log else None
         slip_code = _next_code(conn, day_iso)
-        check_in_time = at.strftime("%H:%M:%S")
+        check_in_time = (
+            f"{period['start_time']}:00"[:8]
+            if is_backdated
+            else at.strftime("%H:%M:%S")
+        )
         signature = _sign(
             secret,
             slip_code=slip_code,
@@ -346,6 +367,8 @@ def issue_slip(
             issued_by=issued_by,
         )
         log_note = f"ورقة دخول {slip_code}: {reason}"
+        if is_backdated:
+            log_note = f"تسوية غياب {short_date(day_iso)} — {log_note}"
         if note:
             log_note = f"{log_note} — {note}"
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 import sqlite3
 import threading
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from typing import Any
 
 from ..db import bool_setting, int_setting, row_dict, rows_dict
@@ -13,6 +13,7 @@ from ..utils import (
     ValidationError,
     clean_name,
     full_name,
+    is_school_day,
     normalize_nin,
     short_date,
     time_to_seconds,
@@ -317,6 +318,128 @@ def get_student_day_stats(
     }
 
 
+def previous_school_day(day: date, weekdays_setting: str = "0,1,2,3,4") -> date | None:
+    cursor = day - timedelta(days=1)
+    for _ in range(14):
+        if is_school_day(cursor, weekdays_setting):
+            return cursor
+        cursor -= timedelta(days=1)
+    return None
+
+
+def previous_day_absence(
+    conn: sqlite3.Connection,
+    student_nin: str,
+    at: datetime | None = None,
+    weekdays_setting: str = "0,1,2,3,4",
+) -> dict[str, Any] | None:
+    at = at or datetime.now()
+    day = previous_school_day(at.date(), weekdays_setting)
+    if not day:
+        return None
+    day_iso = day.isoformat()
+    rows = conn.execute(
+        """SELECT a.period_id, p.period_name, p.start_time
+           FROM attendance_logs a JOIN periods p ON p.id = a.period_id
+           WHERE a.student_nin = ? AND a.attendance_date = ? AND a.status = 'ABSENT'
+           ORDER BY p.sort_order, p.start_time, p.id""",
+        (student_nin, day_iso),
+    ).fetchall()
+    if not rows:
+        return None
+    return {
+        "date": day_iso,
+        "date_display": short_date(day_iso),
+        "count": len(rows),
+        "periods": [
+            {
+                "period_id": row["period_id"],
+                "period_name": row["period_name"],
+                "start_time": (row["start_time"] or "")[:5],
+            }
+            for row in rows
+        ],
+    }
+
+
+def regularize_previous_absence(
+    conn: sqlite3.Connection,
+    raw_code: str,
+    day_iso: str,
+) -> dict[str, Any]:
+    day_iso = validate_iso_date(day_iso)
+    if date.fromisoformat(day_iso) >= date.today():
+        raise ValidationError("يمكن تسوية غياب يوم سابق فقط.")
+    scan = lookup_student_scan(conn, raw_code)
+    student = scan["student"]
+    if not student:
+        raise ValidationError("الباركود غير مسجل في قاعدة البيانات. تحقق من البطاقة.")
+    if not student["is_active"]:
+        raise ValidationError("هذا التلميذ غير نشط ولا يمكن تسوية غيابه.")
+
+    with _ATTENDANCE_WRITE_LOCK:
+        rows = conn.execute(
+            """SELECT a.id, a.period_id, p.period_name
+               FROM attendance_logs a JOIN periods p ON p.id = a.period_id
+               WHERE a.student_nin = ? AND a.attendance_date = ? AND a.status = 'ABSENT'
+               ORDER BY p.sort_order, p.start_time, p.id""",
+            (student["student_nin"], day_iso),
+        ).fetchall()
+        if not rows:
+            raise ValidationError("لا يوجد غياب غير معالج لهذا التلميذ في هذا اليوم.")
+        period_ids = [row["period_id"] for row in rows]
+        placeholders = ",".join("?" for _ in period_ids)
+        note = f"تسوية غياب يوم سابق من بوابة المسح ({short_date(day_iso)})"
+        with conn:
+            for row in rows:
+                conn.execute(
+                    """UPDATE attendance_logs
+                       SET status = 'PRESENT', source = 'GATE_REGULARIZED', note = ?,
+                           updated_at = datetime('now', 'localtime')
+                       WHERE id = ? AND status = 'ABSENT'""",
+                    (note, row["id"]),
+                )
+            sms_was_sent = bool(
+                conn.execute(
+                    f"""SELECT COUNT(*) FROM sms_logs
+                        WHERE student_nin = ? AND attendance_date = ?
+                          AND period_id IN ({placeholders})
+                          AND delivery_status = 'SENT'""",
+                    (student["student_nin"], day_iso, *period_ids),
+                ).fetchone()[0]
+            )
+            cancelled = conn.execute(
+                f"""UPDATE sms_logs
+                    SET delivery_status = 'CANCELLED',
+                        error_msg = 'أُلغيت: سُوّي الغياب من بوابة المسح',
+                        updated_at = datetime('now', 'localtime')
+                    WHERE student_nin = ? AND attendance_date = ?
+                      AND period_id IN ({placeholders})
+                      AND delivery_status IN ('PENDING', 'FAILED')""",
+                (student["student_nin"], day_iso, *period_ids),
+            ).rowcount
+
+    sms_notice = ""
+    if sms_was_sent:
+        sms_notice = "تنبيه: سبق إرسال رسالة غياب إلى الولي لهذا اليوم."
+    elif cancelled:
+        sms_notice = "أُلغيت رسائل الغياب التي كانت في قائمة الانتظار."
+    periods_text = "، ".join(row["period_name"] for row in rows)
+    return {
+        "student": student,
+        "date": day_iso,
+        "date_display": short_date(day_iso),
+        "count": len(rows),
+        "periods_text": periods_text,
+        "previous_absence": None,
+        "sms_notice": sms_notice,
+        "message": (
+            f"تم تسوية غياب {student['full_name']} يوم {short_date(day_iso)} "
+            f"وتسجيله حاضرًا في: {periods_text}."
+        ),
+    }
+
+
 def get_sms_summary(conn: sqlite3.Connection, period_id: int, day_iso: str) -> dict[str, Any]:
     rows = conn.execute(
         """SELECT delivery_status, COUNT(*) AS count
@@ -366,6 +489,7 @@ def _scan_base(
         "sms_notice": "",
         "stats": {},
         "student_today": None,
+        "previous_absence": None,
         "closure": None,
     }
 
@@ -376,6 +500,7 @@ def scan_student(
     period_id: int | None = None,
     now: datetime | None = None,
     anti_passback_minutes: int = 5,
+    school_weekdays: str = "0,1,2,3,4",
 ) -> dict[str, Any]:
     at = now or datetime.now()
     day_iso = at.date().isoformat()
@@ -432,6 +557,10 @@ def scan_student(
                 message="هذا التلميذ غير نشط (محذوف أو موقوف) ولا يمكن تسجيل حضوره.",
             )
             return _finalize_scan(conn, base, period["id"], day_iso, None)
+
+        base["previous_absence"] = previous_day_absence(
+            conn, code, at, school_weekdays
+        )
 
         existing = conn.execute(
             """SELECT * FROM attendance_logs

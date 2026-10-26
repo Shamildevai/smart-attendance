@@ -28,6 +28,7 @@
     reasons: [],
     lookup: null,
     template: "full",
+    targetDate: null,
     busy: false,
     buffer: "",
     lastKeyAt: 0,
@@ -94,6 +95,49 @@
       /* localStorage can be unavailable in private windows */
     }
     syncTemplateUi();
+  }
+
+  function readingDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const date = (params.get("date") || "").trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) state.targetDate = date;
+    return (params.get("code") || "").trim();
+  }
+
+  function renderBackdateBanner() {
+    const holder = $("entry-backdate");
+    if (!holder) return;
+    if (!state.targetDate) {
+      holder.innerHTML = "";
+      return;
+    }
+    holder.innerHTML = `<div class="entry-backdate">
+      ${A.icon("calendar")}
+      <div>
+        <strong>${safe(A.t("وضع التسوية — تاريخ سابق"))}: <span class="mono">${safe(
+          A.formatDate(state.targetDate)
+        )}</span></strong>
+        <p>${safe(
+          A.t("ستُسجَّل الورقة حضوره في هذا اليوم بدل الغياب، مع إلغاء رسائل الغياب المعلّقة.")
+        )}</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" type="button" data-backdate-cancel>${safe(
+        A.t("العودة إلى اليوم")
+      )}</button>
+    </div>`;
+    const cancel = holder.querySelector("[data-backdate-cancel]");
+    if (cancel) {
+      cancel.addEventListener("click", () => {
+        state.targetDate = null;
+        const url = new URL(window.location.href);
+        url.searchParams.delete("code");
+        url.searchParams.delete("date");
+        window.history.replaceState({}, "", url.pathname + url.search);
+        renderBackdateBanner();
+        clearResult();
+        A.toast(A.t("تمت العودة إلى تاريخ اليوم."), "info");
+      });
+    }
   }
 
   /* ---------------------------------------------------------------------- */
@@ -288,6 +332,7 @@
     try {
       const payload = { code };
       if (state.periodId) payload.period_id = state.periodId;
+      if (state.targetDate) payload.date = state.targetDate;
       const data = await A.api("/api/entry-slip/lookup", { method: "POST", body: payload });
       state.lookup = data;
       renderLookup(data);
@@ -336,10 +381,12 @@
     return "";
   }
 
-  function todayHtml(today) {
+  function todayHtml(today, backdated) {
     if (!today || !Array.isArray(today.periods) || !today.periods.length) return "";
     return `<div class="scan-today">
-      <div class="scan-today-head"><strong>${safe(A.t("حضور اليوم"))}</strong><span>${safe(
+      <div class="scan-today-head"><strong>${safe(
+        A.t(backdated ? "سجل يوم التسوية" : "حضور اليوم")
+      )}</strong><span>${safe(
         A.t(`${A.formatInt(today.attended_periods)} من ${A.formatInt(today.total_periods)} فترات`)
       )}</span></div>
       <div class="scan-today-track">
@@ -483,7 +530,7 @@
         ${meta}
         ${form}
         ${summary}
-        ${todayHtml(data.today)}
+        ${todayHtml(data.today, data.is_backdated)}
         <div class="scan-actions">
           <button class="btn btn-secondary btn-sm" type="button" data-entry-clear>${safe(A.t("مسح بطاقة أخرى"))}</button>
           ${links}
@@ -523,15 +570,14 @@
     state.busy = true;
     A.setBusy(button, true);
     try {
-      const data = await A.api("/api/entry-slip", {
-        method: "POST",
-        body: {
-          code: state.lookup.scanned_code,
-          period_id: state.lookup.period ? state.lookup.period.id : state.periodId,
-          reason,
-          note: noteInput ? noteInput.value.trim() : "",
-        },
-      });
+      const body = {
+        code: state.lookup.scanned_code,
+        period_id: state.lookup.period ? state.lookup.period.id : state.periodId,
+        reason,
+        note: noteInput ? noteInput.value.trim() : "",
+      };
+      if (state.targetDate) body.date = state.targetDate;
+      const data = await A.api("/api/entry-slip", { method: "POST", body });
       const slip = data.slip;
       A.toast(
         A.t(`تم إصدار ورقة الدخول ${slip.slip_code}. جارٍ فتح نافذة الطباعة الحرارية…`),
@@ -897,12 +943,16 @@
     }, 60000);
   }
 
+  const deepLinkCode = readingDeepLink();
   state.reasons = ($("entry-layout").dataset.reasons || "").split("|").filter(Boolean);
   state.template = readStoredTemplate();
   bindEvents();
   syncTemplateUi();
   setBufferHint();
+  renderBackdateBanner();
   startClock();
-  loadContext();
+  loadContext().then(() => {
+    if (deepLinkCode) processCode(deepLinkCode, "link");
+  });
   startPolling();
 })();

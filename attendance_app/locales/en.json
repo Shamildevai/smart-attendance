@@ -1567,9 +1567,44 @@
     "80 مم · بيانات أساسية": "80 mm · Essential details",
     "58 مم · مختصر": "58 mm · Compact",
     "يُحفظ اختيارك ويُطبَّق على الإصدار وإعادة الطباعة.": "Your choice is saved and applied to issuing and reprinting.",
-    "طابعة حرارية 58 مم": "58 mm thermal printer"
+    "طابعة حرارية 58 مم": "58 mm thermal printer",
+    "غياب غير معالج في آخر يوم دراسي": "Unresolved absence on the last school day",
+    "تسوية الغياب فورًا": "Regularize absence now",
+    "فتح ورقة الدخول": "Open entry slip",
+    "تسوية غياب يوم سابق": "Regularize previous-day absence",
+    "تأكيد التسوية": "Confirm regularization",
+    "تعذر تسوية الغياب.": "Could not regularize the absence.",
+    "وضع التسوية — تاريخ سابق": "Regularization mode — past date",
+    "ستُسجَّل الورقة حضوره في هذا اليوم بدل الغياب، مع إلغاء رسائل الغياب المعلّقة.": "The slip will record attendance for that day instead of absence, and pending absence messages will be cancelled.",
+    "العودة إلى اليوم": "Back to today",
+    "تمت العودة إلى تاريخ اليوم.": "Returned to today's date.",
+    "سجل يوم التسوية": "Regularization day record",
+    "تنبيه: سبق إرسال رسالة غياب إلى الولي لهذا اليوم.": "Note: an absence message was already sent to the guardian for that day.",
+    "أُلغيت رسائل الغياب التي كانت في قائمة الانتظار.": "Pending absence messages were cancelled.",
+    "لا يوجد غياب غير معالج لهذا التلميذ في هذا اليوم.": "This student has no unresolved absence on that day.",
+    "يمكن تسوية غياب يوم سابق فقط.": "Only a previous-day absence can be regularized.",
+    "لا يمكن اختيار تاريخ مستقبلي لورقة الدخول.": "A future date cannot be selected for an entry slip.",
+    "هذا التلميذ غير نشط ولا يمكن تسوية غيابه.": "This student is inactive and their absence cannot be regularized.",
+    "منذ لحظات": "moments ago",
+    "قبل دقيقة واحدة": "a minute ago"
   },
   "patterns": [
+    {
+      "ar": "تم مسح هذا التلميذ مسبقًا {0}. لا يمكن التسجيل مرتين.",
+      "tr": "This student was already scanned {0}. You cannot record twice."
+    },
+    {
+      "ar": "قبل {0} دقائق",
+      "tr": "{0} minutes ago"
+    },
+    {
+      "ar": "قبل {0} دقيقة",
+      "tr": "{0} minutes ago"
+    },
+    {
+      "ar": "حضور التلميذ مسجل مسبقًا في هذه الفترة ({0} — {1}).",
+      "tr": "The student's attendance is already recorded for this period ({0} — {1})."
+    },
     {
       "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل. وسيُستبعد {2} صفًا غير صالح.",
       "tr": "{0} new students will be added and {1} existing students updated, while preserving attendance and message records. {2} invalid rows will be excluded."
@@ -2621,6 +2656,22 @@
     {
       "ar": "حضور التلميذ مسجل بالفعل ({0}) في هذه الفترة.",
       "tr": "The student's attendance is already recorded ({0}) for this period."
+    },
+    {
+      "ar": "لم تُصدر له ورقة دخول في: {0}",
+      "tr": "No entry slip was issued for: {0}"
+    },
+    {
+      "ar": "سيتم تحويل غياب {0} يوم {1} إلى حضور، وإلغاء رسائل الغياب المعلّقة.",
+      "tr": "The absence of {0} on {1} will be changed to present, and pending absence messages will be cancelled."
+    },
+    {
+      "ar": "تسوية غياب يوم سابق ({0}). ستُسجَّل الورقة حضوره في هذه الفترة.",
+      "tr": "Previous-day absence regularization ({0}). The slip will record attendance for this period."
+    },
+    {
+      "ar": "تم تسوية غياب {0} يوم {1} وتسجيله حاضرًا في: {2}.",
+      "tr": "Absence of {0} on {1} was regularized and recorded present in: {2}."
     }
   ]
 }

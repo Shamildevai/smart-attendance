@@ -1567,9 +1567,44 @@
     "80 مم · بيانات أساسية": "80 mm · Données essentielles",
     "58 مم · مختصر": "58 mm · Compact",
     "يُحفظ اختيارك ويُطبَّق على الإصدار وإعادة الطباعة.": "Votre choix est enregistré et appliqué à l'émission et à la réimpression.",
-    "طابعة حرارية 58 مم": "Imprimante thermique 58 mm"
+    "طابعة حرارية 58 مم": "Imprimante thermique 58 mm",
+    "غياب غير معالج في آخر يوم دراسي": "Absence non régularisée le dernier jour de classe",
+    "تسوية الغياب فورًا": "Régulariser l'absence maintenant",
+    "فتح ورقة الدخول": "Ouvrir la fiche d'entrée",
+    "تسوية غياب يوم سابق": "Régulariser une absence d'un jour précédent",
+    "تأكيد التسوية": "Confirmer la régularisation",
+    "تعذر تسوية الغياب.": "Impossible de régulariser l'absence.",
+    "وضع التسوية — تاريخ سابق": "Mode régularisation — date antérieure",
+    "ستُسجَّل الورقة حضوره في هذا اليوم بدل الغياب، مع إلغاء رسائل الغياب المعلّقة.": "La fiche enregistrera la présence pour ce jour au lieu de l'absence, et les messages d'absence en attente seront annulés.",
+    "العودة إلى اليوم": "Revenir à aujourd'hui",
+    "تمت العودة إلى تاريخ اليوم.": "Retour à la date du jour.",
+    "سجل يوم التسوية": "Registre du jour de régularisation",
+    "تنبيه: سبق إرسال رسالة غياب إلى الولي لهذا اليوم.": "Remarque : un message d'absence a déjà été envoyé au tuteur pour ce jour.",
+    "أُلغيت رسائل الغياب التي كانت في قائمة الانتظار.": "Les messages d'absence en attente ont été annulés.",
+    "لا يوجد غياب غير معالج لهذا التلميذ في هذا اليوم.": "Aucune absence non régularisée pour cet élève ce jour-là.",
+    "يمكن تسوية غياب يوم سابق فقط.": "Seule une absence d'un jour précédent peut être régularisée.",
+    "لا يمكن اختيار تاريخ مستقبلي لورقة الدخول.": "Une date future ne peut pas être choisie pour une fiche d'entrée.",
+    "هذا التلميذ غير نشط ولا يمكن تسوية غيابه.": "Cet élève est inactif et son absence ne peut pas être régularisée.",
+    "منذ لحظات": "il y a quelques instants",
+    "قبل دقيقة واحدة": "il y a une minute"
   },
   "patterns": [
+    {
+      "ar": "تم مسح هذا التلميذ مسبقًا {0}. لا يمكن التسجيل مرتين.",
+      "tr": "Cet élève a déjà été scanné {0}. L'enregistrement ne peut pas être répété."
+    },
+    {
+      "ar": "قبل {0} دقائق",
+      "tr": "il y a {0} minutes"
+    },
+    {
+      "ar": "قبل {0} دقيقة",
+      "tr": "il y a {0} minutes"
+    },
+    {
+      "ar": "حضور التلميذ مسجل مسبقًا في هذه الفترة ({0} — {1}).",
+      "tr": "La présence de l'élève est déjà enregistrée pour cette période ({0} — {1})."
+    },
     {
       "ar": "سيتم إضافة {0} تلميذًا جديدًا وتحديث {1} تلميذًا موجودًا، مع الحفاظ على سجلات الحضور والرسائل. وسيُستبعد {2} صفًا غير صالح.",
       "tr": "{0} nouveaux élèves seront ajoutés et {1} élèves existants mis à jour, en conservant les enregistrements de présence et de messages. {2} lignes invalides seront exclues."
@@ -2621,6 +2656,22 @@
     {
       "ar": "حضور التلميذ مسجل بالفعل ({0}) في هذه الفترة.",
       "tr": "La présence de l'élève est déjà enregistrée ({0}) pour cette période."
+    },
+    {
+      "ar": "لم تُصدر له ورقة دخول في: {0}",
+      "tr": "Aucune fiche d'entrée n'a été délivrée pour : {0}"
+    },
+    {
+      "ar": "سيتم تحويل غياب {0} يوم {1} إلى حضور، وإلغاء رسائل الغياب المعلّقة.",
+      "tr": "L'absence de {0} le {1} sera convertie en présence, et les messages d'absence en attente seront annulés."
+    },
+    {
+      "ar": "تسوية غياب يوم سابق ({0}). ستُسجَّل الورقة حضوره في هذه الفترة.",
+      "tr": "Régularisation d'une absence antérieure ({0}). La fiche enregistrera la présence pour cette période."
+    },
+    {
+      "ar": "تم تسوية غياب {0} يوم {1} وتسجيله حاضرًا في: {2}.",
+      "tr": "L'absence de {0} le {1} a été régularisée et enregistrée présente dans : {2}."
     }
   ]
 }

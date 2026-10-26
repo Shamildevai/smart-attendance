@@ -284,6 +284,71 @@
     return safe(value || "بدون قسم");
   }
 
+  function previousAbsenceHtml(data) {
+    const prev = data.previous_absence || null;
+    const student = data.student;
+    if (!prev || !student) return "";
+    const periods = Array.isArray(prev.periods) ? prev.periods : [];
+    const periodsText = periods.map((item) => item.period_name).join("، ");
+    return `<div class="scan-previous" data-prev-date="${safe(prev.date)}">
+      ${A.icon("warning")}
+      <div class="scan-previous-body">
+        <strong>${A.t("غياب غير معالج في آخر يوم دراسي")} — <span class="mono">${safe(prev.date_display)}</span></strong>
+        <p>${safe(A.t(`لم تُصدر له ورقة دخول في: ${periodsText}`))}</p>
+        <div class="scan-previous-actions">
+          <button class="btn btn-primary btn-sm" type="button" data-prev-enter>
+            ${A.icon("check")}<span>${safe(A.t("تسوية الغياب فورًا"))}</span>
+          </button>
+          <a class="btn btn-secondary btn-sm" href="/entry-slip?code=${encodeURIComponent(student.student_nin)}&date=${encodeURIComponent(prev.date)}">
+            ${A.icon("entry")}<span>${safe(A.t("فتح ورقة الدخول"))}</span>
+          </a>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  async function regularizePrevious(data) {
+    const prev = data.previous_absence;
+    const student = data.student;
+    if (!prev || !student || state.busy) return;
+    const confirmed = await A.confirm({
+      title: A.t("تسوية غياب يوم سابق"),
+      message: A.t(
+        `سيتم تحويل غياب ${student.full_name} يوم ${prev.date_display} إلى حضور، وإلغاء رسائل الغياب المعلّقة.`
+      ),
+      confirmLabel: A.t("تأكيد التسوية"),
+    });
+    if (!confirmed) return;
+    const button = resultEl.querySelector("[data-prev-enter]");
+    state.busy = true;
+    A.setBusy(button, true);
+    try {
+      const result = await A.api("/api/gate/regularize-absence", {
+        method: "POST",
+        body: { code: student.student_nin, date: prev.date },
+      });
+      A.toast(A.t(result.message), "success");
+      A.flash("success");
+      A.beep("success");
+      data.previous_absence = null;
+      if (result.sms_notice) {
+        data.sms_notice = data.sms_notice
+          ? `${data.sms_notice} ${result.sms_notice}`
+          : result.sms_notice;
+      }
+      renderScanResult(data, data.scanned_code);
+      armResultTimer(RESULT_LIFETIME_MS);
+      scheduleRefresh(400);
+    } catch (error) {
+      A.toast(error.message || A.t("تعذر تسوية الغياب."), "error");
+      A.flash("error");
+      A.beep("error");
+    } finally {
+      state.busy = false;
+      updateReadyLabel();
+    }
+  }
+
   function renderScanResult(data, submittedCode) {
     const student = data.student;
     const period = data.period;
@@ -383,6 +448,7 @@
           ${meta}
           ${suggestHtml}
           ${todayHtml}
+          ${previousAbsenceHtml(data)}
           ${lookupNote}
           ${smsNote}
           <div class="scan-actions">${actions}</div>
@@ -390,6 +456,8 @@
       </article>`;
     const clearBtn = resultEl.querySelector("[data-scan-clear]");
     if (clearBtn) clearBtn.addEventListener("click", clearResult);
+    const prevBtn = resultEl.querySelector("[data-prev-enter]");
+    if (prevBtn) prevBtn.addEventListener("click", () => regularizePrevious(data));
     // Keep this scan visible for screen readers even though it auto-clears.
     resultEl.setAttribute("aria-label", `${name} — ${info.label}`);
     return status;

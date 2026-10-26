@@ -949,6 +949,7 @@ def gate_scan_api():
         raw_code,
         period_id=period_id,
         anti_passback_minutes=int_setting(settings, "anti_passback_minutes", 5, 1, 60),
+        school_weekdays=settings.get("school_weekdays", "0,1,2,3,4"),
     )
     if result["action"] in ("not_found", "preview_card"):
         current_app.logger.info(
@@ -958,6 +959,17 @@ def gate_scan_api():
             result.get("lookup"),
         )
     result["server_time"] = datetime.now().strftime("%H:%M:%S")
+    return ok(**result)
+
+
+@api_bp.post("/gate/regularize-absence")
+def gate_regularize_api():
+    data = _payload()
+    raw_code = str(data.get("code") or "").strip()
+    if len(raw_code) > 128:
+        raise ApiError("الباركود طويل جدًا.", 400)
+    day = validate_iso_date(str(data.get("date") or ""))
+    result = attendance.regularize_previous_absence(get_db(), raw_code, day)
     return ok(**result)
 
 
@@ -1114,6 +1126,7 @@ def entry_slip_lookup_api():
         get_db(),
         str(data.get("code") or ""),
         _optional_period_id(data.get("period_id")),
+        target_date=str(data.get("date") or "") or None,
     )
     return ok(**result)
 
@@ -1130,6 +1143,7 @@ def entry_slip_issue_api():
         str(data.get("note") or ""),
         user.get("display_name") or user.get("username") or "مستخدم",
         str(current_app.config["SECRET_KEY"]),
+        target_date=str(data.get("date") or "") or None,
     )
     slip = result["slip"]
     slip["print_url"] = url_for("views.entry_slip_print_page", code=slip["slip_code"])
