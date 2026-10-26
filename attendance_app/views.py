@@ -95,6 +95,9 @@ def entry_slip_print_page(code: str):
         abort(404)
     slip = entry_slips.register_print(conn, slip["slip_code"])
     settings = get_settings(conn)
+    receipt_template = str(request.args.get("template") or "full").lower()
+    if receipt_template not in entry_slips.RECEIPT_TEMPLATES:
+        receipt_template = "full"
     return render_template(
         "entry_slip_print.html",
         slip=slip,
@@ -105,6 +108,7 @@ def entry_slip_print_page(code: str):
         header_text=settings.get("header_text", ""),
         academic_year=settings.get("academic_year", ""),
         autoprint=request.args.get("print") == "1",
+        receipt_template=receipt_template,
     )
 
 

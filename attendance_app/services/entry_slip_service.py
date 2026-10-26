@@ -24,6 +24,8 @@ ENTRY_REASON_PRESETS = (
     "سبب آخر",
 )
 
+RECEIPT_TEMPLATES = ("full", "medium", "small")
+
 QR_PREFIX = "SAES1"
 _QR_SIGNATURE_CHARS = 32
 

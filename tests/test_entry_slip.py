@@ -332,6 +332,54 @@ def test_entry_slip_receipt_relocalizes_per_request(client, csrf, db, make_stude
     assert "Entry slip" not in arabic
 
 
+def test_entry_slip_receipt_templates(client, csrf, db, make_student, period):
+    student = make_student(student_nin="3099000491")
+    _insert_absent(db, student["student_nin"], period["id"])
+    slip = client.post(
+        "/api/entry-slip",
+        json={
+            "code": student["student_nin"],
+            "period_id": period["id"],
+            "reason": "موعد طبي",
+            "note": "ملاحظة ولي الأمر",
+        },
+        headers=csrf,
+    ).get_json()["slip"]
+
+    url = f"/entry-slip/print/{slip['slip_code']}"
+
+    full = client.get(url).get_data(as_text=True)
+    assert 'data-template="full"' in full
+    assert "تاريخ الميلاد" in full
+    assert "الحالة السابقة" in full
+    assert "receipt-notice" in full
+    assert "طابعة حرارية 80 مم" in full
+    assert "entry-slip-print-small.css" not in full
+
+    medium = client.get(f"{url}?template=medium").get_data(as_text=True)
+    assert 'data-template="medium"' in medium
+    assert "طابعة حرارية 80 مم" in medium
+    assert "ملاحظة ولي الأمر" in medium
+    assert "أصدرها" in medium
+    assert "تاريخ الميلاد" not in medium
+    assert "الحالة السابقة" not in medium
+    assert "receipt-notice" not in medium
+    assert "entry-slip-print-small.css" not in medium
+
+    small = client.get(f"{url}?template=small").get_data(as_text=True)
+    assert 'data-template="small"' in small
+    assert "receipt--small" in small
+    assert "entry-slip-print-small.css" in small
+    assert "طابعة حرارية 58 مم" in small
+    assert student["full_name"] in small
+    assert "ملاحظة ولي الأمر" not in small
+    assert "رقم التعريف" not in small
+    assert "أصدرها" not in small
+
+    fallback = client.get(f"{url}?template=bogus").get_data(as_text=True)
+    assert 'data-template="full"' in fallback
+
+
 def test_entry_slip_issue_requires_csrf_header(client, db, make_student, period):
     student = make_student(student_nin="3099000471")
     _insert_absent(db, student["student_nin"], period["id"])

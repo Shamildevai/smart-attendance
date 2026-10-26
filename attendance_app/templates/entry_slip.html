@@ -129,6 +129,36 @@
 
       <section class="card">
         <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-printer"></use></svg> قالب الإيصال</h2><p>اختر حجم الورق ومقدار المعلومات</p></div>
+          <span class="badge" id="entry-template-badge">كامل</span>
+        </div>
+        <div class="card-body">
+          <div class="entry-template-grid" role="radiogroup" aria-label="قالب الإيصال">
+            <label class="entry-template is-active" data-entry-template="full">
+              <input type="radio" name="entry-template" value="full" checked>
+              <svg class="ico"><use href="#i-file"></use></svg>
+              <strong>كامل</strong>
+              <span>80 مم · بيانات الورقة كاملة</span>
+            </label>
+            <label class="entry-template" data-entry-template="medium">
+              <input type="radio" name="entry-template" value="medium">
+              <svg class="ico"><use href="#i-list"></use></svg>
+              <strong>متوسط</strong>
+              <span>80 مم · بيانات أساسية</span>
+            </label>
+            <label class="entry-template" data-entry-template="small">
+              <input type="radio" name="entry-template" value="small">
+              <svg class="ico"><use href="#i-stamp"></use></svg>
+              <strong>صغير</strong>
+              <span>58 مم · مختصر</span>
+            </label>
+          </div>
+          <div class="tiny muted mt-2" id="entry-template-note">يُحفظ اختيارك ويُطبَّق على الإصدار وإعادة الطباعة.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
           <div><h2><svg class="ico"><use href="#i-printer"></use></svg> آخر الأوراق</h2><p>إعادة الطباعة متاحة في أي وقت</p></div>
           <span class="badge badge--present" id="entry-recent-count">0</span>
         </div>

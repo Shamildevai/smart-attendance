@@ -1557,7 +1557,17 @@
     "نسخة": "Copie",
     "هذه الورقة صالحة لليوم والفترة المذكورين فقط. أي تعديل يدوي على بياناتها يلغي صلاحيتها.": "Cette fiche n'est valable que pour le jour et la période indiqués. Toute modification manuelle de ses données l’annule.",
     "ورقة جديدة": "Nouvelle fiche",
-    "وقت الإصدار": "Heure d'émission"
+    "وقت الإصدار": "Heure d'émission",
+    "قالب الإيصال": "Modèle du reçu",
+    "اختر حجم الورق ومقدار المعلومات": "Choisissez le format du papier et le niveau de détail",
+    "كامل": "Complet",
+    "متوسط": "Moyen",
+    "صغير": "Petit",
+    "80 مم · بيانات الورقة كاملة": "80 mm · Toutes les données de la fiche",
+    "80 مم · بيانات أساسية": "80 mm · Données essentielles",
+    "58 مم · مختصر": "58 mm · Compact",
+    "يُحفظ اختيارك ويُطبَّق على الإصدار وإعادة الطباعة.": "Votre choix est enregistré et appliqué à l'émission et à la réimpression.",
+    "طابعة حرارية 58 مم": "Imprimante thermique 58 mm"
   },
   "patterns": [
     {

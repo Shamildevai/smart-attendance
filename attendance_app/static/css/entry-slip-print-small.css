@@ -1,0 +1,176 @@
+/* 58 mm compact thermal receipt for student entry slips. */
+
+@page {
+  size: 58mm auto;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    width: 58mm;
+  }
+}
+
+.receipt--small {
+  width: 58mm;
+  padding: 3.5mm 2.5mm 3mm;
+}
+
+.receipt--small .receipt-head {
+  gap: 2mm;
+  padding-bottom: 1.2mm;
+}
+
+.receipt--small .receipt-head-text strong {
+  font-size: 9pt;
+}
+
+.receipt--small .receipt-head-text span {
+  font-size: 6.4pt;
+}
+
+.receipt--small .receipt-doc-title {
+  gap: 0.5mm;
+  padding: 1.4mm 0 1.6mm;
+}
+
+.receipt--small .receipt-doc-title h1 {
+  padding: 0.7mm 2.5mm;
+  border-width: 0.45mm;
+  font-size: 12.5pt;
+}
+
+.receipt--small .receipt-code {
+  padding: 1.2mm 1.4mm;
+}
+
+.receipt--small .receipt-code span {
+  font-size: 5.8pt;
+}
+
+.receipt--small .receipt-code strong {
+  font-size: 7.4pt;
+}
+
+.receipt--small .receipt-rule {
+  margin: 1.6mm 0;
+}
+
+.receipt--small .receipt-rule.is-dashed {
+  margin: 1.4mm 0;
+}
+
+.receipt--small .receipt-student {
+  gap: 0.7mm;
+}
+
+.receipt--small .receipt-line {
+  gap: 1.4mm;
+  font-size: 7.4pt;
+  line-height: 1.3;
+}
+
+.receipt--small .receipt-line span {
+  flex: 0 0 14mm;
+  font-size: 6.4pt;
+}
+
+.receipt--small .receipt-line.is-name strong {
+  font-size: 9.4pt;
+}
+
+.receipt--small .receipt-grid {
+  gap: 1mm 2mm;
+}
+
+.receipt--small .receipt-grid span {
+  font-size: 5.9pt;
+}
+
+.receipt--small .receipt-grid strong {
+  font-size: 7.4pt;
+}
+
+.receipt-mini-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2mm;
+  margin-top: 1.4mm;
+  padding: 1mm 1.4mm;
+  border: 0.35mm solid #000;
+  border-radius: 1mm;
+}
+
+.receipt-mini-status span {
+  font-size: 6.4pt;
+  color: var(--muted);
+}
+
+.receipt-mini-status strong {
+  font-size: 9pt;
+  font-weight: 900;
+}
+
+.receipt--small .receipt-reason {
+  gap: 0.5mm;
+  margin-top: 1.6mm;
+  padding: 1.4mm;
+  border-width: 0.3mm;
+}
+
+.receipt--small .receipt-reason > span {
+  font-size: 6pt;
+}
+
+.receipt--small .receipt-reason > strong {
+  font-size: 8.6pt;
+  line-height: 1.25;
+}
+
+.receipt--small .receipt-qr {
+  gap: 2mm;
+  margin-top: 1.6mm;
+  padding: 1.2mm;
+}
+
+.receipt--small .receipt-qr img {
+  width: 17mm;
+  height: 17mm;
+  flex-basis: 17mm;
+}
+
+.receipt--small .receipt-qr-text {
+  gap: 0.5mm;
+}
+
+.receipt--small .receipt-qr-text strong {
+  font-size: 7.4pt;
+}
+
+.receipt--small .receipt-qr-text span {
+  font-size: 6.4pt;
+}
+
+.receipt--small .receipt-footer {
+  gap: 0.3mm;
+  margin-top: 1.4mm;
+  padding-top: 1.2mm;
+}
+
+.receipt--small .receipt-footer strong {
+  font-size: 6.8pt;
+}
+
+.receipt--small .receipt-footer .mono {
+  font-size: 5.8pt;
+}
+
+@media print {
+  .receipt--small {
+    width: 58mm;
+    margin: 0;
+    padding: 3mm 2.5mm;
+  }
+}

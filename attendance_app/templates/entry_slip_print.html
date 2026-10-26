@@ -1,5 +1,6 @@
 {% set student = slip.student %}
 {% set period = slip.period %}
+{% set tpl = receipt_template %}
 <!DOCTYPE html>
 <html lang="{{ lang }}" dir="{{ dir }}">
 <head>
@@ -9,8 +10,11 @@
   <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip-print.css') }}">
+  {% if tpl == 'small' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip-print-small.css') }}">
+  {% endif %}
 </head>
-<body data-autoprint="{{ '1' if autoprint else '0' }}">
+<body class="receipt-page receipt-page--{{ tpl }}" data-autoprint="{{ '1' if autoprint else '0' }}">
   <header class="receipt-toolbar screen-only">
     <div class="receipt-toolbar-brand">
       <span class="receipt-toolbar-icon">
@@ -18,7 +22,7 @@
       </span>
       <div>
         <strong>{{ "ورقة الدخول"|t }} · {{ slip.slip_code }}</strong>
-        <span>{{ student.full_name }} — {{ slip.check_in_display }} — {{ "طابعة حرارية 80 مم"|t }}</span>
+        <span>{{ student.full_name }} — {{ slip.check_in_display }} — {{ ("طابعة حرارية 58 مم" if tpl == "small" else "طابعة حرارية 80 مم")|t }}</span>
       </div>
     </div>
     <div class="receipt-toolbar-actions">
@@ -37,21 +41,29 @@
     </div>
   </header>
 
-  <main class="receipt" id="receipt">
+  <main class="receipt receipt--{{ tpl }}" id="receipt" data-template="{{ tpl }}">
     <header class="receipt-head">
-      {% if logo_url %}
+      {% if logo_url and tpl != 'small' %}
         <img class="receipt-logo" src="{{ logo_url }}" alt="{{ school_name }}">
       {% endif %}
       <div class="receipt-head-text">
         <strong>{{ school_name or "المؤسسة التعليمية" }}</strong>
-        <span>{{ header_text or "الجمهورية الجزائرية الديمقراطية الشعبية" }}</span>
+        {% if tpl == 'full' %}
+          <span>{{ header_text or "الجمهورية الجزائرية الديمقراطية الشعبية" }}</span>
+        {% else %}
+          <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+        {% endif %}
       </div>
     </header>
 
     <div class="receipt-doc-title">
-      <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+      {% if tpl == 'full' %}
+        <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+      {% endif %}
       <h1>{{ "ورقة الدخول"|t }}</h1>
-      <p>{{ "تصريح دخول تلميذ بعد رصد الغياب"|t }}</p>
+      {% if tpl != 'small' %}
+        <p>{{ "تصريح دخول تلميذ بعد رصد الغياب"|t }}</p>
+      {% endif %}
     </div>
 
     <div class="receipt-code">
@@ -64,8 +76,12 @@
     <section class="receipt-student">
       <div class="receipt-line is-name"><span>{{ "التلميذ"|t }}</span><strong>{{ student.full_name }}</strong></div>
       <div class="receipt-line"><span>{{ "القسم"|t }}</span><strong>{{ student.class_group or "بدون قسم"|t }}</strong></div>
-      <div class="receipt-line"><span>{{ "رقم التعريف"|t }}</span><strong class="mono">{{ student.student_nin }}</strong></div>
-      <div class="receipt-line"><span>{{ "تاريخ الميلاد"|t }}</span><strong class="mono">{{ student.birth_date_display }}</strong></div>
+      {% if tpl != 'small' %}
+        <div class="receipt-line"><span>{{ "رقم التعريف"|t }}</span><strong class="mono">{{ student.student_nin }}</strong></div>
+      {% endif %}
+      {% if tpl == 'full' %}
+        <div class="receipt-line"><span>{{ "تاريخ الميلاد"|t }}</span><strong class="mono">{{ student.birth_date_display }}</strong></div>
+      {% endif %}
     </section>
 
     <div class="receipt-rule is-dashed"></div>
@@ -73,16 +89,27 @@
     <section class="receipt-grid">
       <div><span>{{ "التاريخ"|t }}</span><strong class="mono">{{ slip.date_display }}</strong></div>
       <div><span>{{ "وقت الدخول"|t }}</span><strong class="mono">{{ slip.check_in_display }}</strong></div>
-      <div><span>{{ "الفترة"|t }}</span><strong>{{ period.period_name }}</strong></div>
-      <div><span>{{ "بداية الفترة"|t }}</span><strong class="mono">{{ period.start_time }}</strong></div>
-      <div><span>{{ "الحالة السابقة"|t }}</span><strong>{{ slip.previous_status_label }}</strong></div>
-      <div><span>{{ "الحالة الجديدة"|t }}</span><strong class="is-strong">{{ slip.new_status_label }}</strong></div>
+      {% if tpl != 'small' %}
+        <div><span>{{ "الفترة"|t }}</span><strong>{{ period.period_name }}</strong></div>
+        <div><span>{{ "الحالة الجديدة"|t }}</span><strong class="is-strong">{{ slip.new_status_label }}</strong></div>
+      {% endif %}
+      {% if tpl == 'full' %}
+        <div><span>{{ "بداية الفترة"|t }}</span><strong class="mono">{{ period.start_time }}</strong></div>
+        <div><span>{{ "الحالة السابقة"|t }}</span><strong>{{ slip.previous_status_label }}</strong></div>
+      {% endif %}
     </section>
+
+    {% if tpl == 'small' %}
+      <div class="receipt-mini-status">
+        <span>{{ "الحالة"|t }}</span>
+        <strong>{{ slip.new_status_label }}</strong>
+      </div>
+    {% endif %}
 
     <section class="receipt-reason">
       <span>{{ "سبب الدخول"|t }}</span>
       <strong>{{ slip.reason }}</strong>
-      {% if slip.note %}<p>{{ slip.note }}</p>{% endif %}
+      {% if tpl != 'small' and slip.note %}<p>{{ slip.note }}</p>{% endif %}
     </section>
 
     <section class="receipt-qr">
@@ -90,27 +117,35 @@
       <div class="receipt-qr-text">
         <strong>{{ "توقيع رقمي موثّق"|t }}</strong>
         <span class="mono">{{ slip.signature_short }}</span>
-        <small>{{ "امسح الرمز للتحقق من صحة الورقة"|t }}</small>
+        {% if tpl != 'small' %}
+          <small>{{ "امسح الرمز للتحقق من صحة الورقة"|t }}</small>
+        {% endif %}
       </div>
     </section>
 
-    <div class="receipt-rule is-dashed"></div>
+    {% if tpl != 'small' %}
+      <div class="receipt-rule is-dashed"></div>
 
-    <section class="receipt-meta">
-      <div><span>{{ "أصدرها"|t }}</span><strong>{{ slip.issued_by }}</strong></div>
-      <div><span>{{ "وقت الإصدار"|t }}</span><strong class="mono">{{ slip.created_at[11:16] if slip.created_at else "" }}</strong></div>
-    </section>
+      <section class="receipt-meta">
+        <div><span>{{ "أصدرها"|t }}</span><strong>{{ slip.issued_by }}</strong></div>
+        <div><span>{{ "وقت الإصدار"|t }}</span><strong class="mono">{{ slip.created_at[11:16] if slip.created_at else "" }}</strong></div>
+      </section>
 
-    <div class="receipt-sign">
-      <span>{{ "توقيع الإدارة"|t }}</span>
-    </div>
+      <div class="receipt-sign">
+        <span>{{ "توقيع الإدارة"|t }}</span>
+      </div>
+    {% endif %}
 
-    <p class="receipt-notice">{{ "هذه الورقة صالحة لليوم والفترة المذكورين فقط. أي تعديل يدوي على بياناتها يلغي صلاحيتها."|t }}</p>
+    {% if tpl == 'full' %}
+      <p class="receipt-notice">{{ "هذه الورقة صالحة لليوم والفترة المذكورين فقط. أي تعديل يدوي على بياناتها يلغي صلاحيتها."|t }}</p>
+    {% endif %}
 
     <footer class="receipt-footer">
-      <strong>{{ app_title }} · {{ academic_year }}</strong>
-      <span>{{ "الإصدار"|t }} {{ app_version }} — {{ "صادرة إلكترونيًا من الخادم المحلي"|t }}</span>
-      <span class="mono">{{ slip.slip_code }} · {{ slip.signature_short }}</span>
+      <strong>{{ app_title }}{% if tpl != 'small' %} · {{ academic_year }}{% endif %}</strong>
+      {% if tpl != 'small' %}
+        <span>{{ "الإصدار"|t }} {{ app_version }} — {{ "صادرة إلكترونيًا من الخادم المحلي"|t }}</span>
+      {% endif %}
+      <span class="mono">{{ slip.slip_code }}{% if tpl != 'small' %} · {{ slip.signature_short }}{% endif %}</span>
     </footer>
   </main>
 

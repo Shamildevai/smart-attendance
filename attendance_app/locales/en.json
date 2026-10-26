@@ -1557,7 +1557,17 @@
     "نسخة": "Copy",
     "هذه الورقة صالحة لليوم والفترة المذكورين فقط. أي تعديل يدوي على بياناتها يلغي صلاحيتها.": "This slip is valid only for the stated day and period. Any manual change to its data voids it.",
     "ورقة جديدة": "New slip",
-    "وقت الإصدار": "Issued at"
+    "وقت الإصدار": "Issued at",
+    "قالب الإيصال": "Receipt template",
+    "اختر حجم الورق ومقدار المعلومات": "Choose paper size and level of detail",
+    "كامل": "Full",
+    "متوسط": "Medium",
+    "صغير": "Small",
+    "80 مم · بيانات الورقة كاملة": "80 mm · Full slip details",
+    "80 مم · بيانات أساسية": "80 mm · Essential details",
+    "58 مم · مختصر": "58 mm · Compact",
+    "يُحفظ اختيارك ويُطبَّق على الإصدار وإعادة الطباعة.": "Your choice is saved and applied to issuing and reprinting.",
+    "طابعة حرارية 58 مم": "58 mm thermal printer"
   },
   "patterns": [
     {

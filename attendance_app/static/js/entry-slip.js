@@ -7,6 +7,8 @@
   const HID_ENTER_GAP_MS = 300;
   const HID_MAX_LENGTH = 128;
   const CAMERA_DUPLICATE_MS = 3500;
+  const TEMPLATE_STORAGE_KEY = "entrySlipTemplate";
+  const TEMPLATE_VALUES = ["full", "medium", "small"];
 
   const SCAN_DIGITS = {
     "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4",
@@ -25,6 +27,7 @@
     periods: [],
     reasons: [],
     lookup: null,
+    template: "full",
     busy: false,
     buffer: "",
     lastKeyAt: 0,
@@ -49,6 +52,48 @@
 
   function safe(value) {
     return A.escapeHtml(value === null || value === undefined ? "" : value);
+  }
+
+  function readStoredTemplate() {
+    try {
+      const value = window.localStorage.getItem(TEMPLATE_STORAGE_KEY);
+      return TEMPLATE_VALUES.includes(value) ? value : "full";
+    } catch (error) {
+      return "full";
+    }
+  }
+
+  function templateLabel(value) {
+    if (value === "medium") return A.t("متوسط");
+    if (value === "small") return A.t("صغير");
+    return A.t("كامل");
+  }
+
+  function printUrlFor(slipCode) {
+    return `/entry-slip/print/${encodeURIComponent(slipCode)}?print=1&template=${encodeURIComponent(
+      state.template
+    )}`;
+  }
+
+  function syncTemplateUi() {
+    document.querySelectorAll("[data-entry-template]").forEach((label) => {
+      const active = label.dataset.entryTemplate === state.template;
+      label.classList.toggle("is-active", active);
+      const input = label.querySelector("input");
+      if (input) input.checked = active;
+    });
+    const badge = $("entry-template-badge");
+    if (badge) badge.textContent = templateLabel(state.template);
+  }
+
+  function selectTemplate(value) {
+    state.template = TEMPLATE_VALUES.includes(value) ? value : "full";
+    try {
+      window.localStorage.setItem(TEMPLATE_STORAGE_KEY, state.template);
+    } catch (error) {
+      /* localStorage can be unavailable in private windows */
+    }
+    syncTemplateUi();
   }
 
   /* ---------------------------------------------------------------------- */
@@ -194,7 +239,7 @@
           </div>
           ${A.statusBadge(item.new_status, item.new_status_label)}
           <time>${safe(item.check_in_display)}</time>
-          <a class="icon-btn" href="/entry-slip/print/${encodeURIComponent(item.slip_code)}?print=1"
+          <a class="icon-btn" href="${printUrlFor(item.slip_code)}"
              target="_blank" rel="noopener" title="${safe(A.t("إعادة الطباعة"))}" aria-label="${safe(A.t("إعادة الطباعة"))}">
             ${A.icon("printer")}
           </a>
@@ -347,7 +392,7 @@
 
   function slipSummary(slip) {
     if (!slip) return "";
-    const printUrl = `/entry-slip/print/${encodeURIComponent(slip.slip_code)}?print=1`;
+    const printUrl = printUrlFor(slip.slip_code);
     const verifyUrl = `/entry-slip/verify?code=${encodeURIComponent(slip.qr_payload)}`;
     return `<div class="entry-slip-summary">
       <div class="entry-slip-summary-head">${A.icon("check")}<span>${safe(
@@ -496,7 +541,7 @@
       A.beep("success");
       scheduleRefresh(800);
       if (slip.print_url) {
-        window.location.assign(`${slip.print_url}?print=1`);
+        window.location.assign(`${slip.print_url}?print=1&template=${encodeURIComponent(state.template)}`);
       } else {
         renderLookup({ ...state.lookup, action: "already_issued", slip, can_issue: false });
       }
@@ -840,6 +885,10 @@
       input.blur();
       processCode(code, "manual");
     });
+    document.querySelectorAll("[data-entry-template]").forEach((label) => {
+      const input = label.querySelector("input");
+      if (input) input.addEventListener("change", () => selectTemplate(input.value));
+    });
   }
 
   function startPolling() {
@@ -849,7 +898,9 @@
   }
 
   state.reasons = ($("entry-layout").dataset.reasons || "").split("|").filter(Boolean);
+  state.template = readStoredTemplate();
   bindEvents();
+  syncTemplateUi();
   setBufferHint();
   startClock();
   loadContext();
