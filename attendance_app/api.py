@@ -14,7 +14,7 @@ from typing import Any
 import segno
 from barcode import Code128
 from barcode.writer import SVGWriter
-from flask import Blueprint, Response, current_app, g, jsonify, request, send_file
+from flask import Blueprint, Response, current_app, g, jsonify, request, send_file, url_for
 
 from .auth import AccountError, create_user, delete_user, list_users, update_user
 from .config import GATEWAY_APP_VERSION
@@ -31,6 +31,7 @@ from .db import (
 from .importer import commit_import, parse_file, preview_import
 from .media import save_image
 from .services import attendance_service as attendance
+from .services import entry_slip_service as entry_slips
 from .services import messaging_service, report_service, sms_service, update_service, whatsapp_service
 from .services.sms_service import SmsGatewayError
 from .services.update_service import UpdateError
@@ -1092,6 +1093,73 @@ def excuse_api(log_id: int):
     reason = str(data.get("reason") or "")
     result = attendance.excuse_attendance(get_db(), log_id, reason)
     return ok(**result)
+
+
+def _optional_period_id(value: Any) -> int | None:
+    if value in (None, ""):
+        return None
+    return _as_int(value, "الفترة", 1, 10**9)
+
+
+@api_bp.get("/entry-slip/context")
+def entry_slip_context_api():
+    period_id = _int_arg("period_id")
+    return ok(**entry_slips.entry_context(get_db(), period_id))
+
+
+@api_bp.post("/entry-slip/lookup")
+def entry_slip_lookup_api():
+    data = _payload()
+    result = entry_slips.lookup_entry(
+        get_db(),
+        str(data.get("code") or ""),
+        _optional_period_id(data.get("period_id")),
+    )
+    return ok(**result)
+
+
+@api_bp.post("/entry-slip")
+def entry_slip_issue_api():
+    data = _payload()
+    user = g.get("user") or {}
+    result = entry_slips.issue_slip(
+        get_db(),
+        str(data.get("code") or ""),
+        _optional_period_id(data.get("period_id")),
+        str(data.get("reason") or ""),
+        str(data.get("note") or ""),
+        user.get("display_name") or user.get("username") or "مستخدم",
+        str(current_app.config["SECRET_KEY"]),
+    )
+    slip = result["slip"]
+    slip["print_url"] = url_for("views.entry_slip_print_page", code=slip["slip_code"])
+    slip["verify_url"] = url_for("views.entry_slip_verify_page", code=slip["qr_payload"])
+    return ok(**result)
+
+
+@api_bp.get("/entry-slip/verify")
+def entry_slip_verify_api():
+    result = entry_slips.verify_entry(
+        get_db(),
+        str(request.args.get("code") or ""),
+        str(current_app.config["SECRET_KEY"]),
+    )
+    return ok(**result)
+
+
+@api_bp.get("/entry-slip/<path:code>/qr")
+def entry_slip_qr(code: str):
+    slip = entry_slips.get_slip(get_db(), code)
+    if not slip:
+        raise ApiError("ورقة الدخول غير موجودة.", 404, "not_found")
+    buffer = BytesIO()
+    qr = segno.make(slip["qr_payload"], error="m")
+    qr.save(buffer, kind="svg", scale=10, border=2, dark="#000000", light="#ffffff")
+    svg = buffer.getvalue().decode("utf-8")
+    svg = re.sub(r"<\?xml.*?\?>", "", svg, flags=re.DOTALL)
+    response = Response(svg, mimetype="image/svg+xml")
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 # ---------------------------------------------------------------------------

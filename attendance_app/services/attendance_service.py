@@ -75,6 +75,19 @@ def _resolve_student(
     return None, candidates[0] if candidates else "", "none"
 
 
+def lookup_student_scan(conn: sqlite3.Connection, raw_code: Any) -> dict[str, Any]:
+    """Resolve a gate scan without writing anything (shared by entry slips)."""
+    candidates = _scan_candidates(raw_code)
+    display = candidates[0] if candidates else ""
+    row, code, lookup = _resolve_student(conn, candidates)
+    return {
+        "student": student_public(row) if row else None,
+        "display_code": display,
+        "matched_code": code,
+        "lookup": lookup,
+    }
+
+
 def _edit_distance(left: str, right: str, limit: int = 2) -> int:
     if abs(len(left) - len(right)) > limit:
         return limit + 1

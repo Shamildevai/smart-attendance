@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from flask import g, has_request_context, request
+from jinja2 import pass_context
 
 LANG_COOKIE = "attendance_lang"
 DEFAULT_LANG = "ar"
@@ -354,5 +355,9 @@ def init_app(app) -> None:
         response.headers.add("Vary", "Cookie")
         return response
 
-    app.jinja_env.filters["t"] = lambda value: translate(value)
+    @pass_context
+    def _t_filter(_context, value):
+        return translate(value)
+
+    app.jinja_env.filters["t"] = _t_filter
     app.jinja_env.globals["t"] = translate

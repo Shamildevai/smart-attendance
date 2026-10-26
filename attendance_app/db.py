@@ -9,7 +9,7 @@ from flask import current_app, g
 
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -123,6 +123,30 @@ CREATE TABLE IF NOT EXISTS period_closures (
     UNIQUE (period_id, closure_date),
     FOREIGN KEY (period_id) REFERENCES periods(id) ON DELETE RESTRICT
 );
+
+CREATE TABLE IF NOT EXISTS entry_slips (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slip_code TEXT NOT NULL UNIQUE,
+    student_nin TEXT NOT NULL,
+    period_id INTEGER NOT NULL,
+    slip_date TEXT NOT NULL,
+    check_in_time TEXT NOT NULL,
+    previous_status TEXT,
+    new_status TEXT NOT NULL CHECK (new_status IN ('PRESENT', 'LATE')),
+    reason TEXT NOT NULL,
+    note TEXT,
+    issued_by TEXT NOT NULL DEFAULT '',
+    signature TEXT NOT NULL,
+    print_count INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    UNIQUE (student_nin, period_id, slip_date),
+    FOREIGN KEY (student_nin) REFERENCES students(student_nin)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (period_id) REFERENCES periods(id)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_entry_slips_date ON entry_slips(slip_date);
+CREATE INDEX IF NOT EXISTS idx_entry_slips_period ON entry_slips(period_id, slip_date);
 
 CREATE TABLE IF NOT EXISTS message_campaigns (
     id TEXT PRIMARY KEY,

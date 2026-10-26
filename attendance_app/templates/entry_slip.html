@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.entry_slip_verify_page') }}">
+    <svg class="ico"><use href="#i-qr"></use></svg>
+    <span>التحقق من ورقة</span>
+  </a>
+  <button class="btn btn-secondary btn-sm" type="button" id="entry-fullscreen">
+    <svg class="ico"><use href="#i-eye"></use></svg>
+    <span>ملء الشاشة</span>
+  </button>
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.dashboard_page') }}">
+    <svg class="ico"><use href="#i-dashboard"></use></svg>
+    <span>لوحة المتابعة</span>
+  </a>
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip.css') }}">
+{% endblock %}
+
+{% block content %}
+  <div class="entry-layout gate-layout" id="entry-layout" data-reasons="{{ reasons|join('|') }}">
+    <div class="entry-main gate-main">
+      <section class="entry-scanner gate-scanner" id="entry-scanner">
+        <div class="entry-ready-content gate-ready-content">
+          <div class="gate-status">
+            <span class="gate-ready" style="position:static">
+              <i></i>
+              <span id="entry-state-label">جاهز لمسح بطاقة الغائب</span>
+              <span class="mono" id="entry-live-time" style="font-size:10px;opacity:.75"></span>
+            </span>
+            <h2>امسح بطاقة التلميذ لفتح ورقة الدخول</h2>
+            <p>يمرّر التلميذ بطاقته على قارئ USB، أو استعمل الكاميرا. راجع سبب الدخول ثم أصدر إيصالًا حراريًا موقّعًا برمز QR.</p>
+          </div>
+
+          <div class="entry-scan-line">
+            <div class="scan-orb" id="entry-scan-orb">
+              <div class="scan-orb-icon">
+                <svg class="ico"><use href="#i-entry"></use></svg>
+              </div>
+            </div>
+            <div class="scan-capture-hint">
+              <span class="kbd-hint"><kbd>HID</kbd> قارئ USB</span>
+              <span style="opacity:.4">·</span>
+              <span class="kbd-hint"><kbd>Enter</kbd> تأكيد تلقائي</span>
+              <span style="opacity:.4">·</span>
+              <span class="kbd-hint" id="entry-buffer-hint"><kbd>0</kbd> حرف مستلم</span>
+            </div>
+          </div>
+
+          <form class="entry-manual" id="entry-manual-form" autocomplete="off">
+            <label for="entry-manual-code">أو أدخل رقم التعريف يدويًا</label>
+            <div class="entry-manual-row">
+              <input class="input" id="entry-manual-code" name="code" type="text" inputmode="latin" dir="ltr" placeholder="مثال: 1099000001" maxlength="64">
+              <button class="btn btn-secondary btn-sm" type="submit">
+                <svg class="ico"><use href="#i-search"></use></svg>
+                <span>بحث</span>
+              </button>
+            </div>
+          </form>
+
+          <div class="camera-dock" id="entry-camera-dock">
+            <div class="camera-frame">
+              <video id="entry-camera-video" playsinline muted></video>
+              <span class="scan-line"></span>
+              <button class="icon-btn camera-close" type="button" id="entry-camera-close" aria-label="إغلاق الكاميرا">
+                <svg class="ico"><use href="#i-close"></use></svg>
+              </button>
+            </div>
+            <div class="camera-note" id="entry-camera-note">وجّه باركود البطاقة داخل الإطار. توقف الكاميرا عند إخفاء النافذة.</div>
+          </div>
+
+          <div class="entry-actions gate-actions">
+            <button class="btn btn-sm" type="button" id="entry-camera-toggle">
+              <svg class="ico"><use href="#i-camera"></use></svg>
+              <span>تشغيل الكاميرا</span>
+            </button>
+            <button class="btn btn-sm" type="button" id="entry-clear">
+              <svg class="ico"><use href="#i-refresh"></use></svg>
+              <span>تفريغ الذاكرة</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="entry-result" aria-live="polite">
+        <div class="scan-result-empty">
+          <svg class="ico"><use href="#i-entry"></use></svg>
+          <strong>بانتظار مسح بطاقة غائب</strong>
+          <p>ستظهر هنا حالة التلميذ في الفترة، أسباب الدخول، وزر إصدار الورقة الحرارية الموقّعة.</p>
+        </div>
+      </section>
+    </div>
+
+    <aside class="entry-side gate-side">
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-clock"></use></svg> فترة الدخول</h2><p>اختيار يدوي أو كشف تلقائي حسب الوقت</p></div>
+          <button class="icon-btn" type="button" id="entry-refresh" title="تحديث البيانات" aria-label="تحديث البيانات">
+            <svg class="ico"><use href="#i-refresh"></use></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="gate-period-select">
+            <label class="sr-only" for="entry-period">الفترة</label>
+            <select class="select" id="entry-period">
+              <option value="">تلقائي حسب الوقت الحالي</option>
+            </select>
+          </div>
+          <div class="gate-period-note" id="entry-period-note">
+            <svg class="ico" style="width:14px;height:14px"><use href="#i-sparkle"></use></svg>
+            <span>سيُختار الوقت الأنسب تلقائيًا.</span>
+          </div>
+          <div id="entry-closure"></div>
+          <div class="entry-kpi gate-kpi">
+            <div><span>غياب مرصود</span><strong class="is-warning" id="entry-kpi-absent">0</strong></div>
+            <div><span>دخلوا متأخرين</span><strong id="entry-kpi-late">0</strong></div>
+            <div><span>أوراق صادرة</span><strong class="is-success" id="entry-kpi-issued">0</strong></div>
+            <div><span>تلاميذ نشطون</span><strong id="entry-kpi-total">0</strong></div>
+          </div>
+          <div class="progress-row" style="margin-top:12px">
+            <div class="row-head"><strong>تغطية أوراق الدخول</strong><span id="entry-rate-label">0%</span></div>
+            <div class="progress"><span id="entry-rate-bar" style="width:0%"></span></div>
+          </div>
+          <div class="tiny muted mt-2" id="entry-period-meta">—</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-printer"></use></svg> آخر الأوراق</h2><p>إعادة الطباعة متاحة في أي وقت</p></div>
+          <span class="badge badge--present" id="entry-recent-count">0</span>
+        </div>
+        <div class="card-body" id="entry-recent">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+
+      <section class="card entry-guide">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-shield-check"></use></svg> كيف تعمل الورقة؟</h2><p>ثلاث خطوات سريعة عند البوابة</p></div>
+        </div>
+        <div class="card-body">
+          <ol class="entry-steps">
+            <li><span>1</span><div><strong>امسح البطاقة</strong><p>يتعرف النظام على التلميذ وغيابه في الفترة المحددة.</p></div></li>
+            <li><span>2</span><div><strong>راجع السبب</strong><p>اختر سببًا جاهزًا أو اكتب سببًا واضحًا وملاحظة إن لزم.</p></div></li>
+            <li><span>3</span><div><strong>أصدر الإيصال</strong><p>يتحول الغياب إلى حضور أو تأخر، وتُطبع ورقة حراريّة موقّعة.</p></div></li>
+          </ol>
+        </div>
+      </section>
+    </aside>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/entry-slip.js') }}"></script>
+{% endblock %}

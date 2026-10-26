@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip.css') }}">
+{% endblock %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.entry_slip_page') }}">
+    <svg class="ico"><use href="#i-entry"></use></svg>
+    <span>إصدار ورقة دخول</span>
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="entry-verify-layout">
+    <section class="card entry-verify-card">
+      <div class="card-header">
+        <div>
+          <h2><svg class="ico"><use href="#i-qr"></use></svg> التحقق من توقيع الورقة</h2>
+          <p>امسح رمز QR المطبوع بقارئ USB أو كاميرا الهاتف ثم اضغط تحقق.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form class="entry-verify-form" method="get" action="{{ url_for('views.entry_slip_verify_page') }}">
+          <label for="verify-code">رمز QR أو رقم ورقة الدخول</label>
+          <textarea class="textarea" id="verify-code" name="code" rows="3" dir="ltr" spellcheck="false"
+                    autocomplete="off" placeholder="SAES1|ES-20261026-0001|...">{{ raw_code }}</textarea>
+          <div class="entry-verify-actions">
+            <button class="btn btn-primary" type="submit">
+              <svg class="ico"><use href="#i-shield-check"></use></svg>
+              <span>تحقق من الورقة</span>
+            </button>
+            <button class="btn btn-secondary" type="button" id="verify-clear">
+              <svg class="ico"><use href="#i-refresh"></use></svg>
+              <span>تفريغ الحقل</span>
+            </button>
+            <button class="btn btn-ghost" type="button" id="verify-scan-focus">
+              <svg class="ico"><use href="#i-scan"></use></svg>
+              <span>تهيئة القارئ</span>
+            </button>
+          </div>
+        </form>
+        <div class="entry-verify-hint">
+          <svg class="ico"><use href="#i-info"></use></svg>
+          <p>أدخل رمز QR الكامل للتحقق من التوقيع الرقمي. إدخال رقم الورقة فقط يعرض السجل دون تأكيد التوقيع.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="entry-verify-result" aria-live="polite">
+      {% if not result %}
+        <div class="scan-result-empty">
+          <svg class="ico"><use href="#i-qr"></use></svg>
+          <strong>بانتظار رمز للتحقق</strong>
+          <p>سيظهر هنا حكم التحقق وبيانات الورقة الكاملة بعد قراءة رمز QR.</p>
+        </div>
+      {% else %}
+        {% set slip = result.slip %}
+        <article class="scan-result">
+          <header class="scan-card-head {% if result.valid is true %}{% elif result.valid is false %}is-error{% else %}is-warning{% endif %}">
+            <div class="avatar" aria-hidden="true">
+              <svg class="ico"><use href="#i-{% if result.valid is true %}shield-check{% elif result.valid is false %}warning{% else %}qr{% endif %}"></use></svg>
+            </div>
+            <div class="scan-person">
+              <h3>
+                {% if result.valid is true %}توقيع صحيح وموثّق
+                {% elif result.valid is false %}ورقة غير موثوقة
+                {% else %}سجل موجود — التوقيع غير مفحوص{% endif %}
+              </h3>
+              <p>{{ result.message }}</p>
+            </div>
+            <div class="scan-state">
+              <svg class="ico"><use href="#i-{% if result.valid is true %}check{% elif result.valid is false %}x{% else %}warning{% endif %}"></use></svg>
+              <strong>{% if result.valid is true %}صحيحة{% elif result.valid is false %}مرفوضة{% else %}غير مفحوصة{% endif %}</strong>
+            </div>
+          </header>
+          {% if slip %}
+            <div class="scan-card-body">
+              <div class="entry-verify-person">
+                <div class="avatar" aria-hidden="true">{{ (slip.student.first_name[:1] ~ slip.student.last_name[:1])|upper }}</div>
+                <div class="entry-verify-person-text">
+                  <strong>{{ slip.student.full_name }}</strong>
+                  <span>{{ slip.student.class_group or "بدون قسم" }} · <b class="mono">{{ slip.student.student_nin }}</b></span>
+                </div>
+              </div>
+              <div class="scan-meta">
+                <div><span>رقم الورقة</span><strong class="mono">{{ slip.slip_code }}</strong></div>
+                <div><span>التاريخ</span><strong class="mono">{{ slip.date_display }}</strong></div>
+                <div><span>وقت الدخول</span><strong class="mono">{{ slip.check_in_display }}</strong></div>
+              </div>
+              <div class="entry-verify-grid">
+                <div><span>الفترة</span><strong>{{ slip.period.period_name }}</strong></div>
+                <div><span>سبب الدخول</span><strong>{{ slip.reason }}</strong></div>
+                <div><span>الحالة السابقة</span><strong>{{ slip.previous_status_label }}</strong></div>
+                <div><span>الحالة الجديدة</span><strong class="is-success">{{ slip.new_status_label }}</strong></div>
+                <div><span>أصدرها</span><strong>{{ slip.issued_by }}</strong></div>
+                <div><span>بصمة التوقيع</span><strong class="mono">{{ slip.signature_short }}</strong></div>
+              </div>
+              {% if slip.note %}<div class="scan-message">{{ slip.note }}</div>{% endif %}
+              <div class="scan-actions">
+                <a class="btn btn-primary btn-sm" href="{{ url_for('views.entry_slip_print_page', code=slip.slip_code) }}?print=1">
+                  <svg class="ico"><use href="#i-printer"></use></svg>
+                  <span>إعادة طباعة الإيصال</span>
+                </a>
+                <a class="btn btn-secondary btn-sm" href="/students?q={{ slip.student.student_nin }}&profile=1">ملف التلميذ</a>
+              </div>
+            </div>
+          {% endif %}
+        </article>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/entry-slip-verify.js') }}"></script>
+{% endblock %}

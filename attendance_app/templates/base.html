@@ -40,6 +40,9 @@
           <svg class="ico"><use href="#i-scan"></use></svg><span>بوابة المسح</span>
           <span class="nav-live"><i></i> مباشر</span>
         </a>
+        <a class="nav-link {% if active == 'entry_slip' %}is-active{% endif %}" href="{{ url_for('views.entry_slip_page') }}">
+          <svg class="ico"><use href="#i-entry"></use></svg><span>ورقة الدخول</span>
+        </a>
         <div class="nav-label">إدارة التلاميذ</div>
         <a class="nav-link {% if active == 'students' %}is-active{% endif %}" href="{{ url_for('views.students_page') }}">
           <svg class="ico"><use href="#i-users"></use></svg><span>التلاميذ</span>
