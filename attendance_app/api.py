@@ -17,7 +17,7 @@ from barcode.writer import SVGWriter
 from flask import Blueprint, Response, current_app, g, jsonify, request, send_file, url_for
 
 from .auth import AccountError, create_user, delete_user, list_users, update_user
-from .config import GATEWAY_APP_VERSION
+from .config import COLOR_THEMES, DEFAULT_COLOR_THEME, GATEWAY_APP_VERSION
 from .db import (
     DEFAULT_PRINT_CONFIG,
     bool_setting,
@@ -216,6 +216,11 @@ def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
             int(part) for part in settings.get("school_weekdays", "0,1,2,3,4").split(",")
             if part.strip().isdigit()
         ],
+        "color_theme": (
+            settings.get("color_theme", DEFAULT_COLOR_THEME)
+            if settings.get("color_theme", DEFAULT_COLOR_THEME) in COLOR_THEMES
+            else DEFAULT_COLOR_THEME
+        ),
         "auto_sweep": bool_setting(settings, "auto_sweep", True),
         "anti_passback_minutes": int_setting(settings, "anti_passback_minutes", 5, 1, 60),
         "print_config": get_print_config(settings),
@@ -314,6 +319,11 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
             updates[key] = value
     if "school_name" in updates and not updates["school_name"]:
         raise ApiError("اسم المؤسسة مطلوب.", 400)
+    if "color_theme" in data:
+        color = str(data.get("color_theme") or "").strip().lower()
+        if color not in COLOR_THEMES:
+            raise ApiError("لون الواجهة غير صالح.", 400)
+        updates["color_theme"] = color
     if "sms_template" in updates and not updates["sms_template"]:
         raise ApiError("نص رسالة SMS لا يمكن أن يكون فارغًا.", 400)
     if "sms_gateway" in data:

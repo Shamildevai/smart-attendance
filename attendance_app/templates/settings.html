@@ -26,6 +26,9 @@
     <a href="#settings-branding">
       <svg class="ico"><use href="#i-stamp"></use></svg><span>الشعار والختم</span>
     </a>
+    <a href="#settings-appearance">
+      <svg class="ico"><use href="#i-palette"></use></svg><span>المظهر والألوان</span>
+    </a>
     <a href="#settings-schedule">
       <svg class="ico"><use href="#i-calendar"></use></svg><span>الدوام والسلوك</span>
     </a>
@@ -144,6 +147,40 @@
           <svg class="ico"><use href="#i-shield-check"></use></svg>
           <div>تُحفظ الصور داخل مجلد بيانات النظام على هذا الجهاز، ولا تُرسل إلى أي خدمة خارجية. استعمل خلفية شفافة لنتيجة طباعة أفضل.</div>
         </div>
+      </div>
+    </section>
+
+    <section class="card settings-section" id="settings-appearance">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-palette"></use></svg></div>
+        <div class="flex-1">
+          <h2>المظهر والألوان</h2>
+          <p>اختر اللون الرئيسي للتطبيق. يتغير فورًا ويُحفظ لجميع المستخدمين.</p>
+        </div>
+        <span class="chip is-accent">اللون الرئيسي</span>
+      </div>
+      <div class="settings-card-body">
+        {% set current_color = settings.get('color_theme', 'emerald') %}
+        <div class="theme-grid" id="theme-grid" aria-label="اللون الرئيسي">
+          {% for code, label, swatch in [
+            ('emerald', 'زمردي', '#0e7c66'),
+            ('blue', 'أزرق', '#2563c9'),
+            ('red', 'أحمر', '#c43636'),
+            ('orange', 'برتقالي', '#bf5b12'),
+            ('yellow', 'أصفر', '#8a5a00'),
+            ('purple', 'بنفسجي', '#6a48c0'),
+            ('rose', 'وردي', '#b8326e'),
+            ('slate', 'رمادي', '#475569')
+          ] %}
+            <button class="theme-swatch {% if current_color == code %}is-active{% endif %}" type="button"
+                    data-color="{{ code }}" aria-pressed="{{ 'true' if current_color == code else 'false' }}">
+              <span class="theme-dot" style="--swatch: {{ swatch }}"></span>
+              <span class="theme-name">{{ label }}</span>
+              <svg class="ico theme-check"><use href="#i-check"></use></svg>
+            </button>
+          {% endfor %}
+        </div>
+        <span class="field-hint">يتغير لون الأزرار والقائمة والعناصر النشطة في جميع الصفحات، في الوضعين الفاتح والداكن.</span>
       </div>
     </section>
 

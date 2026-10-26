@@ -382,15 +382,26 @@
 
   /* ---------- Theme / navigation / clock ---------- */
 
+  function syncThemeColor() {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    const value = window.getComputedStyle(document.documentElement).getPropertyValue("--primary").trim();
+    if (value) meta.setAttribute("content", value);
+  }
+
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#08110e" : "#0e7c66");
+    syncThemeColor();
     try {
       localStorage.setItem(THEME_KEY, theme);
     } catch (error) {
       /* storage can be unavailable */
     }
+  }
+
+  function applyColorTheme(color) {
+    document.documentElement.dataset.color = color || "emerald";
+    syncThemeColor();
   }
 
   function toggleTheme() {
@@ -449,6 +460,7 @@
   }
 
   function initShell() {
+    applyColorTheme(document.documentElement.dataset.color || "emerald");
     bindDigitInputs();
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => btn.addEventListener("click", toggleTheme));
     document.addEventListener("error", (event) => {
@@ -521,6 +533,7 @@
     beep,
     flash,
     applyTheme,
+    applyColorTheme,
     toggleTheme,
     closeSidebar,
   };

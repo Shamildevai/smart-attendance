@@ -1586,7 +1586,22 @@
     "لا يمكن اختيار تاريخ مستقبلي لورقة الدخول.": "Une date future ne peut pas être choisie pour une fiche d'entrée.",
     "هذا التلميذ غير نشط ولا يمكن تسوية غيابه.": "Cet élève est inactif et son absence ne peut pas être régularisée.",
     "منذ لحظات": "il y a quelques instants",
-    "قبل دقيقة واحدة": "il y a une minute"
+    "قبل دقيقة واحدة": "il y a une minute",
+    "المظهر والألوان": "Apparence et couleurs",
+    "اختر اللون الرئيسي للتطبيق. يتغير فورًا ويُحفظ لجميع المستخدمين.": "Choisissez la couleur principale de l'application. Elle s'applique immédiatement et est enregistrée pour tous les utilisateurs.",
+    "اللون الرئيسي": "Couleur principale",
+    "زمردي": "Émeraude",
+    "أزرق": "Bleu",
+    "أحمر": "Rouge",
+    "برتقالي": "Orange",
+    "أصفر": "Jaune",
+    "بنفسجي": "Violet",
+    "وردي": "Rose",
+    "رمادي": "Ardoise",
+    "يتغير لون الأزرار والقائمة والعناصر النشطة في جميع الصفحات، في الوضعين الفاتح والداكن.": "Modifie les boutons, la barre latérale et les éléments actifs de toutes les pages, en mode clair et sombre.",
+    "تم تغيير لون الواجهة.": "La couleur de l'interface a été modifiée.",
+    "تعذر تغيير لون الواجهة.": "Impossible de modifier la couleur de l'interface.",
+    "لون الواجهة غير صالح.": "Couleur d'interface non valide."
   },
   "patterns": [
     {

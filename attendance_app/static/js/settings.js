@@ -12,6 +12,8 @@
     gatewayLoading: false,
   };
 
+  const THEME_OPTIONS = ["emerald", "blue", "red", "orange", "yellow", "purple", "rose", "slate"];
+
   const SMS_VARIABLES = {
     "[اسم_المؤسسة]": "مؤسسة النور التعليمية",
     "[اسم_التلميذ]": "محمد أمين بن علي",
@@ -122,11 +124,53 @@
     $("whatsapp-template-lang").value = s.whatsapp_template_lang || "ar";
     $("whatsapp-api-version").value = s.whatsapp_api_version || "v23.0";
 
+    const colorTheme = THEME_OPTIONS.includes(s.color_theme) ? s.color_theme : "emerald";
+    A.applyColorTheme(colorTheme);
+    markThemeSelection(colorTheme);
+
     renderBrand("logo");
     renderBrand("stamp");
     syncGatewayUI();
     syncWhatsAppUI();
     updateTemplateMeta();
+  }
+
+  function markThemeSelection(color) {
+    document.querySelectorAll("#theme-grid [data-color]").forEach((button) => {
+      const active = button.dataset.color === color;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
+  async function chooseTheme(button) {
+    const color = button.dataset.color;
+    if (!THEME_OPTIONS.includes(color)) return;
+    const previous = (state.settings && state.settings.color_theme) || "emerald";
+    if (color === previous) return;
+    A.applyColorTheme(color);
+    markThemeSelection(color);
+    button.setAttribute("aria-busy", "true");
+    try {
+      const data = await A.api("/api/settings", { method: "PUT", body: { color_theme: color } });
+      state.settings = { ...(state.settings || {}), ...(data.settings || {}) };
+      flashSaved();
+      A.toast("تم تغيير لون الواجهة.", "success");
+    } catch (error) {
+      A.applyColorTheme(previous);
+      markThemeSelection(previous);
+      A.toast(error.message || "تعذر تغيير لون الواجهة.", "error");
+    } finally {
+      button.removeAttribute("aria-busy");
+    }
+  }
+
+  function bindThemeGrid() {
+    const grid = $("theme-grid");
+    if (!grid) return;
+    grid.querySelectorAll("[data-color]").forEach((button) => {
+      button.addEventListener("click", () => chooseTheme(button));
+    });
   }
 
   function renderStats() {
@@ -923,6 +967,7 @@
   function init() {
     bindInstitutionForm();
     bindBranding();
+    bindThemeGrid();
     bindScheduleForm();
     bindSmsForm();
     bindPeriods();

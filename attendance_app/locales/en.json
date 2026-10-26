@@ -1586,7 +1586,22 @@
     "لا يمكن اختيار تاريخ مستقبلي لورقة الدخول.": "A future date cannot be selected for an entry slip.",
     "هذا التلميذ غير نشط ولا يمكن تسوية غيابه.": "This student is inactive and their absence cannot be regularized.",
     "منذ لحظات": "moments ago",
-    "قبل دقيقة واحدة": "a minute ago"
+    "قبل دقيقة واحدة": "a minute ago",
+    "المظهر والألوان": "Appearance & colors",
+    "اختر اللون الرئيسي للتطبيق. يتغير فورًا ويُحفظ لجميع المستخدمين.": "Choose the app's primary color. It applies instantly and is saved for all users.",
+    "اللون الرئيسي": "Primary color",
+    "زمردي": "Emerald",
+    "أزرق": "Blue",
+    "أحمر": "Red",
+    "برتقالي": "Orange",
+    "أصفر": "Yellow",
+    "بنفسجي": "Purple",
+    "وردي": "Rose",
+    "رمادي": "Slate",
+    "يتغير لون الأزرار والقائمة والعناصر النشطة في جميع الصفحات، في الوضعين الفاتح والداكن.": "Changes buttons, the sidebar, and active elements across all pages, in both light and dark modes.",
+    "تم تغيير لون الواجهة.": "The interface color was changed.",
+    "تعذر تغيير لون الواجهة.": "Could not change the interface color.",
+    "لون الواجهة غير صالح.": "Invalid interface color."
   },
   "patterns": [
     {

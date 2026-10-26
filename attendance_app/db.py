@@ -241,6 +241,7 @@ DEFAULT_SETTINGS: dict[str, str] = {
     "whatsapp_template_lang": "ar",
     "whatsapp_api_version": "v23.0",
     "school_weekdays": "0,1,2,3,4",
+    "color_theme": "emerald",
     "auto_sweep": "1",
     "anti_passback_minutes": "5",
     "print_config": dump_json(DEFAULT_PRINT_CONFIG),

@@ -9,6 +9,7 @@ from pathlib import Path
 from flask import Flask, jsonify, render_template, request
 
 from . import config, i18n
+from .db import get_db, get_settings
 from .db import init_app as init_db_app
 from .db import init_db
 from .services.messaging_service import MessageJobManager
@@ -158,10 +159,19 @@ def create_app(test_config: dict | None = None) -> Flask:
     @app.context_processor
     def inject_app_globals():
         lang = i18n.current_lang()
+        try:
+            color_theme = get_settings(get_db()).get(
+                "color_theme", config.DEFAULT_COLOR_THEME
+            )
+        except Exception:
+            color_theme = config.DEFAULT_COLOR_THEME
+        if color_theme not in config.COLOR_THEMES:
+            color_theme = config.DEFAULT_COLOR_THEME
         return {
             **config.app_metadata(lang),
             "lang": lang,
             "dir": i18n.lang_dir(lang),
+            "color_theme": color_theme,
             "lang_options": i18n.LANGUAGES,
             "app_version": config.APP_VERSION,
             "app_repo_url": config.APP_REPO_URL,

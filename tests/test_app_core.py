@@ -173,3 +173,22 @@ def test_settings_validation_and_roundtrip(client, csrf):
 
     no_name = client.put("/api/settings", json={"school_name": "  "}, headers=csrf)
     assert no_name.status_code == 400
+
+
+def test_color_theme_setting(client, csrf):
+    initial = client.get("/api/settings").get_json()["settings"]
+    assert initial["color_theme"] == "emerald"
+
+    updated = client.put("/api/settings", json={"color_theme": "blue"}, headers=csrf)
+    assert updated.status_code == 200
+    assert updated.get_json()["settings"]["color_theme"] == "blue"
+
+    page = client.get("/settings").get_data(as_text=True)
+    assert 'data-color="blue"' in page
+    assert page.count('class="theme-swatch') == 8
+
+    invalid = client.put("/api/settings", json={"color_theme": "turquoise"}, headers=csrf)
+    assert invalid.status_code == 400
+
+    still_blue = client.get("/api/settings").get_json()["settings"]["color_theme"]
+    assert still_blue == "blue"
