@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 1, 17, 0),
-    prodvers=(1, 1, 17, 0),
+    filevers=(1, 1, 18, 0),
+    prodvers=(1, 1, 18, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -17,12 +17,12 @@ VSVersionInfo(
           '040904B0',
           [StringStruct('CompanyName', 'د. بوزويرة عزيز (shamildev)'),
            StringStruct('FileDescription', 'نظام متابعة حضور التلاميذ بالباركود والرسائل القصيرة'),
-           StringStruct('FileVersion', '1.1.17'),
+           StringStruct('FileVersion', '1.1.18'),
            StringStruct('InternalName', 'SmartAttendance'),
            StringStruct('LegalCopyright', '© 2026 د. بوزويرة عزيز — shamildev'),
            StringStruct('OriginalFilename', 'SmartAttendance.exe'),
            StringStruct('ProductName', 'نظام متابعة الحضور'),
-           StringStruct('ProductVersion', '1.1.17')])
+           StringStruct('ProductVersion', '1.1.18')])
       ]
     ),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])

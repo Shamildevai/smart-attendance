@@ -33,7 +33,14 @@ from .media import save_image
 from .services import attendance_service as attendance
 from .services import entry_slip_service as entry_slips
 from .services import exit_slip_service as exit_slips
-from .services import messaging_service, report_service, sms_service, update_service, whatsapp_service
+from .services import (
+    messaging_service,
+    report_service,
+    scanner_bridge_service,
+    sms_service,
+    update_service,
+    whatsapp_service,
+)
 from .services.sms_service import SmsGatewayError
 from .services.update_service import UpdateError
 from .utils import (
@@ -176,6 +183,16 @@ def _json_object(raw: str, label: str) -> dict:
 @api_bp.get("/health")
 def health():
     return ok(app="StudentAttendance", version=current_app.config["APP_VERSION"], time=datetime.now().isoformat(timespec="seconds"))
+
+
+@api_bp.get("/scanner/bridge/poll")
+def poll_scanner_bridge():
+    settings = get_settings(get_db())
+    result = scanner_bridge_service.poll(
+        settings.get("sms_mobile_url", ""),
+        settings.get("sms_mobile_key", ""),
+    )
+    return ok(**result)
 
 
 def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:

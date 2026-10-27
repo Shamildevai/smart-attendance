@@ -310,7 +310,7 @@
     "ملء الشاشة": "Plein écran",
     "جاهز للمسح": "Prêt à scanner",
     "مرّر بطاقة التلميذ الآن": "Passez la carte de l'élève maintenant",
-    "يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال الكاميرا.": "Le lecteur de code-barres fonctionne comme un périphérique de saisie automatique — aucun champ à cliquer. Vous pouvez aussi utiliser la caméra.",
+    "يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال كاميرا الحاسوب أو الهاتف.": "Le lecteur de code-barres fonctionne comme un périphérique de saisie automatique — aucun champ à cliquer. Vous pouvez aussi utiliser la caméra de l’ordinateur ou du téléphone.",
     "قارئ USB": "Lecteur USB",
     "تأكيد تلقائي": "Validation automatique",
     "حرف مستلم": "caractères reçus",
@@ -1674,7 +1674,19 @@
     "أدخل رمز QR أو رقم ورقة الخروج للتحقق.": "Saisissez le code QR ou le numéro de fiche de sortie à vérifier.",
     "لا توجد ورقة خروج بهذا الرمز.": "Aucune fiche de sortie trouvée avec ce code.",
     "لا توجد ورقة خروج بهذا الرقم.": "Aucune fiche de sortie trouvée avec ce numéro.",
-    "تعذر توليد باركود ورقة الخروج.": "Impossible de générer le code-barres de la fiche de sortie."
+    "تعذر توليد باركود ورقة الخروج.": "Impossible de générer le code-barres de la fiche de sortie.",
+    "قارئ الهاتف": "Lecteur du téléphone",
+    "إيقاف قارئ الهاتف": "Arrêter le lecteur du téléphone",
+    "جارٍ الاتصال بالهاتف…": "Connexion au téléphone…",
+    "الهاتف متصل — جاهز للمسح": "Téléphone connecté — prêt à scanner",
+    "جارٍ نقل المسوحات من الهاتف…": "Réception des scans du téléphone…",
+    "تعذر الوصول إلى الهاتف. تأكد من الواي فاي وتشغيل البوابة.": "Téléphone inaccessible. Vérifiez le Wi-Fi et que la passerelle est active.",
+    "لم يُضبط رابط بوابة الهاتف بعد. اضبطه من صفحة الرسائل.": "L’adresse de la passerelle téléphone n’est pas configurée. Réglez-la depuis la page Messages.",
+    "رابط بوابة الهاتف غير صالح.": "L’adresse de la passerelle téléphone est invalide.",
+    "مفتاح واجهة الهاتف غير صحيح. أعد الاقتران.": "La clé d’API du téléphone est invalide. Réappairez le téléphone.",
+    "حدّث تطبيق الهاتف إلى الإصدار 1.1.0 لتفعيل القارئ اللاسلكي.": "Mettez à jour l’application du téléphone vers 1.1.0 pour activer le lecteur sans fil.",
+    "أُعيدت مزامنة المسوحات بعد إعادة تشغيل الهاتف.": "Les scans ont été resynchronisés après le redémarrage du téléphone.",
+    "تعذر قراءة المسوحات من الهاتف.": "Impossible de lire les scans du téléphone."
   },
   "patterns": [
     {

@@ -23,7 +23,7 @@
               <span class="mono" id="gate-live-time" style="font-size:10px;opacity:.75"></span>
             </span>
             <h2>مرّر بطاقة التلميذ الآن</h2>
-            <p>يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال الكاميرا.</p>
+            <p>يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال كاميرا الحاسوب أو الهاتف.</p>
           </div>
 
           <div class="scan-orb" id="scan-orb">
@@ -56,11 +56,16 @@
               <svg class="ico"><use href="#i-camera"></use></svg>
               <span>تشغيل الكاميرا</span>
             </button>
+            <button class="btn btn-sm" type="button" id="gate-phone-toggle" aria-pressed="false" title="قارئ الهاتف">
+              <svg class="ico"><use href="#i-phone"></use></svg>
+              <span>قارئ الهاتف</span>
+            </button>
             <button class="btn btn-sm" type="button" id="gate-clear">
               <svg class="ico"><use href="#i-refresh"></use></svg>
               <span>تفريغ الذاكرة</span>
             </button>
           </div>
+          <p class="phone-scan-note" id="gate-phone-note" hidden></p>
         </div>
       </section>
 
@@ -121,5 +126,6 @@
 {% endblock %}
 
 {% block scripts %}
+  <script src="{{ url_for('static', filename='js/phone-scanner.js') }}"></script>
   <script src="{{ url_for('static', filename='js/gate.js') }}"></script>
 {% endblock %}

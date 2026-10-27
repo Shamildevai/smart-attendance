@@ -310,7 +310,7 @@
     "ملء الشاشة": "Fullscreen",
     "جاهز للمسح": "Ready to scan",
     "مرّر بطاقة التلميذ الآن": "Pass the student card now",
-    "يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال الكاميرا.": "The barcode reader works as an automatic input device — no need to click any field. You can also use the camera.",
+    "يعمل قارئ الباركود كجهاز إدخال تلقائي — لا حاجة للنقر على أي حقل. يمكنك أيضًا استعمال كاميرا الحاسوب أو الهاتف.": "The barcode reader works as an automatic input device — no need to click any field. You can also use the computer or phone camera.",
     "قارئ USB": "USB reader",
     "تأكيد تلقائي": "Auto confirm",
     "حرف مستلم": "characters received",
@@ -1674,7 +1674,19 @@
     "أدخل رمز QR أو رقم ورقة الخروج للتحقق.": "Enter the QR code or exit slip number to verify.",
     "لا توجد ورقة خروج بهذا الرمز.": "No exit slip found with this code.",
     "لا توجد ورقة خروج بهذا الرقم.": "No exit slip found with this number.",
-    "تعذر توليد باركود ورقة الخروج.": "Could not generate the exit slip barcode."
+    "تعذر توليد باركود ورقة الخروج.": "Could not generate the exit slip barcode.",
+    "قارئ الهاتف": "Phone scanner",
+    "إيقاف قارئ الهاتف": "Stop phone scanner",
+    "جارٍ الاتصال بالهاتف…": "Connecting to the phone…",
+    "الهاتف متصل — جاهز للمسح": "Phone connected — ready to scan",
+    "جارٍ نقل المسوحات من الهاتف…": "Receiving scans from the phone…",
+    "تعذر الوصول إلى الهاتف. تأكد من الواي فاي وتشغيل البوابة.": "Cannot reach the phone. Check Wi-Fi and that the gateway is running.",
+    "لم يُضبط رابط بوابة الهاتف بعد. اضبطه من صفحة الرسائل.": "The phone gateway URL is not set. Configure it from the Messages page.",
+    "رابط بوابة الهاتف غير صالح.": "The phone gateway URL is invalid.",
+    "مفتاح واجهة الهاتف غير صحيح. أعد الاقتران.": "The phone API key is invalid. Pair the phone again.",
+    "حدّث تطبيق الهاتف إلى الإصدار 1.1.0 لتفعيل القارئ اللاسلكي.": "Update the phone app to 1.1.0 to enable the wireless scanner.",
+    "أُعيدت مزامنة المسوحات بعد إعادة تشغيل الهاتف.": "Scans were resynced after the phone restarted.",
+    "تعذر قراءة المسوحات من الهاتف.": "Could not read scans from the phone."
   },
   "patterns": [
     {

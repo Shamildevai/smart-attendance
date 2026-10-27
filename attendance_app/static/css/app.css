@@ -1682,6 +1682,9 @@ kbd {
 }
 .camera-close { position: absolute; top: 8px; inset-inline-end: 8px; background: rgba(0, 0, 0, 0.55); color: #fff; border-color: transparent; backdrop-filter: blur(4px); }
 .camera-note { margin-top: 7px; font-size: 10px; color: var(--sidebar-muted); text-align: center; }
+.phone-scan-note { position: relative; z-index: 1; margin: 8px 0 0; font-size: 11px; text-align: center; color: var(--sidebar-muted); }
+.phone-scan-note.is-ok { color: var(--on-dark-primary); }
+.phone-scan-note.is-error { color: #f0b9b9; }
 
 .gate-actions { position: relative; z-index: 1; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
 .gate-actions .btn { --btn-bg: rgba(255, 255, 255, 0.07); --btn-fg: var(--sidebar-text); --btn-bd: var(--sidebar-border); }

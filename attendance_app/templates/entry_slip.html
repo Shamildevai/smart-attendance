@@ -76,11 +76,16 @@
               <svg class="ico"><use href="#i-camera"></use></svg>
               <span>تشغيل الكاميرا</span>
             </button>
+            <button class="btn btn-sm" type="button" id="entry-phone-toggle" aria-pressed="false" title="قارئ الهاتف">
+              <svg class="ico"><use href="#i-phone"></use></svg>
+              <span>قارئ الهاتف</span>
+            </button>
             <button class="btn btn-sm" type="button" id="entry-clear">
               <svg class="ico"><use href="#i-refresh"></use></svg>
               <span>تفريغ الذاكرة</span>
             </button>
           </div>
+          <p class="phone-scan-note" id="entry-phone-note" hidden></p>
         </div>
       </section>
 
@@ -186,5 +191,6 @@
 {% endblock %}
 
 {% block scripts %}
+  <script src="{{ url_for('static', filename='js/phone-scanner.js') }}"></script>
   <script src="{{ url_for('static', filename='js/entry-slip.js') }}"></script>
 {% endblock %}

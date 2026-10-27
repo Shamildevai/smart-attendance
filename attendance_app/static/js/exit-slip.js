@@ -218,7 +218,8 @@
 
   async function processCode(rawCode, source) {
     const code = normalizeScanCode(rawCode);
-    if (!code || state.busy) return;
+    if (!code) return false;
+    if (state.busy) return false;
     state.busy = true;
     state.lookup = null;
     orb.classList.add("is-scanning");
@@ -248,6 +249,7 @@
       orb.classList.remove("is-scanning");
       updateReadyLabel();
     }
+    return true;
   }
 
   function stateInfo(data) {
@@ -873,6 +875,13 @@
       const input = label.querySelector("input");
       if (input) input.addEventListener("change", () => selectTemplate(input.value));
     });
+    if (window.PhoneScanner) {
+      window.PhoneScanner.mount({
+        toggleId: "exit-phone-toggle",
+        noteId: "exit-phone-note",
+        onCode: (code) => processCode(code, "phone"),
+      });
+    }
   }
 
   function startPolling() {
