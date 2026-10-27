@@ -1,14 +1,22 @@
 {% extends "base.html" %}
+{% set is_exit = verify_kind == 'exit' %}
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip.css') }}">
 {% endblock %}
 
 {% block page_actions %}
-  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.entry_slip_page') }}">
-    <svg class="ico"><use href="#i-entry"></use></svg>
-    <span>إصدار ورقة دخول</span>
-  </a>
+  {% if is_exit %}
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('views.exit_slip_page') }}">
+      <svg class="ico"><use href="#i-exit"></use></svg>
+      <span>إصدار ورقة خروج</span>
+    </a>
+  {% else %}
+    <a class="btn btn-secondary btn-sm" href="{{ url_for('views.entry_slip_page') }}">
+      <svg class="ico"><use href="#i-entry"></use></svg>
+      <span>إصدار ورقة دخول</span>
+    </a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -21,10 +29,10 @@
         </div>
       </div>
       <div class="card-body">
-        <form class="entry-verify-form" method="get" action="{{ url_for('views.entry_slip_verify_page') }}">
-          <label for="verify-code">رمز QR أو رقم ورقة الدخول</label>
+        <form class="entry-verify-form" method="get" action="{% if is_exit %}{{ url_for('views.exit_slip_verify_page') }}{% else %}{{ url_for('views.entry_slip_verify_page') }}{% endif %}">
+          <label for="verify-code">{% if is_exit %}رمز QR أو رقم ورقة الخروج{% else %}رمز QR أو رقم ورقة الدخول{% endif %}</label>
           <textarea class="textarea" id="verify-code" name="code" rows="3" dir="ltr" spellcheck="false"
-                    autocomplete="off" placeholder="SAES1|ES-20261026-0001|...">{{ raw_code }}</textarea>
+                    autocomplete="off" placeholder="{% if is_exit %}SAXS1|XS-20261027-0001|...{% else %}SAES1|ES-20261027-0001|...{% endif %}">{{ raw_code }}</textarea>
           <div class="entry-verify-actions">
             <button class="btn btn-primary" type="submit">
               <svg class="ico"><use href="#i-shield-check"></use></svg>
@@ -86,19 +94,27 @@
               <div class="scan-meta">
                 <div><span>رقم الورقة</span><strong class="mono">{{ slip.slip_code }}</strong></div>
                 <div><span>التاريخ</span><strong class="mono">{{ slip.date_display }}</strong></div>
-                <div><span>وقت الدخول</span><strong class="mono">{{ slip.check_in_display }}</strong></div>
+                <div><span>{% if is_exit %}وقت الخروج{% else %}وقت الدخول{% endif %}</span><strong class="mono">{% if is_exit %}{{ slip.exit_time_display }}{% else %}{{ slip.check_in_display }}{% endif %}</strong></div>
               </div>
               <div class="entry-verify-grid">
-                <div><span>الفترة</span><strong>{{ slip.period.period_name }}</strong></div>
-                <div><span>سبب الدخول</span><strong>{{ slip.reason }}</strong></div>
-                <div><span>الحالة السابقة</span><strong>{{ slip.previous_status_label }}</strong></div>
-                <div><span>الحالة الجديدة</span><strong class="is-success">{{ slip.new_status_label }}</strong></div>
+                {% if is_exit %}
+                  <div><span>سبب الخروج</span><strong>{{ slip.reason }}</strong></div>
+                  <div><span>الولي أو المرافق</span><strong>{{ slip.guardian_name or "—" }}</strong></div>
+                  <div><span>هاتف الولي</span><strong class="mono">{{ slip.guardian_phone or slip.student.parent_phone or "—" }}</strong></div>
+                  <div><span>حالة العودة</span><strong class="{% if slip.returned %}is-success{% endif %}">{% if slip.returned %}عاد {{ slip.returned_display }}{% else %}لم تُسجَّل بعد{% endif %}</strong></div>
+                  <div><span>باركود العودة</span><strong class="mono">{{ slip.barcode }}</strong></div>
+                {% else %}
+                  <div><span>الفترة</span><strong>{{ slip.period.period_name }}</strong></div>
+                  <div><span>سبب الدخول</span><strong>{{ slip.reason }}</strong></div>
+                  <div><span>الحالة السابقة</span><strong>{{ slip.previous_status_label }}</strong></div>
+                  <div><span>الحالة الجديدة</span><strong class="is-success">{{ slip.new_status_label }}</strong></div>
+                {% endif %}
                 <div><span>أصدرها</span><strong>{{ slip.issued_by }}</strong></div>
                 <div><span>بصمة التوقيع</span><strong class="mono">{{ slip.signature_short }}</strong></div>
               </div>
               {% if slip.note %}<div class="scan-message">{{ slip.note }}</div>{% endif %}
               <div class="scan-actions">
-                <a class="btn btn-primary btn-sm" href="{{ url_for('views.entry_slip_print_page', code=slip.slip_code) }}?print=1">
+                <a class="btn btn-primary btn-sm" href="{% if is_exit %}{{ url_for('views.exit_slip_print_page', code=slip.slip_code) }}{% else %}{{ url_for('views.entry_slip_print_page', code=slip.slip_code) }}{% endif %}?print=1">
                   <svg class="ico"><use href="#i-printer"></use></svg>
                   <span>إعادة طباعة الإيصال</span>
                 </a>

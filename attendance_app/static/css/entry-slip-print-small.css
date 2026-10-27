@@ -153,6 +153,28 @@
   font-size: 6.4pt;
 }
 
+.receipt--small .receipt-barcode {
+  gap: 0.6mm;
+  margin-top: 1.6mm;
+  padding: 1.2mm 1mm 1mm;
+}
+
+.receipt--small .receipt-barcode > span {
+  font-size: 5.9pt;
+}
+
+.receipt--small .receipt-barcode img {
+  height: 8.5mm;
+}
+
+.receipt--small .receipt-barcode strong {
+  font-size: 7.6pt;
+}
+
+.receipt--small .receipt-barcode small {
+  font-size: 5.8pt;
+}
+
 .receipt--small .receipt-footer {
   gap: 0.3mm;
   margin-top: 1.4mm;

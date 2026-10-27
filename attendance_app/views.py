@@ -21,6 +21,7 @@ from .auth import admin_required
 from .db import get_db, get_print_config, get_settings
 from .services import attendance_service as attendance
 from .services import entry_slip_service as entry_slips
+from .services import exit_slip_service as exit_slips
 from .services import report_service
 from .utils import (
     STATUS_AR,
@@ -124,9 +125,69 @@ def entry_slip_verify_page():
         "entry_slip_verify.html",
         raw_code=raw_code,
         result=result,
+        verify_kind="entry",
         **_page_context(
             "entry_slip",
             "التحقق من ورقة الدخول",
+            "امسح رمز QR المطبوع للتأكد من توقيع الورقة وبياناتها",
+        ),
+    )
+
+
+@views_bp.get("/exit-slip")
+def exit_slip_page():
+    return render_template(
+        "exit_slip.html",
+        reasons=exit_slips.EXIT_REASON_PRESETS,
+        **_page_context(
+            "exit_slip",
+            "ورقة الخروج",
+            "تصريح خروج التلاميذ وطباعة إيصال حراري موقّع مع باركود عودة",
+        ),
+    )
+
+
+@views_bp.get("/exit-slip/print/<path:code>")
+def exit_slip_print_page(code: str):
+    conn = get_db()
+    slip = exit_slips.get_slip(conn, code)
+    if not slip:
+        abort(404)
+    slip = exit_slips.register_print(conn, slip["slip_code"])
+    settings = get_settings(conn)
+    receipt_template = str(request.args.get("template") or "full").lower()
+    if receipt_template not in exit_slips.RECEIPT_TEMPLATES:
+        receipt_template = "full"
+    return render_template(
+        "exit_slip_print.html",
+        slip=slip,
+        settings=settings,
+        school_name=settings.get("school_name", ""),
+        logo_url=settings.get("logo_path", ""),
+        principal_name=settings.get("principal_name", ""),
+        header_text=settings.get("header_text", ""),
+        academic_year=settings.get("academic_year", ""),
+        autoprint=request.args.get("print") == "1",
+        receipt_template=receipt_template,
+    )
+
+
+@views_bp.get("/exit-slip/verify")
+def exit_slip_verify_page():
+    raw_code = str(request.args.get("code") or "").strip()
+    result = None
+    if raw_code:
+        result = exit_slips.verify_exit(
+            get_db(), raw_code, str(current_app.config["SECRET_KEY"])
+        )
+    return render_template(
+        "entry_slip_verify.html",
+        raw_code=raw_code,
+        result=result,
+        verify_kind="exit",
+        **_page_context(
+            "exit_slip",
+            "التحقق من ورقة الخروج",
             "امسح رمز QR المطبوع للتأكد من توقيع الورقة وبياناتها",
         ),
     )

@@ -9,7 +9,7 @@ from flask import current_app, g
 
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -147,6 +147,29 @@ CREATE TABLE IF NOT EXISTS entry_slips (
 );
 CREATE INDEX IF NOT EXISTS idx_entry_slips_date ON entry_slips(slip_date);
 CREATE INDEX IF NOT EXISTS idx_entry_slips_period ON entry_slips(period_id, slip_date);
+
+CREATE TABLE IF NOT EXISTS exit_slips (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slip_code TEXT NOT NULL UNIQUE,
+    barcode TEXT NOT NULL UNIQUE,
+    student_nin TEXT NOT NULL,
+    exit_date TEXT NOT NULL,
+    exit_time TEXT NOT NULL,
+    exit_reason TEXT NOT NULL,
+    guardian_name TEXT NOT NULL DEFAULT '',
+    guardian_phone TEXT NOT NULL DEFAULT '',
+    note TEXT,
+    issued_by TEXT NOT NULL DEFAULT '',
+    signature TEXT NOT NULL,
+    print_count INTEGER NOT NULL DEFAULT 0,
+    returned_at TEXT,
+    entry_slip_code TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (student_nin) REFERENCES students(student_nin)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_exit_slips_date ON exit_slips(exit_date);
+CREATE INDEX IF NOT EXISTS idx_exit_slips_student ON exit_slips(student_nin, exit_date);
 
 CREATE TABLE IF NOT EXISTS message_campaigns (
     id TEXT PRIMARY KEY,

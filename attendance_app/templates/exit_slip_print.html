@@ -1,0 +1,153 @@
+{% set student = slip.student %}
+{% set tpl = receipt_template %}
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ "ورقة الخروج"|t }} {{ slip.slip_code }} — {{ school_name }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip-print.css') }}">
+  {% if tpl == 'small' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip-print-small.css') }}">
+  {% endif %}
+</head>
+<body class="receipt-page receipt-page--{{ tpl }}" data-autoprint="{{ '1' if autoprint else '0' }}">
+  <header class="receipt-toolbar screen-only">
+    <div class="receipt-toolbar-brand">
+      <span class="receipt-toolbar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6"/><path d="M21 12H10M17 8l4 4-4 4"/></svg>
+      </span>
+      <div>
+        <strong>{{ "ورقة الخروج"|t }} · {{ slip.slip_code }}</strong>
+        <span>{{ student.full_name }} — {{ slip.exit_time_display }} — {{ ("طابعة حرارية 58 مم" if tpl == "small" else "طابعة حرارية 80 مم")|t }}</span>
+      </div>
+    </div>
+    <div class="receipt-toolbar-actions">
+      <a class="receipt-btn is-ghost" href="{{ url_for('views.exit_slip_page') }}">
+        {{ "ورقة جديدة"|t }}
+      </a>
+      <a class="receipt-btn is-ghost" href="{{ url_for('views.exit_slip_verify_page', code=slip.qr_payload) }}">
+        {{ "التحقق من التوقيع"|t }}
+      </a>
+      <a class="receipt-btn is-ghost" href="/students?q={{ student.student_nin }}&profile=1">
+        {{ "ملف التلميذ"|t }}
+      </a>
+      <button class="receipt-btn is-primary" type="button" id="receipt-print">
+        {{ "طباعة الآن"|t }}
+      </button>
+    </div>
+  </header>
+
+  <main class="receipt receipt--{{ tpl }}" id="receipt" data-template="{{ tpl }}">
+    <header class="receipt-head">
+      {% if logo_url and tpl != 'small' %}
+        <img class="receipt-logo" src="{{ logo_url }}" alt="{{ school_name }}">
+      {% endif %}
+      <div class="receipt-head-text">
+        <strong>{{ school_name or "المؤسسة التعليمية" }}</strong>
+        {% if tpl == 'full' %}
+          <span>{{ header_text or "الجمهورية الجزائرية الديمقراطية الشعبية" }}</span>
+        {% else %}
+          <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="receipt-doc-title">
+      {% if tpl == 'full' %}
+        <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+      {% endif %}
+      <h1>{{ "ورقة الخروج"|t }}</h1>
+      {% if tpl != 'small' %}
+        <p>{{ "تصريح خروج تلميذ من المؤسسة"|t }}</p>
+      {% endif %}
+    </div>
+
+    <div class="receipt-code">
+      <div><span>{{ "رقم الورقة"|t }}</span><strong class="mono">{{ slip.slip_code }}</strong></div>
+      <div><span>{{ "نسخة"|t }}</span><strong class="mono">{{ slip.print_count }}</strong></div>
+    </div>
+
+    <div class="receipt-rule"></div>
+
+    <section class="receipt-student">
+      <div class="receipt-line is-name"><span>{{ "التلميذ"|t }}</span><strong>{{ student.full_name }}</strong></div>
+      <div class="receipt-line"><span>{{ "القسم"|t }}</span><strong>{{ student.class_group or "بدون قسم"|t }}</strong></div>
+      {% if tpl != 'small' %}
+        <div class="receipt-line"><span>{{ "رقم التعريف"|t }}</span><strong class="mono">{{ student.student_nin }}</strong></div>
+      {% endif %}
+      {% if tpl == 'full' %}
+        <div class="receipt-line"><span>{{ "تاريخ الميلاد"|t }}</span><strong class="mono">{{ student.birth_date_display }}</strong></div>
+      {% endif %}
+    </section>
+
+    <div class="receipt-rule is-dashed"></div>
+
+    <section class="receipt-grid">
+      <div><span>{{ "التاريخ"|t }}</span><strong class="mono">{{ slip.date_display }}</strong></div>
+      <div><span>{{ "وقت الخروج"|t }}</span><strong class="mono">{{ slip.exit_time_display }}</strong></div>
+      {% if tpl != 'small' %}
+        <div><span>{{ "الولي أو المرافق"|t }}</span><strong>{{ slip.guardian_name or "—" }}</strong></div>
+        <div><span>{{ "هاتف الولي"|t }}</span><strong class="mono">{{ slip.guardian_phone or student.parent_phone or "—" }}</strong></div>
+      {% endif %}
+      {% if tpl == 'full' %}
+        <div><span>{{ "الحالة"|t }}</span><strong class="is-strong">{% if slip.returned %}{{ "عاد التلميذ"|t }}{% else %}{{ "خارج المؤسسة"|t }}{% endif %}</strong></div>
+        <div><span>{{ "أصدرها"|t }}</span><strong>{{ slip.issued_by }}</strong></div>
+      {% endif %}
+    </section>
+
+    <section class="receipt-reason">
+      <span>{{ "سبب الخروج"|t }}</span>
+      <strong>{{ slip.reason }}</strong>
+      {% if tpl != 'small' and slip.note %}<p>{{ slip.note }}</p>{% endif %}
+    </section>
+
+    <section class="receipt-qr">
+      <img src="{{ url_for('api.exit_slip_qr', code=slip.slip_code) }}" alt="{{ 'رمز التحقق'|t }}">
+      <div class="receipt-qr-text">
+        <strong>{{ "توقيع رقمي موثّق"|t }}</strong>
+        <span class="mono">{{ slip.signature_short }}</span>
+        {% if tpl != 'small' %}
+          <small>{{ "امسح الرمز للتحقق من صحة الورقة"|t }}</small>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="receipt-barcode">
+      <span>{{ "باركود العودة"|t }}</span>
+      <img src="{{ url_for('api.exit_slip_barcode', code=slip.slip_code) }}" alt="{{ 'باركود العودة'|t }}">
+      <strong class="mono">{{ slip.barcode }}</strong>
+      <small>{{ "امسح هذا الباركود عند الدخول لإنشاء ورقة دخول بدل البطاقة."|t }}</small>
+    </section>
+
+    {% if tpl != 'small' %}
+      <div class="receipt-rule is-dashed"></div>
+
+      <section class="receipt-meta">
+        <div><span>{{ "وقت الإصدار"|t }}</span><strong class="mono">{{ slip.created_at[11:16] if slip.created_at else "" }}</strong></div>
+        <div><span>{{ "حالة العودة"|t }}</span><strong>{% if slip.returned %}{{ "عاد"|t }} {{ slip.returned_display }}{% else %}{{ "لم تُسجَّل بعد"|t }}{% endif %}</strong></div>
+      </section>
+
+      <div class="receipt-sign">
+        <span>{{ "توقيع الإدارة"|t }}</span>
+      </div>
+    {% endif %}
+
+    {% if tpl == 'full' %}
+      <p class="receipt-notice">{{ "يُقدَّم هذا الإيصال عند الدخول بدل بطاقة التلميذ لإنشاء ورقة دخول. صالح ليوم الخروج المذكور فقط."|t }}</p>
+    {% endif %}
+
+    <footer class="receipt-footer">
+      <strong>{{ app_title }}{% if tpl != 'small' %} · {{ academic_year }}{% endif %}</strong>
+      {% if tpl != 'small' %}
+        <span>{{ "الإصدار"|t }} {{ app_version }} — {{ "صادرة إلكترونيًا من الخادم المحلي"|t }}</span>
+      {% endif %}
+      <span class="mono">{{ slip.slip_code }}{% if tpl != 'small' %} · {{ slip.signature_short }}{% endif %}</span>
+    </footer>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/entry-slip-print.js') }}"></script>
+</body>
+</html>

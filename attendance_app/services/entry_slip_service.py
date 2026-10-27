@@ -15,6 +15,7 @@ from ..utils import (
     validate_iso_date,
 )
 from . import attendance_service as attendance
+from . import exit_slip_service as exit_slips
 
 ENTRY_REASON_PRESETS = (
     "تأخر صباحي",
@@ -213,7 +214,10 @@ def lookup_entry(
     period = attendance.choose_period(conn, period_id, require_active=True)
     if not period:
         raise ValidationError("لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.")
-    scan = attendance.lookup_student_scan(conn, raw_code)
+    exit_slip = exit_slips.find_by_scan(conn, raw_code)
+    scan = attendance.lookup_student_scan(
+        conn, exit_slip["student_nin"] if exit_slip else raw_code
+    )
     student = scan["student"]
     base: dict[str, Any] = {
         "student": student,
@@ -221,8 +225,9 @@ def lookup_entry(
         "attendance": None,
         "slip": None,
         "today": None,
-        "scanned_code": scan["display_code"],
+        "scanned_code": exit_slip["barcode"] if exit_slip else scan["display_code"],
         "lookup": scan["lookup"],
+        "exit_slip": exit_slip,
         "action": "",
         "message": "",
         "can_issue": False,
@@ -321,7 +326,10 @@ def issue_slip(
     period = attendance.choose_period(conn, period_id, require_active=True)
     if not period:
         raise ValidationError("لا توجد فترة نشطة. أضف فترة من الإعدادات أولًا.")
-    scan = attendance.lookup_student_scan(conn, raw_code)
+    direct_exit = exit_slips.find_by_scan(conn, raw_code)
+    scan = attendance.lookup_student_scan(
+        conn, direct_exit["student_nin"] if direct_exit else raw_code
+    )
     student = scan["student"]
     if not student:
         raise ValidationError("الباركود غير مسجل في قاعدة البيانات. تحقق من البطاقة.")
@@ -329,6 +337,9 @@ def issue_slip(
         raise ValidationError("هذا التلميذ غير نشط ولا يمكن إصدار ورقة دخول له.")
 
     with attendance._ATTENDANCE_WRITE_LOCK:
+        exit_slip = direct_exit or exit_slips.active_slip_for_student(
+            conn, student["student_nin"], day_iso
+        )
         existing_slip = _slip_for_day(conn, student["student_nin"], period["id"], day_iso)
         if existing_slip:
             return {
@@ -441,6 +452,17 @@ def issue_slip(
                     signature,
                 ),
             )
+            if exit_slip:
+                conn.execute(
+                    """UPDATE exit_slips
+                       SET returned_at = ?, entry_slip_code = ?
+                       WHERE id = ? AND returned_at IS NULL""",
+                    (
+                        at.strftime("%Y-%m-%d %H:%M:%S"),
+                        slip_code,
+                        exit_slip["id"],
+                    ),
+                )
 
         sms_notice = ""
         if sms_was_sent:
@@ -449,7 +471,13 @@ def issue_slip(
             sms_notice = "أُلغيت رسالة الغياب التي كانت في قائمة الانتظار."
 
         slip = get_slip(conn, slip_code)
-        return {"slip": slip, "sms_notice": sms_notice, "already_issued": False}
+        returned_exit = exit_slips.get_slip(conn, exit_slip["slip_code"]) if exit_slip else None
+        return {
+            "slip": slip,
+            "sms_notice": sms_notice,
+            "already_issued": False,
+            "exit_slip": returned_exit,
+        }
 
 
 def register_print(conn: sqlite3.Connection, slip_code: str) -> dict[str, Any]:

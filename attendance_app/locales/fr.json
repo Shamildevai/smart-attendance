@@ -1589,7 +1589,6 @@
     "قبل دقيقة واحدة": "il y a une minute",
     "المظهر والألوان": "Apparence et couleurs",
     "اختر اللون الرئيسي للتطبيق. يتغير فورًا ويُحفظ لجميع المستخدمين.": "Choisissez la couleur principale de l'application. Elle s'applique immédiatement et est enregistrée pour tous les utilisateurs.",
-    "اللون الرئيسي": "Couleur principale",
     "زمردي": "Émeraude",
     "أزرق": "Bleu",
     "أحمر": "Rouge",
@@ -1601,7 +1600,81 @@
     "يتغير لون الأزرار والقائمة والعناصر النشطة في جميع الصفحات، في الوضعين الفاتح والداكن.": "Modifie les boutons, la barre latérale et les éléments actifs de toutes les pages, en mode clair et sombre.",
     "تم تغيير لون الواجهة.": "La couleur de l'interface a été modifiée.",
     "تعذر تغيير لون الواجهة.": "Impossible de modifier la couleur de l'interface.",
-    "لون الواجهة غير صالح.": "Couleur d'interface non valide."
+    "لون الواجهة غير صالح.": "Couleur d'interface non valide.",
+    "جاهز لمسح بطاقة التلميذ": "Prêt à scanner une carte d'élève",
+    "امسح بطاقة التلميذ لإصدار ورقة خروج": "Scannez la carte de l'élève pour émettre une fiche de sortie",
+    "يتعرّف النظام على التلميذ وبيانات الولي، ثم تختار سبب الخروج وتطبع إيصالًا حراريًا موقّعًا برمز QR وباركود عودة يُقدَّم عند الدخول بدل البطاقة.": "Le système identifie l'élève et les coordonnées du parent, puis vous choisissez le motif de sortie et imprimez un reçu thermique signé avec un code QR et un code-barres de retour à présenter à la rentrée à la place de la carte.",
+    "أو أدخل رقم التعريف أو باركود ورقة خروج يدويًا": "Ou saisissez manuellement le numéro d'identification ou le code-barres d'une fiche de sortie",
+    "وجّه باركود البطاقة أو ورقة الخروج داخل الإطار. توقف الكاميرا عند إخفاء النافذة.": "Visez le code-barres de la carte ou de la fiche de sortie dans le cadre. La caméra s'arrête lorsque la fenêtre est masquée.",
+    "بانتظار مسح بطاقة تلميذ": "En attente du scan d'une carte d'élève",
+    "ستظهر هنا بيانات التلميذ والولي، أسباب الخروج، وزر إصدار الإيصال الحراري الموقّع.": "Les coordonnées de l'élève et du parent, les motifs de sortie et le bouton du reçu thermique signé apparaîtront ici.",
+    "ملخص اليوم": "Résumé du jour",
+    "حركة الخروج والعودة في الوقت الحقيقي": "Sorties et retours en temps réel",
+    "أوراق خروج": "Fiches de sortie",
+    "عادوا": "Revenus",
+    "خارج الآن": "Actuellement sortis",
+    "نسبة العودة": "Taux de retour",
+    "80 مم · بيان كامل": "80 mm · Détail complet",
+    "آخر أوراق الخروج": "Dernières fiches de sortie",
+    "إعادة الطباعة وتسجيل العودة": "Réimprimer et enregistrer le retour",
+    "كيف تعمل ورقة الخروج؟": "Comment fonctionne la fiche de sortie ?",
+    "ثلاث خطوات عند البوابة": "Trois étapes à la porte",
+    "يتعرف النظام على التلميذ ويظهر هاتف الولي وباقي البيانات.": "Le système identifie l'élève et affiche le téléphone du parent ainsi que les autres données.",
+    "حدّد السبب والولي": "Définissez le motif et le parent",
+    "اختر سببًا جاهزًا (مرض، استدعاء الولي…) وأضف المرافق إن لزم.": "Choisissez un motif prédéfini (maladie, appel du parent…) et ajoutez un accompagnateur si nécessaire.",
+    "يُطبع إيصال حراري موقّع مع QR وباركود عودة يُمسح عند الدخول.": "Un reçu thermique signé est imprimé avec un code QR et un code-barres de retour scanné à la rentrée.",
+    "ورقة الخروج": "Fiche de sortie",
+    "تصريح خروج تلميذ من المؤسسة": "Autorisation de sortie d'un élève",
+    "التحقق من ورقة الخروج": "Vérification de la fiche de sortie",
+    "تصريح خروج التلاميذ وطباعة إيصال حراري موقّع مع باركود عودة": "Autorisation de sortie des élèves avec reçu thermique signé et code-barres de retour",
+    "وقت الخروج": "Heure de sortie",
+    "الولي أو المرافق": "Parent ou accompagnateur",
+    "عاد التلميذ": "Élève revenu",
+    "خارج المؤسسة": "Hors de l'établissement",
+    "سبب الخروج": "Motif de sortie",
+    "باركود العودة": "Code-barres de retour",
+    "امسح هذا الباركود عند الدخول لإنشاء ورقة دخول بدل البطاقة.": "Scannez ce code-barres à la rentrée pour créer une fiche d'entrée à la place de la carte.",
+    "حالة العودة": "Statut du retour",
+    "عاد": "Revenu",
+    "لم تُسجَّل بعد": "Pas encore enregistré",
+    "يُقدَّم هذا الإيصال عند الدخول بدل بطاقة التلميذ لإنشاء ورقة دخول. صالح ليوم الخروج المذكور فقط.": "Présentez ce reçu à la rentrée à la place de la carte de l'élève pour créer une fiche d'entrée. Valable uniquement le jour de sortie indiqué.",
+    "إصدار ورقة خروج": "Émettre une fiche de sortie",
+    "رمز QR أو رقم ورقة الخروج": "Code QR ou numéro de fiche de sortie",
+    "تعذر تحميل بيانات ورقة الخروج.": "Impossible de charger les données de la fiche de sortie.",
+    "لا توجد أوراق خروج صادرة اليوم بعد.": "Aucune fiche de sortie émise aujourd'hui pour le moment.",
+    "خارج": "Sorti",
+    "تسجيل العودة": "Enregistrer le retour",
+    "جاهز للخروج": "Prêt à sortir",
+    "ورقة خروج سارية": "Fiche de sortie active",
+    "بيانات الولي": "Coordonnées du parent",
+    "مطلوب قبل إصدار الإيصال": "Requis avant l'émission du reçu",
+    "اسم الولي أو المرافق (اختياري)": "Nom du parent ou de l'accompagnateur (facultatif)",
+    "من يتولى مرافقة التلميذ؟": "Qui accompagne l'élève ?",
+    "يُطبع على الإيصال": "Imprimé sur le reçu",
+    "إصدار وطباعة ورقة الخروج": "Émettre et imprimer la fiche de sortie",
+    "يُطبع إيصال حراري موقّع مع رمز QR وباركود عودة يُستخدم عند الدخول بدل البطاقة.": "Un reçu thermique signé est imprimé avec un code QR et un code-barres de retour utilisé à la rentrée à la place de la carte.",
+    "ورقة خروج — تمت العودة": "Fiche de sortie — retour enregistré",
+    "ورقة خروج سارية — التلميذ خارج المؤسسة": "Fiche de sortie active — l'élève est hors de l'établissement",
+    "مصدر المسح": "Source du scan",
+    "ورقة خروج": "Fiche de sortie",
+    "يرجى تحديد سبب الخروج قبل إصدار الورقة.": "Veuillez définir le motif de sortie avant d'émettre la fiche.",
+    "تعذر إصدار ورقة الخروج.": "Impossible d'émettre la fiche de sortie.",
+    "تعذر تسجيل العودة.": "Impossible d'enregistrer le retour.",
+    "مرض": "Maladie",
+    "استدعاء الولي": "Appel du parent",
+    "هذا التلميذ غير نشط ولا يمكن إصدار ورقة خروج له.": "Cet élève est inactif et ne peut pas recevoir de fiche de sortie.",
+    "توجد ورقة خروج سارية لهذا التلميذ اليوم. يمكنك إعادة طباعتها أو تسجيل عودته.": "Une fiche de sortie active existe déjà pour cet élève aujourd'hui. Vous pouvez la réimprimer ou enregistrer le retour.",
+    "جاهز لإصدار ورقة خروج لهذا التلميذ مع إشعار الولي.": "Prêt à émettre une fiche de sortie pour cet élève avec notification au parent.",
+    "تم التعرف على التلميذ من ورقة خروج سابقة. يمكنك إصدار ورقة خروج جديدة عند الحاجة.": "Élève identifié à partir d'une fiche de sortie précédente. Vous pouvez émettre une nouvelle fiche si nécessaire.",
+    "يرجى تحديد سبب الخروج (حرفان على الأقل).": "Veuillez préciser le motif de sortie (2 caractères minimum).",
+    "سبب الخروج طويل جدًا (300 حرف كحد أقصى).": "Le motif de sortie est trop long (300 caractères maximum).",
+    "اسم الولي طويل جدًا (120 حرفًا كحد أقصى).": "Le nom du parent est trop long (120 caractères maximum).",
+    "رقم هاتف الولي طويل جدًا (30 رقمًا كحد أقصى).": "Le téléphone du parent est trop long (30 chiffres maximum).",
+    "ورقة الخروج غير موجودة.": "Fiche de sortie introuvable.",
+    "أدخل رمز QR أو رقم ورقة الخروج للتحقق.": "Saisissez le code QR ou le numéro de fiche de sortie à vérifier.",
+    "لا توجد ورقة خروج بهذا الرمز.": "Aucune fiche de sortie trouvée avec ce code.",
+    "لا توجد ورقة خروج بهذا الرقم.": "Aucune fiche de sortie trouvée avec ce numéro.",
+    "تعذر توليد باركود ورقة الخروج.": "Impossible de générer le code-barres de la fiche de sortie."
   },
   "patterns": [
     {
@@ -2687,6 +2760,34 @@
     {
       "ar": "تم تسوية غياب {0} يوم {1} وتسجيله حاضرًا في: {2}.",
       "tr": "L'absence de {0} le {1} a été régularisée et enregistrée présente dans : {2}."
+    },
+    {
+      "ar": "{0} ورقة خروج اليوم · {1} تلميذ خارج المؤسسة",
+      "tr": "{0} fiches de sortie aujourd'hui · {1} élèves actuellement sortis"
+    },
+    {
+      "ar": "عاد {0}",
+      "tr": "Retour à {0}"
+    },
+    {
+      "ar": "تم التعرف على التلميذ من ورقة الخروج {0}.",
+      "tr": "Élève identifié à partir de la fiche de sortie {0}."
+    },
+    {
+      "ar": "تم التعرف على التلميذ من ورقة الخروج {0} ({1}).",
+      "tr": "Élève identifié à partir de la fiche de sortie {0} ({1})."
+    },
+    {
+      "ar": "تم إصدار ورقة الخروج {0}. جارٍ فتح نافذة الطباعة الحرارية…",
+      "tr": "Fiche de sortie {0} émise. Ouverture de la fenêtre d'impression thermique…"
+    },
+    {
+      "ar": "تم تسجيل عودة التلميذ من ورقة الخروج {0}.",
+      "tr": "Retour de l'élève enregistré depuis la fiche de sortie {0}."
+    },
+    {
+      "ar": "سُجّلت عودة التلميذ من ورقة الخروج {0}.",
+      "tr": "Le retour de l'élève a été enregistré depuis la fiche de sortie {0}."
     }
   ]
 }

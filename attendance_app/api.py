@@ -32,6 +32,7 @@ from .importer import commit_import, parse_file, preview_import
 from .media import save_image
 from .services import attendance_service as attendance
 from .services import entry_slip_service as entry_slips
+from .services import exit_slip_service as exit_slips
 from .services import messaging_service, report_service, sms_service, update_service, whatsapp_service
 from .services.sms_service import SmsGatewayError
 from .services.update_service import UpdateError
@@ -1181,6 +1182,102 @@ def entry_slip_qr(code: str):
     qr.save(buffer, kind="svg", scale=10, border=2, dark="#000000", light="#ffffff")
     svg = buffer.getvalue().decode("utf-8")
     svg = re.sub(r"<\?xml.*?\?>", "", svg, flags=re.DOTALL)
+    response = Response(svg, mimetype="image/svg+xml")
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@api_bp.get("/exit-slip/context")
+def exit_slip_context_api():
+    return ok(**exit_slips.exit_context(get_db()))
+
+
+@api_bp.post("/exit-slip/lookup")
+def exit_slip_lookup_api():
+    data = _payload()
+    result = exit_slips.lookup_exit(get_db(), str(data.get("code") or ""))
+    return ok(**result)
+
+
+@api_bp.post("/exit-slip")
+def exit_slip_issue_api():
+    data = _payload()
+    user = g.get("user") or {}
+    result = exit_slips.issue_slip(
+        get_db(),
+        str(data.get("code") or ""),
+        str(data.get("reason") or ""),
+        str(data.get("note") or ""),
+        str(data.get("guardian_name") or ""),
+        str(data.get("guardian_phone") or ""),
+        user.get("display_name") or user.get("username") or "مستخدم",
+        str(current_app.config["SECRET_KEY"]),
+    )
+    slip = result["slip"]
+    slip["print_url"] = url_for("views.exit_slip_print_page", code=slip["slip_code"])
+    slip["verify_url"] = url_for("views.exit_slip_verify_page", code=slip["qr_payload"])
+    return ok(**result)
+
+
+@api_bp.post("/exit-slip/return")
+def exit_slip_return_api():
+    data = _payload()
+    result = exit_slips.mark_returned(get_db(), str(data.get("code") or ""))
+    return ok(**result)
+
+
+@api_bp.get("/exit-slip/verify")
+def exit_slip_verify_api():
+    result = exit_slips.verify_exit(
+        get_db(),
+        str(request.args.get("code") or ""),
+        str(current_app.config["SECRET_KEY"]),
+    )
+    return ok(**result)
+
+
+@api_bp.get("/exit-slip/<path:code>/qr")
+def exit_slip_qr(code: str):
+    slip = exit_slips.get_slip(get_db(), code)
+    if not slip:
+        raise ApiError("ورقة الخروج غير موجودة.", 404, "not_found")
+    buffer = BytesIO()
+    qr = segno.make(slip["qr_payload"], error="m")
+    qr.save(buffer, kind="svg", scale=10, border=2, dark="#000000", light="#ffffff")
+    svg = buffer.getvalue().decode("utf-8")
+    svg = re.sub(r"<\?xml.*?\?>", "", svg, flags=re.DOTALL)
+    response = Response(svg, mimetype="image/svg+xml")
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@api_bp.get("/exit-slip/<path:code>/barcode")
+def exit_slip_barcode(code: str):
+    slip = exit_slips.get_slip(get_db(), code)
+    if not slip:
+        raise ApiError("ورقة الخروج غير موجودة.", 404, "not_found")
+    buffer = BytesIO()
+    try:
+        product = Code128(slip["barcode"], writer=SVGWriter())
+        product.write(
+            buffer,
+            options={
+                "module_width": 0.25,
+                "module_height": 12.0,
+                "quiet_zone": 2.0,
+                "write_text": False,
+                "background": "#FFFFFF",
+                "foreground": "#000000",
+                "dpi": 300,
+                "font_size": 0,
+            },
+        )
+    except Exception as exc:
+        raise ApiError("تعذر توليد باركود ورقة الخروج.", 400) from exc
+    svg = buffer.getvalue().decode("utf-8")
+    svg = re.sub(r"<\?xml.*?\?>", "", svg, flags=re.DOTALL)
+    svg = re.sub(r"<!DOCTYPE.*?>", "", svg, flags=re.DOTALL)
+    svg = svg.replace("<svg ", '<svg preserveAspectRatio="none" ', 1)
     response = Response(svg, mimetype="image/svg+xml")
     response.headers["Cache-Control"] = "no-store"
     return response

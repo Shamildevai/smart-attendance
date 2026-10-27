@@ -1589,7 +1589,6 @@
     "قبل دقيقة واحدة": "a minute ago",
     "المظهر والألوان": "Appearance & colors",
     "اختر اللون الرئيسي للتطبيق. يتغير فورًا ويُحفظ لجميع المستخدمين.": "Choose the app's primary color. It applies instantly and is saved for all users.",
-    "اللون الرئيسي": "Primary color",
     "زمردي": "Emerald",
     "أزرق": "Blue",
     "أحمر": "Red",
@@ -1601,7 +1600,81 @@
     "يتغير لون الأزرار والقائمة والعناصر النشطة في جميع الصفحات، في الوضعين الفاتح والداكن.": "Changes buttons, the sidebar, and active elements across all pages, in both light and dark modes.",
     "تم تغيير لون الواجهة.": "The interface color was changed.",
     "تعذر تغيير لون الواجهة.": "Could not change the interface color.",
-    "لون الواجهة غير صالح.": "Invalid interface color."
+    "لون الواجهة غير صالح.": "Invalid interface color.",
+    "جاهز لمسح بطاقة التلميذ": "Ready to scan a student card",
+    "امسح بطاقة التلميذ لإصدار ورقة خروج": "Scan the student card to issue an exit slip",
+    "يتعرّف النظام على التلميذ وبيانات الولي، ثم تختار سبب الخروج وتطبع إيصالًا حراريًا موقّعًا برمز QR وباركود عودة يُقدَّم عند الدخول بدل البطاقة.": "The system identifies the student and guardian details, then you choose the exit reason and print a signed thermal receipt with a QR code and a return barcode to present on re-entry instead of the card.",
+    "أو أدخل رقم التعريف أو باركود ورقة خروج يدويًا": "Or enter the ID number or an exit slip barcode manually",
+    "وجّه باركود البطاقة أو ورقة الخروج داخل الإطار. توقف الكاميرا عند إخفاء النافذة.": "Point the card or exit slip barcode inside the frame. The camera stops when the window is hidden.",
+    "بانتظار مسح بطاقة تلميذ": "Waiting for a student card scan",
+    "ستظهر هنا بيانات التلميذ والولي، أسباب الخروج، وزر إصدار الإيصال الحراري الموقّع.": "Student and guardian details, exit reasons, and the signed thermal receipt button will appear here.",
+    "ملخص اليوم": "Today's summary",
+    "حركة الخروج والعودة في الوقت الحقيقي": "Exit and return activity in real time",
+    "أوراق خروج": "Exit slips",
+    "عادوا": "Returned",
+    "خارج الآن": "Currently out",
+    "نسبة العودة": "Return rate",
+    "80 مم · بيان كامل": "80 mm · Full detail",
+    "آخر أوراق الخروج": "Recent exit slips",
+    "إعادة الطباعة وتسجيل العودة": "Reprint and record return",
+    "كيف تعمل ورقة الخروج؟": "How does the exit slip work?",
+    "ثلاث خطوات عند البوابة": "Three steps at the gate",
+    "يتعرف النظام على التلميذ ويظهر هاتف الولي وباقي البيانات.": "The system identifies the student and shows the guardian phone and other details.",
+    "حدّد السبب والولي": "Set the reason and guardian",
+    "اختر سببًا جاهزًا (مرض، استدعاء الولي…) وأضف المرافق إن لزم.": "Pick a preset reason (illness, guardian call…) and add an escort if needed.",
+    "يُطبع إيصال حراري موقّع مع QR وباركود عودة يُمسح عند الدخول.": "A signed thermal receipt is printed with a QR code and a return barcode scanned on re-entry.",
+    "ورقة الخروج": "Exit slip",
+    "تصريح خروج تلميذ من المؤسسة": "Student exit authorization",
+    "التحقق من ورقة الخروج": "Exit slip verification",
+    "تصريح خروج التلاميذ وطباعة إيصال حراري موقّع مع باركود عودة": "Student exit authorization with a signed thermal receipt and a return barcode",
+    "وقت الخروج": "Exit time",
+    "الولي أو المرافق": "Guardian or escort",
+    "عاد التلميذ": "Student returned",
+    "خارج المؤسسة": "Out of school",
+    "سبب الخروج": "Exit reason",
+    "باركود العودة": "Return barcode",
+    "امسح هذا الباركود عند الدخول لإنشاء ورقة دخول بدل البطاقة.": "Scan this barcode on re-entry to create an entry slip instead of the card.",
+    "حالة العودة": "Return status",
+    "عاد": "Returned",
+    "لم تُسجَّل بعد": "Not recorded yet",
+    "يُقدَّم هذا الإيصال عند الدخول بدل بطاقة التلميذ لإنشاء ورقة دخول. صالح ليوم الخروج المذكور فقط.": "Present this receipt on re-entry instead of the student card to create an entry slip. Valid only for the stated exit day.",
+    "إصدار ورقة خروج": "Issue an exit slip",
+    "رمز QR أو رقم ورقة الخروج": "QR code or exit slip number",
+    "تعذر تحميل بيانات ورقة الخروج.": "Could not load exit slip data.",
+    "لا توجد أوراق خروج صادرة اليوم بعد.": "No exit slips issued today yet.",
+    "خارج": "Out",
+    "تسجيل العودة": "Record return",
+    "جاهز للخروج": "Ready to exit",
+    "ورقة خروج سارية": "Active exit slip",
+    "بيانات الولي": "Guardian details",
+    "مطلوب قبل إصدار الإيصال": "Required before issuing the receipt",
+    "اسم الولي أو المرافق (اختياري)": "Guardian or escort name (optional)",
+    "من يتولى مرافقة التلميذ؟": "Who is escorting the student?",
+    "يُطبع على الإيصال": "Printed on the receipt",
+    "إصدار وطباعة ورقة الخروج": "Issue and print the exit slip",
+    "يُطبع إيصال حراري موقّع مع رمز QR وباركود عودة يُستخدم عند الدخول بدل البطاقة.": "A signed thermal receipt is printed with a QR code and a return barcode used on re-entry instead of the card.",
+    "ورقة خروج — تمت العودة": "Exit slip — returned",
+    "ورقة خروج سارية — التلميذ خارج المؤسسة": "Active exit slip — student is out of school",
+    "مصدر المسح": "Scan source",
+    "ورقة خروج": "Exit slip",
+    "يرجى تحديد سبب الخروج قبل إصدار الورقة.": "Please set the exit reason before issuing the slip.",
+    "تعذر إصدار ورقة الخروج.": "Could not issue the exit slip.",
+    "تعذر تسجيل العودة.": "Could not record the return.",
+    "مرض": "Illness",
+    "استدعاء الولي": "Guardian call",
+    "هذا التلميذ غير نشط ولا يمكن إصدار ورقة خروج له.": "This student is inactive and cannot be issued an exit slip.",
+    "توجد ورقة خروج سارية لهذا التلميذ اليوم. يمكنك إعادة طباعتها أو تسجيل عودته.": "An active exit slip already exists for this student today. You can reprint it or record the return.",
+    "جاهز لإصدار ورقة خروج لهذا التلميذ مع إشعار الولي.": "Ready to issue an exit slip for this student with a guardian notification.",
+    "تم التعرف على التلميذ من ورقة خروج سابقة. يمكنك إصدار ورقة خروج جديدة عند الحاجة.": "Student identified from a previous exit slip. You can issue a new exit slip if needed.",
+    "يرجى تحديد سبب الخروج (حرفان على الأقل).": "Please specify the exit reason (at least 2 characters).",
+    "سبب الخروج طويل جدًا (300 حرف كحد أقصى).": "Exit reason is too long (300 characters maximum).",
+    "اسم الولي طويل جدًا (120 حرفًا كحد أقصى).": "Guardian name is too long (120 characters maximum).",
+    "رقم هاتف الولي طويل جدًا (30 رقمًا كحد أقصى).": "Guardian phone is too long (30 digits maximum).",
+    "ورقة الخروج غير موجودة.": "Exit slip not found.",
+    "أدخل رمز QR أو رقم ورقة الخروج للتحقق.": "Enter the QR code or exit slip number to verify.",
+    "لا توجد ورقة خروج بهذا الرمز.": "No exit slip found with this code.",
+    "لا توجد ورقة خروج بهذا الرقم.": "No exit slip found with this number.",
+    "تعذر توليد باركود ورقة الخروج.": "Could not generate the exit slip barcode."
   },
   "patterns": [
     {
@@ -2687,6 +2760,34 @@
     {
       "ar": "تم تسوية غياب {0} يوم {1} وتسجيله حاضرًا في: {2}.",
       "tr": "Absence of {0} on {1} was regularized and recorded present in: {2}."
+    },
+    {
+      "ar": "{0} ورقة خروج اليوم · {1} تلميذ خارج المؤسسة",
+      "tr": "{0} exit slips today · {1} students currently out"
+    },
+    {
+      "ar": "عاد {0}",
+      "tr": "Returned {0}"
+    },
+    {
+      "ar": "تم التعرف على التلميذ من ورقة الخروج {0}.",
+      "tr": "Student identified from exit slip {0}."
+    },
+    {
+      "ar": "تم التعرف على التلميذ من ورقة الخروج {0} ({1}).",
+      "tr": "Student identified from exit slip {0} ({1})."
+    },
+    {
+      "ar": "تم إصدار ورقة الخروج {0}. جارٍ فتح نافذة الطباعة الحرارية…",
+      "tr": "Exit slip {0} issued. Opening the thermal print window…"
+    },
+    {
+      "ar": "تم تسجيل عودة التلميذ من ورقة الخروج {0}.",
+      "tr": "Student return recorded from exit slip {0}."
+    },
+    {
+      "ar": "سُجّلت عودة التلميذ من ورقة الخروج {0}.",
+      "tr": "Student return was recorded from exit slip {0}."
     }
   ]
 }

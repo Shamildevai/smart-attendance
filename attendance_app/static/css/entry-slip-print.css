@@ -378,6 +378,41 @@ body {
   color: var(--muted);
 }
 
+.receipt-barcode {
+  display: grid;
+  justify-items: center;
+  gap: 1mm;
+  margin-top: 2.6mm;
+  padding: 2mm 1.5mm 1.5mm;
+  border: 0.3mm solid #000;
+  border-radius: 1.4mm;
+  text-align: center;
+}
+
+.receipt-barcode > span {
+  font-size: 6.8pt;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.receipt-barcode img {
+  width: 100%;
+  height: 11mm;
+  display: block;
+}
+
+.receipt-barcode strong {
+  font-size: 9pt;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.receipt-barcode small {
+  font-size: 6.6pt;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
 .receipt-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;

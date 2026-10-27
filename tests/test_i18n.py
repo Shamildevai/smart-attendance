@@ -143,6 +143,7 @@ def test_rendered_pages_use_western_digits_only(client):
         "/", "/messages", "/settings", "/about", "/help", "/attendance", "/reports",
         "/students", "/users", "/gate", "/import", "/print", "/print/sheet",
         "/reports/print", "/entry-slip", "/entry-slip/verify",
+        "/exit-slip", "/exit-slip/verify",
     )
     for lang in ("ar", "en", "fr"):
         client.set_cookie(i18n.LANG_COOKIE, lang)
@@ -158,7 +159,7 @@ def test_json_responses_use_western_digits_only(client):
     endpoints = (
         "/api/dashboard", "/api/students", "/api/attendance/list", "/api/periods",
         "/api/settings", "/api/reports/daily", "/api/messages/campaigns", "/api/users",
-        "/api/entry-slip/context", "/api/gate/context",
+        "/api/entry-slip/context", "/api/exit-slip/context", "/api/gate/context",
     )
     for lang in ("ar", "en", "fr"):
         client.set_cookie(i18n.LANG_COOKIE, lang)

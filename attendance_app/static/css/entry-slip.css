@@ -367,6 +367,67 @@
   color: var(--text-muted);
 }
 
+/* Exit slip extras */
+.exit-parent {
+  display: grid;
+  gap: 7px;
+}
+
+.exit-parent-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.exit-parent-head .ico {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+
+.exit-parent .entry-preview {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.exit-parent .entry-preview strong {
+  overflow-wrap: anywhere;
+}
+
+.exit-receipt-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: 1px dashed var(--primary);
+  background: var(--primary-softer);
+  color: var(--primary-strong);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.exit-receipt-banner .ico {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+}
+
+@media (max-width: 760px) {
+  .exit-parent .entry-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .exit-parent .entry-preview {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Receipt template picker */
 .entry-template-grid {
   display: grid;

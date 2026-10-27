@@ -465,18 +465,24 @@
   function actionLinks(data) {
     const student = data.student;
     const periodId = data.period ? data.period.id : "";
+    const exitReturn =
+      data.exit_slip && !data.exit_slip.returned
+        ? `<button class="btn btn-secondary btn-sm" type="button" data-exit-return="${safe(
+            data.exit_slip.slip_code
+          )}">${A.icon("check")}<span>${safe(A.t("تسجيل العودة"))}</span></button>`
+        : "";
     if (student && data.action === "already_recorded") {
       return `<a class="btn btn-secondary btn-sm" href="/attendance?date=${encodeURIComponent(
         data.date
       )}&period_id=${encodeURIComponent(periodId)}">${safe(A.t("سجل الفترة"))}</a>
       <a class="btn btn-ghost btn-sm" href="/students?q=${encodeURIComponent(student.student_nin)}&profile=1">${safe(
         A.t("ملف التلميذ")
-      )}</a>`;
+      )}</a>${exitReturn}`;
     }
     if (student && data.action === "excused") {
       return `<a class="btn btn-secondary btn-sm" href="/attendance?date=${encodeURIComponent(
         data.date
-      )}&period_id=${encodeURIComponent(periodId)}&status=EXCUSED">${safe(A.t("مراجعة التبرير"))}</a>`;
+      )}&period_id=${encodeURIComponent(periodId)}&status=EXCUSED">${safe(A.t("مراجعة التبرير"))}</a>${exitReturn}`;
     }
     if (data.action === "not_found") {
       const code = data.scanned_code || "";
@@ -487,7 +493,49 @@
         A.t("إضافة التلميذ")
       )}</a>`;
     }
+    if (data.action === "already_issued") {
+      return exitReturn;
+    }
     return "";
+  }
+
+  function exitBanner(data) {
+    const slip = data.exit_slip;
+    if (!slip) return "";
+    return `<div class="exit-receipt-banner">${A.icon("exit")}<div>${safe(
+      A.t(`تم التعرف على التلميذ من ورقة الخروج ${slip.slip_code} (${slip.reason}).`)
+    )}</div></div>`;
+  }
+
+  async function returnExitSlip(slipCode, button) {
+    if (!slipCode || state.busy) return;
+    state.busy = true;
+    A.setBusy(button, true);
+    try {
+      const data = await A.api("/api/exit-slip/return", {
+        method: "POST",
+        body: { code: slipCode },
+      });
+      A.toast(
+        A.t(`تم تسجيل عودة التلميذ من ورقة الخروج ${data.slip.slip_code}.`),
+        "success"
+      );
+      A.flash("success");
+      A.beep("success");
+      if (state.lookup) {
+        state.lookup.exit_slip = data.slip;
+        renderLookup(state.lookup);
+      }
+      scheduleRefresh(400);
+    } catch (error) {
+      A.toast(error.message || A.t("تعذر تسجيل العودة."), "error");
+      A.flash("error");
+      A.beep("error");
+    } finally {
+      state.busy = false;
+      A.setBusy(button, false);
+      updateReadyLabel();
+    }
   }
 
   function renderLookup(data) {
@@ -527,6 +575,7 @@
         <div class="scan-message is-${data.action === "not_found" || data.action === "inactive" ? "error" : "warning"}">${safe(
           data.message || ""
         )}</div>
+        ${exitBanner(data)}
         ${meta}
         ${form}
         ${summary}
@@ -553,6 +602,11 @@
     if (issueButton) issueButton.addEventListener("click", issueSlip);
     const clearButton = resultEl.querySelector("[data-entry-clear]");
     if (clearButton) clearButton.addEventListener("click", clearResult);
+    resultEl.querySelectorAll("[data-exit-return]").forEach((button) => {
+      button.addEventListener("click", () =>
+        returnExitSlip(button.dataset.exitReturn, button)
+      );
+    });
     resultEl.setAttribute("aria-label", `${name} — ${info.label}`);
   }
 
@@ -583,6 +637,12 @@
         A.t(`تم إصدار ورقة الدخول ${slip.slip_code}. جارٍ فتح نافذة الطباعة الحرارية…`),
         "success"
       );
+      if (data.exit_slip) {
+        A.toast(
+          A.t(`سُجّلت عودة التلميذ من ورقة الخروج ${data.exit_slip.slip_code}.`),
+          "info"
+        );
+      }
       A.flash("success");
       A.beep("success");
       scheduleRefresh(800);

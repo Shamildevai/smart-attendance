@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.exit_slip_verify_page') }}">
+    <svg class="ico"><use href="#i-qr"></use></svg>
+    <span>التحقق من ورقة</span>
+  </a>
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.entry_slip_page') }}">
+    <svg class="ico"><use href="#i-entry"></use></svg>
+    <span>ورقة الدخول</span>
+  </a>
+  <button class="btn btn-secondary btn-sm" type="button" id="exit-fullscreen">
+    <svg class="ico"><use href="#i-eye"></use></svg>
+    <span>ملء الشاشة</span>
+  </button>
+{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip.css') }}">
+{% endblock %}
+
+{% block content %}
+  <div class="entry-layout gate-layout" id="exit-layout" data-reasons="{{ reasons|join('|') }}">
+    <div class="entry-main gate-main">
+      <section class="entry-scanner gate-scanner" id="exit-scanner">
+        <div class="entry-ready-content gate-ready-content">
+          <div class="gate-status">
+            <span class="gate-ready" style="position:static">
+              <i></i>
+              <span id="exit-state-label">جاهز لمسح بطاقة التلميذ</span>
+              <span class="mono" id="exit-live-time" style="font-size:10px;opacity:.75"></span>
+            </span>
+            <h2>امسح بطاقة التلميذ لإصدار ورقة خروج</h2>
+            <p>يتعرّف النظام على التلميذ وبيانات الولي، ثم تختار سبب الخروج وتطبع إيصالًا حراريًا موقّعًا برمز QR وباركود عودة يُقدَّم عند الدخول بدل البطاقة.</p>
+          </div>
+
+          <div class="entry-scan-line">
+            <div class="scan-orb" id="exit-scan-orb">
+              <div class="scan-orb-icon">
+                <svg class="ico"><use href="#i-exit"></use></svg>
+              </div>
+            </div>
+            <div class="scan-capture-hint">
+              <span class="kbd-hint"><kbd>HID</kbd> قارئ USB</span>
+              <span style="opacity:.4">·</span>
+              <span class="kbd-hint"><kbd>Enter</kbd> تأكيد تلقائي</span>
+              <span style="opacity:.4">·</span>
+              <span class="kbd-hint" id="exit-buffer-hint"><kbd>0</kbd> حرف مستلم</span>
+            </div>
+          </div>
+
+          <form class="entry-manual" id="exit-manual-form" autocomplete="off">
+            <label for="exit-manual-code">أو أدخل رقم التعريف أو باركود ورقة خروج يدويًا</label>
+            <div class="entry-manual-row">
+              <input class="input" id="exit-manual-code" name="code" type="text" inputmode="latin" dir="ltr" placeholder="مثال: 1099000001" maxlength="64">
+              <button class="btn btn-secondary btn-sm" type="submit">
+                <svg class="ico"><use href="#i-search"></use></svg>
+                <span>بحث</span>
+              </button>
+            </div>
+          </form>
+
+          <div class="camera-dock" id="exit-camera-dock">
+            <div class="camera-frame">
+              <video id="exit-camera-video" playsinline muted></video>
+              <span class="scan-line"></span>
+              <button class="icon-btn camera-close" type="button" id="exit-camera-close" aria-label="إغلاق الكاميرا">
+                <svg class="ico"><use href="#i-close"></use></svg>
+              </button>
+            </div>
+            <div class="camera-note" id="exit-camera-note">وجّه باركود البطاقة أو ورقة الخروج داخل الإطار. توقف الكاميرا عند إخفاء النافذة.</div>
+          </div>
+
+          <div class="entry-actions gate-actions">
+            <button class="btn btn-sm" type="button" id="exit-camera-toggle">
+              <svg class="ico"><use href="#i-camera"></use></svg>
+              <span>تشغيل الكاميرا</span>
+            </button>
+            <button class="btn btn-sm" type="button" id="exit-clear">
+              <svg class="ico"><use href="#i-refresh"></use></svg>
+              <span>تفريغ الذاكرة</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="exit-result" aria-live="polite">
+        <div class="scan-result-empty">
+          <svg class="ico"><use href="#i-exit"></use></svg>
+          <strong>بانتظار مسح بطاقة تلميذ</strong>
+          <p>ستظهر هنا بيانات التلميذ والولي، أسباب الخروج، وزر إصدار الإيصال الحراري الموقّع.</p>
+        </div>
+      </section>
+    </div>
+
+    <aside class="entry-side gate-side">
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-exit"></use></svg> ملخص اليوم</h2><p>حركة الخروج والعودة في الوقت الحقيقي</p></div>
+          <button class="icon-btn" type="button" id="exit-refresh" title="تحديث البيانات" aria-label="تحديث البيانات">
+            <svg class="ico"><use href="#i-refresh"></use></svg>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="entry-kpi gate-kpi">
+            <div><span>أوراق خروج</span><strong class="is-warning" id="exit-kpi-issued">0</strong></div>
+            <div><span>عادوا</span><strong class="is-success" id="exit-kpi-returned">0</strong></div>
+            <div><span>خارج الآن</span><strong id="exit-kpi-active">0</strong></div>
+          </div>
+          <div class="progress-row" style="margin-top:12px">
+            <div class="row-head"><strong>نسبة العودة</strong><span id="exit-rate-label">0%</span></div>
+            <div class="progress"><span id="exit-rate-bar" style="width:0%"></span></div>
+          </div>
+          <div class="tiny muted mt-2" id="exit-day-meta">—</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-printer"></use></svg> قالب الإيصال</h2><p>اختر حجم الورق ومقدار المعلومات</p></div>
+          <span class="badge" id="exit-template-badge">كامل</span>
+        </div>
+        <div class="card-body">
+          <div class="entry-template-grid" role="radiogroup" aria-label="قالب الإيصال">
+            <label class="entry-template is-active" data-exit-template="full">
+              <input type="radio" name="exit-template" value="full" checked>
+              <svg class="ico"><use href="#i-file"></use></svg>
+              <strong>كامل</strong>
+              <span>80 مم · بيان كامل</span>
+            </label>
+            <label class="entry-template" data-exit-template="medium">
+              <input type="radio" name="exit-template" value="medium">
+              <svg class="ico"><use href="#i-list"></use></svg>
+              <strong>متوسط</strong>
+              <span>80 مم · بيانات أساسية</span>
+            </label>
+            <label class="entry-template" data-exit-template="small">
+              <input type="radio" name="exit-template" value="small">
+              <svg class="ico"><use href="#i-stamp"></use></svg>
+              <strong>صغير</strong>
+              <span>58 مم · مختصر</span>
+            </label>
+          </div>
+          <div class="tiny muted mt-2" id="exit-template-note">يُحفظ اختيارك ويُطبَّق على الإصدار وإعادة الطباعة.</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-printer"></use></svg> آخر أوراق الخروج</h2><p>إعادة الطباعة وتسجيل العودة</p></div>
+          <span class="badge badge--present" id="exit-recent-count">0</span>
+        </div>
+        <div class="card-body" id="exit-recent">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+
+      <section class="card entry-guide">
+        <div class="card-header">
+          <div><h2><svg class="ico"><use href="#i-shield-check"></use></svg> كيف تعمل ورقة الخروج؟</h2><p>ثلاث خطوات عند البوابة</p></div>
+        </div>
+        <div class="card-body">
+          <ol class="entry-steps">
+            <li><span>1</span><div><strong>امسح البطاقة</strong><p>يتعرف النظام على التلميذ ويظهر هاتف الولي وباقي البيانات.</p></div></li>
+            <li><span>2</span><div><strong>حدّد السبب والولي</strong><p>اختر سببًا جاهزًا (مرض، استدعاء الولي…) وأضف المرافق إن لزم.</p></div></li>
+            <li><span>3</span><div><strong>أصدر الإيصال</strong><p>يُطبع إيصال حراري موقّع مع QR وباركود عودة يُمسح عند الدخول.</p></div></li>
+          </ol>
+        </div>
+      </section>
+    </aside>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/exit-slip.js') }}"></script>
+{% endblock %}
