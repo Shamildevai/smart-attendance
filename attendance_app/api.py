@@ -188,11 +188,77 @@ def health():
 @api_bp.get("/scanner/bridge/poll")
 def poll_scanner_bridge():
     settings = get_settings(get_db())
-    result = scanner_bridge_service.poll(
-        settings.get("sms_mobile_url", ""),
-        settings.get("sms_mobile_key", ""),
-    )
+    result = scanner_bridge_service.poll_all(settings)
     return ok(**result)
+
+
+@api_bp.get("/scanner/phones")
+def scanner_phones_api():
+    settings = get_settings(get_db())
+    info = scanner_bridge_service.probe_phones(settings)
+    return ok(
+        primary=info["primary"],
+        phones=info["phones"],
+        configured=info["configured"],
+        max=scanner_bridge_service.MAX_PHONES,
+        required_version=GATEWAY_APP_VERSION,
+    )
+
+
+@api_bp.post("/scanner/phones/pair")
+def pair_scanner_phone_api():
+    data = _payload()
+    conn = get_db()
+    settings = get_settings(conn)
+    url = str(data.get("url") or "").strip()
+    if not url:
+        raise ApiError("أدخل رابط بوابة الهاتف الظاهر في التطبيق.", 400)
+    if len(scanner_bridge_service.additional_phones(settings)) >= scanner_bridge_service.MAX_PHONES:
+        raise ApiError("لا يمكن إضافة المزيد من هواتف المسح. أزل هاتفًا أولًا.", 400)
+    try:
+        result = sms_service.pair_gateway(
+            url,
+            data.get("pin"),
+            timeout=min(int_setting(settings, "sms_timeout", 10, 3, 120), 15),
+        )
+    except sms_service.GatewayPairError as error:
+        raise ApiError(str(error), 400, "pairing") from error
+    primary_endpoint = scanner_bridge_service.scans_endpoint(settings.get("sms_mobile_url", ""))
+    if primary_endpoint and scanner_bridge_service.scans_endpoint(result["endpoint"]) == primary_endpoint:
+        raise ApiError(
+            "هذا الهاتف مضبوط بالفعل كبوابة الرسائل الرئيسية ويشارك في المسح تلقائيًا.",
+            400,
+        )
+    try:
+        raw = scanner_bridge_service.register_phone(
+            settings,
+            name=str(data.get("name") or ""),
+            url=result["endpoint"],
+            key=result["api_key"],
+        )
+    except ValueError as error:
+        raise ApiError(str(error), 400) from error
+    with conn:
+        save_settings(conn, {"scanner_phones": raw})
+    message = "أُضيف هاتف المسح بنجاح."
+    return ok(
+        phones=scanner_bridge_service.public_phones(scanner_bridge_service.parse_phones(raw)),
+        max=scanner_bridge_service.MAX_PHONES,
+        pairing=result,
+        message=message,
+    )
+
+
+@api_bp.delete("/scanner/phones/<phone_id>")
+def remove_scanner_phone_api(phone_id: str):
+    conn = get_db()
+    settings = get_settings(conn)
+    raw, removed = scanner_bridge_service.remove_phone(settings, phone_id)
+    if not removed:
+        raise ApiError("هاتف المسح غير موجود.", 404)
+    with conn:
+        save_settings(conn, {"scanner_phones": raw})
+    return ok(message="تمت إزالة هاتف المسح.")
 
 
 def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:

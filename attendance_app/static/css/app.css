@@ -2564,6 +2564,29 @@ output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--prim
 .gateway-url { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 10px; color: var(--text-soft); background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px; overflow-wrap: anywhere; }
 .gateway-strip-actions { display: flex; flex-direction: column; gap: 7px; flex: 0 0 auto; }
 .gateway-strip-actions .btn { justify-content: center; white-space: nowrap; }
+.scan-phones { display: grid; gap: 12px; padding: 16px 18px; margin-bottom: 18px; }
+.scan-phones-head { display: flex; align-items: flex-start; gap: 12px; }
+.scan-phones-icon { flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); color: var(--primary); }
+.scan-phones-icon .ico { width: 18px; height: 18px; }
+.scan-phones-copy { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.scan-phones-copy strong { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+.scan-phones-copy p { font-size: 10.5px; color: var(--text-muted); line-height: 1.6; }
+.scan-phones-actions { display: flex; gap: 7px; flex: 0 0 auto; flex-wrap: wrap; }
+.scan-phones-list { display: grid; gap: 8px; }
+.scan-phone-row { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+.scan-phone-row .gateway-dot { margin-top: 0; }
+.scan-phone-copy { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.scan-phone-copy strong { font-size: 11.5px; font-weight: 700; color: var(--text); }
+.scan-phone-copy span { font-size: 10px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scan-phone-status { display: grid; justify-items: end; gap: 2px; font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+.scan-phone-status .mono { font-size: 9.5px; }
+.scan-phone-row .chip { font-size: 8.5px; padding: 3px 8px; }
+.scan-phones-note { font-size: 10px; }
+@media (max-width: 720px) {
+  .scan-phones-head { flex-wrap: wrap; }
+  .scan-phones-actions { width: 100%; }
+  .scan-phones-actions .btn { flex: 1 1 auto; }
+}
 .channel-extra { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 1px; }
 .channel-extra .chip { font-size: 8.5px; padding: 3px 8px; }
 .inline-link { color: var(--primary); font-weight: 650; text-decoration: underline; text-underline-offset: 2px; }

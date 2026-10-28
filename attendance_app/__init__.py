@@ -13,6 +13,7 @@ from .db import get_db, get_settings
 from .db import init_app as init_db_app
 from .db import init_db
 from .services.messaging_service import MessageJobManager
+from .services.scanner_bridge_service import MAX_PHONES as SCAN_PHONE_LIMIT
 from .services.scheduler import start_scheduler
 from .services.sms_service import SmsJobManager
 from .services.update_service import cleanup_on_startup
@@ -181,6 +182,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "gateway_app_name": config.GATEWAY_APP_NAME,
             "gateway_app_version": config.GATEWAY_APP_VERSION,
             "gateway_app_download_url": config.GATEWAY_APP_DOWNLOAD_URL,
+            "scan_phone_limit": SCAN_PHONE_LIMIT,
             "whatsapp_download_url": config.WHATSAPP_DOWNLOAD_URL,
             "current_year": __import__("datetime").datetime.now().year,
         }

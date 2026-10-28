@@ -1679,6 +1679,34 @@
     "إيقاف قارئ الهاتف": "Arrêter le lecteur du téléphone",
     "جارٍ الاتصال بالهاتف…": "Connexion au téléphone…",
     "الهاتف متصل — جاهز للمسح": "Téléphone connecté — prêt à scanner",
+    "هواتف المسح اللاسلكي": "Téléphones de scan sans fil",
+    "إضافة هاتف للمسح": "Ajouter un téléphone de scan",
+    "فحص": "Vérifier",
+    "فحص هواتف المسح": "Vérifier les téléphones de scan",
+    "جارٍ فحص هواتف المسح…": "Vérification des téléphones de scan…",
+    "اسم الهاتف (اختياري)": "Nom du téléphone (facultatif)",
+    "مثال: بوابة المدخل": "Exemple : portail principal",
+    "يظهر هذا الاسم في قائمة هواتف المسح لتسهيل معرفة كل مدخل.": "Ce nom apparaît dans la liste des téléphones de scan pour identifier chaque entrée.",
+    "إضافة الهاتف": "Ajouter le téléphone",
+    "إضافة هاتف للمسح اللاسلكي": "Ajouter un téléphone de scan sans fil",
+    "أدخل رابط الهاتف ورمز الاقتران ليشارك في المسح مع بقية الهواتف.": "Saisissez le lien du téléphone et le code d’appairage pour qu’il scanne avec les autres téléphones.",
+    "أُضيف هاتف المسح بنجاح.": "Téléphone de scan ajouté avec succès.",
+    "البوابة الأساسية (بوابة الرسائل)": "Passerelle principale (passerelle SMS)",
+    "أساسي": "Principal",
+    "مفتاح غير صحيح": "Clé invalide",
+    "يتطلب تحديث التطبيق": "Mise à jour de l’application requise",
+    "خطأ في الاستجابة": "Erreur de réponse",
+    "إزالة الهاتف": "Supprimer le téléphone",
+    "لا توجد هواتف مسح بعد. أضف هاتفًا أو اضبط بوابة الرسائل أولًا.": "Aucun téléphone de scan pour le moment. Ajoutez un téléphone ou configurez d’abord la passerelle SMS.",
+    "الهاتف الأساسي يشارك في المسح. أضف هواتف أخرى لمداخل إضافية.": "Le téléphone principal participe au scan. Ajoutez d’autres téléphones pour les entrées supplémentaires.",
+    "تعذر فحص هواتف المسح.": "Impossible de vérifier les téléphones de scan.",
+    "تمت إزالة هاتف المسح.": "Téléphone de scan supprimé.",
+    "تعذر إزالة هاتف المسح.": "Impossible de supprimer le téléphone de scan.",
+    "أدخل رابط بوابة الهاتف الظاهر في التطبيق.": "Saisissez le lien de la passerelle affiché dans l’application.",
+    "لا يمكن إضافة المزيد من هواتف المسح. أزل هاتفًا أولًا.": "Impossible d’ajouter d’autres téléphones de scan. Supprimez-en un d’abord.",
+    "هذا الهاتف مضبوط بالفعل كبوابة الرسائل الرئيسية ويشارك في المسح تلقائيًا.": "Ce téléphone est déjà configuré comme passerelle SMS principale et participe automatiquement au scan.",
+    "هاتف المسح غير موجود.": "Téléphone de scan introuvable.",
+    "بعض هواتف المسح غير متصلة — ما زال المسح يعمل من الهواتف المتصلة.": "Certains téléphones de scan sont injoignables — le scan continue depuis les téléphones connectés.",
     "جارٍ نقل المسوحات من الهاتف…": "Réception des scans du téléphone…",
     "تعذر الوصول إلى الهاتف. تأكد من الواي فاي وتشغيل البوابة.": "Téléphone inaccessible. Vérifiez le Wi-Fi et que la passerelle est active.",
     "لم يُضبط رابط بوابة الهاتف بعد. اضبطه من صفحة الرسائل.": "L’adresse de la passerelle téléphone n’est pas configurée. Réglez-la depuis la page Messages.",
@@ -2800,6 +2828,22 @@
     {
       "ar": "سُجّلت عودة التلميذ من ورقة الخروج {0}.",
       "tr": "Le retour de l'élève a été enregistré depuis la fiche de sortie {0}."
+    },
+    {
+      "ar": "أضف هواتف إضافية ليشارك كل مدخل في المسح في الوقت نفسه. الهاتف الأساسي (بوابة الرسائل) يشارك تلقائيًا، ويمكنك إضافة حتى {0} هواتف.",
+      "tr": "Ajoutez des téléphones supplémentaires pour que chaque entrée scanne en même temps. Le téléphone principal (passerelle SMS) participe automatiquement, et vous pouvez ajouter jusqu’à {0} téléphones."
+    },
+    {
+      "ar": "هاتف المسح رقم {0}",
+      "tr": "Téléphone de scan {0}"
+    },
+    {
+      "ar": "هواتف المسح: {0}.",
+      "tr": "Téléphones de scan : {0}."
+    },
+    {
+      "ar": "تعذر الوصول إلى {0} من {1} هواتف مسح. ما زال المسح يعمل من الهواتف المتصلة.",
+      "tr": "Impossible de joindre certains téléphones de scan ({0} sur {1}). Le scan continue depuis les téléphones connectés."
     }
   ]
 }

@@ -248,6 +248,7 @@ DEFAULT_SETTINGS: dict[str, str] = {
     "sms_api_key": "",
     "sms_mobile_url": "",
     "sms_mobile_key": "",
+    "scanner_phones": "",
     "sms_cloud_url": "",
     "sms_cloud_key": "",
     "sms_headers": "{}",

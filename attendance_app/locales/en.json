@@ -1679,6 +1679,34 @@
     "إيقاف قارئ الهاتف": "Stop phone scanner",
     "جارٍ الاتصال بالهاتف…": "Connecting to the phone…",
     "الهاتف متصل — جاهز للمسح": "Phone connected — ready to scan",
+    "هواتف المسح اللاسلكي": "Wireless scanning phones",
+    "إضافة هاتف للمسح": "Add scanning phone",
+    "فحص": "Check",
+    "فحص هواتف المسح": "Check scanning phones",
+    "جارٍ فحص هواتف المسح…": "Checking scanning phones…",
+    "اسم الهاتف (اختياري)": "Phone name (optional)",
+    "مثال: بوابة المدخل": "Example: Main gate",
+    "يظهر هذا الاسم في قائمة هواتف المسح لتسهيل معرفة كل مدخل.": "This name appears in the scanning phones list so each entrance is easy to identify.",
+    "إضافة الهاتف": "Add phone",
+    "إضافة هاتف للمسح اللاسلكي": "Add a wireless scanning phone",
+    "أدخل رابط الهاتف ورمز الاقتران ليشارك في المسح مع بقية الهواتف.": "Enter the phone link and pairing code so it scans alongside the other phones.",
+    "أُضيف هاتف المسح بنجاح.": "Scanning phone added successfully.",
+    "البوابة الأساسية (بوابة الرسائل)": "Primary gateway (messaging gateway)",
+    "أساسي": "Primary",
+    "مفتاح غير صحيح": "Invalid key",
+    "يتطلب تحديث التطبيق": "App update required",
+    "خطأ في الاستجابة": "Response error",
+    "إزالة الهاتف": "Remove phone",
+    "لا توجد هواتف مسح بعد. أضف هاتفًا أو اضبط بوابة الرسائل أولًا.": "No scanning phones yet. Add a phone or set up the messaging gateway first.",
+    "الهاتف الأساسي يشارك في المسح. أضف هواتف أخرى لمداخل إضافية.": "The primary phone participates in scanning. Add more phones for additional entrances.",
+    "تعذر فحص هواتف المسح.": "Could not check the scanning phones.",
+    "تمت إزالة هاتف المسح.": "Scanning phone removed.",
+    "تعذر إزالة هاتف المسح.": "Could not remove the scanning phone.",
+    "أدخل رابط بوابة الهاتف الظاهر في التطبيق.": "Enter the phone gateway link shown in the app.",
+    "لا يمكن إضافة المزيد من هواتف المسح. أزل هاتفًا أولًا.": "No more scanning phones can be added. Remove one first.",
+    "هذا الهاتف مضبوط بالفعل كبوابة الرسائل الرئيسية ويشارك في المسح تلقائيًا.": "This phone is already set as the primary messaging gateway and participates in scanning automatically.",
+    "هاتف المسح غير موجود.": "Scanning phone not found.",
+    "بعض هواتف المسح غير متصلة — ما زال المسح يعمل من الهواتف المتصلة.": "Some scanning phones are unreachable — scanning still works from the connected phones.",
     "جارٍ نقل المسوحات من الهاتف…": "Receiving scans from the phone…",
     "تعذر الوصول إلى الهاتف. تأكد من الواي فاي وتشغيل البوابة.": "Cannot reach the phone. Check Wi-Fi and that the gateway is running.",
     "لم يُضبط رابط بوابة الهاتف بعد. اضبطه من صفحة الرسائل.": "The phone gateway URL is not set. Configure it from the Messages page.",
@@ -2800,6 +2828,22 @@
     {
       "ar": "سُجّلت عودة التلميذ من ورقة الخروج {0}.",
       "tr": "Student return was recorded from exit slip {0}."
+    },
+    {
+      "ar": "أضف هواتف إضافية ليشارك كل مدخل في المسح في الوقت نفسه. الهاتف الأساسي (بوابة الرسائل) يشارك تلقائيًا، ويمكنك إضافة حتى {0} هواتف.",
+      "tr": "Add extra phones so each entrance scans at the same time. The primary phone (messaging gateway) participates automatically, and you can add up to {0} phones."
+    },
+    {
+      "ar": "هاتف المسح رقم {0}",
+      "tr": "Scanning phone {0}"
+    },
+    {
+      "ar": "هواتف المسح: {0}.",
+      "tr": "Scanning phones: {0}."
+    },
+    {
+      "ar": "تعذر الوصول إلى {0} من {1} هواتف مسح. ما زال المسح يعمل من الهواتف المتصلة.",
+      "tr": "Could not reach {0} of {1} scanning phones. Scanning still works from the connected phones."
     }
   ]
 }

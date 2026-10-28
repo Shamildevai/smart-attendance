@@ -18,6 +18,10 @@
     gatewayDownload: $("msg-gateway-download"),
     gatewayCheck: $("msg-gateway-check"),
     gatewayPair: $("msg-gateway-pair"),
+    scanPhonesList: $("scan-phones-list"),
+    scanPhonesAdd: $("scan-phones-add"),
+    scanPhonesRefresh: $("scan-phones-refresh"),
+    scanPhonesNote: $("scan-phones-note"),
     whatsappSubtitle: $("msg-whatsapp-subtitle"),
     whatsappDesc: $("msg-whatsapp-desc"),
     whatsappDesktopExtra: $("msg-whatsapp-desktop-extra"),
@@ -82,6 +86,9 @@
     gateway: null,
     gatewayLoading: false,
     gatewayTimer: null,
+    scanPhones: [],
+    scanPhonesPrimary: null,
+    scanPhonesLoading: false,
     loading: true,
   };
 
@@ -572,19 +579,31 @@
       .slice(0, 4);
   }
 
-  function openPairing() {
+  function openPairing(mode) {
+    const scanMode = mode === "scan";
     const mobile = gatewayMobile() || {};
-    const currentUrl = mobile.url || "";
+    const currentUrl = scanMode ? "" : mobile.url || "";
     const modal = A.openModal({
-      title: "اقتران الهاتف برمز 4 أرقام",
-      subtitle: "بدل نسخ مفتاح API الطويل، أدخل الرمز الظاهر في تطبيق البوابة.",
+      title: scanMode ? "إضافة هاتف للمسح اللاسلكي" : "اقتران الهاتف برمز 4 أرقام",
+      subtitle: scanMode
+        ? "أدخل رابط الهاتف ورمز الاقتران ليشارك في المسح مع بقية الهواتف."
+        : "بدل نسخ مفتاح API الطويل، أدخل الرمز الظاهر في تطبيق البوابة.",
       icon: "shield-check",
       body: `
         <div class="info-banner is-success">
           ${A.icon("shield-check")}
           <div><strong>كيف يعمل الاقتران؟</strong> افتح تطبيق بوابة SMS على هاتف أندرويد، واضغط بطاقة «رمز الاقتران» لعرض رمز من 4 أرقام. أدخله هنا ليحفظ الحاسوب المفتاح الطويل تلقائيًا.</div>
         </div>
-        <div class="field" style="margin-top:12px">
+        ${
+          scanMode
+            ? `<div class="field" style="margin-top:12px">
+          <label for="pair-name">اسم الهاتف (اختياري)</label>
+          <input class="input" id="pair-name" type="text" maxlength="40" placeholder="مثال: بوابة المدخل">
+          <span class="field-hint">يظهر هذا الاسم في قائمة هواتف المسح لتسهيل معرفة كل مدخل.</span>
+        </div>`
+            : ""
+        }
+        <div class="field" style="margin-top:${scanMode ? "0" : "12px"}">
           <label for="pair-url">رابط بوابة الهاتف</label>
           <input class="input mono" id="pair-url" type="text" inputmode="url" dir="ltr" maxlength="500" placeholder="192.168.1.20:8080" value="${safe(currentUrl)}">
           <span class="field-hint">العنوان الظاهر في تطبيق الهاتف. يمكنك تركه كما هو إن كان الهاتف على نفس الشبكة.</span>
@@ -599,11 +618,12 @@
           <div id="pair-error-text"></div>
         </div>`,
       footer: `<button class="btn btn-secondary" type="button" data-modal-close>إلغاء</button>
-               <button class="btn btn-primary" type="button" id="pair-submit">${A.icon("shield-check")} اقتران الهاتف</button>`,
+               <button class="btn btn-primary" type="button" id="pair-submit">${A.icon("shield-check")} ${scanMode ? "إضافة الهاتف" : "اقتران الهاتف"}</button>`,
     });
     const body = modal.element;
     const pinInput = body.querySelector("#pair-pin");
     const urlInput = body.querySelector("#pair-url");
+    const nameInput = body.querySelector("#pair-name");
     const errorBox = body.querySelector("#pair-error");
     const errorText = body.querySelector("#pair-error-text");
     const submit = body.querySelector("#pair-submit");
@@ -621,10 +641,19 @@
       A.setBusy(submit, true);
       errorBox.classList.add("hidden");
       try {
-        const data = await A.api("/api/messages/gateway/pair", {
-          method: "POST",
-          body: { pin, url },
-        });
+        const data = await A.api(
+          scanMode ? "/api/scanner/phones/pair" : "/api/messages/gateway/pair",
+          {
+            method: "POST",
+            body: scanMode ? { pin, url, name: (nameInput.value || "").trim() } : { pin, url },
+          }
+        );
+        if (scanMode) {
+          A.closeModal();
+          await loadScanPhones();
+          A.toast(data.message || "أُضيف هاتف المسح بنجاح.", "success");
+          return;
+        }
         state.gateway = data.gateway;
         A.closeModal();
         renderGateway();
@@ -652,6 +681,88 @@
         submitPairing();
       }
     });
+  }
+
+  /* Wireless scanning phones                                                */
+
+  const SCAN_PHONE_STATES = {
+    ok: { dot: "is-online", label: "جاهز للمسح" },
+    resynced: { dot: "is-online", label: "جاهز للمسح" },
+    offline: { dot: "is-offline", label: "غير متصل" },
+    unauthorized: { dot: "is-warning", label: "مفتاح غير صحيح" },
+    outdated: { dot: "is-warning", label: "يتطلب تحديث التطبيق" },
+    busy: { dot: "is-pending", label: "جارٍ الفحص" },
+    error: { dot: "is-warning", label: "خطأ في الاستجابة" },
+  };
+
+  function scanPhoneName(phone, index) {
+    if (phone.name) return phone.name;
+    if (phone.primary) return "البوابة الأساسية (بوابة الرسائل)";
+    return `هاتف المسح رقم ${A.formatInt(index)}`;
+  }
+
+  function scanPhoneRow(phone, label, primary) {
+    const info = SCAN_PHONE_STATES[phone.state] || SCAN_PHONE_STATES.error;
+    const version = phone.version ? `<span class="mono" dir="ltr">v${safe(phone.version)}</span>` : "";
+    const action = primary
+      ? `<span class="chip">أساسي</span>`
+      : `<button class="icon-btn" type="button" data-remove-scan-phone="${safe(phone.id)}" title="إزالة الهاتف" aria-label="إزالة الهاتف">
+           <svg class="ico"><use href="#i-trash"></use></svg>
+         </button>`;
+    return `
+      <div class="scan-phone-row">
+        <span class="gateway-dot ${info.dot}" aria-hidden="true"></span>
+        <div class="scan-phone-copy">
+          <strong dir="auto">${safe(label)}</strong>
+          <span class="mono" dir="ltr">${safe(phone.url)}</span>
+        </div>
+        <div class="scan-phone-status">
+          <span>${info.label}</span>
+          ${version}
+        </div>
+        ${action}
+      </div>`;
+  }
+
+  function renderScanPhones() {
+    if (!els.scanPhonesList) return;
+    const rows = [];
+    const phones = state.scanPhones || [];
+    if (state.scanPhonesPrimary) {
+      rows.push(scanPhoneRow(state.scanPhonesPrimary, "البوابة الأساسية (بوابة الرسائل)", true));
+    }
+    phones.forEach((phone, index) => {
+      rows.push(scanPhoneRow(phone, scanPhoneName(phone, index + 1), false));
+    });
+    els.scanPhonesList.innerHTML = rows.join("");
+    const total = (state.scanPhonesPrimary ? 1 : 0) + phones.length;
+    if (!total) {
+      els.scanPhonesNote.textContent = "لا توجد هواتف مسح بعد. أضف هاتفًا أو اضبط بوابة الرسائل أولًا.";
+    } else if (!phones.length) {
+      els.scanPhonesNote.textContent = "الهاتف الأساسي يشارك في المسح. أضف هواتف أخرى لمداخل إضافية.";
+    } else {
+      els.scanPhonesNote.textContent = `هواتف المسح: ${A.formatInt(total)}.`;
+    }
+  }
+
+  async function loadScanPhones(force) {
+    if (!els.scanPhonesList || state.scanPhonesLoading) return;
+    state.scanPhonesLoading = true;
+    if (force) A.setBusy(els.scanPhonesRefresh, true);
+    if (!state.scanPhonesPrimary && !state.scanPhones.length) {
+      els.scanPhonesNote.textContent = "جارٍ فحص هواتف المسح…";
+    }
+    try {
+      const data = await A.api("/api/scanner/phones");
+      state.scanPhones = data.phones || [];
+      state.scanPhonesPrimary = data.primary || null;
+      renderScanPhones();
+    } catch (error) {
+      els.scanPhonesNote.textContent = error.message || "تعذر فحص هواتف المسح.";
+    } finally {
+      state.scanPhonesLoading = false;
+      if (force) A.setBusy(els.scanPhonesRefresh, false);
+    }
   }
 
   /* ---------------------------------------------------------------------- */
@@ -1331,11 +1442,32 @@
     els.approve.addEventListener("change", updateSendState);
     els.send.addEventListener("click", sendCampaign);
     els.gatewayCheck.addEventListener("click", () => loadGateway(true));
-    if (els.gatewayPair) els.gatewayPair.addEventListener("click", openPairing);
+    if (els.gatewayPair) els.gatewayPair.addEventListener("click", () => openPairing("gateway"));
+    if (els.scanPhonesAdd) els.scanPhonesAdd.addEventListener("click", () => openPairing("scan"));
+    if (els.scanPhonesRefresh) els.scanPhonesRefresh.addEventListener("click", () => loadScanPhones(true));
+    if (els.scanPhonesList) {
+      els.scanPhonesList.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-remove-scan-phone]");
+        if (!button) return;
+        A.setBusy(button, true);
+        try {
+          const data = await A.api(
+            `/api/scanner/phones/${encodeURIComponent(button.dataset.removeScanPhone)}`,
+            { method: "DELETE" }
+          );
+          A.toast(data.message || "تمت إزالة هاتف المسح.", "success");
+          await loadScanPhones();
+        } catch (error) {
+          A.toast(error.message || "تعذر إزالة هاتف المسح.", "error");
+          A.setBusy(button, false);
+        }
+      });
+    }
     els.refresh.addEventListener("click", () => {
       loadStudents();
       loadHistory();
       loadGateway(true);
+      loadScanPhones(true);
     });
     els.historyRefresh.addEventListener("click", loadHistory);
     els.history.addEventListener("click", (event) => {
@@ -1366,6 +1498,7 @@
     renderBodyCount();
     await loadStudents();
     loadGateway();
+    loadScanPhones();
     loadHistory();
     resumeJob();
     state.gatewayTimer = window.setInterval(() => {

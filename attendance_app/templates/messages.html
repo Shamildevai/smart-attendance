@@ -61,6 +61,30 @@
     </div>
   </section>
 
+  <section class="card scan-phones" id="scan-phones-card">
+    <div class="scan-phones-head">
+      <span class="scan-phones-icon" aria-hidden="true">
+        <svg class="ico"><use href="#i-barcode"></use></svg>
+      </span>
+      <div class="scan-phones-copy">
+        <strong>هواتف المسح اللاسلكي</strong>
+        <p>أضف هواتف إضافية ليشارك كل مدخل في المسح في الوقت نفسه. الهاتف الأساسي (بوابة الرسائل) يشارك تلقائيًا، ويمكنك إضافة حتى {{ scan_phone_limit }} هواتف.</p>
+      </div>
+      <div class="scan-phones-actions">
+        <button class="btn btn-primary btn-sm" type="button" id="scan-phones-add">
+          <svg class="ico"><use href="#i-plus"></use></svg>
+          <span>إضافة هاتف للمسح</span>
+        </button>
+        <button class="btn btn-secondary btn-sm" type="button" id="scan-phones-refresh" title="فحص هواتف المسح" aria-label="فحص هواتف المسح">
+          <svg class="ico"><use href="#i-refresh"></use></svg>
+          <span>فحص</span>
+        </button>
+      </div>
+    </div>
+    <div class="scan-phones-list" id="scan-phones-list" aria-live="polite"></div>
+    <p class="scan-phones-note muted" id="scan-phones-note">جارٍ فحص هواتف المسح…</p>
+  </section>
+
   <div class="messages-layout">
     <section class="card messages-composer">
       <div class="messages-step">
