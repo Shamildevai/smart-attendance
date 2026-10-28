@@ -684,36 +684,22 @@
     note.style.color = isError ? "#f0b9b9" : "";
   }
 
-  function supportedFormats(detectorClass) {
-    if (typeof detectorClass.getSupportedFormats !== "function") {
-      return Promise.resolve(["code_128", "qr_code"]);
-    }
-    return detectorClass.getSupportedFormats().then((formats) => {
-      const wanted = ["code_128", "code_39", "code_93", "qr_code", "ean_13"].filter((f) =>
-        formats.includes(f)
-      );
-      return wanted;
-    });
-  }
-
   async function startCamera() {
     if (state.cameraOn || state.cameraBusy) return;
-    if (!("BarcodeDetector" in window)) {
-      setCameraNote(A.t("هذا المتصفح لا يدعم قراءة الباركود من الكاميرا. استعمل قارئ USB أو متصفح Edge/Chrome حديث."), true);
-      A.toast(A.t("قراءة الباركود بالكاميرا غير مدعومة في هذا المتصفح. استعمل قارئ USB."), "warning");
-      return;
-    }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setCameraNote(A.t("لا يمكن الوصول إلى الكاميرا. تأكد من تشغيل النظام على localhost ومنح الإذن."), true);
+      return;
+    }
+    if (!window.CameraScan || !window.CameraScan.available()) {
+      setCameraNote(A.t("لا يمكن تشغيل قارئ الكاميرا المحلي. أعد تشغيل التطبيق ثم أعد المحاولة، أو استعمل قارئ USB."), true);
+      A.toast(A.t("تعذر تحميل قارئ الباركود المحلي. استعمل قارئ USB أو أعد تشغيل التطبيق."), "warning");
       return;
     }
     state.cameraBusy = true;
     const toggle = $("exit-camera-toggle");
     A.setBusy(toggle, true);
     try {
-      const formats = await supportedFormats(window.BarcodeDetector);
-      if (!formats.length) throw new Error(A.t("لا توجد صيغ باركود مدعومة في هذا المتصفح."));
-      state.detector = new window.BarcodeDetector({ formats });
+      state.detector = await window.CameraScan.create();
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
         audio: false,
@@ -738,6 +724,8 @@
         message = A.t("لا توجد كاميرا متصلة بهذا الجهاز.");
       } else if (name === "NotReadableError") {
         message = A.t("الكاميرا مستعملة من طرف تطبيق آخر. أغلق التطبيق الآخر ثم أعد المحاولة.");
+      } else if (error && error.message === "no_decoder") {
+        message = A.t("تعذر تحميل قارئ الباركود المحلي. أعد تشغيل التطبيق ثم أعد المحاولة، أو استعمل قارئ USB.");
       } else if (error && error.message) {
         message = error.message;
       }
@@ -789,6 +777,10 @@
     if (state.stream) {
       state.stream.getTracks().forEach((track) => track.stop());
       state.stream = null;
+    }
+    if (state.detector && state.detector.dispose) {
+      state.detector.dispose();
+      state.detector = null;
     }
     const video = $("exit-camera-video");
     if (video) video.srcObject = null;

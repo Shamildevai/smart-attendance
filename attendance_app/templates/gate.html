@@ -126,6 +126,8 @@
 {% endblock %}
 
 {% block scripts %}
+  <script src="{{ url_for('static', filename='vendor/zxing.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/camera-scan.js') }}"></script>
   <script src="{{ url_for('static', filename='js/phone-scanner.js') }}"></script>
   <script src="{{ url_for('static', filename='js/gate.js') }}"></script>
 {% endblock %}

@@ -49,6 +49,23 @@ def test_help_page_links_nav_and_infographic(client):
     assert "المؤسسة" in body
 
 
+def test_scan_pages_load_offline_camera_decoder(client):
+    for path in ("/gate", "/entry-slip", "/exit-slip"):
+        response = client.get(path)
+        assert response.status_code == 200
+        html = response.get_data(as_text=True)
+        assert "/static/vendor/zxing.min.js" in html
+        assert "/static/js/camera-scan.js" in html
+
+    bundle = client.get("/static/vendor/zxing.min.js")
+    assert bundle.status_code == 200
+    assert "javascript" in bundle.content_type
+    body = bundle.get_data(as_text=True)
+    assert "ZXing" in body
+    assert "https://" not in body
+    assert "decodeFromVideoElement" in body or "BrowserMultiFormatReader" in body
+
+
 def test_about_page_attribution_and_dedication(client):
     response = client.get("/about")
     assert response.status_code == 200
