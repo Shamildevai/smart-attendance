@@ -9,7 +9,7 @@ from flask import current_app, g
 
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -170,6 +170,32 @@ CREATE TABLE IF NOT EXISTS exit_slips (
 );
 CREATE INDEX IF NOT EXISTS idx_exit_slips_date ON exit_slips(exit_date);
 CREATE INDEX IF NOT EXISTS idx_exit_slips_student ON exit_slips(student_nin, exit_date);
+
+CREATE TABLE IF NOT EXISTS summons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    summon_code TEXT NOT NULL UNIQUE,
+    barcode TEXT NOT NULL UNIQUE,
+    student_nin TEXT NOT NULL,
+    summon_date TEXT NOT NULL,
+    due_date TEXT,
+    due_time TEXT,
+    reason TEXT NOT NULL,
+    note TEXT,
+    guardian_name TEXT NOT NULL DEFAULT '',
+    guardian_phone TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'OPEN'
+        CHECK (status IN ('OPEN', 'ATTENDED', 'CANCELLED')),
+    attended_at TEXT,
+    issued_by TEXT NOT NULL DEFAULT '',
+    signature TEXT NOT NULL,
+    print_count INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    FOREIGN KEY (student_nin) REFERENCES students(student_nin)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS idx_summons_date ON summons(summon_date);
+CREATE INDEX IF NOT EXISTS idx_summons_student ON summons(student_nin, summon_date);
+CREATE INDEX IF NOT EXISTS idx_summons_status ON summons(status, due_date);
 
 CREATE TABLE IF NOT EXISTS message_campaigns (
     id TEXT PRIMARY KEY,

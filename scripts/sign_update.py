@@ -2,10 +2,10 @@
 
 Run after building the EXE/setup:
 
-    python scripts/sign_update.py --version 1.1.20 \
+    python scripts/sign_update.py --version 1.1.21 \
         --notes "إصلاحات وتحسينات" \
         --portable dist/SmartAttendance.exe \
-        --setup dist/SmartAttendance_Setup_1.1.20.exe \
+        --setup dist/SmartAttendance_Setup_1.1.21.exe \
         --out dist/update/latest.json
 
 Then upload latest.json plus the artifact files to https://fetsync.org/Update

@@ -1,0 +1,153 @@
+{% set student = summon.student %}
+{% set tpl = receipt_template %}
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ "استدعاء ولي الأمر"|t }} {{ summon.summon_code }} — {{ school_name }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip-print.css') }}">
+  {% if tpl == 'small' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip-print-small.css') }}">
+  {% endif %}
+</head>
+<body class="receipt-page receipt-page--{{ tpl }}" data-autoprint="{{ '1' if autoprint else '0' }}">
+  <header class="receipt-toolbar screen-only">
+    <div class="receipt-toolbar-brand">
+      <span class="receipt-toolbar-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg>
+      </span>
+      <div>
+        <strong>{{ "استدعاء ولي الأمر"|t }} · {{ summon.summon_code }}</strong>
+        <span>{{ student.full_name }} — {{ summon.date_display }} — {{ ("طابعة حرارية 58 مم" if tpl == "small" else "طابعة حرارية 80 مم")|t }}</span>
+      </div>
+    </div>
+    <div class="receipt-toolbar-actions">
+      <a class="receipt-btn is-ghost" href="{{ url_for('views.summons_page') }}">
+        {{ "استدعاء جديد"|t }}
+      </a>
+      <a class="receipt-btn is-ghost" href="{{ url_for('views.summons_verify_page', code=summon.qr_payload) }}">
+        {{ "التحقق من التوقيع"|t }}
+      </a>
+      <a class="receipt-btn is-ghost" href="/students?q={{ student.student_nin }}&profile=1">
+        {{ "ملف التلميذ"|t }}
+      </a>
+      <button class="receipt-btn is-primary" type="button" id="receipt-print">
+        {{ "طباعة الآن"|t }}
+      </button>
+    </div>
+  </header>
+
+  <main class="receipt receipt--{{ tpl }}" id="receipt" data-template="{{ tpl }}">
+    <header class="receipt-head">
+      {% if logo_url and tpl != 'small' %}
+        <img class="receipt-logo" src="{{ logo_url }}" alt="{{ school_name }}">
+      {% endif %}
+      <div class="receipt-head-text">
+        <strong>{{ school_name or "المؤسسة التعليمية" }}</strong>
+        {% if tpl == 'full' %}
+          <span>{{ header_text or "الجمهورية الجزائرية الديمقراطية الشعبية" }}</span>
+        {% else %}
+          <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="receipt-doc-title">
+      {% if tpl == 'full' %}
+        <span>{{ "السنة الدراسية"|t }} {{ academic_year }}</span>
+      {% endif %}
+      <h1>{{ "استدعاء ولي الأمر"|t }}</h1>
+      {% if tpl != 'small' %}
+        <p>{{ "إشعار رسمي بضرورة حضور ولي الأمر إلى المؤسسة"|t }}</p>
+      {% endif %}
+    </div>
+
+    <div class="receipt-code">
+      <div><span>{{ "رقم الاستدعاء"|t }}</span><strong class="mono">{{ summon.summon_code }}</strong></div>
+      <div><span>{{ "نسخة"|t }}</span><strong class="mono">{{ summon.print_count }}</strong></div>
+    </div>
+
+    <div class="receipt-rule"></div>
+
+    <section class="receipt-student">
+      <div class="receipt-line is-name"><span>{{ "التلميذ"|t }}</span><strong>{{ student.full_name }}</strong></div>
+      <div class="receipt-line"><span>{{ "القسم"|t }}</span><strong>{{ student.class_group or "بدون قسم"|t }}</strong></div>
+      {% if tpl != 'small' %}
+        <div class="receipt-line"><span>{{ "رقم التعريف"|t }}</span><strong class="mono">{{ student.student_nin }}</strong></div>
+      {% endif %}
+      {% if tpl == 'full' %}
+        <div class="receipt-line"><span>{{ "تاريخ الميلاد"|t }}</span><strong class="mono">{{ student.birth_date_display }}</strong></div>
+      {% endif %}
+    </section>
+
+    <div class="receipt-rule is-dashed"></div>
+
+    <section class="receipt-grid">
+      <div><span>{{ "تاريخ الإصدار"|t }}</span><strong class="mono">{{ summon.date_display }}</strong></div>
+      <div><span>{{ "الحضور المطلوب"|t }}</span><strong class="mono is-strong">{% if summon.due_display %}{{ summon.due_display }}{% else %}{{ "غير محدد"|t }}{% endif %}</strong></div>
+      {% if tpl != 'small' %}
+        <div><span>{{ "الولي"|t }}</span><strong>{{ summon.guardian_name or "—" }}</strong></div>
+        <div><span>{{ "هاتف الولي"|t }}</span><strong class="mono">{{ summon.guardian_phone or student.parent_phone or "—" }}</strong></div>
+      {% endif %}
+      {% if tpl == 'full' %}
+        <div><span>{{ "أصدره"|t }}</span><strong>{{ summon.issued_by }}</strong></div>
+        <div><span>{{ "الحالة"|t }}</span><strong class="is-strong">{{ summon.status_label }}</strong></div>
+      {% endif %}
+    </section>
+
+    <section class="receipt-reason">
+      <span>{{ "سبب الاستدعاء"|t }}</span>
+      <strong>{{ summon.reason }}</strong>
+      {% if tpl != 'small' and summon.note %}<p>{{ summon.note }}</p>{% endif %}
+    </section>
+
+    <section class="receipt-qr">
+      <img src="{{ url_for('api.summons_qr', code=summon.summon_code) }}" alt="{{ 'رمز التحقق'|t }}">
+      <div class="receipt-qr-text">
+        <strong>{{ "توقيع رقمي موثّق"|t }}</strong>
+        <span class="mono">{{ summon.signature_short }}</span>
+        {% if tpl != 'small' %}
+          <small>{{ "امسح الرمز للتحقق من صحة الاستدعاء"|t }}</small>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="receipt-barcode">
+      <span>{{ "باركود الاستدعاء"|t }}</span>
+      <img src="{{ url_for('api.summons_barcode', code=summon.summon_code) }}" alt="{{ 'باركود الاستدعاء'|t }}">
+      <strong class="mono">{{ summon.barcode }}</strong>
+      <small>{{ "امسح هذا الباركود عند مكتب الاستقبال لتسجيل حضور الولي."|t }}</small>
+    </section>
+
+    {% if tpl != 'small' %}
+      <div class="receipt-rule is-dashed"></div>
+
+      <section class="receipt-meta">
+        <div><span>{{ "وقت الإصدار"|t }}</span><strong class="mono">{{ summon.created_at[11:16] if summon.created_at else "" }}</strong></div>
+        <div><span>{{ "حالة الاستدعاء"|t }}</span><strong>{{ summon.status_label }}</strong></div>
+      </section>
+
+      <div class="receipt-sign">
+        <span>{{ "توقيع الإدارة"|t }}</span>
+      </div>
+    {% endif %}
+
+    {% if tpl == 'full' %}
+      <p class="receipt-notice">{{ "يرجى حضور ولي الأمر إلى إدارة المؤسسة في التاريخ والوقت المحددين حاملًا هذا الإيصال. في حال تعذر الحضور، يرجى الاتصال بالإدارة لتحديد موعد آخر."|t }}</p>
+    {% endif %}
+
+    <footer class="receipt-footer">
+      <strong>{{ app_title }}{% if tpl != 'small' %} · {{ academic_year }}{% endif %}</strong>
+      {% if tpl != 'small' %}
+        <span>{{ "الإصدار"|t }} {{ app_version }} — {{ "صادرة إلكترونيًا من الخادم المحلي"|t }}</span>
+      {% endif %}
+      <span class="mono">{{ summon.summon_code }}{% if tpl != 'small' %} · {{ summon.signature_short }}{% endif %}</span>
+    </footer>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/entry-slip-print.js') }}"></script>
+</body>
+</html>

@@ -23,6 +23,7 @@ from .services import attendance_service as attendance
 from .services import entry_slip_service as entry_slips
 from .services import exit_slip_service as exit_slips
 from .services import report_service
+from .services import summon_service as summons
 from .utils import (
     STATUS_AR,
     STATUS_ORDER,
@@ -189,6 +190,64 @@ def exit_slip_verify_page():
             "exit_slip",
             "التحقق من ورقة الخروج",
             "امسح رمز QR المطبوع للتأكد من توقيع الورقة وبياناتها",
+        ),
+    )
+
+
+@views_bp.get("/summons")
+def summons_page():
+    return render_template(
+        "summons.html",
+        reasons=summons.SUMMON_REASON_PRESETS,
+        **_page_context(
+            "summons",
+            "الاستدعاء",
+            "استدعاء ولي الأمر وطباعة إيصال رسمي موقّع",
+        ),
+    )
+
+
+@views_bp.get("/summons/print/<path:code>")
+def summons_print_page(code: str):
+    conn = get_db()
+    summon = summons.get_summon(conn, code)
+    if not summon:
+        abort(404)
+    summon = summons.register_print(conn, summon["summon_code"])
+    settings = get_settings(conn)
+    receipt_template = str(request.args.get("template") or "full").lower()
+    if receipt_template not in summons.RECEIPT_TEMPLATES:
+        receipt_template = "full"
+    return render_template(
+        "summons_print.html",
+        summon=summon,
+        settings=settings,
+        school_name=settings.get("school_name", ""),
+        logo_url=settings.get("logo_path", ""),
+        principal_name=settings.get("principal_name", ""),
+        header_text=settings.get("header_text", ""),
+        academic_year=settings.get("academic_year", ""),
+        autoprint=request.args.get("print") == "1",
+        receipt_template=receipt_template,
+    )
+
+
+@views_bp.get("/summons/verify")
+def summons_verify_page():
+    raw_code = str(request.args.get("code") or "").strip()
+    result = None
+    if raw_code:
+        result = summons.verify_summon(
+            get_db(), raw_code, str(current_app.config["SECRET_KEY"])
+        )
+    return render_template(
+        "summons_verify.html",
+        raw_code=raw_code,
+        result=result,
+        **_page_context(
+            "summons",
+            "التحقق من الاستدعاء",
+            "امسح رمز QR المطبوع للتأكد من توقيع الاستدعاء وبياناته",
         ),
     )
 

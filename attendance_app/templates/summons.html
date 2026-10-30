@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/summons.css') }}">
+{% endblock %}
+
+{% block page_actions %}
+  <a class="btn btn-secondary btn-sm" href="{{ url_for('views.summons_verify_page') }}">
+    <svg class="ico"><use href="#i-shield-check"></use></svg>
+    <span>التحقق من استدعاء</span>
+  </a>
+  <button class="btn btn-secondary btn-sm" type="button" id="summons-refresh">
+    <svg class="ico"><use href="#i-refresh"></use></svg>
+    <span>تحديث</span>
+  </button>
+{% endblock %}
+
+{% block content %}
+  <div class="summons-layout" id="summons-layout" data-reasons="{{ reasons|join('|') }}">
+    <div class="summons-main">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-bell"></use></svg> استدعاء جديد</h2>
+            <p>ابحث عن التلميذ بالاسم أو رقم التعريف أو هاتف الولي، ثم حدّد سبب الاستدعاء وموعد حضور الولي.</p>
+          </div>
+          <span class="badge" id="summons-step-badge">الخطوة 1</span>
+        </div>
+        <div class="card-body">
+          <div class="summons-search">
+            <div class="search-box">
+              <svg class="ico"><use href="#i-search"></use></svg>
+              <input class="input" type="search" id="summons-search" autocomplete="off"
+                     placeholder="ابحث بالاسم، رقم التعريف، أو هاتف الولي…" aria-label="بحث عن تلميذ">
+            </div>
+            <select class="select" id="summons-class" aria-label="تصفية حسب القسم">
+              <option value="">كل الأقسام</option>
+            </select>
+          </div>
+          <div class="summons-results" id="summons-results">
+            <div class="tiny muted" style="padding:10px 2px">اكتب حرفين على الأقل لبدء البحث، أو امسح بطاقة التلميذ بقارئ USB.</div>
+          </div>
+
+          <div class="summons-selected" id="summons-selected" hidden></div>
+
+          <form class="summons-form" id="summons-form" hidden autocomplete="off">
+            <div class="summons-form-head">
+              <strong>تفاصيل الاستدعاء</strong>
+              <button class="btn btn-ghost btn-sm" type="button" id="summons-change">
+                <svg class="ico"><use href="#i-users"></use></svg>
+                <span>تغيير التلميذ</span>
+              </button>
+            </div>
+
+            <div class="field">
+              <label>سبب الاستدعاء</label>
+              <div class="summons-presets" id="summons-presets"></div>
+              <input class="input" id="summons-reason" maxlength="300"
+                     placeholder="اكتب أو اختر سببًا واضحًا…">
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="summons-due-date">تاريخ حضور الولي</label>
+                <input class="input" id="summons-due-date" type="date" dir="ltr">
+              </div>
+              <div class="field">
+                <label for="summons-due-time">الوقت</label>
+                <input class="input" id="summons-due-time" type="time" dir="ltr" step="60">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="summons-guardian-name">اسم الولي (اختياري)</label>
+                <input class="input" id="summons-guardian-name" maxlength="120" placeholder="اسم ولي الأمر">
+              </div>
+              <div class="field">
+                <label for="summons-guardian-phone">هاتف الولي</label>
+                <input class="input" id="summons-guardian-phone" maxlength="30" dir="ltr"
+                       placeholder="05xxxxxxxx">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="summons-note">ملاحظة إضافية (اختياري)</label>
+              <textarea class="textarea" id="summons-note" maxlength="300"
+                        placeholder="تفاصيل إضافية تظهر على الإيصال…"></textarea>
+            </div>
+
+            <div class="summons-submit">
+              <div class="field">
+                <label for="summons-template">قالب الإيصال</label>
+                <select class="select" id="summons-template">
+                  <option value="full">كامل — 80 مم</option>
+                  <option value="medium">متوسط — 80 مم</option>
+                  <option value="small">صغير — 58 مم</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" type="submit" id="summons-issue">
+                <svg class="ico"><use href="#i-printer"></use></svg>
+                <span>إصدار وطباعة الاستدعاء</span>
+              </button>
+            </div>
+            <p class="field-hint">يُطبع إيصال حراري موقّع برمز QR، ويُسجَّل الاستدعاء في السجل الرسمي.</p>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <aside class="summons-side">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-bell"></use></svg> ملخص الاستدعاءات</h2>
+            <p id="summons-day-label">—</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="summons-kpi">
+            <div><span>اليوم</span><strong id="summons-kpi-issued">0</strong></div>
+            <div><span>بانتظار الولي</span><strong class="is-warning" id="summons-kpi-open">0</strong></div>
+            <div><span>حضر اليوم</span><strong class="is-success" id="summons-kpi-attended">0</strong></div>
+          </div>
+          <div class="summons-overdue" id="summons-overdue" hidden>
+            <svg class="ico"><use href="#i-warning"></use></svg>
+            <span id="summons-overdue-text"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-clock"></use></svg> بانتظار الولي</h2>
+            <p>استدعاءات لم يُسجَّل حضور وليها بعد</p>
+          </div>
+          <span class="badge badge--late" id="summons-open-count">0</span>
+        </div>
+        <div class="card-body" id="summons-open-list">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-file"></use></svg> استدعاءات اليوم</h2>
+            <p>إعادة الطباعة وتسجيل الحضور</p>
+          </div>
+          <span class="badge" id="summons-recent-count">0</span>
+        </div>
+        <div class="card-body" id="summons-recent">
+          <div class="loading-state"><span class="spinner"></span><span>جارٍ التحميل…</span></div>
+        </div>
+      </section>
+
+      <section class="card summons-guide">
+        <div class="card-header">
+          <div>
+            <h2><svg class="ico"><use href="#i-info"></use></svg> كيف يعمل الاستدعاء؟</h2>
+            <p>ثلاث خطوات</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <ol class="summons-steps">
+            <li><span>1</span><div><strong>اختر التلميذ</strong><p>ابحث عنه بالاسم أو رقم التعريف، أو امسح بطاقته.</p></div></li>
+            <li><span>2</span><div><strong>حدّد السبب والموعد</strong><p>اختر سببًا جاهزًا وحدّد تاريخ ووقت حضور الولي.</p></div></li>
+            <li><span>3</span><div><strong>أصدر الإيصال</strong><p>يُطبع إيصال موقّع برمز QR ويُسلَّم لولي الأمر.</p></div></li>
+          </ol>
+        </div>
+      </section>
+    </aside>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/summons.js') }}"></script>
+{% endblock %}

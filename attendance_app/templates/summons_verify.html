@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entry-slip.css') }}">
+{% endblock %}
+
+{% block page_actions %}
+  <a class="btn btn-primary btn-sm" href="{{ url_for('views.summons_page') }}">
+    <svg class="ico"><use href="#i-bell"></use></svg>
+    <span>استدعاء جديد</span>
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="entry-verify-layout">
+    <section class="card entry-verify-card">
+      <div class="card-header">
+        <div>
+          <h2><svg class="ico"><use href="#i-shield-check"></use></svg> التحقق من استدعاء</h2>
+          <p>امسح رمز QR المطبوع على إيصال الاستدعاء بقارئ USB أو ألصق الرمز ثم اضغط تحقق.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form class="entry-verify-form" method="get" action="{{ url_for('views.summons_verify_page') }}">
+          <label for="verify-code">رمز QR أو رقم الاستدعاء</label>
+          <textarea class="textarea" id="verify-code" name="code" rows="3" dir="ltr" spellcheck="false"
+                    autocomplete="off" placeholder="SAMS1|SM-20261030-0001|...">{{ raw_code }}</textarea>
+          <div class="entry-verify-actions">
+            <button class="btn btn-primary" type="submit">
+              <svg class="ico"><use href="#i-shield-check"></use></svg>
+              <span>تحقق من الاستدعاء</span>
+            </button>
+            <button class="btn btn-secondary" type="button" id="verify-clear">
+              <svg class="ico"><use href="#i-refresh"></use></svg>
+              <span>تفريغ الحقل</span>
+            </button>
+            <button class="btn btn-ghost" type="button" id="verify-scan-focus">
+              <svg class="ico"><use href="#i-scan"></use></svg>
+              <span>تهيئة القارئ</span>
+            </button>
+          </div>
+        </form>
+        <div class="entry-verify-hint">
+          <svg class="ico"><use href="#i-info"></use></svg>
+          <p>أدخل رمز QR الكامل للتحقق من التوقيع الرقمي. إدخال رقم الاستدعاء فقط يعرض السجل دون تأكيد التوقيع.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="entry-verify-result" aria-live="polite">
+      {% if not result %}
+        <div class="scan-result-empty">
+          <svg class="ico"><use href="#i-qr"></use></svg>
+          <strong>بانتظار رمز للتحقق</strong>
+          <p>سيظهر هنا حكم التحقق وبيانات الاستدعاء الكاملة بعد قراءة رمز QR.</p>
+        </div>
+      {% else %}
+        {% set summon = result.summon %}
+        <article class="scan-result">
+          <header class="scan-card-head {% if result.valid is true %}{% elif result.valid is false %}is-error{% else %}is-warning{% endif %}">
+            <div class="avatar" aria-hidden="true">
+              <svg class="ico"><use href="#i-{% if result.valid is true %}shield-check{% elif result.valid is false %}warning{% else %}qr{% endif %}"></use></svg>
+            </div>
+            <div class="scan-person">
+              <h3>
+                {% if result.valid is true %}توقيع صحيح وموثّق
+                {% elif result.valid is false %}استدعاء غير موثوق
+                {% else %}سجل موجود — التوقيع غير مفحوص{% endif %}
+              </h3>
+              <p>{{ result.message }}</p>
+            </div>
+            <div class="scan-state">
+              <svg class="ico"><use href="#i-{% if result.valid is true %}check{% elif result.valid is false %}x{% else %}warning{% endif %}"></use></svg>
+              <strong>{% if result.valid is true %}صحيح{% elif result.valid is false %}مرفوض{% else %}غير مفحوص{% endif %}</strong>
+            </div>
+          </header>
+          {% if summon %}
+            <div class="scan-card-body">
+              <div class="entry-verify-person">
+                <div class="avatar" aria-hidden="true">{{ (summon.student.first_name[:1] ~ summon.student.last_name[:1])|upper }}</div>
+                <div class="entry-verify-person-text">
+                  <strong>{{ summon.student.full_name }}</strong>
+                  <span>{{ summon.student.class_group or "بدون قسم" }} · <b class="mono">{{ summon.student.student_nin }}</b></span>
+                </div>
+              </div>
+              <div class="scan-meta">
+                <div><span>رقم الاستدعاء</span><strong class="mono">{{ summon.summon_code }}</strong></div>
+                <div><span>تاريخ الإصدار</span><strong class="mono">{{ summon.date_display }}</strong></div>
+                <div><span>الحضور المطلوب</span><strong class="mono">{{ summon.due_display or "غير محدد" }}</strong></div>
+              </div>
+              <div class="entry-verify-grid">
+                <div><span>سبب الاستدعاء</span><strong>{{ summon.reason }}</strong></div>
+                <div><span>الولي</span><strong>{{ summon.guardian_name or "—" }}</strong></div>
+                <div><span>هاتف الولي</span><strong class="mono">{{ summon.guardian_phone or summon.student.parent_phone or "—" }}</strong></div>
+                <div><span>الحالة</span><strong class="{% if summon.status == 'ATTENDED' %}is-success{% endif %}">{{ summon.status_label }}</strong></div>
+                <div><span>أصدره</span><strong>{{ summon.issued_by }}</strong></div>
+                <div><span>بصمة التوقيع</span><strong class="mono">{{ summon.signature_short }}</strong></div>
+              </div>
+              {% if summon.note %}<div class="scan-message">{{ summon.note }}</div>{% endif %}
+              <div class="scan-actions">
+                <a class="btn btn-primary btn-sm" href="{{ url_for('views.summons_print_page', code=summon.summon_code) }}?print=1">
+                  <svg class="ico"><use href="#i-printer"></use></svg>
+                  <span>إعادة طباعة الإيصال</span>
+                </a>
+                <a class="btn btn-secondary btn-sm" href="/students?q={{ summon.student.student_nin }}&profile=1">ملف التلميذ</a>
+              </div>
+            </div>
+          {% endif %}
+        </article>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/entry-slip-verify.js') }}"></script>
+{% endblock %}
