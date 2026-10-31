@@ -10,7 +10,13 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from attendance_app import config
-from attendance_app.db import DEFAULT_SETTINGS, LEGACY_UPDATE_FEED_URL, connect, init_db
+from attendance_app.db import (
+    DEFAULT_SETTINGS,
+    LEGACY_PUBLIC_FEED_URL,
+    LEGACY_UPDATE_FEED_URL,
+    connect,
+    init_db,
+)
 from attendance_app.services import update_service
 from attendance_app.services.update_service import (
     UpdateError,
@@ -60,7 +66,7 @@ def test_version_comparison():
 
 
 def test_default_feed_points_to_public_update_path():
-    assert config.UPDATE_FEED_URL == "https://fetsync.org/Update/latest.json"
+    assert config.UPDATE_FEED_URL == "https://smartattendance.fetsync.org/latest.json"
     assert DEFAULT_SETTINGS["update_feed_url"] == config.UPDATE_FEED_URL
 
 
@@ -83,6 +89,16 @@ def test_init_db_migrates_legacy_feed_default(tmp_path):
     db_path = tmp_path / "legacy.db"
     init_db(db_path)
     _write_feed_setting(db_path, LEGACY_UPDATE_FEED_URL)
+
+    init_db(db_path)
+
+    assert _read_feed_setting(db_path) == config.UPDATE_FEED_URL
+
+
+def test_init_db_migrates_previous_public_feed_default(tmp_path):
+    db_path = tmp_path / "previous_public.db"
+    init_db(db_path)
+    _write_feed_setting(db_path, LEGACY_PUBLIC_FEED_URL)
 
     init_db(db_path)
 

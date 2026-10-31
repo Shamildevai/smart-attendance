@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 APP_NAME = "SmartAttendance"
-APP_VERSION = "1.1.21"
+APP_VERSION = "1.1.22"
 COLOR_THEMES = (
     "emerald",
     "blue",
@@ -29,14 +29,14 @@ APP_LOCATION_LATIN = "Saida, Algeria"
 APP_DEDICATION = "صدقة عن والدي المرحوم بوزويرة قادة"
 APP_REPO_URL = "https://github.com/Shamildevai/smart-attendance"
 
-UPDATE_FEED_URL = "https://fetsync.org/Update/latest.json"
+UPDATE_FEED_URL = "https://smartattendance.fetsync.org/latest.json"
 UPDATE_PUBLIC_KEY = "wfjSP8we/c/RCTDi0DsC7xKYb+pKtzD1RZJLU8DT/sA="
 UPDATE_CHECK_INTERVAL = 6 * 60 * 60
 
 GATEWAY_APP_NAME = "Attendance SMS Gateway"
 GATEWAY_APP_VERSION = "1.1.0"
 GATEWAY_APP_DOWNLOAD_URL = (
-    f"https://fetsync.org/Update/Attendance-SMS-Gateway-{GATEWAY_APP_VERSION}.apk"
+    f"https://smartattendance.fetsync.org/builds/Attendance-SMS-Gateway-{GATEWAY_APP_VERSION}.apk"
 )
 WHATSAPP_DOWNLOAD_URL = "https://www.whatsapp.com/download"
 

@@ -459,10 +459,7 @@ def test_gateway_endpoint_exposes_phone_app_metadata(client):
     gateway = response.get_json()["gateway"]
     assert gateway["gateway_app"]["name"] == config.GATEWAY_APP_NAME
     assert gateway["gateway_app"]["version"] == config.GATEWAY_APP_VERSION
-    assert (
-        gateway["gateway_app"]["download_url"]
-        == f"https://fetsync.org/Update/Attendance-SMS-Gateway-{config.GATEWAY_APP_VERSION}.apk"
-    )
+    assert gateway["gateway_app"]["download_url"] == config.GATEWAY_APP_DOWNLOAD_URL
     assert gateway["mobile"]["status"] == "not_configured"
     assert gateway["mobile"]["can_send"] is False
     assert "installed" in gateway["whatsapp_desktop"]

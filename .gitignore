@@ -13,6 +13,8 @@ build_*/
 !build_assets/
 dist/
 dist_*/
+release_*/
+site_upload/
 backup/
 backups/
 tmp/

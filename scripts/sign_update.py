@@ -8,9 +8,9 @@ Run after building the EXE/setup:
         --setup dist/SmartAttendance_Setup_1.1.21.exe \
         --out dist/update/latest.json
 
-Then upload latest.json plus the artifact files to https://fetsync.org/Update
-at the paths recorded in the manifest. Keep secrets/update_signing_key.pem
-offline and never publish it.
+Then upload latest.json to https://smartattendance.fetsync.org/latest.json and the
+artifact files to https://smartattendance.fetsync.org/builds at the paths recorded
+in the manifest. Keep secrets/update_signing_key.pem offline and never publish it.
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ def main() -> int:
     parser.add_argument("--notes-file", help="read release notes from a UTF-8 text file")
     parser.add_argument("--portable", help="portable SmartAttendance.exe")
     parser.add_argument("--setup", help="Inno Setup installer .exe")
-    parser.add_argument("--base-url", default="https://fetsync.org/Update", help="hosting base URL")
+    parser.add_argument("--base-url", default="https://smartattendance.fetsync.org", help="hosting base URL")
     parser.add_argument("--out", default=str(ROOT / "dist" / "update" / "latest.json"))
     parser.add_argument("--private-key", default=str(DEFAULT_KEY))
     parser.add_argument("--published-at", default="")
