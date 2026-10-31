@@ -103,12 +103,19 @@
     }
   }
 
+  function periodOptionLabel(period) {
+    const type = period.period_type && period.period_type !== "CLASS"
+      ? ` · ${period.period_type_label || period.period_type}`
+      : "";
+    return `${safe(period.period_name)}${type} — ${safe(period.start_time)}`;
+  }
+
   function renderPeriodOptions(periods) {
     const current = periodSelect.value;
     const options = ['<option value="">تلقائي حسب الوقت الحالي</option>'];
     periods.forEach((period) => {
       options.push(
-        `<option value="${period.id}">${safe(period.period_name)} — ${safe(period.start_time)}</option>`
+        `<option value="${period.id}">${periodOptionLabel(period)}</option>`
       );
     });
     periodSelect.innerHTML = options.join("");
@@ -742,7 +749,78 @@
   /* Shell events                                                            */
   /* ---------------------------------------------------------------------- */
 
+  function setupManualName() {
+    const toggle = $("gate-name-toggle");
+    const panel = $("gate-name-panel");
+    if (!toggle || !panel) return;
+    const first = $("gate-first-name");
+    const last = $("gate-last-name");
+    const results = $("gate-name-results");
+    const searchButton = $("gate-name-search");
+
+    const setOpen = (open) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) first.focus();
+    };
+
+    const search = async () => {
+      const firstValue = first.value.trim();
+      const lastValue = last.value.trim();
+      if (!firstValue && !lastValue) {
+        results.innerHTML = '<div class="gate-name-empty">أدخل الاسم أو اللقب على الأقل.</div>';
+        first.focus();
+        return;
+      }
+      results.innerHTML = '<div class="gate-name-empty">جارٍ البحث…</div>';
+      A.setBusy(searchButton, true);
+      try {
+        const data = await A.api(
+          A.apiUrl("/api/gate/name-lookup", { first_name: firstValue, last_name: lastValue })
+        );
+        const students = Array.isArray(data.students) ? data.students : [];
+        if (!students.length) {
+          results.innerHTML = '<div class="gate-name-empty">لا يوجد تلميذ نشط بهذا الاسم. تحقق من الإملاء أو أضفه من صفحة التلاميذ.</div>';
+          return;
+        }
+        results.innerHTML = students
+          .map(
+            (student) => `
+              <button class="gate-name-result" type="button" data-student-nin="${safe(student.student_nin)}">
+                <span>${safe(student.full_name)}</span>
+                <small>${safe(student.class_group || "بدون قسم")}</small>
+              </button>`
+          )
+          .join("");
+        results.querySelectorAll("[data-student-nin]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const nin = button.getAttribute("data-student-nin");
+            setOpen(false);
+            results.innerHTML = "";
+            if (nin) processCode(nin, "name");
+          });
+        });
+      } catch (error) {
+        results.innerHTML = `<div class="gate-name-empty">${safe(error.message || "تعذر البحث.")}</div>`;
+      } finally {
+        A.setBusy(searchButton, false);
+      }
+    };
+
+    toggle.addEventListener("click", () => setOpen(panel.hidden));
+    searchButton.addEventListener("click", search);
+    [first, last].forEach((input) => {
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          search();
+        }
+      });
+    });
+  }
+
   function bindEvents() {
+    setupManualName();
     periodSelect.addEventListener("change", () => {
       const value = periodSelect.value;
       state.periodId = value ? Number(value) : null;

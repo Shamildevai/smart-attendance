@@ -65,6 +65,26 @@
               <span>تفريغ الذاكرة</span>
             </button>
           </div>
+          <div class="gate-manual" id="gate-manual">
+            <button class="gate-manual-toggle" type="button" id="gate-name-toggle" aria-expanded="false" aria-controls="gate-name-panel">
+              <svg class="ico"><use href="#i-keyboard"></use></svg>
+              <span>البطاقة مفقودة أو تالفة؟ سجّل بالاسم واللقب</span>
+            </button>
+            <div class="gate-manual-body" id="gate-name-panel" hidden>
+              <div class="gate-manual-fields">
+                <label class="field">
+                  <span>الاسم</span>
+                  <input class="input" id="gate-first-name" maxlength="80" autocomplete="off" spellcheck="false">
+                </label>
+                <label class="field">
+                  <span>اللقب</span>
+                  <input class="input" id="gate-last-name" maxlength="80" autocomplete="off" spellcheck="false">
+                </label>
+                <button class="btn btn-sm" type="button" id="gate-name-search">بحث</button>
+              </div>
+              <div class="gate-name-results" id="gate-name-results" role="status" aria-live="polite"></div>
+            </div>
+          </div>
           <p class="phone-scan-note" id="gate-phone-note" hidden></p>
         </div>
       </section>

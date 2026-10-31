@@ -10,7 +10,7 @@ from flask import current_app, g
 from . import config
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -57,6 +57,8 @@ CREATE INDEX IF NOT EXISTS idx_students_active ON students(is_active);
 CREATE TABLE IF NOT EXISTS periods (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     period_name TEXT NOT NULL,
+    period_type TEXT NOT NULL DEFAULT 'CLASS'
+        CHECK (period_type IN ('CLASS', 'BREAKFAST', 'CANTEEN', 'SUPPORT', 'OTHER')),
     start_time TEXT NOT NULL,
     on_time_cutoff TEXT NOT NULL,
     absent_cutoff_time TEXT NOT NULL,
@@ -307,6 +309,7 @@ LEGACY_PUBLIC_FEED_URL = "https://fetsync.org/Update/latest.json"
 SEED_PERIODS = [
     {
         "period_name": "الفترة الصباحية",
+        "period_type": "CLASS",
         "start_time": "07:45",
         "on_time_cutoff": "08:10",
         "absent_cutoff_time": "08:30",
@@ -347,6 +350,11 @@ def init_db(db_path: str | Path) -> None:
         conn.execute("PRAGMA journal_mode = WAL")
         conn.execute("PRAGMA synchronous = NORMAL")
         conn.executescript(SCHEMA)
+        period_columns = {row["name"] for row in conn.execute("PRAGMA table_info(periods)")}
+        if "period_type" not in period_columns:
+            conn.execute(
+                "ALTER TABLE periods ADD COLUMN period_type TEXT NOT NULL DEFAULT 'CLASS'"
+            )
         current_version = conn.execute("PRAGMA user_version").fetchone()[0]
         if current_version < SCHEMA_VERSION:
             conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
@@ -379,10 +387,11 @@ def init_db(db_path: str | Path) -> None:
                 for period in SEED_PERIODS:
                     conn.execute(
                         """INSERT INTO periods
-                           (period_name, start_time, on_time_cutoff, absent_cutoff_time, sort_order)
-                           VALUES(?, ?, ?, ?, ?)""",
+                           (period_name, period_type, start_time, on_time_cutoff, absent_cutoff_time, sort_order)
+                           VALUES(?, ?, ?, ?, ?, ?)""",
                         (
                             period["period_name"],
+                            period.get("period_type", "CLASS"),
                             period["start_time"],
                             period["on_time_cutoff"],
                             period["absent_cutoff_time"],

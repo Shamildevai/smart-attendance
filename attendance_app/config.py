@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 APP_NAME = "SmartAttendance"
-APP_VERSION = "1.1.22"
+APP_VERSION = "1.1.23"
 COLOR_THEMES = (
     "emerald",
     "blue",
@@ -24,6 +24,7 @@ APP_SUBTITLE = "الحضور بالباركود وإشعار الأولياء"
 APP_AUTHOR = "د. بوزويرة عزيز"
 APP_AUTHOR_LATIN = "Dr. Bouzouira Aziz"
 APP_AUTHOR_HANDLE = "shamildev"
+APP_DEVELOPER_EMAIL = "aziznetstudio@gmail.com"
 APP_LOCATION = "سعيدة، الجزائر"
 APP_LOCATION_LATIN = "Saida, Algeria"
 APP_DEDICATION = "صدقة عن والدي المرحوم بوزويرة قادة"

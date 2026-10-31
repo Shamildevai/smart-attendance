@@ -1690,6 +1690,34 @@ kbd {
 .gate-actions .btn { --btn-bg: rgba(255, 255, 255, 0.07); --btn-fg: var(--sidebar-text); --btn-bd: var(--sidebar-border); }
 .gate-actions .btn:hover { --btn-bg: rgba(255, 255, 255, 0.12); }
 .gate-actions .btn.is-on { --btn-bg: var(--on-dark-primary-soft); --btn-fg: var(--on-dark-primary); --btn-bd: var(--on-dark-primary-soft); }
+.gate-manual { position: relative; z-index: 1; width: min(560px, 100%); margin-top: 14px; }
+.gate-manual-toggle {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.85rem;
+  border: 1px dashed var(--sidebar-border); border-radius: 999px; background: transparent;
+  color: var(--sidebar-muted); font: inherit; font-size: 12px; cursor: pointer;
+}
+.gate-manual-toggle:hover { color: var(--sidebar-text); border-color: var(--sidebar-text); }
+.gate-manual-body {
+  margin-top: 10px; padding: 12px; border: 1px solid var(--sidebar-border);
+  border-radius: 12px; background: rgba(0, 0, 0, 0.16);
+}
+.gate-manual-fields { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+.gate-manual-fields .field { display: flex; flex-direction: column; gap: 4px; text-align: right; }
+.gate-manual-fields .field > span { font-size: 11px; color: var(--sidebar-muted); }
+.gate-manual-fields .input {
+  background: rgba(255, 255, 255, 0.08); border-color: var(--sidebar-border); color: var(--sidebar-text);
+}
+.gate-name-results { display: grid; gap: 6px; margin-top: 10px; max-height: 190px; overflow: auto; }
+.gate-name-result {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 10px; border-radius: 8px; border: 1px solid var(--sidebar-border);
+  background: rgba(255, 255, 255, 0.05); color: var(--sidebar-text); text-align: right;
+  font: inherit; cursor: pointer;
+}
+.gate-name-result:hover { background: rgba(255, 255, 255, 0.12); }
+.gate-name-result small { color: var(--sidebar-muted); }
+.gate-name-empty { font-size: 12px; color: var(--sidebar-muted); text-align: center; padding: 6px; }
+@media (max-width: 640px) { .gate-manual-fields { grid-template-columns: 1fr; } }
 
 .scan-result {
   display: grid;

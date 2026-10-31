@@ -184,7 +184,9 @@
       els.period.innerHTML = periods
         .map((period) => {
           const closed = period.closure ? " · مغلقة" : "";
-          return `<option value="${period.id}">${safe(period.period_name)}${safe(closed)}</option>`;
+          const type = period.period_type && period.period_type !== "CLASS"
+            ? ` · ${period.period_type_label || period.period_type}` : "";
+          return `<option value="${period.id}">${safe(period.period_name)}${safe(type)}${safe(closed)}</option>`;
         })
         .join("");
       const hasPrevious = periods.some((period) => String(period.id) === previous);

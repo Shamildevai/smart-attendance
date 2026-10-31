@@ -752,11 +752,15 @@
       const badge = period.is_active
         ? '<span class="badge badge--present"><i class="badge-dot"></i>نشطة</span>'
         : '<span class="badge badge--cancelled"><i class="badge-dot"></i>معطّلة</span>';
+      const typeBadge = period.period_type && period.period_type !== "CLASS"
+        ? `<span class="badge badge--new">${safe(period.period_type_label || period.period_type)}</span>`
+        : "";
       rows.push(`
         <div class="period-row" data-period-id="${safe(period.id)}">
           <div class="period-name">
             ${A.icon("clock", "period-ico")}
             <span>${safe(period.period_name)}</span>
+            ${typeBadge}
             ${badge}
           </div>
           <time>${safe(period.start_time)}</time>
@@ -785,6 +789,7 @@
     const isEdit = Boolean(period);
     const current = period || {
       period_name: "",
+      period_type: "CLASS",
       start_time: "08:00",
       on_time_cutoff: "08:10",
       absent_cutoff_time: "08:30",
@@ -792,8 +797,8 @@
       sort_order: state.periods.length + 1,
     };
     A.openModal({
-      title: isEdit ? "تعديل الفترة الدراسية" : "إضافة فترة دراسية",
-      subtitle: "حدد اسم الفترة وأوقات البداية وحدود الحضور والغياب.",
+      title: isEdit ? "تعديل فترة الحضور" : "إضافة فترة حضور",
+      subtitle: "حدد اسم الفترة ونوعها وأوقات البداية وحدود الحضور والغياب.",
       icon: "clock",
       size: "lg",
       body: `
@@ -801,6 +806,17 @@
           <div class="field form-span-2">
             <label for="period-name">اسم الفترة</label>
             <input class="input" id="period-name" maxlength="80" value="${safe(current.period_name)}" placeholder="الفترة الصباحية" autofocus>
+          </div>
+          <div class="field">
+            <label for="period-type">نوع الفترة</label>
+            <select class="input" id="period-type">
+              <option value="CLASS" ${current.period_type === "CLASS" ? "selected" : ""}>حصة دراسية</option>
+              <option value="BREAKFAST" ${current.period_type === "BREAKFAST" ? "selected" : ""}>وقت الفطور</option>
+              <option value="CANTEEN" ${current.period_type === "CANTEEN" ? "selected" : ""}>المطعم</option>
+              <option value="SUPPORT" ${current.period_type === "SUPPORT" ? "selected" : ""}>دروس الدعم</option>
+              <option value="OTHER" ${current.period_type === "OTHER" ? "selected" : ""}>فترة خاصة</option>
+            </select>
+            <span class="field-hint">الفترات الخاصة تُسجَّل في المسح والغياب مثل الحصص.</span>
           </div>
           <div class="field">
             <label for="period-start">وقت البداية</label>
@@ -857,6 +873,7 @@
           }
           const payload = {
             period_name: name,
+            period_type: modal.querySelector("#period-type").value,
             start_time: start,
             on_time_cutoff: cutoff,
             absent_cutoff_time: absent,

@@ -219,7 +219,10 @@
                   ${A.icon("printer")}
                 </a>
                 <button class="icon-btn ${student.is_active ? "is-danger" : ""}" type="button" data-action="toggle" data-nin="${safe(student.student_nin)}" title="${toggleLabel}" aria-label="${toggleLabel}: ${safe(student.full_name)}">
-                  ${A.icon(student.is_active ? "trash" : "refresh")}
+                  ${A.icon(student.is_active ? "archive" : "refresh")}
+                </button>
+                <button class="icon-btn is-danger" type="button" data-action="delete" data-nin="${safe(student.student_nin)}" title="حذف التلميذ" aria-label="حذف ${safe(student.full_name)}">
+                  ${A.icon("trash")}
                 </button>
               </div>
             </td>
@@ -443,8 +446,9 @@
         <div class="section-title" style="margin-bottom:10px"><h2 style="font-size:13px">فترات اليوم</h2><span class="chip">${safe(A.formatDate(data.day))}</span></div>
         ${todayRows}`,
       footer: `
-        <button class="btn btn-${student.is_active ? "danger-soft" : "success"} btn-sm" type="button" data-profile-toggle>${A.icon(student.is_active ? "trash" : "refresh")}<span>${toggleLabel}</span></button>
+        <button class="btn btn-${student.is_active ? "danger-soft" : "success"} btn-sm" type="button" data-profile-toggle>${A.icon(student.is_active ? "archive" : "refresh")}<span>${toggleLabel}</span></button>
         <button class="btn btn-secondary btn-sm" type="button" data-profile-edit>${A.icon("edit")}<span>تعديل البيانات</span></button>
+        <button class="btn btn-secondary btn-sm" type="button" data-profile-delete>${A.icon("trash")}<span>حذف</span></button>
         <a class="btn btn-secondary btn-sm" href="${printUrl(student.student_nin)}" target="_blank" rel="noopener">${A.icon("printer")}<span>طباعة البطاقة</span></a>
         <button class="btn btn-primary btn-sm" type="button" data-modal-close>إغلاق</button>`,
       onMount(modal) {
@@ -489,6 +493,9 @@
         modal.querySelector("[data-profile-toggle]").addEventListener("click", () => {
           toggleStudentActive(student, dialog, true);
         });
+        modal.querySelector("[data-profile-delete]").addEventListener("click", () => {
+          deleteStudent(student, dialog);
+        });
       },
     });
   }
@@ -522,6 +529,27 @@
       } catch (error) {
         A.toast(error.message || "تعذر تحديث حالة التلميذ.", "error");
         if (reopenOnCancel) openProfile(student.student_nin);
+      }
+    });
+  }
+
+  function deleteStudent(student, dialog) {
+    A.confirm({
+      title: "حذف التلميذ",
+      message: `سيُحذف ${student.full_name} نهائيًا إن لم تكن لديه سجلات حضور أو إشعارات مرتبطة. إن وُجدت سجلات فسيُؤرشف التلميذ ويُعطَّل مع الاحتفاظ بتاريخه. هل تريد المتابعة؟`,
+      danger: true,
+      confirmLabel: "حذف",
+    }).then(async (confirmed) => {
+      if (!confirmed) return;
+      try {
+        const result = await A.api(`/api/students/${encodeURIComponent(student.student_nin)}`, {
+          method: "DELETE",
+        });
+        A.toast(result.message || "تم حذف التلميذ.", "success");
+        if (dialog) dialog.close();
+        loadStudents({ silent: Boolean(dialog) });
+      } catch (error) {
+        A.toast(error.message || "تعذر حذف التلميذ.", "error");
       }
     });
   }
@@ -593,6 +621,7 @@
     if (action === "view") openProfile(student.student_nin);
     else if (action === "edit") openStudentForm(student);
     else if (action === "toggle") toggleStudentActive(student, null, false);
+    else if (action === "delete") deleteStudent(student, null);
   });
 
   window.addEventListener("popstate", () => {

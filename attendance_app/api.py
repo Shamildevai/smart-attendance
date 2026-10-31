@@ -657,6 +657,11 @@ def _validate_period(conn: sqlite3.Connection, data: dict[str, Any], period_id: 
     if absent_s <= start_s:
         raise ApiError("حد الغياب يجب أن يكون بعد وقت البداية.", 400)
     is_active = _as_bool(data.get("is_active", current["is_active"] if current else True), "تفعيل الفترة")
+    period_type = str(
+        data.get("period_type", current["period_type"] if current else "CLASS")
+    ).strip().upper()
+    if period_type not in attendance.PERIOD_TYPES:
+        raise ApiError("نوع الفترة غير معروف.", 400)
     if current and current["is_active"] and not is_active:
         other_active = conn.execute(
             "SELECT COUNT(*) FROM periods WHERE is_active = 1 AND id <> ?", (period_id,)
@@ -677,6 +682,7 @@ def _validate_period(conn: sqlite3.Connection, data: dict[str, Any], period_id: 
         sort_order = (conn.execute("SELECT COALESCE(MAX(sort_order), 0) + 1 FROM periods").fetchone()[0])
     return {
         "period_name": name,
+        "period_type": period_type,
         "start_time": start,
         "on_time_cutoff": cutoff,
         "absent_cutoff_time": absent,
@@ -705,10 +711,10 @@ def create_period_api():
     with conn:
         cursor = conn.execute(
             """INSERT INTO periods
-               (period_name, start_time, on_time_cutoff, absent_cutoff_time, is_active, sort_order)
-               VALUES (?, ?, ?, ?, ?, ?)""",
+               (period_name, period_type, start_time, on_time_cutoff, absent_cutoff_time, is_active, sort_order)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
             (
-                values["period_name"], values["start_time"], values["on_time_cutoff"],
+                values["period_name"], values["period_type"], values["start_time"], values["on_time_cutoff"],
                 values["absent_cutoff_time"], values["is_active"], values["sort_order"],
             ),
         )
@@ -722,12 +728,12 @@ def update_period_api(period_id: int):
     values = _validate_period(conn, _payload(), period_id=period_id)
     with conn:
         conn.execute(
-            """UPDATE periods SET period_name = ?, start_time = ?, on_time_cutoff = ?,
+            """UPDATE periods SET period_name = ?, period_type = ?, start_time = ?, on_time_cutoff = ?,
                    absent_cutoff_time = ?, is_active = ?, sort_order = ?,
                    updated_at = datetime('now', 'localtime')
                WHERE id = ?""",
             (
-                values["period_name"], values["start_time"], values["on_time_cutoff"],
+                values["period_name"], values["period_type"], values["start_time"], values["on_time_cutoff"],
                 values["absent_cutoff_time"], values["is_active"], values["sort_order"],
                 period_id,
             ),
@@ -951,6 +957,42 @@ def upload_student_photo(nin: str):
     return ok(url=result["url"], message="تم تحديث صورة التلميذ.")
 
 
+@api_bp.delete("/students/<path:nin>")
+def delete_student_api(nin: str):
+    conn = get_db()
+    normalized = normalize_nin(nin)
+    row = conn.execute("SELECT * FROM students WHERE student_nin = ?", (normalized,)).fetchone()
+    if not row:
+        raise ApiError("التلميذ غير موجود.", 404, "not_found")
+    references = 0
+    tables = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
+    ).fetchall()
+    for table in tables:
+        name = table["name"]
+        if name == "students":
+            continue
+        columns = {item["name"] for item in conn.execute(f"PRAGMA table_info({name})")}
+        if "student_nin" in columns:
+            references += conn.execute(
+                f"SELECT COUNT(*) FROM {name} WHERE student_nin = ?", (normalized,)
+            ).fetchone()[0]
+    with conn:
+        if references:
+            conn.execute(
+                """UPDATE students SET is_active = 0, updated_at = datetime('now', 'localtime')
+                   WHERE student_nin = ?""",
+                (normalized,),
+            )
+            return ok(
+                deleted=False,
+                archived=True,
+                message="تم أرشفة التلميذ وتعطيله لوجود سجلات مرتبطة به. يمكن إعادة تفعيله من التعديل.",
+            )
+        conn.execute("DELETE FROM students WHERE student_nin = ?", (normalized,))
+    return ok(deleted=True, archived=False, message="تم حذف التلميذ نهائيًا.")
+
+
 # ---------------------------------------------------------------------------
 # Smart import
 # ---------------------------------------------------------------------------
@@ -1024,6 +1066,17 @@ def gate_context_api():
     )
     context["server_date"] = datetime.now().date().isoformat()
     return ok(**context)
+
+
+@api_bp.get("/gate/name-lookup")
+def gate_name_lookup_api():
+    conn = get_db()
+    first = str(request.args.get("first_name") or "").strip()
+    last = str(request.args.get("last_name") or "").strip()
+    if len(first) > 80 or len(last) > 80:
+        raise ApiError("الاسم طويل جدًا.", 400)
+    students = attendance.find_students_by_name(conn, first, last)
+    return ok(students=students, count=len(students))
 
 
 @api_bp.post("/gate/scan")

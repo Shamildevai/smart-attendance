@@ -34,6 +34,15 @@ _PREVIEW_NIN_RE = re.compile(r"^0{12,}\d{0,6}$")
 _PARTIAL_MATCH_MIN = 8
 _PARTIAL_MATCH_MAX_EXTRA = 4
 
+PERIOD_TYPES = ("CLASS", "BREAKFAST", "CANTEEN", "SUPPORT", "OTHER")
+PERIOD_TYPE_AR = {
+    "CLASS": "حصة دراسية",
+    "BREAKFAST": "وقت الفطور",
+    "CANTEEN": "المطعم",
+    "SUPPORT": "دروس الدعم",
+    "OTHER": "فترة خاصة",
+}
+
 
 def _scan_candidates(raw_code: Any) -> list[str]:
     normalized = normalize_nin(raw_code)
@@ -131,11 +140,41 @@ def _near_matches(
     return [student_public(row) for _, _, row in ranked[:limit]]
 
 
+def find_students_by_name(
+    conn: sqlite3.Connection,
+    first_name: str = "",
+    last_name: str = "",
+    limit: int = 12,
+) -> list[dict[str, Any]]:
+    """Find active students by partial first/last name for card-less check-in."""
+    first = clean_name(first_name)[:80]
+    last = clean_name(last_name)[:80]
+    if not first and not last:
+        return []
+    clauses = ["is_active = 1"]
+    params: list[Any] = []
+    if first:
+        clauses.append("first_name LIKE ?")
+        params.append(f"%{first}%")
+    if last:
+        clauses.append("last_name LIKE ?")
+        params.append(f"%{last}%")
+    rows = conn.execute(
+        f"""SELECT * FROM students WHERE {' AND '.join(clauses)}
+            ORDER BY last_name, first_name LIMIT ?""",
+        (*params, max(1, min(limit, 25))),
+    ).fetchall()
+    return [student_public(row) for row in rows]
+
+
 def period_public(row: sqlite3.Row | dict) -> dict[str, Any]:
     data = dict(row)
+    period_type = data.get("period_type") or "CLASS"
     return {
         "id": data["id"],
         "period_name": data["period_name"],
+        "period_type": period_type,
+        "period_type_label": PERIOD_TYPE_AR.get(period_type, PERIOD_TYPE_AR["CLASS"]),
         "start_time": data["start_time"][:5],
         "on_time_cutoff": data["on_time_cutoff"][:5],
         "absent_cutoff_time": data["absent_cutoff_time"][:5],

@@ -178,6 +178,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "app_repo_url": config.APP_REPO_URL,
             "app_author_latin": config.APP_AUTHOR_LATIN,
             "app_author_handle": config.APP_AUTHOR_HANDLE,
+            "app_developer_email": config.APP_DEVELOPER_EMAIL,
             "app_location_latin": config.APP_LOCATION_LATIN,
             "gateway_app_name": config.GATEWAY_APP_NAME,
             "gateway_app_version": config.GATEWAY_APP_VERSION,
