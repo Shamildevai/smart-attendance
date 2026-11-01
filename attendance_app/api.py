@@ -6,6 +6,7 @@ import re
 import sqlite3
 import tempfile
 import threading
+import time
 from datetime import date, datetime
 from io import BytesIO
 from pathlib import Path
@@ -550,6 +551,18 @@ def update_check_api():
     else:
         message = "أنت تستخدم أحدث إصدار متاح."
     return ok(update=status, message=message)
+
+
+@api_bp.post("/update/download")
+def update_download_api():
+    try:
+        status = update_service.download_update(trigger="manual")
+    except UpdateError as error:
+        raise ApiError(str(error), 502, "update") from error
+    return ok(
+        update=status,
+        message=f"تم تنزيل الإصدار {status['latest_version']} والتحقق من توقيعه. يمكنك تثبيته الآن.",
+    )
 
 
 @api_bp.post("/update/install")
@@ -2036,6 +2049,15 @@ def backup_database():
         download_name=f"attendance_backup_{stamp}.db",
         mimetype="application/octet-stream",
     )
+
+
+@api_bp.post("/system/heartbeat")
+def heartbeat_api():
+    tracker = current_app.extensions.get("desktop_heartbeat")
+    if isinstance(tracker, dict):
+        tracker["last"] = time.time()
+        tracker["seen"] = True
+    return ok()
 
 
 @api_bp.post("/system/shutdown")

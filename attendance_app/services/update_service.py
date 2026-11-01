@@ -474,6 +474,8 @@ def status_payload() -> dict:
         "published_at": manifest.get("published_at", "") if available else "",
         "download_size": asset["size"] if asset else 0,
         "staged": bool(available and staged and download.get("version") == manifest.get("version")),
+        "downloadable": bool(available and not staged and not state.get("installing")),
+        "mode": "auto" if auto_update else "manual",
         "can_install": bool(
             available and staged and os.name == "nt" and getattr(sys, "frozen", False)
         ),
@@ -481,6 +483,15 @@ def status_payload() -> dict:
         "last_check": state.get("last_check", ""),
         "last_error": state.get("last_error", ""),
     }
+
+
+def download_update(trigger: str = "manual") -> dict:
+    state = load_state()
+    manifest = state.get("update")
+    if not manifest or not is_newer(manifest.get("version", "")):
+        raise UpdateError("لا يوجد تحديث متاح للتنزيل.")
+    stage_update(trigger=trigger)
+    return status_payload()
 
 
 def check_for_update(force: bool = False, raise_errors: bool = False, trigger: str = "manual") -> dict:

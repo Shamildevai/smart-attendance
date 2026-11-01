@@ -23,6 +23,8 @@ DEFAULT_PORT = 8765
 HEALTH_TIMEOUT = 1.2
 PORT_SCAN_SPAN = 30
 INSTANCE_FILE = ".instance.json"
+WINDOW_EXIT_GRACE = 30.0
+HEARTBEAT_STALE = 150.0
 
 
 def _configure_console() -> None:
@@ -352,6 +354,41 @@ def show_error(message: str) -> None:
         _console_print(message, error=True)
 
 
+def watch_desktop_window(window: dict, heartbeat: dict, shutdown) -> None:
+    """End the whole process once the app window is closed.
+
+    Closing the Edge/Chrome app window used to leave the local server running in
+    the background. The window process is watched directly; the page heartbeat
+    covers the case where the launcher exits but a window is still open, and
+    keeps the server alive for minimized windows whose timers are throttled.
+    """
+    launched = time.monotonic()
+    while True:
+        time.sleep(2.0)
+        process = window.get("process")
+        if process is not None:
+            if process.poll() is None:
+                continue
+            if time.monotonic() - launched < 8:
+                # The browser relaunched itself; rely on the page heartbeat.
+                window["process"] = None
+                continue
+            mark = float(heartbeat.get("last") or 0)
+            deadline = time.monotonic() + WINDOW_EXIT_GRACE
+            while time.monotonic() < deadline:
+                if float(heartbeat.get("last") or 0) > mark:
+                    break
+                time.sleep(1.0)
+            else:
+                shutdown()
+                return
+            window["process"] = None
+            continue
+        if heartbeat.get("seen") and time.time() - float(heartbeat["last"] or 0) > HEARTBEAT_STALE:
+            shutdown()
+            return
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=f"{APP_TITLE} — {APP_NAME} {APP_VERSION}")
     parser.add_argument("--host", default="127.0.0.1", help="عنوان الاستماع (الافتراضي 127.0.0.1)")
@@ -430,8 +467,19 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     _write_instance(data_dir, args.host, port)
 
+    window = {"process": None}
+    heartbeat = {"last": 0.0, "seen": False}
+    app.extensions["desktop_heartbeat"] = heartbeat
+
     def shutdown() -> None:
         app.logger.info("Shutdown requested from the interface")
+        process = window.get("process")
+        if process is not None:
+            try:
+                if process.poll() is None:
+                    process.terminate()
+            except OSError:
+                pass
         try:
             server.close()
         except Exception:  # pragma: no cover - best effort shutdown
@@ -458,7 +506,12 @@ def main(argv: list[str] | None = None) -> int:
     _console_print("أغلق النظام من داخل الواجهة أو اضغط Ctrl+C.")
 
     if not args.no_browser:
-        threading.Thread(target=lambda: (time.sleep(0.7), open_app_window(url, data_dir)), daemon=True).start()
+        def open_window() -> None:
+            time.sleep(0.7)
+            window["process"] = open_app_window(url, data_dir)
+            watch_desktop_window(window, heartbeat, shutdown)
+
+        threading.Thread(target=open_window, daemon=True, name="window-watch").start()
 
     try:
         server.run()

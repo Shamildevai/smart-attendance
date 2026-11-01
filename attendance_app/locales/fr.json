@@ -1814,7 +1814,24 @@
     "هذا التلميذ غير نشط ولا يمكن إصدار استدعاء له.": "Cet élève est inactif ; aucune convocation ne peut être émise.",
     "جاهز لإصدار استدعاء ولي الأمر وطباعة إيصاله.": "Prêt à émettre une convocation du tuteur et à imprimer son reçu.",
     "لدى هذا التلميذ استدعاء سابق بانتظار حضور الولي.": "Cet élève a une convocation précédente en attente de la visite du tuteur.",
-    "استدعاء ولي الأمر وطباعة إيصال رسمي موقّع": "Convoquer un tuteur et imprimer un reçu officiel signé"
+    "استدعاء ولي الأمر وطباعة إيصال رسمي موقّع": "Convoquer un tuteur et imprimer un reçu officiel signé",
+    "فحص دوري للتحديثات الموقّعة، مع إشعار داخل البرنامج عند توفّر إصدار جديد.": "Vérification périodique des mises à jour signées, avec une notification dans l'application dès qu'une nouvelle version est disponible.",
+    "تحديثات موقّعة خاصة بالنسخة المدفوعة. تُقبل فقط الملفات الموقّعة بمفتاح Ed25519 المضمّن، ويظهر إشعار داخل البرنامج عند توفّر إصدار جديد.": "Mises à jour signées réservées à l'édition payante. Seuls les fichiers signés avec la clé Ed25519 intégrée sont acceptés, et une notification s'affiche dans l'application dès qu'une nouvelle version est disponible.",
+    "عند التفعيل يُنزّل التحديث ويُثبّت بعد التحقق من توقيعه عند توقف العمليات. عند الإلغاء يظهر إشعار فقط وتختار أنت وقت التنزيل والتثبيت.": "Lorsqu'activé, la mise à jour est téléchargée et installée après vérification de la signature lorsque le système est inactif. Lorsque désactivé, une notification s'affiche et vous choisissez le moment du téléchargement et de l'installation.",
+    "تنزيل التحديث": "Télécharger la mise à jour",
+    "تنزيل الآن": "Télécharger maintenant",
+    "تحديث جديد متاح": "Nouvelle mise à jour disponible",
+    "تذكيري لاحقًا": "Me rappeler plus tard",
+    "تحديث الآن": "Mettre à jour maintenant",
+    "الإصدار المتاح": "Version disponible",
+    "إصدار جديد من البرنامج جاهز للتنزيل. حدّث الآن للاستفادة من التحسينات، أو أجّل التحديث وستبقى النسخة الحالية تعمل.": "Une nouvelle version de l'application est prête à être téléchargée. Mettez à jour maintenant pour profiter des améliorations, ou reportez et la version actuelle continue de fonctionner.",
+    "التحديث التلقائي مفعّل: سيُحمّل التحديث ويُثبّت عند توقف العمليات.": "La mise à jour automatique est activée : la mise à jour sera téléchargée et installée lorsque le système est inactif.",
+    "التحديث اليدوي: لن يُثبّت شيء إلا بعد الضغط على تنزيل ثم تثبيت.": "Mise à jour manuelle : rien n'est installé tant que vous n'avez pas cliqué sur Télécharger puis Installer.",
+    "تم تنزيل التحديث والتحقق من توقيعه.": "La mise à jour a été téléchargée et sa signature vérifiée.",
+    "تعذر تنزيل التحديث.": "Impossible de télécharger la mise à jour.",
+    "تم إيقاف الخادم وإغلاق النظام بالكامل.": "Le serveur a été arrêté et le système entièrement fermé.",
+    "تم إغلاق النظام": "Le système a été fermé",
+    "أُغلقت قاعدة البيانات بأمان وتوقفت كل المهام في الخلفية.": "La base de données a été fermée en toute sécurité et toutes les tâches d'arrière-plan ont été arrêtées."
   },
   "patterns": [
     {
@@ -1894,8 +1911,8 @@
       "tr": "{0} nouveaux élèves ont été ajoutés et {1} élèves mis à jour dans la base locale."
     },
     {
-      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات.",
-      "tr": "La version {0} a été téléchargée et vérifiée. Elle sera installée automatiquement lorsque le système est inactif."
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات أو اضغط تثبيت الآن.",
+      "tr": "La version {0} a été téléchargée et vérifiée. Elle sera installée automatiquement lorsque le système est inactif, ou appuyez sur Installer maintenant."
     },
     {
       "ar": "سيتم تثبيت الإصدار {0} وإعادة تشغيل النظام. احفظ أي عمل جارٍ قبل المتابعة.",
@@ -2956,6 +2973,14 @@
     {
       "ar": "{0} استدعاء تجاوز موعد حضور الولي",
       "tr": "{0} convocation(s) dont la date de visite du tuteur est dépassée"
+    },
+    {
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. اضغط تثبيت الآن لإتمام التحديث.",
+      "tr": "La version {0} a été téléchargée et vérifiée. Appuyez sur Installer maintenant pour terminer la mise à jour."
+    },
+    {
+      "ar": "الإصدار {0} متاح. اضغط تنزيل الآن ثم ثبّت متى شئت.",
+      "tr": "La version {0} est disponible. Appuyez sur Télécharger maintenant, puis installez quand vous le souhaitez."
     }
   ]
 }

@@ -424,10 +424,10 @@
       if (!confirmed) return;
       try {
         await api("/api/system/shutdown", { method: "POST" });
-        toast("تم إيقاف الخادم. يمكنك إغلاق النافذة الآن.", "info", "إلى اللقاء");
+        toast("تم إيقاف الخادم وإغلاق النظام بالكامل.", "info", "إلى اللقاء");
         const backdrop = document.createElement("div");
         backdrop.className = "modal-backdrop";
-        backdrop.innerHTML = `<div class="modal" style="width:min(420px,100%)"><div class="modal-body text-center" style="display:grid;gap:10px;padding:34px"><div style="justify-self:center;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--success-soft);color:var(--success)">${icon("check")}</div><h2 style="font-size:18px">تم إيقاف النظام</h2><p class="muted">أُغلقت قاعدة البيانات بأمان. يمكنك إغلاق هذه النافذة.</p></div></div>`;
+        backdrop.innerHTML = `<div class="modal" style="width:min(420px,100%)"><div class="modal-body text-center" style="display:grid;gap:10px;padding:34px"><div style="justify-self:center;display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--success-soft);color:var(--success)">${icon("check")}</div><h2 style="font-size:18px">تم إغلاق النظام</h2><p class="muted">أُغلقت قاعدة البيانات بأمان وتوقفت كل المهام في الخلفية.</p></div></div>`;
         document.getElementById("modal-root").appendChild(backdrop);
       } catch (error) {
         toast(error.message, "warning");
@@ -459,7 +459,22 @@
     document.addEventListener("change", handler, true);
   }
 
+  function startHeartbeat() {
+    // The launcher stops the local server once no app window is open.
+    const beat = () => {
+      fetch("/api/system/heartbeat", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: API_HEADER,
+        keepalive: true,
+      }).catch(() => {});
+    };
+    beat();
+    window.setInterval(beat, 15000);
+  }
+
   function initShell() {
+    startHeartbeat();
     applyColorTheme(document.documentElement.dataset.color || "emerald");
     bindDigitInputs();
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => btn.addEventListener("click", toggleTheme));

@@ -7,6 +7,7 @@
   const panel = document.getElementById("update-panel");
   const form = document.getElementById("update-form");
   const DISMISS_KEY = "attendance-update-dismissed";
+  const NOTICE_KEY = "attendance-update-notified";
   let status = null;
   let formLoaded = false;
   let pollTimer = null;
@@ -40,13 +41,19 @@
       if (status.installing) {
         text.textContent = A.t("جارٍ تثبيت التحديث وإعادة تشغيل النظام. انتظر قليلًا…");
       } else if (status.staged) {
-        text.textContent = A.t(`تم تنزيل الإصدار ${status.latest_version} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات.`);
+        text.textContent = status.auto_update
+          ? A.t(`تم تنزيل الإصدار ${status.latest_version} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات أو اضغط تثبيت الآن.`)
+          : A.t(`تم تنزيل الإصدار ${status.latest_version} والتحقق من توقيعه. اضغط تثبيت الآن لإتمام التحديث.`);
       } else if (status.auto_update) {
         text.textContent = A.t(`سيُحمّل الإصدار ${status.latest_version} ويُثبّت تلقائيًا بعد التحقق من توقيعه.`);
       } else {
-        text.textContent = A.t(`الإصدار ${status.latest_version} متاح. افتح إعدادات التحديثات للمراجعة.`);
+        text.textContent = A.t(`الإصدار ${status.latest_version} متاح. اضغط تنزيل الآن ثم ثبّت متى شئت.`);
       }
     }
+    banner.querySelectorAll("[data-update-download]").forEach((button) => {
+      button.hidden = !status.downloadable;
+      button.disabled = !status.downloadable || status.installing;
+    });
     banner.querySelectorAll("[data-update-install]").forEach((button) => {
       button.hidden = !status.can_install;
       button.disabled = !status.can_install || status.installing;
@@ -122,6 +129,11 @@
         ? "التثبيت التلقائي متاح في نسخة EXE المبنية فقط"
         : "";
     }
+    const download = document.getElementById("update-download");
+    if (download) {
+      download.hidden = !status.downloadable;
+      download.disabled = !status.downloadable || status.installing;
+    }
     const check = document.getElementById("update-check");
     if (check) check.disabled = status.installing;
   }
@@ -135,7 +147,10 @@
     try {
       const data = await A.api("/api/update/status");
       status = data.update || null;
-      if (status) render();
+      if (status) {
+        render();
+        notifyAvailable();
+      }
     } catch (error) {
       if (showErrors) A.toast(error.message || A.t("تعذر قراءة حالة التحديث."), "error");
     }
@@ -148,12 +163,33 @@
       const data = await A.api("/api/update/check", { method: "POST" });
       status = data.update || status;
       render();
+      notifyAvailable();
       A.toast(data.message || A.t("تم فحص التحديثات."), "success", A.t("التحديثات"));
     } catch (error) {
       A.toast(error.message || A.t("تعذر فحص التحديثات."), "error");
       await refresh(false);
     } finally {
       A.setBusy(button, false);
+    }
+  }
+
+  async function downloadNow() {
+    if (!status || !status.downloadable) return;
+    document.querySelectorAll("[data-update-download], #update-download").forEach((button) => {
+      button.disabled = true;
+    });
+    try {
+      const data = await A.api("/api/update/download", { method: "POST" });
+      status = data.update || status;
+      render();
+      A.toast(
+        data.message || A.t("تم تنزيل التحديث والتحقق من توقيعه."),
+        "success",
+        A.t("التحديثات")
+      );
+    } catch (error) {
+      A.toast(error.message || A.t("تعذر تنزيل التحديث."), "error");
+      await refresh(false);
     }
   }
 
@@ -178,6 +214,38 @@
     }
   }
 
+  function notifyAvailable() {
+    if (!status || !status.update_available || status.installing || !banner) return;
+    if (!banner.querySelector("[data-update-install]")) return;
+    if (sessionStorage.getItem(NOTICE_KEY) === status.latest_version) return;
+    sessionStorage.setItem(NOTICE_KEY, status.latest_version);
+    const notes = String(status.notes || "").trim();
+    const trimmed = notes.length > 1200 ? `${notes.slice(0, 1200)}…` : notes;
+    const body = `
+      <div class="update-notice">
+        <p>${A.escapeHtml(A.t("إصدار جديد من البرنامج جاهز للتنزيل. حدّث الآن للاستفادة من التحسينات، أو أجّل التحديث وستبقى النسخة الحالية تعمل."))}</p>
+        <div class="update-status-grid">
+          <div><span>${A.escapeHtml(A.t("الإصدار الحالي"))}</span><strong dir="ltr">${A.escapeHtml(status.current_version || "—")}</strong></div>
+          <div><span>${A.escapeHtml(A.t("الإصدار المتاح"))}</span><strong dir="ltr">${A.escapeHtml(status.latest_version || "—")}</strong></div>
+        </div>
+        ${trimmed ? `<div class="update-notes"><strong>${A.escapeHtml(A.t("ملاحظات الإصدار"))}</strong><p>${A.escapeHtml(trimmed)}</p></div>` : ""}
+        <p class="muted">${A.escapeHtml(status.auto_update
+          ? A.t("التحديث التلقائي مفعّل: سيُحمّل التحديث ويُثبّت عند توقف العمليات.")
+          : A.t("التحديث اليدوي: لن يُثبّت شيء إلا بعد الضغط على تنزيل ثم تثبيت."))}</p>
+      </div>`;
+    const modal = A.openModal({
+      title: A.t("تحديث جديد متاح"),
+      icon: "download",
+      body,
+      footer: `<button class="btn btn-secondary" type="button" data-modal-close>${A.escapeHtml(A.t("تذكيري لاحقًا"))}</button><button class="btn btn-primary" type="button" data-update-now>${A.escapeHtml(A.t("تحديث الآن"))}</button>`,
+    });
+    modal.element.querySelector("[data-update-now]")?.addEventListener("click", async () => {
+      modal.close();
+      if (status && status.staged) await installNow();
+      else await downloadNow();
+    });
+  }
+
   if (banner) {
     banner.querySelector("[data-update-dismiss]")?.addEventListener("click", () => {
       if (status) sessionStorage.setItem(DISMISS_KEY, `${status.latest_version}:${status.staged}`);
@@ -185,6 +253,9 @@
     });
     banner.querySelectorAll("[data-update-install]").forEach((button) => {
       button.addEventListener("click", installNow);
+    });
+    banner.querySelectorAll("[data-update-download]").forEach((button) => {
+      button.addEventListener("click", downloadNow);
     });
   }
 
@@ -212,6 +283,7 @@
       }
     });
     document.getElementById("update-check")?.addEventListener("click", checkNow);
+    document.getElementById("update-download")?.addEventListener("click", downloadNow);
     document.getElementById("update-install")?.addEventListener("click", installNow);
   }
 

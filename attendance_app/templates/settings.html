@@ -554,7 +554,7 @@
         <div class="settings-head-icon"><svg class="ico"><use href="#i-shield-check"></use></svg></div>
         <div class="flex-1">
           <h2>تحديثات النظام</h2>
-          <p>تحديثات موقّعة رقميًا تُحمّل من خادم fetsync وتُثبّت تلقائيًا بعد التحقق.</p>
+          <p>فحص دوري للتحديثات الموقّعة، مع إشعار داخل البرنامج عند توفّر إصدار جديد.</p>
         </div>
         <span class="chip is-accent" id="update-current-version">الإصدار {{ app_version }}</span>
       </div>
@@ -566,7 +566,7 @@
               <span class="switch-track"></span>
               <span class="switch-text">
                 <strong>التحديث التلقائي</strong>
-                <small>فحص التحديثات وتنزيلها والتحقق من توقيعها ثم تثبيتها عند توقف العمليات.</small>
+                <small>عند التفعيل يُنزّل التحديث ويُثبّت بعد التحقق من توقيعه عند توقف العمليات. عند الإلغاء يظهر إشعار فقط وتختار أنت وقت التنزيل والتثبيت.</small>
               </span>
             </label>
           </div>
@@ -602,6 +602,10 @@
               <button class="btn btn-secondary btn-sm" type="button" id="update-check">
                 <svg class="ico"><use href="#i-refresh"></use></svg>
                 <span>فحص التحديثات الآن</span>
+              </button>
+              <button class="btn btn-secondary btn-sm" type="button" id="update-download" hidden>
+                <svg class="ico"><use href="#i-download"></use></svg>
+                <span>تنزيل التحديث</span>
               </button>
               <button class="btn btn-primary btn-sm" type="button" id="update-install" hidden>
                 <svg class="ico"><use href="#i-download"></use></svg>

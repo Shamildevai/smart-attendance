@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 APP_NAME = "SmartAttendance"
-APP_VERSION = "1.1.24"
+APP_VERSION = "1.1.25"
 COLOR_THEMES = (
     "emerald",
     "blue",

@@ -40,6 +40,7 @@ PUBLIC_ENDPOINTS = {
     "views.favicon",
     "views.media_upload",
     "api.health",
+    "api.heartbeat_api",
 }
 
 ADMIN_API_PREFIXES = ("/api/settings", "/api/uploads", "/api/users")

@@ -282,3 +282,122 @@ def test_install_is_refused_outside_packaged_build(app, client, signing_key):
     response = client.post("/api/update/install", headers={"X-Requested-With": "StudentAttendance"})
     assert response.status_code == 400
     assert response.get_json()["error"]["code"] == "update"
+
+
+def _store_available_manifest(app, signing_key, version="9.9.9"):
+    with app.app_context():
+        state = update_service.load_state()
+        state["update"] = verify_manifest(build_manifest(signing_key, version=version))
+        state.pop("download", None)
+        state.pop("installing", None)
+        update_service.save_state(state)
+
+
+def test_status_exposes_mode_and_download_flag(app, client, signing_key, db):
+    _store_available_manifest(app, signing_key)
+
+    update = client.get("/api/update/status").get_json()["update"]
+    assert update["mode"] == "auto"
+    assert update["auto_update"] is True
+    assert update["downloadable"] is True
+    assert update["staged"] is False
+
+    db.execute("UPDATE settings SET value = '0' WHERE key = 'auto_update'")
+    db.commit()
+
+    update = client.get("/api/update/status").get_json()["update"]
+    assert update["mode"] == "manual"
+    assert update["auto_update"] is False
+    assert update["downloadable"] is True
+
+
+def test_download_endpoint_stages_manual_update(app, client, signing_key, monkeypatch):
+    _store_available_manifest(app, signing_key)
+    updates_dir = Path(app.config["UPDATES_DIR"])
+    updates_dir.mkdir(parents=True, exist_ok=True)
+    (updates_dir / "update_test.exe").write_bytes(b"signed-bytes")
+    calls = []
+
+    def fake_stage(trigger="manual"):
+        calls.append(trigger)
+        with app.app_context():
+            state = update_service.load_state()
+            state["download"] = {
+                "version": "9.9.9",
+                "kind": "portable",
+                "filename": "update_test.exe",
+                "sha256": hashlib.sha256(b"signed-bytes").hexdigest(),
+                "size": len(b"signed-bytes"),
+            }
+            update_service.save_state(state)
+        return state["download"]
+
+    monkeypatch.setattr(update_service, "stage_update", fake_stage)
+
+    response = client.post("/api/update/download", headers={"X-Requested-With": "StudentAttendance"})
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert calls == ["manual"]
+    assert "9.9.9" in payload["message"]
+    assert payload["update"]["staged"] is True
+    assert payload["update"]["downloadable"] is False
+
+
+def test_download_update_requires_available_release(app):
+    with app.app_context():
+        state = update_service.load_state()
+        state.pop("update", None)
+        update_service.save_state(state)
+        with pytest.raises(UpdateError, match="لا يوجد تحديث"):
+            update_service.download_update()
+
+
+def test_heartbeat_endpoint_marks_window_alive(app, client):
+    tracker = {"last": 0.0, "seen": False}
+    app.extensions["desktop_heartbeat"] = tracker
+
+    response = client.post("/api/system/heartbeat", headers={"X-Requested-With": "StudentAttendance"})
+
+    assert response.status_code == 200
+    assert tracker["seen"] is True
+    assert tracker["last"] > 0
+
+
+def test_heartbeat_endpoint_is_public(app):
+    tracker = {"last": 0.0, "seen": False}
+    app.extensions["desktop_heartbeat"] = tracker
+
+    anonymous = app.test_client()
+    response = anonymous.post(
+        "/api/system/heartbeat", headers={"X-Requested-With": "StudentAttendance"}
+    )
+
+    assert response.status_code == 200
+    assert tracker["seen"] is True
+
+
+def test_update_ui_strings_are_translated():
+    from attendance_app import i18n
+
+    locales = Path(__file__).resolve().parents[1] / "attendance_app" / "locales"
+    required = [
+        "تحديث جديد متاح",
+        "تحديث الآن",
+        "تذكيري لاحقًا",
+        "تنزيل الآن",
+        "تنزيل التحديث",
+        "الإصدار المتاح",
+        "التحديث التلقائي مفعّل: سيُحمّل التحديث ويُثبّت عند توقف العمليات.",
+        "التحديث اليدوي: لن يُثبّت شيء إلا بعد الضغط على تنزيل ثم تثبيت.",
+        "تم تنزيل التحديث والتحقق من توقيعه.",
+        "تعذر تنزيل التحديث.",
+        "تم إغلاق النظام",
+    ]
+    for code in ("en", "fr"):
+        strings = json.loads((locales / f"{code}.json").read_text(encoding="utf-8"))["strings"]
+        missing = [text for text in required if text not in strings]
+        assert not missing, f"{code}: {missing}"
+
+    assert i18n.translate("الإصدار 9.9.9 متاح. اضغط تنزيل الآن ثم ثبّت متى شئت.", "en") == (
+        "Version 9.9.9 is available. Press Download now, then install whenever you want."
+    )

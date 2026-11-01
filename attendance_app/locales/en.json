@@ -1814,7 +1814,24 @@
     "هذا التلميذ غير نشط ولا يمكن إصدار استدعاء له.": "This student is inactive; a summons cannot be issued.",
     "جاهز لإصدار استدعاء ولي الأمر وطباعة إيصاله.": "Ready to issue a guardian summons and print its receipt.",
     "لدى هذا التلميذ استدعاء سابق بانتظار حضور الولي.": "This student has a previous summons awaiting the guardian's visit.",
-    "استدعاء ولي الأمر وطباعة إيصال رسمي موقّع": "Summon a guardian and print a signed official receipt"
+    "استدعاء ولي الأمر وطباعة إيصال رسمي موقّع": "Summon a guardian and print a signed official receipt",
+    "فحص دوري للتحديثات الموقّعة، مع إشعار داخل البرنامج عند توفّر إصدار جديد.": "Periodic check for signed updates, with an in-app notification when a new version is available.",
+    "تحديثات موقّعة خاصة بالنسخة المدفوعة. تُقبل فقط الملفات الموقّعة بمفتاح Ed25519 المضمّن، ويظهر إشعار داخل البرنامج عند توفّر إصدار جديد.": "Signed updates for the paid edition. Only files signed with the embedded Ed25519 key are accepted, and an in-app notification appears when a new version is available.",
+    "عند التفعيل يُنزّل التحديث ويُثبّت بعد التحقق من توقيعه عند توقف العمليات. عند الإلغاء يظهر إشعار فقط وتختار أنت وقت التنزيل والتثبيت.": "When enabled, the update is downloaded and installed after signature verification while the system is idle. When disabled, only a notification appears and you choose when to download and install.",
+    "تنزيل التحديث": "Download update",
+    "تنزيل الآن": "Download now",
+    "تحديث جديد متاح": "New update available",
+    "تذكيري لاحقًا": "Remind me later",
+    "تحديث الآن": "Update now",
+    "الإصدار المتاح": "Available version",
+    "إصدار جديد من البرنامج جاهز للتنزيل. حدّث الآن للاستفادة من التحسينات، أو أجّل التحديث وستبقى النسخة الحالية تعمل.": "A new version of the app is ready to download. Update now to benefit from the improvements, or postpone and the current version keeps working.",
+    "التحديث التلقائي مفعّل: سيُحمّل التحديث ويُثبّت عند توقف العمليات.": "Automatic update is enabled: the update will be downloaded and installed while the system is idle.",
+    "التحديث اليدوي: لن يُثبّت شيء إلا بعد الضغط على تنزيل ثم تثبيت.": "Manual update: nothing is installed until you press Download and then Install.",
+    "تم تنزيل التحديث والتحقق من توقيعه.": "The update was downloaded and its signature verified.",
+    "تعذر تنزيل التحديث.": "Could not download the update.",
+    "تم إيقاف الخادم وإغلاق النظام بالكامل.": "The server was stopped and the system fully closed.",
+    "تم إغلاق النظام": "The system has been closed",
+    "أُغلقت قاعدة البيانات بأمان وتوقفت كل المهام في الخلفية.": "The database was closed safely and all background tasks were stopped."
   },
   "patterns": [
     {
@@ -1894,8 +1911,8 @@
       "tr": "{0} new students were added and {1} students updated in the local database."
     },
     {
-      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات.",
-      "tr": "Version {0} was downloaded and verified. It will install automatically while the system is idle."
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. سيُثبّت تلقائيًا عند توقف العمليات أو اضغط تثبيت الآن.",
+      "tr": "Version {0} was downloaded and verified. It will install automatically while the system is idle or press Install now."
     },
     {
       "ar": "سيتم تثبيت الإصدار {0} وإعادة تشغيل النظام. احفظ أي عمل جارٍ قبل المتابعة.",
@@ -2956,6 +2973,14 @@
     {
       "ar": "{0} استدعاء تجاوز موعد حضور الولي",
       "tr": "{0} summons past the guardian visit date"
+    },
+    {
+      "ar": "تم تنزيل الإصدار {0} والتحقق من توقيعه. اضغط تثبيت الآن لإتمام التحديث.",
+      "tr": "Version {0} was downloaded and verified. Press Install now to complete the update."
+    },
+    {
+      "ar": "الإصدار {0} متاح. اضغط تنزيل الآن ثم ثبّت متى شئت.",
+      "tr": "Version {0} is available. Press Download now, then install whenever you want."
     }
   ]
 }
