@@ -316,6 +316,30 @@
     </div>`;
   }
 
+  function summonsReminderHtml(data) {
+    const reminder = data.summons_reminder;
+    if (!reminder || !Array.isArray(reminder.items) || !reminder.items.length) return "";
+    const items = reminder.items
+      .map((item) => {
+        const due = item.due_display
+          ? `<span class="scan-summons-due${item.overdue ? " is-overdue" : ""}">${item.overdue ? "متأخر — " : ""}${safe(item.due_display)}</span>`
+          : "";
+        const link = item.code
+          ? `<a class="btn btn-ghost btn-sm" href="/summons/print/${encodeURIComponent(item.code)}">فتح الاستدعاء</a>`
+          : "";
+        const detail = item.detail ? `<em>${safe(item.detail)}</em>` : "";
+        return `<li><span class="scan-summons-title">${safe(item.title)}</span>${due}${detail}${link}</li>`;
+      })
+      .join("");
+    return `<div class="scan-summons">
+      ${A.icon("bell")}
+      <div class="scan-summons-body">
+        <strong>${safe(reminder.message || "لدى هذا التلميذ استدعاء قائم للولي")}</strong>
+        <ul>${items}</ul>
+      </div>
+    </div>`;
+  }
+
   async function regularizePrevious(data) {
     const prev = data.previous_absence;
     const student = data.student;
@@ -458,6 +482,7 @@
           ${suggestHtml}
           ${todayHtml}
           ${previousAbsenceHtml(data)}
+          ${summonsReminderHtml(data)}
           ${lookupNote}
           ${smsNote}
           <div class="scan-actions">${actions}</div>

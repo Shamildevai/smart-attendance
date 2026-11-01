@@ -504,6 +504,44 @@ def _minutes_between(day_iso: str, scan_time: str | None, at: datetime) -> float
         return 10_000.0
 
 
+def open_summons_reminder(
+    conn: sqlite3.Connection, student_nin: str, day_iso: str
+) -> dict[str, Any] | None:
+    """Open guardian summons shown on the gate card right after a student scans."""
+    from . import summon_service
+
+    items: list[dict[str, Any]] = []
+    for summon in summon_service.list_for_student(conn, student_nin, 5):
+        if summon.get("status") != "OPEN":
+            continue
+        due = summon.get("due_date") or ""
+        items.append(
+            {
+                "id": summon.get("id"),
+                "code": summon.get("summon_code") or "",
+                "title": summon.get("reason") or "استدعاء ولي",
+                "due_date": due,
+                "due_display": summon.get("due_display") or "",
+                "overdue": bool(due and due < day_iso),
+            }
+        )
+    if not items:
+        return None
+    first = items[0]
+    if first["due_display"]:
+        message = f"لدى هذا التلميذ استدعاء قائم للولي — موعد الحضور {first['due_display']}"
+    else:
+        message = "لدى هذا التلميذ استدعاء قائم للولي بانتظار الحضور"
+    if len(items) > 1:
+        message += f" (و{len(items) - 1} استدعاء آخر)"
+    return {
+        "count": len(items),
+        "items": items[:3],
+        "message": message,
+        "overdue": first["overdue"],
+    }
+
+
 def _scan_base(
     student: dict[str, Any] | None,
     period: dict[str, Any] | None,
@@ -529,6 +567,7 @@ def _scan_base(
         "stats": {},
         "student_today": None,
         "previous_absence": None,
+        "summons_reminder": None,
         "closure": None,
     }
 
@@ -600,6 +639,7 @@ def scan_student(
         base["previous_absence"] = previous_day_absence(
             conn, code, at, school_weekdays
         )
+        base["summons_reminder"] = open_summons_reminder(conn, code, day_iso)
 
         existing = conn.execute(
             """SELECT * FROM attendance_logs

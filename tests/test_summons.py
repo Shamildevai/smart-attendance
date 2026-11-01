@@ -330,3 +330,36 @@ def test_summons_receipt_templates_and_translations(client, csrf, make_student):
     )
     assert verify.status_code == 200
     assert "Valid and verified signature" in verify.get_data(as_text=True)
+
+
+def test_gate_scan_reports_open_summons_for_guardian(client, csrf, make_student, period):
+    student = make_student(student_nin="4099000299", first_name="أنس", last_name="بوجمعة")
+    summon = _issue(
+        client,
+        csrf,
+        student["student_nin"],
+        due_date=(date.today() + timedelta(days=2)).isoformat(),
+    )
+
+    scan = client.post(
+        "/api/gate/scan",
+        json={"code": student["student_nin"], "period_id": period["id"]},
+        headers=csrf,
+    )
+    assert scan.status_code == 200
+    reminder = scan.get_json()["summons_reminder"]
+    assert reminder["count"] == 1
+    assert reminder["items"][0]["code"] == summon["summon_code"]
+    assert reminder["items"][0]["overdue"] is False
+    assert "استدعاء" in reminder["message"]
+
+    attended = client.post(f"/api/summons/{summon['id']}/attend", headers=csrf)
+    assert attended.status_code == 200
+
+    cleared = client.post(
+        "/api/gate/scan",
+        json={"code": student["student_nin"], "period_id": period["id"]},
+        headers=csrf,
+    )
+    assert cleared.status_code == 200
+    assert cleared.get_json()["summons_reminder"] is None

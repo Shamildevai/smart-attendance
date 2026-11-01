@@ -1821,6 +1821,16 @@ kbd {
 .scan-previous-body p { font-size: 10px; line-height: 1.5; color: var(--text-soft); }
 .scan-previous-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
 .scan-previous-actions .btn { flex: 1; min-width: 130px; }
+.scan-summons { display: flex; align-items: flex-start; gap: 9px; padding: 11px 12px; border-radius: 10px; background: var(--accent-soft); border: 1px solid var(--accent); }
+.scan-summons > .ico { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 1px; color: var(--accent); }
+.scan-summons-body { display: grid; gap: 5px; flex: 1; min-width: 0; }
+.scan-summons-body strong { font-size: 11px; color: var(--accent); }
+.scan-summons-body ul { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.scan-summons-body li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 10px; color: var(--text-soft); }
+.scan-summons-title { font-weight: 650; color: var(--text); }
+.scan-summons-body em { font-style: normal; color: var(--text-muted); }
+.scan-summons-due { padding: 1px 6px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border); font-size: 9px; }
+.scan-summons-due.is-overdue { color: var(--danger); border-color: var(--danger); }
 
 .gate-side { display: grid; gap: 18px; align-content: start; }
 .gate-side .card-body { padding: 18px; }
