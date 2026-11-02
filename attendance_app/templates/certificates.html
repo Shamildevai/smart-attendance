@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/certificate_admin.css') }}">
+{% endblock %}
+
+{% block content %}
+  <section class="card cert-hero mb-2">
+    <div class="cert-hero-icon"><svg class="ico"><use href="#i-id-card"></use></svg></div>
+    <div>
+      <strong>{{ "الشهادات المدرسية"|t }}</strong>
+      <p>
+        {{ "شهادة مدرسية بقالب مطابق للنموذج الرسمي الجزائري: الترويسة، نص الشهادة، رقم التسجيل، التاريخ وخانة التوقيع. يمكنك تعديل كل عبارة لاستخدام القالب في أي بلد آخر، أو اختيار قالب نصي حر."|t }}
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <span class="chip">{{ "ورق A4"|t }}</span>
+        <span class="chip">{{ "باركود ورمز QR"|t }}</span>
+        <span class="chip is-accent">{{ "قالب قابل للتعديل"|t }}</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="cert-admin-grid">
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2><svg class="ico"><use href="#i-printer"></use></svg> {{ "إصدار شهادة مدرسية"|t }}</h2>
+          <p>{{ "ابحث عن التلميذ، أكمل بيانات الشهادة، ثم اطبع الشهادة الرسمية."|t }}</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="cert-picker">
+          <label class="sr-only" for="cert-search">{{ "البحث عن تلميذ"|t }}</label>
+          <div class="search-box">
+            <svg class="ico"><use href="#i-search"></use></svg>
+            <input class="input" type="search" id="cert-search" autocomplete="off" placeholder="{{ 'ابحث بالاسم أو اللقب أو رقم التعريف أو القسم…'|t }}">
+          </div>
+          <div class="cert-results" id="cert-results" hidden></div>
+        </div>
+
+        <div id="cert-selected" data-initial="{{ selected_student }}" hidden></div>
+        <div class="cert-empty" id="cert-empty">{{ "لم يتم اختيار تلميذ بعد."|t }}</div>
+
+        <div class="cert-profile" id="cert-profile" hidden>
+          <div class="cert-profile-head">
+            <strong>{{ "بيانات الشهادة"|t }}</strong>
+            <span class="chip">{{ "تُحفظ لكل تلميذ"|t }}</span>
+          </div>
+          <div class="form-grid">
+            <label class="field">
+              <span class="field-label">{{ "الجنس"|t }}</span>
+              <select class="select" name="gender" id="cert-gender">
+                <option value="">{{ "غير محدد"|t }}</option>
+                <option value="male">{{ "ذكر"|t }}</option>
+                <option value="female">{{ "أنثى"|t }}</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "مكان الازدياد"|t }}</span>
+              <input class="input" type="text" name="birth_place" id="cert-birth-place" maxlength="120" placeholder="{{ 'مثال: سعيدة'|t }}">
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "اللقب بالحروف اللاتينية"|t }}</span>
+              <input class="input" type="text" name="latin_last_name" id="cert-latin-last" maxlength="80" dir="ltr" placeholder="BOUZOUIRA">
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "الاسم بالحروف اللاتينية"|t }}</span>
+              <input class="input" type="text" name="latin_first_name" id="cert-latin-first" maxlength="80" dir="ltr" placeholder="AZIZ">
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "المستوى"|t }}</span>
+              <input class="input" type="text" name="level" id="cert-level" maxlength="60" placeholder="{{ 'مثال: الثانية ابتدائي أو 2AS'|t }}">
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "الشعبة أو التخصص"|t }}</span>
+              <input class="input" type="text" name="section" id="cert-section" maxlength="80" placeholder="{{ 'مثال: علوم تجريبية'|t }}">
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "رقم التسجيل"|t }}</span>
+              <input class="input" type="text" name="registration_no" id="cert-registration" maxlength="40" dir="ltr" placeholder="{{ 'افتراضيًا رقم التعريف'|t }}">
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "تاريخ الخروج (للمؤرشفين)"|t }}</span>
+              <input class="input" type="date" name="exit_date" id="cert-exit-date">
+            </label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+            <button class="btn btn-primary btn-sm" type="button" id="cert-save-profile">
+              <svg class="ico"><use href="#i-check"></use></svg>
+              <span>{{ "حفظ بيانات الشهادة"|t }}</span>
+            </button>
+            <a class="btn btn-secondary btn-sm" href="#" id="cert-print-link" target="_blank" rel="noopener">
+              <svg class="ico"><use href="#i-printer"></use></svg>
+              <span>{{ "طباعة الشهادة"|t }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2><svg class="ico"><use href="#i-edit"></use></svg> {{ "قالب الشهادة"|t }}</h2>
+          <p>{{ "عدّل الترويسة والعبارات مرة واحدة لتُطبع بها كل الشهادات."|t }}</p>
+        </div>
+        <span class="chip {{ 'is-accent' if template.customized }}" id="cert-template-chip">{{ "قالب مخصص"|t if template.customized else "القالب الافتراضي"|t }}</span>
+      </div>
+      <div class="card-body">
+        <form id="cert-template-form" novalidate>
+          <div class="form-grid">
+            <label class="field">
+              <span class="field-label">{{ "نمط الشهادة"|t }}</span>
+              <select class="select" name="layout" id="cert-layout">
+                <option value="algerian" {{ "selected" if template.layout == "algerian" }}>{{ "النموذج الرسمي الجزائري"|t }}</option>
+                <option value="custom" {{ "selected" if template.layout == "custom" }}>{{ "قالب نصي حر (أي بلد)"|t }}</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "عنوان الشهادة"|t }}</span>
+              <input class="input" type="text" name="title" maxlength="200" value="{{ template.title }}" required>
+            </label>
+          </div>
+
+          <div class="cert-block" id="cert-official-block" {{ "hidden" if template.layout == "custom" }}>
+            <strong>{{ "الترويسة الرسمية"|t }}</strong>
+            <div class="form-grid">
+              <label class="field">
+                <span class="field-label">{{ "الجمهورية"|t }}</span>
+                <input class="input" type="text" name="republic_header" maxlength="160" value="{{ template.extra.get('republic_header', '') }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "الوزارة"|t }}</span>
+                <input class="input" type="text" name="ministry_header" maxlength="160" value="{{ template.extra.get('ministry_header', '') }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "مديرية التربية"|t }}</span>
+                <input class="input" type="text" name="directorate" maxlength="160" value="{{ template.extra.get('directorate', '') }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "المؤسسة في الترويسة"|t }}</span>
+                <input class="input" type="text" name="institution" maxlength="160" value="{{ template.extra.get('institution', '') }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "نوع المؤسسة"|t }}</span>
+                <input class="input" type="text" name="institution_type" maxlength="80" value="{{ template.extra.get('institution_type', '') }}" placeholder="{{ 'المدرسة الابتدائية'|t }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "الطور الدراسي"|t }}</span>
+                <input class="input" type="text" name="cycle_word" maxlength="40" value="{{ template.extra.get('cycle_word', '') }}" placeholder="{{ 'ابتدائي'|t }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "الولاية"|t }}</span>
+                <input class="input" type="text" name="state" maxlength="80" value="{{ template.extra.get('state', '') }}" placeholder="{{ 'سعيدة'|t }}">
+              </label>
+              <label class="field">
+                <span class="field-label">{{ "جهة التوقيع"|t }}</span>
+                <input class="input" type="text" name="signature_label" maxlength="160" value="{{ template.extra.get('signature_label', '') }}">
+              </label>
+            </div>
+
+            <div class="cert-block">
+              <strong>{{ "عبارات الشهادة"|t }}</strong>
+              <label class="field">
+                <span class="field-label">{{ "جملة الإشهاد"|t }}</span>
+                <input class="input" type="text" name="cert_line" maxlength="300" value="{{ template.extra.get('cert_line', '') }}">
+              </label>
+              <label class="field" style="margin-top:12px">
+                <span class="field-label">{{ "عنوان خانة الاسم السابق"|t }}</span>
+                <input class="input" type="text" name="previous_name_label" maxlength="160" value="{{ template.extra.get('previous_name_label', '') }}">
+              </label>
+              <label class="field" style="margin-top:12px">
+                <span class="field-label">{{ "سطر التحرير"|t }}</span>
+                <input class="input" type="text" name="issued_line" maxlength="200" value="{{ template.extra.get('issued_line', '') }}">
+              </label>
+              <div class="form-grid" style="margin-top:12px">
+                <label class="field">
+                  <span class="field-label">{{ "عبارة التلميذ النشط"|t }}</span>
+                  <input class="input" type="text" name="registration_current" maxlength="120" value="{{ template.extra.get('registration_current', '') }}">
+                </label>
+                <label class="field">
+                  <span class="field-label">{{ "عبارة التلميذ المؤرشف"|t }}</span>
+                  <input class="input" type="text" name="registration_exit" maxlength="200" value="{{ template.extra.get('registration_exit', '') }}">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="cert-block" id="cert-custom-block" {{ "hidden" if template.layout != "custom" }}>
+            <strong>{{ "القالب النصي الحر"|t }}</strong>
+            <label class="field" style="max-width:240px">
+              <span class="field-label">{{ "اتجاه القالب"|t }}</span>
+              <select class="select" name="direction" id="cert-direction">
+                <option value="rtl" {{ "selected" if template.direction != "ltr" }}>{{ "من اليمين إلى اليسار"|t }}</option>
+                <option value="ltr" {{ "selected" if template.direction == "ltr" }}>{{ "من اليسار إلى اليمين"|t }}</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field-label">{{ "نص الشهادة"|t }}</span>
+              <textarea class="input" name="body" rows="8" maxlength="12000" spellcheck="false" dir="auto">{{ template.body }}</textarea>
+            </label>
+            <div class="chip-list" style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">
+              {% for token in ["student_name", "first_name", "last_name", "student_nin", "birth_date", "birth_place", "class_group", "level", "section", "registration_no", "academic_year", "school_name", "date_display", "principal", "latin_name"] %}
+                <button class="chip" type="button" data-cert-token="{{ token }}">{{ "{{" }}{{ token }}{{ "}}" }}</button>
+              {% endfor %}
+            </div>
+            <label class="field">
+              <span class="field-label">{{ "التذييل"|t }}</span>
+              <textarea class="input" name="footer" rows="2" maxlength="3000" spellcheck="false" dir="auto">{{ template.footer }}</textarea>
+            </label>
+          </div>
+
+          <div class="cert-switches">
+            <label class="switch">
+              <input type="checkbox" name="show_barcode" {{ "checked" if template.extra.get('show_barcode') }}>
+              <span class="switch-track"></span>
+              <span class="switch-text"><strong>{{ "إظهار الباركود"|t }}</strong><span>{{ "رقم التعريف المدرسي"|t }}</span></span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" name="show_qr" {{ "checked" if template.extra.get('show_qr') }}>
+              <span class="switch-track"></span>
+              <span class="switch-text"><strong>{{ "إظهار رمز QR"|t }}</strong><span>{{ "للتحقق من بيانات الشهادة"|t }}</span></span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" name="show_stamp" {{ "checked" if template.extra.get('show_stamp') }}>
+              <span class="switch-track"></span>
+              <span class="switch-text"><strong>{{ "إظهار خاتم المؤسسة"|t }}</strong><span>{{ "من إعدادات المؤسسة"|t }}</span></span>
+            </label>
+          </div>
+
+          <button class="btn btn-primary btn-sm" type="submit" id="cert-save-template" style="margin-top:12px">
+            <svg class="ico"><use href="#i-check"></use></svg>
+            <span>{{ "حفظ القالب"|t }}</span>
+          </button>
+        </form>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/certificates.js') }}"></script>
+{% endblock %}

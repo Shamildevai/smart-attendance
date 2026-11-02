@@ -20,6 +20,7 @@ from . import i18n
 from .auth import admin_required
 from .db import get_db, get_print_config, get_settings
 from .services import attendance_service as attendance
+from .services import certificate_service as certificates
 from .services import entry_slip_service as entry_slips
 from .services import exit_slip_service as exit_slips
 from .services import report_service
@@ -29,6 +30,7 @@ from .utils import (
     STATUS_ORDER,
     ValidationError,
     month_label,
+    normalize_nin,
     short_date,
     validate_iso_date,
 )
@@ -255,6 +257,36 @@ def summons_verify_page():
 @views_bp.get("/students")
 def students_page():
     return render_template("students.html", **_page_context("students", "التلاميذ", "إدارة قاعدة بيانات التلاميذ وأرقام التعريف والصور"))
+
+
+@views_bp.get("/certificates")
+def certificates_page():
+    conn = get_db()
+    context = _page_context(
+        "certificates",
+        "الشهادات",
+        "شهادة مدرسية رسمية بقالب مطابق للنموذج الجزائري وقابل للتعديل لأي بلد",
+    )
+    context["template"] = certificates.get_template(conn)
+    context["students"] = certificates.list_students(conn, "", 400)
+    context["selected_student"] = str(request.args.get("student") or "")
+    return render_template("certificates.html", **context)
+
+
+@views_bp.get("/certificates/print/<path:nin>")
+def certificate_print_page(nin: str):
+    conn = get_db()
+    context = _page_context("certificates", "شهادة مدرسية", "")
+    try:
+        data = certificates.certificate_context(conn, normalize_nin(nin))
+    except ValidationError:
+        abort(404)
+    context["certificate"] = data
+    context.update(data)
+    context["logo_url"] = context["settings"].get("logo_path", "")
+    context["stamp_url"] = context["settings"].get("stamp_path", "")
+    context["autoprint"] = request.args.get("print") == "1"
+    return render_template("certificate_print.html", **context)
 
 
 @views_bp.get("/import")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import socket
 from datetime import timedelta
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
@@ -34,6 +35,19 @@ def _setup_logging(app: Flask) -> None:
     handler.setLevel(logging.INFO)
     app.logger.addHandler(handler)
     app.logger.setLevel(logging.INFO)
+
+
+def _detect_lan_ip() -> str:
+    """Best-effort LAN address so a phone can be pointed at this computer."""
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+            probe.connect(("8.8.8.8", 80))
+            return probe.getsockname()[0]
+    except OSError:
+        try:
+            return socket.gethostbyname(socket.gethostname())
+        except OSError:
+            return ""
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -92,6 +106,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     init_db(app.config["DB_PATH"])
     init_db_app(app)
     _setup_logging(app)
+    app.config["LAN_IP"] = _detect_lan_ip()
     app.extensions["sms_jobs"] = SmsJobManager()
     app.extensions["message_jobs"] = MessageJobManager()
     app.json.ensure_ascii = False
@@ -103,13 +118,35 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     from .api import api_bp
     from .views import views_bp
+    from . import mobile_api
 
     app.register_blueprint(views_bp)
     app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(mobile_api.mobile_bp, url_prefix="/api/mobile")
+
+    @app.context_processor
+    def inject_mobile_scanner_url():
+        host = request.host or ""
+        port = host.rsplit(":", 1)[1] if ":" in host else ""
+        lan_ip = app.config.get("LAN_IP") or ""
+        url = f"http://{lan_ip}:{port}" if lan_ip and port.isdigit() else ""
+        return {"mobile_scanner_url": url}
+
+    @app.before_request
+    def lan_mobile_only():
+        """Phones may reach the scanner API only; the admin UI stays on this PC."""
+        remote = request.remote_addr or ""
+        if remote in ("127.0.0.1", "::1", "localhost"):
+            return None
+        if request.path == "/api/health" or request.path == "/api/mobile" \
+                or request.path.startswith("/api/mobile/"):
+            return None
+        return ("Not found", 404)
 
     @app.before_request
     def csrf_guard():
-        if request.method in ("POST", "PUT", "PATCH", "DELETE") and request.path.startswith("/api/"):
+        mobile = request.path == "/api/mobile" or request.path.startswith("/api/mobile/")
+        if request.method in ("POST", "PUT", "PATCH", "DELETE") and request.path.startswith("/api/") and not mobile:
             if request.headers.get("X-Requested-With") != "StudentAttendance":
                 return jsonify(
                     ok=False,

@@ -10,7 +10,7 @@ from flask import current_app, g
 from . import config
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 7
+SCHEMA_VERSION = 8
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -240,6 +240,47 @@ CREATE TABLE IF NOT EXISTS message_outbox (
 );
 CREATE INDEX IF NOT EXISTS idx_outbox_campaign ON message_outbox(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_outbox_status ON message_outbox(delivery_status);
+
+CREATE TABLE IF NOT EXISTS mobile_devices (
+    device_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL DEFAULT '',
+    platform TEXT NOT NULL DEFAULT '',
+    app_version TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    last_seen TEXT,
+    last_sync TEXT,
+    status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'approved', 'blocked')),
+    secret_hash TEXT NOT NULL DEFAULT '',
+    approved_at TEXT,
+    last_ip TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS mobile_scans (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_id TEXT NOT NULL,
+    client_id TEXT NOT NULL,
+    code TEXT NOT NULL,
+    scanned_at TEXT NOT NULL,
+    received_at TEXT NOT NULL,
+    action TEXT NOT NULL,
+    student_nin TEXT,
+    period_id INTEGER,
+    attendance_date TEXT,
+    UNIQUE (device_id, client_id)
+);
+CREATE INDEX IF NOT EXISTS idx_mobile_scans_device ON mobile_scans(device_id, received_at DESC);
+CREATE INDEX IF NOT EXISTS idx_mobile_scans_date ON mobile_scans(attendance_date);
+
+CREATE TABLE IF NOT EXISTS scan_connect_codes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    label TEXT NOT NULL DEFAULT '',
+    code_hash TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    created_by INTEGER,
+    last_used_at TEXT,
+    revoked_at TEXT
+);
 """
 
 DEFAULT_PRINT_CONFIG = {

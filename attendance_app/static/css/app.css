@@ -3606,3 +3606,30 @@ output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--prim
 @keyframes orbit { to { transform: rotate(360deg); } }
 @keyframes scan-line { 0%, 100% { top: 18%; opacity: 0.3; } 50% { top: 80%; opacity: 1; } }
 @keyframes orb-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(231, 176, 80, 0.12); } 50% { box-shadow: 0 0 0 20px rgba(231, 176, 80, 0); } }
+
+/* ---------- Phone scanner pairing ---------- */
+
+.phone-connect { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 16px; border: 1px solid var(--primary); border-radius: 12px; background: var(--primary-softer); }
+.phone-code-panel { display: flex; flex-direction: column; gap: 6px; }
+.phone-code-panel > span { font-size: 10px; color: var(--text-muted); font-weight: 650; }
+.phone-code-panel > strong { font-family: var(--font-mono); font-size: 30px; letter-spacing: 0.32em; color: var(--primary); direction: ltr; line-height: 1.2; }
+.phone-code-panel > small { font-size: 10px; color: var(--text-soft); line-height: 1.6; }
+.phone-qr { width: 168px; height: 168px; padding: 8px; border-radius: 12px; background: #fff; border: 1px solid var(--border); flex: 0 0 auto; }
+.phone-qr svg { display: block; width: 100%; height: 100%; }
+.settings-steps { display: grid; gap: 8px; }
+.settings-steps > div { display: flex; gap: 10px; align-items: flex-start; font-size: 11px; color: var(--text-soft); line-height: 1.7; }
+.settings-steps b { flex: 0 0 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--primary-soft); color: var(--primary); font-size: 11px; }
+.phone-devices-title { margin: 4px 0 0; font-size: 12px; color: var(--text); }
+.phone-device-list { display: grid; gap: 8px; }
+.phone-device { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); flex-wrap: wrap; }
+.phone-device-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.phone-device-icon { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: var(--primary-soft); color: var(--primary); flex: 0 0 34px; }
+.phone-device-main strong { display: block; font-size: 11.5px; }
+.phone-device-main small { display: block; font-size: 9.5px; color: var(--text-muted); margin-top: 2px; }
+.phone-device-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.phone-empty { padding: 14px; text-align: center; font-size: 10.5px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 10px; }
+
+@media (max-width: 640px) {
+  .phone-connect { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .phone-code-panel { align-items: center; }
+}

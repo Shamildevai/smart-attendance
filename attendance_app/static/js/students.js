@@ -40,6 +40,10 @@
     return `/print/sheet?${params.toString()}`;
   }
 
+  function certificateUrl(nin) {
+    return `/certificates/print/${encodeURIComponent(nin)}`;
+  }
+
   function currentFilters() {
     const params = new URLSearchParams();
     if (state.q) params.set("q", state.q);
@@ -217,6 +221,9 @@
                 </button>
                 <a class="icon-btn" href="${printUrl(student.student_nin)}" target="_blank" rel="noopener" title="طباعة بطاقة التعريف" aria-label="طباعة بطاقة ${safe(student.full_name)}">
                   ${A.icon("printer")}
+                </a>
+                <a class="icon-btn" href="${certificateUrl(student.student_nin)}" target="_blank" rel="noopener" title="طباعة شهادة مدرسية" aria-label="طباعة شهادة مدرسية ${safe(student.full_name)}">
+                  ${A.icon("id-card")}
                 </a>
                 <button class="icon-btn ${student.is_active ? "is-danger" : ""}" type="button" data-action="toggle" data-nin="${safe(student.student_nin)}" title="${toggleLabel}" aria-label="${toggleLabel}: ${safe(student.full_name)}">
                   ${A.icon(student.is_active ? "archive" : "refresh")}
@@ -450,6 +457,7 @@
         <button class="btn btn-secondary btn-sm" type="button" data-profile-edit>${A.icon("edit")}<span>تعديل البيانات</span></button>
         <button class="btn btn-secondary btn-sm" type="button" data-profile-delete>${A.icon("trash")}<span>حذف</span></button>
         <a class="btn btn-secondary btn-sm" href="${printUrl(student.student_nin)}" target="_blank" rel="noopener">${A.icon("printer")}<span>طباعة البطاقة</span></a>
+        <a class="btn btn-secondary btn-sm" href="${certificateUrl(student.student_nin)}" target="_blank" rel="noopener">${A.icon("id-card")}<span>شهادة مدرسية</span></a>
         <button class="btn btn-primary btn-sm" type="button" data-modal-close>إغلاق</button>`,
       onMount(modal) {
         const photoInput = modal.querySelector("#profile-photo-input");

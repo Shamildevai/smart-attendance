@@ -391,7 +391,7 @@ def watch_desktop_window(window: dict, heartbeat: dict, shutdown) -> None:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=f"{APP_TITLE} — {APP_NAME} {APP_VERSION}")
-    parser.add_argument("--host", default="127.0.0.1", help="عنوان الاستماع (الافتراضي 127.0.0.1)")
+    parser.add_argument("--host", default="0.0.0.0", help="عنوان الاستماع (الافتراضي 0.0.0.0 لتمكين الهاتف)")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help=f"المنفذ المفضل (الافتراضي {DEFAULT_PORT})")
     parser.add_argument("--data-dir", default="", help="مجلد البيانات (قاعدة البيانات والصور والسجلات)")
     parser.add_argument("--no-browser", action="store_true", help="تشغيل الخادم دون فتح نافذة المتصفح")

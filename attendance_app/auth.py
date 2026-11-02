@@ -43,7 +43,13 @@ PUBLIC_ENDPOINTS = {
     "api.heartbeat_api",
 }
 
-ADMIN_API_PREFIXES = ("/api/settings", "/api/uploads", "/api/users")
+ADMIN_API_PREFIXES = (
+    "/api/settings",
+    "/api/uploads",
+    "/api/users",
+    "/api/certificates/settings",
+    "/api/scanner/mobile",
+)
 ADMIN_API_PATHS = {
     "/api/messages/gateway/pair",
     "/api/system/backup",
@@ -428,6 +434,9 @@ def init_app(app) -> None:
         if request.endpoint is None:
             return None
         if request.endpoint in PUBLIC_ENDPOINTS or request.path.startswith("/static/"):
+            return None
+        # The phone scanner API carries its own bearer token.
+        if request.path == "/api/mobile" or request.path.startswith("/api/mobile/"):
             return None
         user_id = session.get("user_id")
         if not user_id:

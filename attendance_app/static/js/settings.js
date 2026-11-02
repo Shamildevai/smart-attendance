@@ -981,6 +981,170 @@
     setActive(sections[0].id);
   }
 
+  /* ------------------------------------------------------------------ */
+  /* Phone scanner pairing                                              */
+  /* ------------------------------------------------------------------ */
+
+  function whenText(value) {
+    if (!value) return "لم يظهر بعد";
+    const at = new Date(String(value).replace(" ", "T"));
+    if (Number.isNaN(at.getTime())) return String(value);
+    const diff = Date.now() - at.getTime();
+    if (diff < 60000) return "الآن";
+    if (diff < 3600000) return `قبل ${A.formatInt(Math.round(diff / 60000))} دقيقة`;
+    if (diff < 86400000) return `قبل ${A.formatInt(Math.round(diff / 3600000))} ساعة`;
+    return at.toLocaleDateString("ar-DZ", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }
+
+  function renderPhoneDevices(devices) {
+    const list = $("phone-device-list");
+    if (!list) return;
+    if (!devices.length) {
+      list.innerHTML = '<div class="phone-empty">لا توجد هواتف مرتبطة بعد. ولّد رمز ربط وابدأ المسح من الهاتف.</div>';
+      return;
+    }
+    list.innerHTML = devices.map((device) => {
+      const approved = device.status === "approved";
+      const statusChip = approved
+        ? '<span class="chip is-accent">مرتبط</span>'
+        : `<span class="chip is-warning">${device.status === "blocked" ? "محظور" : "بانتظار الموافقة"}</span>`;
+      const details = [
+        device.platform || "هاتف",
+        device.app_version ? `نسخة ${device.app_version}` : "",
+        `${A.formatInt(device.scans || 0)} قراءة`,
+      ].filter(Boolean).join(" · ");
+      return `
+        <div class="phone-device">
+          <div class="phone-device-main">
+            <div class="phone-device-icon"><svg class="ico"><use href="#i-phone"></use></svg></div>
+            <div>
+              <strong>${safe(device.name)}</strong>
+              <small>${safe(details)} — آخر ظهور ${safe(whenText(device.last_seen))}${device.last_sync ? ` — آخر مزامنة ${safe(whenText(device.last_sync))}` : ""}</small>
+            </div>
+          </div>
+          <div class="phone-device-meta">
+            ${statusChip}
+            <button class="btn btn-ghost btn-sm" type="button" data-remove-device="${safe(device.id)}">
+              <svg class="ico"><use href="#i-trash"></use></svg>
+              <span>فصل</span>
+            </button>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function renderPhoneStatus(data) {
+    const url = $("phone-server-url");
+    if (url) {
+      url.textContent = data.server_url || "غير متاح — تحقق من اتصال الشبكة";
+    }
+    const chip = $("phone-link-state");
+    if (chip) {
+      const ready = Boolean(data.connect_code && data.connect_code.exists);
+      chip.className = `chip ${ready ? "is-accent" : "is-warning"}`;
+      chip.textContent = ready ? "جاهز لاستقبال هاتف" : "يحتاج رمز ربط";
+    }
+    const revoke = $("phone-code-revoke");
+    if (revoke) {
+      revoke.hidden = !(data.connect_code && data.connect_code.exists);
+    }
+    renderPhoneDevices(Array.isArray(data.devices) ? data.devices : []);
+  }
+
+  async function loadPhoneStatus(silent) {
+    try {
+      const data = await A.api("/api/scanner/mobile");
+      renderPhoneStatus(data);
+      if (!silent && data.scans_total) {
+        A.toast(`إجمالي القراءات المستلمة من الهواتف: ${A.formatInt(data.scans_total)}.`, "info", "ماسح الهاتف");
+      }
+    } catch (error) {
+      A.toast(error.message || "تعذر قراءة حالة الهواتف.", "error");
+    }
+  }
+
+  async function createPhoneCode(button) {
+    A.setBusy(button, true);
+    try {
+      const data = await A.api("/api/scanner/mobile/code", { method: "POST", body: {} });
+      $("phone-connect-box").hidden = false;
+      $("phone-code-value").textContent = data.passcode || "--------";
+      $("phone-qr").innerHTML = data.qr_svg || "";
+      A.toast("تم توليد رمز الربط. امسح QR بالهاتف أو اكتب الرمز الثماني.", "success", "رمز الربط");
+      await loadPhoneStatus(true);
+    } catch (error) {
+      A.toast(error.message || "تعذر توليد رمز الربط.", "error");
+    } finally {
+      A.setBusy(button, false);
+    }
+  }
+
+  async function revokePhoneCode(button) {
+    const confirmed = await A.confirm({
+      title: "إبطال رمز الربط",
+      message: "لن تتمكن الهواتف الجديدة من الربط بهذا الرمز. الهواتف المرتبطة تبقى تعمل حتى تفصلها.",
+      confirmLabel: "إبطال",
+      danger: true,
+    });
+    if (!confirmed) return;
+    A.setBusy(button, true);
+    try {
+      await A.api("/api/scanner/mobile/code", { method: "DELETE" });
+      $("phone-connect-box").hidden = true;
+      $("phone-code-value").textContent = "--------";
+      $("phone-qr").innerHTML = "";
+      A.toast("تم إبطال رمز الربط.", "success");
+      await loadPhoneStatus(true);
+    } catch (error) {
+      A.toast(error.message || "تعذر إبطال الرمز.", "error");
+    } finally {
+      A.setBusy(button, false);
+    }
+  }
+
+  async function removePhone(deviceId, button) {
+    const confirmed = await A.confirm({
+      title: "فصل الهاتف",
+      message: "سيتوقف هذا الهاتف عن المزامنة فورًا، ويحتاج إلى رمز ربط جديد لإعادة توصيله. القراءات المحفوظة على الحاسوب تبقى كما هي.",
+      confirmLabel: "فصل الهاتف",
+      danger: true,
+    });
+    if (!confirmed) return;
+    A.setBusy(button, true);
+    try {
+      await A.api(`/api/scanner/mobile/devices/${encodeURIComponent(deviceId)}`, { method: "DELETE" });
+      A.toast("تم فصل الهاتف.", "success");
+      await loadPhoneStatus(true);
+    } catch (error) {
+      A.toast(error.message || "تعذر فصل الهاتف.", "error");
+    } finally {
+      A.setBusy(button, false);
+    }
+  }
+
+  function bindPhoneScanner() {
+    const create = $("phone-code-create");
+    const revoke = $("phone-code-revoke");
+    const refresh = $("phone-refresh");
+    const list = $("phone-device-list");
+    if (!create || !list) return;
+    create.addEventListener("click", () => createPhoneCode(create));
+    revoke.addEventListener("click", () => revokePhoneCode(revoke));
+    refresh.addEventListener("click", async () => {
+      A.setBusy(refresh, true);
+      try {
+        await loadPhoneStatus(false);
+      } finally {
+        A.setBusy(refresh, false);
+      }
+    });
+    list.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove-device]");
+      if (!button) return;
+      removePhone(button.dataset.removeDevice, button);
+    });
+  }
+
   function init() {
     bindInstitutionForm();
     bindBranding();
@@ -988,9 +1152,11 @@
     bindScheduleForm();
     bindSmsForm();
     bindPeriods();
+    bindPhoneScanner();
     bindDataActions();
     initNavSpy();
     loadAll(true);
+    loadPhoneStatus(true);
     loadGatewayStatus();
   }
 

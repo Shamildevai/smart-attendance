@@ -36,6 +36,7 @@ from .services import entry_slip_service as entry_slips
 from .services import exit_slip_service as exit_slips
 from .services import summon_service as summons
 from .services import (
+    certificate_service as certificates,
     messaging_service,
     report_service,
     scanner_bridge_service,
@@ -261,6 +262,140 @@ def remove_scanner_phone_api(phone_id: str):
     with conn:
         save_settings(conn, {"scanner_phones": raw})
     return ok(message="تمت إزالة هاتف المسح.")
+
+
+# ---------------------------------------------------------------------------
+# Phone scanner pairing (offline-capable mobile API)
+# ---------------------------------------------------------------------------
+
+
+def _mobile_server_url() -> str:
+    lan_ip = current_app.config.get("LAN_IP") or ""
+    host = request.host or ""
+    port = host.rsplit(":", 1)[1] if ":" in host else ""
+    if not port.isdigit():
+        port = str(request.environ.get("SERVER_PORT") or "")
+    if not lan_ip or not port.isdigit():
+        return ""
+    suffix = "" if port == "80" else f":{port}"
+    return f"http://{lan_ip}{suffix}"
+
+
+def _connect_payload(code: str) -> tuple[str, str]:
+    from urllib.parse import quote
+
+    url = _mobile_server_url()
+    if not url:
+        raise ApiError(
+            "تعذر تحديد عنوان الحاسوب على الشبكة. تأكد من اتصال الحاسوب بالشبكة المحلية.",
+            400,
+            "no_lan_ip",
+        )
+    return f"smartattendance://connect?u={quote(url, safe='')}&c={quote(code, safe='')}", url
+
+
+def _qr_svg(payload: str) -> str:
+    buffer = BytesIO()
+    segno.make(payload, error="m").save(
+        buffer, kind="svg", scale=6, border=2, dark="#0b3b31", light="#ffffff"
+    )
+    return re.sub(r"<\?xml.*?\?>", "", buffer.getvalue().decode("utf-8"), flags=re.DOTALL)
+
+
+def _mobile_device_public(row) -> dict[str, Any]:
+    return {
+        "id": row["device_id"],
+        "name": row["name"] or "هاتف",
+        "platform": row["platform"] or "",
+        "app_version": row["app_version"] or "",
+        "status": row["status"] or "pending",
+        "approved_at": row["approved_at"],
+        "last_seen": row["last_seen"],
+        "last_sync": row["last_sync"],
+        "scans": row["scans"] if "scans" in row.keys() else 0,
+    }
+
+
+@api_bp.get("/scanner/mobile")
+def mobile_scanner_status_api():
+    conn = get_db()
+    code = conn.execute(
+        """SELECT id, label, created_at, last_used_at FROM scan_connect_codes
+           WHERE revoked_at IS NULL ORDER BY id DESC LIMIT 1"""
+    ).fetchone()
+    rows = conn.execute(
+        """SELECT d.*, (SELECT COUNT(*) FROM mobile_scans m WHERE m.device_id = d.device_id)
+                  AS scans
+           FROM mobile_devices d
+           ORDER BY COALESCE(d.last_seen, d.created_at) DESC"""
+    ).fetchall()
+    pending = conn.execute("SELECT COUNT(*) FROM mobile_scans").fetchone()[0]
+    server_url = _mobile_server_url()
+    return ok(
+        server_url=server_url,
+        connect_code={
+            "exists": code is not None,
+            "created_at": code["created_at"] if code else None,
+            "last_used_at": code["last_used_at"] if code else None,
+        },
+        devices=[_mobile_device_public(row) for row in rows],
+        scans_total=pending,
+    )
+
+
+@api_bp.post("/scanner/mobile/code")
+def create_mobile_connect_code_api():
+    from .mobile_api import connect_code_hash, new_connect_code
+
+    conn = get_db()
+    code = new_connect_code()
+    payload, url = _connect_payload(code)
+    now = datetime.now().isoformat(timespec="seconds")
+    with conn:
+        conn.execute(
+            """UPDATE scan_connect_codes SET revoked_at = ?
+               WHERE revoked_at IS NULL""",
+            (now,),
+        )
+        conn.execute(
+            """INSERT INTO scan_connect_codes(label, code_hash, created_at, created_by)
+               VALUES (?, ?, ?, ?)""",
+            ("ماسح الهاتف", connect_code_hash(code), now, g.user["id"]),
+        )
+    return ok(
+        passcode=code,
+        server_url=url,
+        connect_payload=payload,
+        qr_svg=_qr_svg(payload),
+        message="تم إنشاء رمز الربط. امسح رمز QR بالهاتف أو اكتب الرمز المكوّن من 8 أرقام.",
+    )
+
+
+@api_bp.delete("/scanner/mobile/code")
+def revoke_mobile_connect_codes_api():
+    conn = get_db()
+    now = datetime.now().isoformat(timespec="seconds")
+    with conn:
+        revoked = conn.execute(
+            "UPDATE scan_connect_codes SET revoked_at = ? WHERE revoked_at IS NULL",
+            (now,),
+        ).rowcount
+    if not revoked:
+        raise ApiError("لا يوجد رمز ربط نشط.", 404, "not_found")
+    return ok(message="تم إبطال رمز الربط. الهواتف المرتبطة تبقى تعمل حتى تحذفها.")
+
+
+@api_bp.delete("/scanner/mobile/devices/<device_id>")
+def remove_mobile_device_api(device_id: str):
+    conn = get_db()
+    row = conn.execute(
+        "SELECT * FROM mobile_devices WHERE device_id = ?", (device_id,)
+    ).fetchone()
+    if row is None:
+        raise ApiError("الهاتف غير مرتبط بهذا الحاسوب.", 404, "not_found")
+    with conn:
+        conn.execute("DELETE FROM mobile_devices WHERE device_id = ?", (device_id,))
+    return ok(message="تم فصل الهاتف. ستحتاج إلى رمز ربط جديد لإعادة توصيله.")
 
 
 def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
@@ -2068,3 +2203,61 @@ def shutdown_api():
         raise ApiError("إغلاق الخادم غير متاح في وضع التشغيل الحالي.", 409, "shutdown_unavailable")
     threading.Timer(0.4, callback).start()
     return ok(message="سيتم إغلاق النظام الآن. يمكنك إغلاق هذه النافذة.")
+
+
+# ---------------------------------------------------------------------------
+# School certificates
+# ---------------------------------------------------------------------------
+
+
+@api_bp.get("/certificates/students")
+def certificate_students_api():
+    return ok(students=certificates.list_students(get_db(), str(request.args.get("q") or "")))
+
+
+@api_bp.post("/certificates/settings")
+def certificate_settings_api():
+    template = certificates.save_template(get_db(), _payload())
+    return ok(template=template, message="حُفظ قالب الشهادة.")
+
+
+@api_bp.get("/certificates/students/<path:nin>/profile")
+def certificate_profile_api(nin: str):
+    normalized = normalize_nin(nin)
+    row = get_db().execute(
+        "SELECT 1 FROM students WHERE student_nin = ?", (normalized,)
+    ).fetchone()
+    if not row:
+        raise ApiError("التلميذ غير موجود.", 404, "not_found")
+    return ok(profile=certificates.get_profile(get_db(), normalized))
+
+
+@api_bp.post("/certificates/students/<path:nin>/profile")
+def certificate_profile_save_api(nin: str):
+    profile = certificates.save_profile(get_db(), normalize_nin(nin), _payload())
+    return ok(profile=profile, message="حُفظت بيانات الشهادة.")
+
+
+def _certificate_svg_response(svg: str) -> Response:
+    response = Response(svg, mimetype="image/svg+xml")
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@api_bp.get("/certificates/students/<path:nin>/barcode.svg")
+def certificate_barcode_api(nin: str):
+    normalized = normalize_nin(nin)
+    row = get_db().execute(
+        "SELECT 1 FROM students WHERE student_nin = ?", (normalized,)
+    ).fetchone()
+    if not row:
+        raise ApiError("التلميذ غير موجود.", 404, "not_found")
+    context = certificates.certificate_context(get_db(), normalized)
+    return _certificate_svg_response(certificates.barcode_svg(context["values"]["registration_no"]))
+
+
+@api_bp.get("/certificates/students/<path:nin>/qr.svg")
+def certificate_qr_api(nin: str):
+    normalized = normalize_nin(nin)
+    context = certificates.certificate_context(get_db(), normalized)
+    return _certificate_svg_response(certificates.qr_svg(context["qr_payload"]))

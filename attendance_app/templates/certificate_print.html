@@ -1,0 +1,123 @@
+{% set cert = certificate %}
+<!DOCTYPE html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} — {{ cert.student.full_name }}</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/certificate_print.css') }}">
+</head>
+<body class="cert-page" data-autoprint="{{ '1' if autoprint else '0' }}">
+  <header class="cert-toolbar screen-only">
+    <div class="cert-toolbar-brand">
+      <svg class="ico" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="11" r="2"/><path d="M5 16c0-1.7 1.3-3 3-3s3 1.3 3 3M14 10h5M14 14h3"/></svg>
+      <div>
+        <strong>{{ title }} — {{ cert.student.full_name }}</strong>
+        <span>{{ cert.student.class_group or "بدون قسم" }} · {{ cert.student.student_nin }} · {{ "ورق A4"|t }}</span>
+      </div>
+    </div>
+    <div class="cert-toolbar-actions">
+      <span class="cert-toolbar-hint">{{ "اختر «حفظ كملف PDF» من نافذة الطباعة للتصدير."|t }}</span>
+      <a class="cert-btn" href="{{ url_for('views.certificates_page', student=cert.student.student_nin) }}">{{ "بيانات الشهادة"|t }}</a>
+      <a class="cert-btn" href="{{ url_for('views.students_page') }}">{{ "قائمة التلاميذ"|t }}</a>
+      <button class="cert-btn is-primary" type="button" id="print-now">{{ "طباعة الآن"|t }}</button>
+    </div>
+  </header>
+
+  <main class="cert-sheet">
+    <article class="cert-frame" dir="{{ direction }}">
+      <header class="cert-head">
+        <div class="cert-head-year">
+          <span>{{ "السنة الدراسية"|t }}</span>
+          <bdi>{{ cert.academic_year }}</bdi>
+        </div>
+        <div class="cert-head-center">
+          <strong>{{ extra.get('republic_header') }}</strong>
+          <span>{{ extra.get('ministry_header') }}</span>
+          <span>{{ extra.get('directorate') }}</span>
+        </div>
+        <div class="cert-head-id">
+          {% if extra.get('show_barcode') %}
+            <img src="{{ url_for('api.certificate_barcode_api', nin=cert.student.student_nin) }}" alt="{{ cert.student.student_nin }}">
+          {% endif %}
+          <span>{{ "رقم التعريف المدرسي"|t }}</span>
+        </div>
+      </header>
+
+      <div class="cert-inst-line">{{ extra.get('institution') }}{% if cert.state and cert.state != "…" %} — {{ cert.state }}{% endif %}</div>
+
+      <h1 class="cert-doc-title"><span>{{ title }}</span></h1>
+
+      {% if layout == 'algerian' %}
+        <section class="cert-body cert-body--official">
+          <p class="cert-lead">{{ extra.get('cert_line') }}</p>
+
+          <div class="cert-identity">
+            <div><span>{{ "اللقب"|t }}</span><strong>{{ values.last_name }}</strong></div>
+            <div><span>{{ "الاسم"|t }}</span><strong>{{ values.first_name }}</strong></div>
+          </div>
+
+          <p class="cert-line">
+            <strong>{{ "تاريخ ومكان الازدياد"|t }}:</strong>
+            <span>{{ values.birth_date or "…" }}</span>
+            {% if values.birth_place %} — <strong>{{ "بـ"|t }}:</strong> {{ values.birth_place }}{% endif %}
+          </p>
+
+          <p class="cert-continuation">{{ values.continuation }}</p>
+
+          <p class="cert-year">{{ values.academic_year }}</p>
+
+          {% if values.level_line %}<p class="cert-level">{{ values.level_line }}</p>{% endif %}
+
+          <p class="cert-register">
+            <strong>{{ "رقم التسجيل"|t }}:</strong>
+            <bdi>{{ values.registration_no }}</bdi>
+            {% if values.registration_suffix %} — {{ values.registration_suffix }}{% endif %}
+          </p>
+
+          <p class="cert-issued">{{ extra.get('issued_line') }}</p>
+
+          <div class="cert-bottom">
+            <div class="cert-previous">
+              <span>{{ extra.get('previous_name_label') }}</span>
+              <strong>{{ values.latin_name or "—" }}</strong>
+            </div>
+            <div class="cert-sign">
+              <span>{{ extra.get('signature_label') }}</span>
+              {% if extra.get('show_stamp') and stamp_url %}
+                <img src="{{ stamp_url }}" alt="{{ "خاتم المؤسسة"|t }}">
+              {% endif %}
+              <strong>{{ cert.principal_name or "—" }}</strong>
+            </div>
+          </div>
+        </section>
+      {% else %}
+        <section class="cert-body cert-body--custom">{{ body }}</section>
+        <div class="cert-bottom cert-bottom--custom">
+          <p class="cert-custom-footer">{{ cert.footer_text }}</p>
+          <div class="cert-sign">
+            <span>{{ extra.get('signature_label') }}</span>
+            {% if extra.get('show_stamp') and stamp_url %}
+              <img src="{{ stamp_url }}" alt="{{ "خاتم المؤسسة"|t }}">
+            {% endif %}
+            <strong>{{ cert.principal_name or "—" }}</strong>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="cert-qr">
+        {% if extra.get('show_qr') %}
+          <img src="{{ url_for('api.certificate_qr_api', nin=cert.student.student_nin) }}" alt="QR">
+        {% else %}
+          <span></span>
+        {% endif %}
+        <span class="cert-foot-note">{{ cert.school_name }} — {{ cert.academic_year }}</span>
+      </div>
+    </article>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/print-sheet.js') }}"></script>
+</body>
+</html>

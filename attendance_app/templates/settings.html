@@ -38,6 +38,9 @@
     <a href="#settings-sms">
       <svg class="ico"><use href="#i-message"></use></svg><span>رسائل SMS</span>
     </a>
+    <a href="#settings-phones">
+      <svg class="ico"><use href="#i-phone"></use></svg><span>ماسح الهاتف</span>
+    </a>
     <a href="#settings-data">
       <svg class="ico"><use href="#i-database"></use></svg><span>البيانات والنظام</span>
     </a>
@@ -547,6 +550,66 @@
           </button>
         </div>
       </form>
+    </section>
+
+    <section class="card settings-section" id="settings-phones">
+      <div class="settings-card-head">
+        <div class="settings-head-icon"><svg class="ico"><use href="#i-phone"></use></svg></div>
+        <div class="flex-1">
+          <h2>ماسح الهاتف</h2>
+          <p>اربط هاتفًا واحدًا أو أكثر ليقرأ البطاقات ويسجّل الحضور، ويعمل دون إنترنت ثم يرسل القراءات تلقائيًا عند عودة الاتصال.</p>
+        </div>
+        <span class="chip" id="phone-link-state">جارٍ التحقق…</span>
+      </div>
+      <div class="settings-card-body">
+        <div class="settings-data-row">
+          <div class="settings-data-label">
+            <svg class="ico"><use href="#i-wifi"></use></svg>
+            <div><strong>عنوان هذا الحاسوب</strong><span>يستخدمه الهاتف للاتصال. يجب أن يكون الهاتف على نفس شبكة Wi‑Fi.</span></div>
+          </div>
+          <code class="mono" id="phone-server-url" dir="ltr">—</code>
+        </div>
+
+        <div class="settings-note">
+          <svg class="ico"><use href="#i-shield-check"></use></svg>
+          <div>القراءات تُخزّن على الهاتف أولًا، ثم تُرسل إلى هذا الحاسوب عند توفر الشبكة. لا تغادر بيانات التلاميذ الشبكة المحلية.</div>
+        </div>
+
+        <div class="settings-actions" style="justify-content:flex-start">
+          <button class="btn btn-primary btn-sm" type="button" id="phone-code-create">
+            <svg class="ico"><use href="#i-qr"></use></svg>
+            <span>توليد رمز ربط جديد</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" type="button" id="phone-refresh">
+            <svg class="ico"><use href="#i-refresh"></use></svg>
+            <span>تحديث القائمة</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" type="button" id="phone-code-revoke" hidden>
+            <svg class="ico"><use href="#i-x"></use></svg>
+            <span>إبطال رمز الربط</span>
+          </button>
+        </div>
+
+        <div class="phone-connect" id="phone-connect-box" hidden>
+          <div class="phone-code-panel">
+            <span>رمز الربط</span>
+            <strong id="phone-code-value" dir="ltr">--------</strong>
+            <small>اكتب الرمز في تطبيق الهاتف أو امسح رمز QR من شاشة الربط.</small>
+          </div>
+          <div class="phone-qr" id="phone-qr" aria-label="رمز QR للربط"></div>
+        </div>
+
+        <div class="settings-steps">
+          <div><b>1</b><span>ثبّت تطبيق «Smart Attendance» على الهاتف وافتح شاشة الماسح.</span></div>
+          <div><b>2</b><span>اضغط «توليد رمز ربط جديد» هنا، ثم امسح رمز QR أو اكتب الأرقام الثمانية.</span></div>
+          <div><b>3</b><span>ابدأ المسح مباشرة. المزامنة تحدث تلقائيًا كلما توفر الاتصال.</span></div>
+        </div>
+
+        <h3 class="phone-devices-title">الهواتف المرتبطة</h3>
+        <div class="phone-device-list" id="phone-device-list">
+          <div class="phone-empty">لا توجد هواتف مرتبطة بعد.</div>
+        </div>
+      </div>
     </section>
 
     <section class="card settings-section" id="settings-updates">

@@ -59,6 +59,9 @@
         <a class="nav-link {% if active == 'print' %}is-active{% endif %}" href="{{ url_for('views.print_studio_page') }}">
           <svg class="ico"><use href="#i-printer"></use></svg><span>استوديو الطباعة</span>
         </a>
+        <a class="nav-link {% if active == 'certificates' %}is-active{% endif %}" href="{{ url_for('views.certificates_page') }}">
+          <svg class="ico"><use href="#i-id-card"></use></svg><span>الشهادات</span>
+        </a>
         <div class="nav-label">المتابعة والتقارير</div>
         <a class="nav-link {% if active == 'attendance' %}is-active{% endif %}" href="{{ url_for('views.attendance_page') }}">
           <svg class="ico"><use href="#i-list"></use></svg><span>سجل الحضور</span>
