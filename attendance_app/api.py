@@ -17,7 +17,14 @@ from barcode import Code128
 from barcode.writer import SVGWriter
 from flask import Blueprint, Response, current_app, g, jsonify, request, send_file, url_for
 
-from .auth import AccountError, create_user, delete_user, list_users, update_user
+from .auth import (
+    AccountError,
+    create_user,
+    delete_user,
+    generate_recovery_code,
+    list_users,
+    update_user,
+)
 from .config import COLOR_THEMES, DEFAULT_COLOR_THEME, GATEWAY_APP_VERSION
 from .db import (
     DEFAULT_PRINT_CONFIG,
@@ -504,6 +511,18 @@ def delete_user_api(user_id: int):
     except AccountError as error:
         raise ApiError(str(error), 400, "account") from error
     return ok(message="تم حذف المستخدم.")
+
+
+@api_bp.post("/users/<int:user_id>/recovery")
+def user_recovery_code_api(user_id: int):
+    try:
+        code = generate_recovery_code(user_id)
+    except AccountError as error:
+        raise ApiError(str(error), 400, "account") from error
+    return ok(
+        code=code,
+        message="تم إنشاء رمز الاسترداد. احفظه في مكان آمن؛ لن يُعرض مرة أخرى.",
+    )
 
 
 @api_bp.get("/settings")

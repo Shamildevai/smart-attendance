@@ -31,10 +31,14 @@ USERNAME_RE = re.compile(r"^[A-Za-z0-9_.-]{3,32}$")
 ROLES = {"admin", "user"}
 PASSWORD_MIN = 6
 PASSWORD_MAX = 128
+RECOVERY_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+RECOVERY_GROUPS = (4, 4, 4)
 
 PUBLIC_ENDPOINTS = {
     "auth.login_page",
     "auth.login_submit",
+    "auth.forgot_page",
+    "auth.forgot_submit",
     "views.set_language",
     "views.i18n_script",
     "views.favicon",
@@ -107,6 +111,7 @@ def _public_user(row: dict) -> dict:
         "role_label": ROLE_LABELS.get(row["role"], row["role"]),
         "is_active": bool(row["is_active"]),
         "has_password": bool(row["password_hash"]),
+        "has_recovery": bool(row.get("recovery_hash")),
         "created_at": row["created_at"],
         "last_login_at": row["last_login_at"],
     }
@@ -270,6 +275,49 @@ def set_user_password(user_id: int, password: str | None) -> None:
         )
 
 
+def _normalize_recovery_code(value: str | None) -> str:
+    return re.sub(r"[^A-Z0-9]", "", (value or "").upper())
+
+
+def generate_recovery_code(user_id: int) -> str:
+    conn = get_db()
+    if not get_user(user_id):
+        raise AccountError("المستخدم غير موجود.")
+    code = "-".join(
+        "".join(secrets.choice(RECOVERY_ALPHABET) for _ in range(size))
+        for size in RECOVERY_GROUPS
+    )
+    with conn:
+        conn.execute(
+            "UPDATE users SET recovery_hash = ?, updated_at = ? WHERE id = ?",
+            (generate_password_hash(_normalize_recovery_code(code)), _now(), user_id),
+        )
+    return code
+
+
+def reset_password_with_recovery(username: str, code: str, password: str) -> dict:
+    username = (username or "").strip()
+    normalized = _normalize_recovery_code(code)
+    if not username or not normalized:
+        raise AccountError("أدخل اسم المستخدم ورمز الاسترداد.")
+    value = _normalize_password(password)
+    if not value:
+        raise AccountError("أدخل كلمة المرور الجديدة.")
+    user = get_user_by_username(username)
+    if not user or not user["is_active"] or not user.get("recovery_hash"):
+        raise AccountError("اسم المستخدم أو رمز الاسترداد غير صحيح.")
+    if not check_password_hash(user["recovery_hash"], normalized):
+        raise AccountError("اسم المستخدم أو رمز الاسترداد غير صحيح.")
+    conn = get_db()
+    with conn:
+        conn.execute(
+            """UPDATE users SET password_hash = ?, recovery_hash = NULL, updated_at = ?
+               WHERE id = ?""",
+            (generate_password_hash(value), _now(), user["id"]),
+        )
+    return _public_user(get_user(user["id"]))
+
+
 def _csrf_token() -> str:
     token = session.get("csrf_token")
     if not token:
@@ -284,8 +332,8 @@ def _check_csrf() -> bool:
     return bool(sent and stored and hmac.compare_digest(str(sent), str(stored)))
 
 
-def _attempt_key(username: str) -> str:
-    return f"{(username or '').strip().lower()}|{request.remote_addr or 'local'}"
+def _attempt_key(username: str, scope: str = "login") -> str:
+    return f"{scope}|{(username or '').strip().lower()}|{request.remote_addr or 'local'}"
 
 
 def _attempt_remaining(key: str) -> int:
@@ -308,7 +356,13 @@ def _clear_failures(key: str) -> None:
         _ATTEMPTS.pop(key, None)
 
 
-def _login_context(error: str = "", status: int = 200, username: str = "", next_url: str = ""):
+def _login_context(
+    error: str = "",
+    status: int = 200,
+    username: str = "",
+    next_url: str = "",
+    notice: str = "",
+):
     settings = get_settings(get_db())
     open_admin = get_db().execute(
         "SELECT 1 FROM users WHERE role = 'admin' AND is_active = 1 AND password_hash IS NULL LIMIT 1"
@@ -317,6 +371,7 @@ def _login_context(error: str = "", status: int = 200, username: str = "", next_
         render_template(
             "login.html",
             error=error,
+            notice=notice,
             username=username,
             next_url=next_url,
             school_name=settings.get("school_name", ""),
@@ -328,13 +383,31 @@ def _login_context(error: str = "", status: int = 200, username: str = "", next_
     )
 
 
+def _forgot_context(error: str = "", status: int = 200, username: str = ""):
+    settings = get_settings(get_db())
+    return (
+        render_template(
+            "forgot_password.html",
+            error=error,
+            username=username,
+            school_name=settings.get("school_name", ""),
+            logo_path=settings.get("logo_path", ""),
+            academic_year=settings.get("academic_year", ""),
+        ),
+        status,
+    )
+
+
 @auth_bp.get("/login")
 def login_page():
     next_url = safe_next(request.args.get("next"), "/")
     user = get_user(session.get("user_id"))
     if user and user["is_active"]:
         return redirect(next_url)
-    return _login_context(next_url=next_url)
+    notice = ""
+    if request.args.get("reset"):
+        notice = "تم تعيين كلمة المرور بنجاح. سجّل الدخول بكلمة المرور الجديدة."
+    return _login_context(next_url=next_url, notice=notice)
 
 
 @auth_bp.post("/login")
@@ -378,6 +451,36 @@ def login_submit():
             (_now(), _now(), user["id"]),
         )
     return redirect(next_url)
+
+
+@auth_bp.get("/forgot-password")
+def forgot_page():
+    return _forgot_context()
+
+
+@auth_bp.post("/forgot-password")
+def forgot_submit():
+    username = str(request.form.get("username") or "").strip()
+    if not _check_csrf():
+        return _forgot_context("انتهت صلاحية الجلسة. أعد تحميل الصفحة ثم حاول مجددًا.", 400, username)
+    key = _attempt_key(username, "reset")
+    remaining = _attempt_remaining(key)
+    if remaining:
+        return _forgot_context(
+            f"محاولات كثيرة. انتظر {remaining} ثانية ثم حاول مجددًا.", 429, username
+        )
+    try:
+        reset_password_with_recovery(
+            username,
+            str(request.form.get("recovery_code") or ""),
+            str(request.form.get("password") or ""),
+        )
+    except AccountError as error:
+        _record_failure(key)
+        return _forgot_context(str(error), 400, username)
+    _clear_failures(key)
+    _clear_failures(_attempt_key(username))
+    return redirect(url_for("auth.login_page", reset="1"))
 
 
 @auth_bp.post("/logout")

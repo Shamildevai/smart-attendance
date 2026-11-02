@@ -3473,6 +3473,67 @@ output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--prim
 .login-form .btn-block { margin-top: 4px; }
 .login-submit { min-height: 46px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .login-submit .ico { width: 17px; height: 17px; }
+.login-links { display: flex; justify-content: flex-end; margin-top: -2px; font-size: 11.5px; }
+.login-links a { color: var(--primary); font-weight: 650; text-decoration: none; }
+.login-links a:hover { text-decoration: underline; }
+.forgot-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 18px;
+  background:
+    radial-gradient(560px 380px at 100% 0%, var(--accent-glow), transparent 62%),
+    var(--bg);
+}
+.forgot-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 30px clamp(20px, 4vw, 38px);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 20px 55px rgba(15, 40, 34, 0.14);
+}
+.forgot-card .login-card-top { margin-bottom: 22px; }
+.forgot-card .login-form { max-width: none; }
+.forgot-card h1 { font-size: 26px; margin-top: 4px; }
+.forgot-hint { margin-top: 14px; line-height: 1.75; }
+.forgot-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.forgot-back:hover { color: var(--primary); }
+.forgot-back .ico { width: 15px; height: 15px; }
+.recovery-code-input {
+  font-family: "Consolas", "Courier New", monospace;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.recovery-panel { display: grid; gap: 12px; }
+.recovery-code {
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  background: rgba(14, 124, 102, 0.06);
+  color: var(--text-muted);
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-align: center;
+  direction: ltr;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+.recovery-code.is-filled { border-style: solid; color: var(--primary); }
 .login-alert { max-width: 420px; margin-bottom: 15px; }
 .login-alert p { margin: 3px 0 0; color: inherit; opacity: 0.85; }
 .login-footer {

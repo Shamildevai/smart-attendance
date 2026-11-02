@@ -24,6 +24,12 @@
       : `<span class="badge badge--pending"><i class="badge-dot"></i>${A.escapeHtml(A.t("بدون كلمة مرور"))}</span>`;
   }
 
+  function recoveryBadge(hasRecovery) {
+    return hasRecovery
+      ? `<span class="badge badge--sent" title="${A.escapeHtml(A.t("رمز الاسترداد جاهز"))}"><i class="badge-dot"></i>${A.escapeHtml(A.t("استرداد جاهز"))}</span>`
+      : "";
+  }
+
   function formatLastLogin(value) {
     if (!value) return A.t("لم يدخل بعد");
     const text = String(value).slice(0, 16).replace("T", " ");
@@ -50,6 +56,10 @@
     const warning = document.getElementById("users-open-admin");
     if (warning) warning.hidden = !openAdmin;
 
+    const self = users.find((user) => user.id === currentUserId);
+    const recoveryHint = document.getElementById("users-recovery-hint");
+    if (recoveryHint) recoveryHint.hidden = !self || self.has_recovery;
+
     if (!users.length) {
       tbody.innerHTML = `<tr><td colspan="6">${A.emptyState("users", "لا يوجد مستخدمون", "أضف أول حساب للدخول إلى النظام.")}</td></tr>`;
       return;
@@ -69,12 +79,13 @@
             </div>
           </td>
           <td>${roleBadge(user.role)}</td>
-          <td>${passwordBadge(user.has_password)}</td>
+          <td>${passwordBadge(user.has_password)} ${recoveryBadge(user.has_recovery)}</td>
           <td>${user.is_active
             ? `<span class="badge badge--present"><i class="badge-dot"></i>${A.escapeHtml(A.t("نشط"))}</span>`
             : `<span class="badge badge--cancelled"><i class="badge-dot"></i>${A.escapeHtml(A.t("معطل"))}</span>`}</td>
           <td class="muted tiny">${A.escapeHtml(formatLastLogin(user.last_login_at))}</td>
           <td class="actions">
+            <button class="icon-btn" type="button" data-recovery-user="${user.id}" title="${A.escapeHtml(A.t("رمز الاسترداد"))}" aria-label="${A.escapeHtml(A.t("رمز الاسترداد"))}">${A.icon("key")}</button>
             <button class="icon-btn" type="button" data-edit-user="${user.id}" title="${A.escapeHtml(A.t("تعديل"))}" aria-label="${A.escapeHtml(A.t("تعديل"))}">${A.icon("edit")}</button>
             <button class="icon-btn is-danger" type="button" data-delete-user="${user.id}" title="${A.escapeHtml(A.t("حذف"))}" aria-label="${A.escapeHtml(A.t("حذف"))}" ${isSelf ? "disabled" : ""}>${A.icon("trash")}</button>
           </td>
@@ -205,7 +216,60 @@
     });
   }
 
+  function openRecoveryCode(user) {
+    const modalRef = A.openModal({
+      title: A.t("رمز الاسترداد"),
+      subtitle: `@${user.username}`,
+      icon: "key",
+      body: `<div class="recovery-panel">
+        <p class="tiny muted">${A.t("استخدم هذا الرمز من صفحة «نسيت كلمة المرور» لتعيين كلمة مرور جديدة. إنشاء رمز جديد يلغي أي رمز سابق.")}</p>
+        <div class="recovery-code" data-recovery-code>— — — —</div>
+        <button class="btn btn-primary btn-block" type="button" data-generate-recovery>${A.t("إنشاء رمز جديد")}</button>
+        <button class="btn btn-secondary btn-block" type="button" data-copy-recovery hidden>${A.t("نسخ الرمز")}</button>
+      </div>`,
+      footer: `<button class="btn btn-secondary" type="button" data-modal-close>${A.t("إغلاق")}</button>`,
+    });
+    const modal = modalRef.element;
+    const holder = modal.querySelector("[data-recovery-code]");
+    const generateButton = modal.querySelector("[data-generate-recovery]");
+    const copyButton = modal.querySelector("[data-copy-recovery]");
+
+    generateButton.addEventListener("click", async () => {
+      A.setBusy(generateButton, true);
+      try {
+        const data = await A.api(`/api/users/${user.id}/recovery`, { method: "POST" });
+        holder.textContent = data.code;
+        holder.classList.add("is-filled");
+        copyButton.hidden = false;
+        generateButton.textContent = A.t("إنشاء رمز آخر");
+        A.toast(A.t("تم إنشاء رمز الاسترداد. احفظه في مكان آمن."), "success");
+        await load();
+      } catch (error) {
+        A.toast(error.message, "error");
+      } finally {
+        A.setBusy(generateButton, false);
+      }
+    });
+
+    copyButton.addEventListener("click", async () => {
+      const codeText = holder.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(codeText);
+        A.toast(A.t("تم نسخ رمز الاسترداد."), "success");
+      } catch (error) {
+        window.getSelection().selectAllChildren(holder);
+        A.toast(A.t("حدد الرمز وانسخه يدويًا."), "warning");
+      }
+    });
+  }
+
   tbody.addEventListener("click", (event) => {
+    const recoveryButton = event.target.closest("[data-recovery-user]");
+    if (recoveryButton) {
+      const user = users.find((entry) => entry.id === Number(recoveryButton.dataset.recoveryUser));
+      if (user) openRecoveryCode(user);
+      return;
+    }
     const editButton = event.target.closest("[data-edit-user]");
     if (editButton) {
       const user = users.find((entry) => entry.id === Number(editButton.dataset.editUser));

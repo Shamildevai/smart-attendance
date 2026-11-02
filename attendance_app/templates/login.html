@@ -73,6 +73,13 @@
       <h1>{{ "تسجيل الدخول"|t }}</h1>
       <p class="login-subtitle">{{ "أدخل بيانات حسابك للمتابعة."|t }}</p>
 
+      {% if notice %}
+        <div class="info-banner is-success login-alert" role="status">
+          <svg class="ico"><use href="#i-check"></use></svg>
+          <div>{{ notice }}</div>
+        </div>
+      {% endif %}
+
       {% if error %}
         <div class="info-banner is-danger login-alert" role="alert">
           <svg class="ico"><use href="#i-warning"></use></svg>
@@ -100,6 +107,9 @@
           </div>
         </label>
         <p class="tiny muted">{{ "كلمة المرور اختيارية. إذا لم يضبطها مدير النظام، اترك الحقل فارغًا."|t }}</p>
+        <div class="login-links">
+          <a href="{{ url_for('auth.forgot_page') }}">{{ "نسيت كلمة المرور؟"|t }}</a>
+        </div>
         <button class="btn btn-primary btn-block login-submit" type="submit">
           <svg class="ico"><use href="#i-arrow-left"></use></svg>
           <span>{{ "دخول إلى النظام"|t }}</span>

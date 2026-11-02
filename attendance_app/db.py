@@ -10,7 +10,7 @@ from flask import current_app, g
 from . import config
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 8
+SCHEMA_VERSION = 9
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
     display_name TEXT NOT NULL DEFAULT '',
     role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('admin', 'user')),
     password_hash TEXT,
+    recovery_hash TEXT,
     is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
     created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
@@ -396,6 +397,9 @@ def init_db(db_path: str | Path) -> None:
             conn.execute(
                 "ALTER TABLE periods ADD COLUMN period_type TEXT NOT NULL DEFAULT 'CLASS'"
             )
+        user_columns = {row["name"] for row in conn.execute("PRAGMA table_info(users)")}
+        if "recovery_hash" not in user_columns:
+            conn.execute("ALTER TABLE users ADD COLUMN recovery_hash TEXT")
         current_version = conn.execute("PRAGMA user_version").fetchone()[0]
         if current_version < SCHEMA_VERSION:
             conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
