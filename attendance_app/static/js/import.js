@@ -277,7 +277,7 @@
     const parsed = state.parsed;
     const rows = parsed.preview || [];
     const head = parsed.columns
-      .map((column) => `<th data-col="${column.index}">${escape(columnLabel(column))}</th>`)
+      .map((column) => `<th scope="col" data-col="${column.index}">${escape(columnLabel(column))}</th>`)
       .join("");
     const body = rows
       .map(
@@ -294,7 +294,7 @@
       )
       .join("");
     els.rawTable.innerHTML = `
-      <thead><tr><th class="row-num">#</th>${head}</tr></thead>
+      <thead><tr><th scope="col" class="row-num">#</th>${head}</tr></thead>
       <tbody>${body}</tbody>`;
     els.rawHint.textContent = `عرض ${A.formatInt(rows.length)} صفوف من ${A.formatInt(parsed.total_rows)} · ${A.formatInt(parsed.columns.length)} عمودًا`;
     updateRawHighlights();
@@ -409,13 +409,13 @@
     els.reviewTable.innerHTML = `
       <thead>
         <tr>
-          <th>#</th>
-          <th>رقم التعريف</th>
-          <th>الاسم واللقب</th>
-          <th>القسم</th>
-          <th>هاتف الولي</th>
-          <th>تاريخ الميلاد</th>
-          <th>الإجراء</th>
+          <th scope="col">#</th>
+          <th scope="col">رقم التعريف</th>
+          <th scope="col">الاسم واللقب</th>
+          <th scope="col">القسم</th>
+          <th scope="col">هاتف الولي</th>
+          <th scope="col">تاريخ الميلاد</th>
+          <th scope="col">الإجراء</th>
         </tr>
       </thead>
       <tbody>

@@ -147,14 +147,38 @@
       button.dataset.originalDisabled = button.disabled ? "1" : "";
       button.disabled = true;
       button.classList.add("is-loading");
+      button.setAttribute("aria-busy", "true");
     } else {
       button.disabled = button.dataset.originalDisabled === "1";
       button.classList.remove("is-loading");
+      button.removeAttribute("aria-busy");
       delete button.dataset.originalDisabled;
     }
   }
 
   let activeModal = null;
+  let modalSeq = 0;
+
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function trapFocus(container, event) {
+    const items = Array.from(container.querySelectorAll(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+    if (!items.length) {
+      event.preventDefault();
+      container.focus();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || !container.contains(active))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (active === last || !container.contains(active))) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
 
   function closeModal(result) {
     if (!activeModal) return;
@@ -179,15 +203,16 @@
     const backdrop = document.createElement("div");
     backdrop.className = "modal-backdrop";
     const iconName = config.icon || (config.danger ? "warning" : "sparkle");
+    const titleId = `modal-title-${++modalSeq}`;
     const footer = config.footer !== undefined ? config.footer : `
       <button class="btn btn-secondary" type="button" data-modal-close>إغلاق</button>`;
     backdrop.innerHTML = `
       <div class="modal ${config.size === "lg" ? "modal-lg" : config.size === "xl" ? "modal-xl" : ""} ${config.danger ? "modal--danger" : ""}"
-           role="dialog" aria-modal="true" aria-labelledby="modal-title-${Date.now()}">
+           role="dialog" aria-modal="true" aria-labelledby="${titleId}" tabindex="-1">
         <div class="modal-header">
           <div class="modal-title-row">
             <div class="modal-icon">${icon(iconName)}</div>
-            <div><h2 id="modal-title-${Date.now()}">${escapeHtml(config.title || "نافذة")}</h2>
+            <div><h2 id="${titleId}">${escapeHtml(config.title || "نافذة")}</h2>
             ${config.subtitle ? `<p>${escapeHtml(config.subtitle)}</p>` : ""}</div>
           </div>
           <button class="icon-btn modal-close" type="button" data-modal-close aria-label="إغلاق">${icon("close")}</button>
@@ -203,12 +228,15 @@
     backdrop.addEventListener("click", (event) => {
       if (event.target === backdrop && config.dismissible !== false) close(null);
     });
+    backdrop.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") trapFocus(modal, event);
+    });
     backdrop.querySelectorAll("[data-modal-close]").forEach((btn) => {
       btn.addEventListener("click", () => close(config.closeValue !== undefined ? config.closeValue : null));
     });
     if (config.onMount) config.onMount(modal, { close });
     const focusTarget = modal.querySelector("[autofocus], .modal-body input:not([type=hidden]), .modal-body select, .modal-body textarea, .modal-footer .btn-primary");
-    if (focusTarget) window.setTimeout(() => focusTarget.focus(), 60);
+    window.setTimeout(() => (focusTarget || modal).focus(), 60);
     return { element: modal, close };
   }
 
@@ -389,9 +417,20 @@
     if (value) meta.setAttribute("content", value);
   }
 
+  function syncThemeToggle(theme) {
+    const dark = theme === "dark";
+    document.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
+      btn.setAttribute("aria-pressed", dark ? "true" : "false");
+      const label = dark ? "التبديل إلى المظهر الفاتح" : "التبديل إلى المظهر الداكن";
+      btn.setAttribute("aria-label", label);
+      btn.setAttribute("title", label);
+    });
+  }
+
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
     syncThemeColor();
+    syncThemeToggle(theme);
     try {
       localStorage.setItem(THEME_KEY, theme);
     } catch (error) {
@@ -476,6 +515,7 @@
   function initShell() {
     startHeartbeat();
     applyColorTheme(document.documentElement.dataset.color || "emerald");
+    syncThemeToggle(document.documentElement.dataset.theme || "light");
     bindDigitInputs();
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => btn.addEventListener("click", toggleTheme));
     document.addEventListener("error", (event) => {

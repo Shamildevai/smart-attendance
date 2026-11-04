@@ -30,7 +30,7 @@
     const sampleRows = sample.length
       ? `<div class="table-wrap" style="border:1px solid var(--border);border-radius:10px;margin-top:6px">
           <table class="preview-table">
-            <thead><tr><th>التلميذ</th><th>القسم</th><th>هاتف الولي</th></tr></thead>
+            <thead><tr><th scope="col">التلميذ</th><th scope="col">القسم</th><th scope="col">هاتف الولي</th></tr></thead>
             <tbody>${sample
               .map(
                 (student) => `<tr><td>${A.escapeHtml(student.full_name)}</td><td>${A.escapeHtml(student.class_group)}</td><td class="mono" style="font-size:9.5px">${A.escapeHtml(student.parent_phone || "—")}</td></tr>`

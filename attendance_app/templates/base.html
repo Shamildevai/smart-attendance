@@ -33,58 +33,58 @@
       </div>
 
       <nav class="nav">
-        <a class="nav-link {% if active == 'dashboard' %}is-active{% endif %}" href="{{ url_for('views.dashboard_page') }}">
+        <a class="nav-link {% if active == 'dashboard' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.dashboard_page') }}">
           <svg class="ico"><use href="#i-dashboard"></use></svg><span>لوحة المتابعة</span>
         </a>
-        <a class="nav-link {% if active == 'gate' %}is-active{% endif %}" href="{{ url_for('views.gate_page') }}">
+        <a class="nav-link {% if active == 'gate' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.gate_page') }}">
           <svg class="ico"><use href="#i-scan"></use></svg><span>بوابة المسح</span>
           <span class="nav-live"><i></i> مباشر</span>
         </a>
-        <a class="nav-link {% if active == 'entry_slip' %}is-active{% endif %}" href="{{ url_for('views.entry_slip_page') }}">
+        <a class="nav-link {% if active == 'entry_slip' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.entry_slip_page') }}">
           <svg class="ico"><use href="#i-entry"></use></svg><span>ورقة الدخول</span>
         </a>
-        <a class="nav-link {% if active == 'exit_slip' %}is-active{% endif %}" href="{{ url_for('views.exit_slip_page') }}">
+        <a class="nav-link {% if active == 'exit_slip' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.exit_slip_page') }}">
           <svg class="ico"><use href="#i-exit"></use></svg><span>ورقة الخروج</span>
         </a>
-        <a class="nav-link {% if active == 'summons' %}is-active{% endif %}" href="{{ url_for('views.summons_page') }}">
+        <a class="nav-link {% if active == 'summons' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.summons_page') }}">
           <svg class="ico"><use href="#i-bell"></use></svg><span>الاستدعاء</span>
         </a>
         <div class="nav-label">إدارة التلاميذ</div>
-        <a class="nav-link {% if active == 'students' %}is-active{% endif %}" href="{{ url_for('views.students_page') }}">
+        <a class="nav-link {% if active == 'students' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.students_page') }}">
           <svg class="ico"><use href="#i-users"></use></svg><span>التلاميذ</span>
         </a>
-        <a class="nav-link {% if active == 'import' %}is-active{% endif %}" href="{{ url_for('views.import_page') }}">
+        <a class="nav-link {% if active == 'import' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.import_page') }}">
           <svg class="ico"><use href="#i-upload"></use></svg><span>الاستيراد الذكي</span>
         </a>
-        <a class="nav-link {% if active == 'print' %}is-active{% endif %}" href="{{ url_for('views.print_studio_page') }}">
+        <a class="nav-link {% if active == 'print' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.print_studio_page') }}">
           <svg class="ico"><use href="#i-printer"></use></svg><span>استوديو الطباعة</span>
         </a>
-        <a class="nav-link {% if active == 'certificates' %}is-active{% endif %}" href="{{ url_for('views.certificates_page') }}">
+        <a class="nav-link {% if active == 'certificates' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.certificates_page') }}">
           <svg class="ico"><use href="#i-id-card"></use></svg><span>الشهادات</span>
         </a>
         <div class="nav-label">المتابعة والتقارير</div>
-        <a class="nav-link {% if active == 'attendance' %}is-active{% endif %}" href="{{ url_for('views.attendance_page') }}">
+        <a class="nav-link {% if active == 'attendance' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.attendance_page') }}">
           <svg class="ico"><use href="#i-list"></use></svg><span>سجل الحضور</span>
         </a>
-        <a class="nav-link {% if active == 'messages' %}is-active{% endif %}" href="{{ url_for('views.messages_page') }}">
+        <a class="nav-link {% if active == 'messages' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.messages_page') }}">
           <svg class="ico"><use href="#i-message"></use></svg><span>مركز الرسائل</span>
         </a>
-        <a class="nav-link {% if active == 'reports' %}is-active{% endif %}" href="{{ url_for('views.reports_page') }}">
+        <a class="nav-link {% if active == 'reports' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.reports_page') }}">
           <svg class="ico"><use href="#i-chart"></use></svg><span>التقارير والإحصاءات</span>
         </a>
         <div class="nav-label">النظام</div>
         {% if is_admin %}
-        <a class="nav-link {% if active == 'settings' %}is-active{% endif %}" href="{{ url_for('views.settings_page') }}">
+        <a class="nav-link {% if active == 'settings' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.settings_page') }}">
           <svg class="ico"><use href="#i-settings"></use></svg><span>الإعدادات</span>
         </a>
-        <a class="nav-link {% if active == 'users' %}is-active{% endif %}" href="{{ url_for('views.users_page') }}">
+        <a class="nav-link {% if active == 'users' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.users_page') }}">
           <svg class="ico"><use href="#i-user"></use></svg><span>المستخدمون</span>
         </a>
         {% endif %}
-        <a class="nav-link {% if active == 'help' %}is-active{% endif %}" href="{{ url_for('views.help_page') }}">
+        <a class="nav-link {% if active == 'help' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.help_page') }}">
           <svg class="ico"><use href="#i-help"></use></svg><span>دليل الاستخدام</span>
         </a>
-        <a class="nav-link {% if active == 'about' %}is-active{% endif %}" href="{{ url_for('views.about_page') }}">
+        <a class="nav-link {% if active == 'about' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.about_page') }}">
           <svg class="ico"><use href="#i-info"></use></svg><span>حول التطبيق</span>
         </a>
       </nav>
@@ -155,7 +155,7 @@
 
       {% include "partials/update_banner.html" %}
 
-      <main class="page" id="main-content">
+      <main class="page" id="main-content" tabindex="-1">
         <div class="page-heading">
           <div class="page-heading-text">
             <h1>{{ page_title|t }}</h1>

@@ -1370,7 +1370,7 @@
         <div class="campaign-message"><strong>نص الحملة</strong><p>${safe(campaign.message_template)}</p></div>
         <div class="table-wrap" style="margin-top:12px">
           <table class="data-table">
-            <thead><tr><th>التلميذ</th><th>القسم</th><th>الهاتف</th><th>الرسالة</th><th>الحالة</th><th style="width:1%">واتساب</th></tr></thead>
+            <thead><tr><th scope="col">التلميذ</th><th scope="col">القسم</th><th scope="col">الهاتف</th><th scope="col">الرسالة</th><th scope="col">الحالة</th><th scope="col" style="width:1%">واتساب</th></tr></thead>
             <tbody>${rows || '<tr><td colspan="6" class="empty-cell">لا توجد عناصر.</td></tr>'}</tbody>
           </table>
         </div>

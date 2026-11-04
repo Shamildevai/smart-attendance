@@ -195,14 +195,14 @@
   function renderDaily(report) {
     els.tableTitle.textContent = "سجلات الحضور اليومية";
     els.tableHead.innerHTML = `<tr>
-      <th style="width:1%">#</th>
-      <th>التلميذ</th>
-      <th>القسم</th>
-      <th>الفترة</th>
-      <th>وقت المسح</th>
-      <th>الحالة</th>
-      <th>رسالة SMS</th>
-      <th>ملاحظة</th>
+      <th scope="col" style="width:1%">#</th>
+      <th scope="col">التلميذ</th>
+      <th scope="col">القسم</th>
+      <th scope="col">الفترة</th>
+      <th scope="col">وقت المسح</th>
+      <th scope="col">الحالة</th>
+      <th scope="col">رسالة SMS</th>
+      <th scope="col">ملاحظة</th>
     </tr>`;
     const items = Array.isArray(report.items) ? report.items : [];
     if (!items.length) {
@@ -252,15 +252,15 @@
   function renderMonthly(report) {
     els.tableTitle.textContent = "ملخص الغياب الشهري لكل تلميذ";
     els.tableHead.innerHTML = `<tr>
-      <th style="width:1%">#</th>
-      <th>التلميذ</th>
-      <th>القسم</th>
-      <th style="text-align:center">حاضر</th>
-      <th style="text-align:center">متأخر</th>
-      <th style="text-align:center">غائب</th>
-      <th style="text-align:center">مبرر</th>
-      <th style="text-align:center">السجلات</th>
-      <th style="text-align:center">نسبة الغياب</th>
+      <th scope="col" style="width:1%">#</th>
+      <th scope="col">التلميذ</th>
+      <th scope="col">القسم</th>
+      <th scope="col" style="text-align:center">حاضر</th>
+      <th scope="col" style="text-align:center">متأخر</th>
+      <th scope="col" style="text-align:center">غائب</th>
+      <th scope="col" style="text-align:center">مبرر</th>
+      <th scope="col" style="text-align:center">السجلات</th>
+      <th scope="col" style="text-align:center">نسبة الغياب</th>
     </tr>`;
     const items = Array.isArray(report.items) ? report.items : [];
     if (!items.length) {
