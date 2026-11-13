@@ -85,7 +85,7 @@
     const requestId = ++state.requestId;
     state.loading = true;
     if (!options.silent) {
-      tbody.innerHTML = `<tr><td colspan="6" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل التلاميذ…</span></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-cell"><div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل ${A.studentNounsDef}…</span></div></td></tr>`;
     }
     try {
       const params = currentFilters();
@@ -165,7 +165,7 @@
   }
 
   function filterSummary() {
-    const bits = [A.t(`${A.formatInt(state.total)} تلميذ`)];
+    const bits = [A.t(`${A.formatInt(state.total)} ${A.studentNoun}`)];
     if (state.q) bits.push(A.t(`بحث: «${state.q}»`));
     if (state.classGroup === "__none__") bits.push(A.t("بدون قسم"));
     else if (state.classGroup) bits.push(A.t(`القسم: ${state.classGroup}`));
@@ -183,11 +183,11 @@
     if (!state.items.length) {
       const description = state.q || state.classGroup || state.active !== "all"
         ? "لا توجد نتائج مطابقة للمعايير المحددة. جرّب تغيير البحث أو الفلاتر."
-        : "لم تُضف أي تلميذ بعد. ابدأ بإضافة تلميذ يدويًا أو استيراد قائمة من Excel.";
+        : `لم تُضف أي ${A.studentNoun} بعد. ابدأ بإضافة ${A.studentNoun} يدويًا أو استيراد قائمة من Excel.`;
       const action = state.q || state.classGroup || state.active !== "all"
         ? '<button class="btn btn-secondary btn-sm" type="button" data-reset-filters>مسح الفلاتر</button>'
-        : '<button class="btn btn-primary btn-sm" type="button" data-add-inline>إضافة أول تلميذ</button>';
-      tbody.innerHTML = `<tr><td colspan="6" class="empty-cell">${A.emptyState("users", "لا يوجد تلاميذ", description, action)}</td></tr>`;
+        : `<button class="btn btn-primary btn-sm" type="button" data-add-inline>إضافة أول ${A.studentNoun}</button>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-cell">${A.emptyState("users", `لا يوجد ${A.studentNouns}`, description, action)}</td></tr>`;
       return;
     }
     tbody.innerHTML = state.items

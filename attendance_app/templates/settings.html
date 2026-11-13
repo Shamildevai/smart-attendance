@@ -71,6 +71,16 @@
             <label for="principal-name">اسم مدير المؤسسة</label>
             <input class="input" id="principal-name" name="principal_name" maxlength="120" value="{{ settings.get('principal_name', '') }}" placeholder="مدير المؤسسة">
           </div>
+          <div class="field">
+            <label for="student-noun">تسمية التلميذ (مفرد)</label>
+            <input class="input" id="student-noun" name="student_noun" maxlength="30" value="{{ settings.get('student_noun', 'تلميذ') }}" placeholder="تلميذ">
+            <span class="field-hint">تظهر في التقارير والواجهات، مثل: تلميذ أو طالب.</span>
+          </div>
+          <div class="field">
+            <label for="student-noun-plural">تسمية التلاميذ (جمع)</label>
+            <input class="input" id="student-noun-plural" name="student_noun_plural" maxlength="30" value="{{ settings.get('student_noun_plural', 'تلاميذ') }}" placeholder="تلاميذ">
+            <span class="field-hint">تظهر في العناوين العامة، مثل: تلاميذ أو طلاب.</span>
+          </div>
           <div class="field form-span-2">
             <label for="header-text">نص الترويسة</label>
             <textarea class="textarea" id="header-text" name="header_text" maxlength="600" rows="3" placeholder="الجمهورية الجزائرية الديمقراطية الشعبية&#10;وزارة التربية الوطنية">{{ settings.get('header_text', '') }}</textarea>
@@ -242,12 +252,31 @@
           <h2>الفترات الدراسية</h2>
           <p>اضبط أوقات البداية وحدود الحضور والغياب لكل فترة.</p>
         </div>
+        <button class="btn btn-secondary btn-sm" type="button" id="period-add-meal">
+          <svg class="ico"><use href="#i-plus"></use></svg>
+          <span>إضافة فترة الإطعام</span>
+        </button>
         <button class="btn btn-primary btn-sm" type="button" id="period-add">
           <svg class="ico"><use href="#i-plus"></use></svg>
           <span>إضافة فترة</span>
         </button>
       </div>
       <div class="settings-card-body">
+        <form id="meal-form" novalidate>
+          <div class="form-grid">
+            <div class="field form-span-2">
+              <label for="meal-period-label">اسم فترة الإطعام</label>
+              <input class="input" id="meal-period-label" maxlength="60" value="{{ settings.get('meal_period_label', 'فترة الإطعام') }}" placeholder="فترة الإطعام">
+              <span class="field-hint">يُستعمل في اسم الفترة والتقارير. مثال: فترة الغداء.</span>
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button class="btn btn-secondary btn-sm" type="submit">
+              <svg class="ico"><use href="#i-check"></use></svg>
+              <span>حفظ اسم فترة الإطعام</span>
+            </button>
+          </div>
+        </form>
         <div class="periods-list" id="periods-list">
           {% if periods %}
             <div class="period-row is-head">
@@ -391,6 +420,47 @@
               </button>
             </div>
             <span class="field-hint">يحفظ الإعدادات أولًا. في وضع الاختبار تُحاكى العملية دون إرسال حقيقي.</span>
+          </div>
+        </div>
+
+        <div class="telegram-panel" id="telegram-panel">
+          <div class="settings-note">
+            <svg class="ico"><use href="#i-send"></use></svg>
+            <div>تيليغرام يرسل تلقائيًا بعد موافقتك عبر بوت خاص بك. أنشئ بوتًا من <a class="inline-link" href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer">@BotFather</a>، أرسل له رسالة من الحساب أو أضفه إلى المجموعة، ثم انسخ رمز البوت ومعرّف المحادثة. تُرسل رسالة لكل تلميذ إلى المحادثة نفسها بحد أقصى 4096 حرفًا.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="telegram-enabled" {% if settings.get('telegram_enabled', '0') == '1' %}checked{% endif %}>
+            <span class="switch-track"></span>
+            <span class="switch-text">
+              <strong>تفعيل قناة تيليغرام</strong>
+              <span>تظهر قناة تيليغرام في مركز الرسائل عند تفعيلها واكتمال بيانات البوت.</span>
+            </span>
+          </label>
+          <div class="form-grid">
+            <div class="field form-span-2">
+              <label for="telegram-bot-token">رمز بوت تيليغرام (Bot Token)</label>
+              <div class="input-group">
+                <svg class="ico"><use href="#i-shield-check"></use></svg>
+                <input class="input mono" id="telegram-bot-token" type="password" dir="ltr" maxlength="200" autocomplete="off" placeholder="123456789:AAH...">
+                <button class="input-action" type="button" id="telegram-token-toggle" aria-label="إظهار رمز بوت تيليغرام" title="إظهار الرمز">
+                  <svg class="ico"><use href="#i-eye"></use></svg>
+                </button>
+              </div>
+              <span class="field-hint">من @BotFather ← /newbot أو /token. لا تشاركه مع أحد.</span>
+            </div>
+            <div class="field">
+              <label for="telegram-chat-id">معرّف المحادثة (Chat ID)</label>
+              <input class="input mono" id="telegram-chat-id" type="text" dir="ltr" maxlength="64" placeholder="123456789" value="{{ settings.get('telegram_chat_id', '') }}">
+              <span class="field-hint">رقم محادثتك أو المجموعة، مثل <code dir="ltr">-1001234567890</code>، أو <code dir="ltr">@channel</code> للقنوات العامة.</span>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button class="btn btn-secondary btn-sm" type="button" id="telegram-test-send">
+                <svg class="ico"><use href="#i-send"></use></svg>
+                <span>إرسال رسالة اختبار</span>
+              </button>
+              <span class="field-hint">يحفظ الإعدادات أولًا. في وضع الاختبار تُحاكى العملية دون إرسال حقيقي.</span>
+            </div>
           </div>
         </div>
 
@@ -745,6 +815,17 @@
             <svg class="ico"><use href="#i-upload"></use></svg>
             <span>استيراد قائمة تلاميذ</span>
           </a>
+        </div>
+
+        <div class="danger-zone">
+          <div>
+            <strong>مسح جميع البيانات</strong>
+            <p>يحذف التلاميذ وسجلات الحضور والرسائل وأجهزة الهاتف المرتبطة نهائيًا. تبقى الإعدادات والمستخدمون والفترات.</p>
+          </div>
+          <button class="btn btn-danger btn-sm" type="button" id="settings-reset">
+            <svg class="ico"><use href="#i-trash"></use></svg>
+            <span>مسح كل البيانات</span>
+          </button>
         </div>
 
         <div class="danger-zone">

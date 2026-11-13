@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from datetime import date, datetime
 from pathlib import Path
@@ -404,7 +405,17 @@ def set_language(code: str):
 
 @views_bp.get("/assets/i18n.js")
 def i18n_script():
-    body = i18n.i18n_javascript(i18n.current_lang())
+    lang = i18n.current_lang()
+    body = i18n.i18n_javascript(lang)
+    words = i18n.student_words(get_settings(get_db()), lang)
+    for name, value in (
+        ("AppStudentNoun", words["student_noun"]),
+        ("AppStudentNounPlural", words["student_nouns"]),
+        ("AppStudentNounDef", words["student_noun_def"]),
+        ("AppStudentNounPluralDef", words["student_nouns_def"]),
+    ):
+        encoded = json.dumps(value, ensure_ascii=False).replace("</", "<\\/")
+        body += f"window.{name}={encoded};"
     response = current_app.response_class(body, mimetype="application/javascript")
     response.headers["Cache-Control"] = "no-store"
     return response

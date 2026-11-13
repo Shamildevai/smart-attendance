@@ -73,6 +73,7 @@ def test_messages_students_endpoint_counts(client, make_student):
         "mobile",
         "cloud",
         "whatsapp",
+        "telegram",
     }
 
 

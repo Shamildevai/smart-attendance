@@ -48,6 +48,12 @@
     tableFoot: $("reports-table-foot"),
     tableMeta: $("reports-table-meta"),
     footNote: $("reports-foot-note"),
+    mealCard: $("reports-meal-card"),
+    mealTitle: $("reports-meal-title"),
+    mealLabel: $("reports-meal-label"),
+    mealMeta: $("reports-meal-meta"),
+    mealHead: $("reports-meal-head"),
+    mealBody: $("reports-meal-body"),
   };
 
   const today = (document.body.dataset.today || A.todayISO()).slice(0, 10);
@@ -196,7 +202,7 @@
     els.tableTitle.textContent = "سجلات الحضور اليومية";
     els.tableHead.innerHTML = `<tr>
       <th scope="col" style="width:1%">#</th>
-      <th scope="col">التلميذ</th>
+      <th scope="col">${A.studentNounDef}</th>
       <th scope="col">القسم</th>
       <th scope="col">الفترة</th>
       <th scope="col">وقت المسح</th>
@@ -250,10 +256,10 @@
   }
 
   function renderMonthly(report) {
-    els.tableTitle.textContent = "ملخص الغياب الشهري لكل تلميذ";
+    els.tableTitle.textContent = `ملخص الغياب الشهري لكل ${A.studentNoun}`;
     els.tableHead.innerHTML = `<tr>
       <th scope="col" style="width:1%">#</th>
-      <th scope="col">التلميذ</th>
+      <th scope="col">${A.studentNounDef}</th>
       <th scope="col">القسم</th>
       <th scope="col" style="text-align:center">حاضر</th>
       <th scope="col" style="text-align:center">متأخر</th>
@@ -295,7 +301,7 @@
       const totals = report.totals || {};
       els.tableFoot.innerHTML = `<tr class="summary-row">
         <td></td>
-        <td colspan="2">إجمالي ${A.formatInt(report.total_students)} تلميذًا</td>
+        <td colspan="2">إجمالي ${A.formatInt(report.total_students)} ${A.studentNoun}</td>
         <td style="text-align:center">${A.formatInt(totals.present || 0)}</td>
         <td style="text-align:center">${A.formatInt(totals.late || 0)}</td>
         <td style="text-align:center">${A.formatInt(totals.absent || 0)}</td>
@@ -305,7 +311,55 @@
       </tr>`;
     }
     els.tableLabel.textContent = `${A.t(report.month_display)} — ${A.t(report.period_label)} — ${A.t(report.class_label)}`;
-    els.footNote.textContent = `${A.formatInt(report.total_students)} تلميذًا — ${A.formatInt((report.totals || {}).total || 0)} سجل خلال الفترة ${report.start} إلى ${report.end}`;
+    els.footNote.textContent = `${A.formatInt(report.total_students)} ${A.studentNoun} — ${A.formatInt((report.totals || {}).total || 0)} سجل خلال الفترة ${report.start} إلى ${report.end}`;
+  }
+
+  function renderMeal(report) {
+    if (!els.mealCard) return;
+    const rows = Array.isArray(report.meal_absences) ? report.meal_absences : [];
+    if (!rows.length) {
+      els.mealCard.hidden = true;
+      return;
+    }
+    const label = report.meal_label || "فترة الإطعام";
+    els.mealCard.hidden = false;
+    els.mealTitle.textContent = `غياب ${label}`;
+    els.mealLabel.textContent = report.kind === "monthly"
+      ? "ملخص الغياب المسجّل خلال الشهر في فترة الإطعام فقط."
+      : "الغياب المسجّل في فترة الإطعام فقط، منفصلًا عن بقية الفترات.";
+    els.mealMeta.innerHTML = `<span class="chip is-warning">${A.icon("list")} ${A.formatInt(report.meal_absent_total || rows.length)} حالة</span>`;
+    els.mealHead.innerHTML = report.kind === "monthly"
+      ? `<tr>
+          <th scope="col" style="width:1%">#</th>
+          <th scope="col">${A.studentNounDef}</th>
+          <th scope="col">القسم</th>
+          <th scope="col" style="text-align:center">عدد الغيابات</th>
+        </tr>`
+      : `<tr>
+          <th scope="col" style="width:1%">#</th>
+          <th scope="col">${A.studentNounDef}</th>
+          <th scope="col">القسم</th>
+          <th scope="col">الفترة</th>
+          <th scope="col">توقيت البداية</th>
+        </tr>`;
+    els.mealBody.innerHTML = rows
+      .map((item, index) => `<tr>
+        <td class="tiny muted">${A.formatInt(index + 1)}</td>
+        <td>
+          <div class="cell-main">
+            <div>
+              <strong>${safe(item.full_name || "بدون اسم")}</strong>
+              <small>${safe(item.student_nin)}</small>
+            </div>
+          </div>
+        </td>
+        <td><span class="chip">${safe(item.class_group)}</span></td>
+        ${report.kind === "monthly"
+          ? `<td style="text-align:center;color:var(--danger);font-weight:700">${A.formatInt(item.count || 0)}</td>`
+          : `<td class="tiny">${safe(item.period_name || label)}</td>
+             <td><span class="time-chip">${A.icon("clock")} ${safe(item.scan_time || "—")}</span></td>`}
+      </tr>`)
+      .join("");
   }
 
   function render(report) {
@@ -316,6 +370,7 @@
     els.subtitle.textContent = `${report.school_name || ""}${report.academic_year ? ` · ${A.t("السنة الدراسية")} ${report.academic_year}` : ""} — ${A.t(report.period_label)} — ${A.t(report.class_label)}`;
     if (report.kind === "monthly") renderMonthly(report);
     else renderDaily(report);
+    renderMeal(report);
     syncUrl();
     setOutputState(false);
   }

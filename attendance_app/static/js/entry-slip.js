@@ -241,7 +241,7 @@
 
   function updateMeta(data) {
     const bits = [
-      A.t(`${A.formatInt(data.stats ? data.stats.total : 0)} تلميذ نشط`),
+      A.t(`${A.formatInt(data.stats ? data.stats.total : 0)} ${A.studentNoun} نشط`),
       A.t(`المجموع المسجل: ${A.formatInt(data.stats ? data.stats.logged : 0)}`),
     ];
     $("entry-period-meta").textContent = bits.join(" · ");

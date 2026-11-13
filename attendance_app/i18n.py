@@ -58,6 +58,29 @@ def lang_dir(lang: str | None = None) -> str:
     return LANGUAGES[normalize_lang(lang or current_lang())]["dir"]
 
 
+def student_words(settings: dict, lang: str | None = None) -> dict[str, str]:
+    """Wording for "student" following the school's setting.
+
+    Only Arabic honours the custom noun; English and French keep the default
+    Arabic source so the locale catalog can still translate whole sentences.
+    """
+    code = normalize_lang(lang or current_lang())
+    noun, plural = "تلميذ", "تلاميذ"
+    if code == "ar":
+        noun = str(settings.get("student_noun") or noun).strip() or noun
+        plural = str(settings.get("student_noun_plural") or plural).strip() or plural
+
+    def definite(word: str) -> str:
+        return word if word.startswith("ال") else f"ال{word}"
+
+    return {
+        "student_noun": noun,
+        "student_nouns": plural,
+        "student_noun_def": definite(noun),
+        "student_nouns_def": definite(plural),
+    }
+
+
 def _normalize_space(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 

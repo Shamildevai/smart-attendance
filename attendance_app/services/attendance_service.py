@@ -34,10 +34,11 @@ _PREVIEW_NIN_RE = re.compile(r"^0{12,}\d{0,6}$")
 _PARTIAL_MATCH_MIN = 8
 _PARTIAL_MATCH_MAX_EXTRA = 4
 
-PERIOD_TYPES = ("CLASS", "BREAKFAST", "CANTEEN", "SUPPORT", "OTHER")
+PERIOD_TYPES = ("CLASS", "BREAKFAST", "MEAL", "CANTEEN", "SUPPORT", "OTHER")
 PERIOD_TYPE_AR = {
     "CLASS": "حصة دراسية",
     "BREAKFAST": "وقت الفطور",
+    "MEAL": "فترة الإطعام",
     "CANTEEN": "المطعم",
     "SUPPORT": "دروس الدعم",
     "OTHER": "فترة خاصة",

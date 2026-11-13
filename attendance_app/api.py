@@ -28,6 +28,7 @@ from .auth import (
 from .config import COLOR_THEMES, DEFAULT_COLOR_THEME, GATEWAY_APP_VERSION
 from .db import (
     DEFAULT_PRINT_CONFIG,
+    SEED_PERIODS,
     bool_setting,
     get_db,
     get_print_config,
@@ -48,6 +49,7 @@ from .services import (
     report_service,
     scanner_bridge_service,
     sms_service,
+    telegram_service,
     update_service,
     whatsapp_service,
 )
@@ -417,6 +419,9 @@ def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
         "academic_year": settings.get("academic_year", ""),
         "header_text": settings.get("header_text", ""),
         "principal_name": settings.get("principal_name", ""),
+        "student_noun": settings.get("student_noun", "تلميذ"),
+        "student_noun_plural": settings.get("student_noun_plural", "تلاميذ"),
+        "meal_period_label": settings.get("meal_period_label", "فترة الإطعام"),
         "logo_url": settings.get("logo_path", ""),
         "stamp_url": settings.get("stamp_path", ""),
         "sms_template": settings.get("sms_template", ""),
@@ -440,6 +445,9 @@ def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
         "whatsapp_template_name": settings.get("whatsapp_template_name", ""),
         "whatsapp_template_lang": settings.get("whatsapp_template_lang", "ar"),
         "whatsapp_api_version": settings.get("whatsapp_api_version", "v23.0"),
+        "telegram_enabled": bool_setting(settings, "telegram_enabled", False),
+        "telegram_bot_token": settings.get("telegram_bot_token", ""),
+        "telegram_chat_id": settings.get("telegram_chat_id", ""),
         "school_weekdays": [
             int(part) for part in settings.get("school_weekdays", "0,1,2,3,4").split(",")
             if part.strip().isdigit()
@@ -537,6 +545,9 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         "academic_year": 40,
         "header_text": 600,
         "principal_name": 120,
+        "student_noun": 30,
+        "student_noun_plural": 30,
+        "meal_period_label": 60,
         "sms_template": 2000,
         "sms_api_url": 500,
         "sms_api_key": 1000,
@@ -549,6 +560,8 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         "whatsapp_template_name": 120,
         "whatsapp_template_lang": 20,
         "whatsapp_api_version": 20,
+        "telegram_bot_token": 200,
+        "telegram_chat_id": 64,
         "update_feed_url": 500,
     }
     for key, limit in text_limits.items():
@@ -559,6 +572,12 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
             updates[key] = value
     if "school_name" in updates and not updates["school_name"]:
         raise ApiError("اسم المؤسسة مطلوب.", 400)
+    if "student_noun" in updates and not updates["student_noun"]:
+        updates["student_noun"] = "تلميذ"
+    if "student_noun_plural" in updates and not updates["student_noun_plural"]:
+        updates["student_noun_plural"] = "تلاميذ"
+    if "meal_period_label" in updates and not updates["meal_period_label"]:
+        updates["meal_period_label"] = "فترة الإطعام"
     if "color_theme" in data:
         color = str(data.get("color_theme") or "").strip().lower()
         if color not in COLOR_THEMES:
@@ -592,6 +611,7 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         ("sms_test_mode", "وضع الاختبار"),
         ("auto_sweep", "الرصد التلقائي"),
         ("whatsapp_enabled", "إرسال واتساب"),
+        ("telegram_enabled", "إرسال تيليغرام"),
         ("auto_update", "التحديث التلقائي"),
     ):
         if key in data:
@@ -611,6 +631,22 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
         if provider not in ("manual", "cloud"):
             raise ApiError("طريقة إرسال واتساب غير صالحة.", 400)
         updates["whatsapp_provider"] = provider
+    if "telegram_chat_id" in data:
+        chat_raw = str(data.get("telegram_chat_id") or "").strip()
+        chat_id = telegram_service.normalize_chat_id(chat_raw)
+        if chat_raw and not chat_id:
+            raise ApiError(
+                "معرّف محادثة تيليغرام غير صالح. استعمل رقمًا مثل 123456789 أو -1001234567890 أو @channel.",
+                400,
+            )
+        updates["telegram_chat_id"] = chat_id
+    if "telegram_bot_token" in updates:
+        token = updates["telegram_bot_token"]
+        if token and not telegram_service.token_valid(token):
+            raise ApiError(
+                "رمز بوت تيليغرام غير صالح. انسخه كاملًا من @BotFather (الصيغة: أرقام:حروف).",
+                400,
+            )
     if "whatsapp_phone_number_id" in updates:
         phone_id = re.sub(r"\D", "", updates["whatsapp_phone_number_id"])
         if updates["whatsapp_phone_number_id"] and not phone_id:
@@ -669,9 +705,13 @@ def _validate_settings_update(conn: sqlite3.Connection, data: dict[str, Any]) ->
             merged.get("whatsapp_provider") == "cloud"
             and whatsapp_service.cloud_configured(merged)
         )
+        and not (
+            bool_setting(merged, "telegram_enabled", False)
+            and telegram_service.telegram_configured(merged)
+        )
     ):
         raise ApiError(
-            "أدخل رابط بوابة SMS واحدة أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار.",
+            "أدخل رابط بوابة SMS واحدة أو أكمل بيانات Meta WhatsApp Cloud API أو تيليغرام قبل تعطيل وضع الاختبار.",
             400,
         )
     return updates
@@ -754,6 +794,25 @@ def test_whatsapp_api():
     except whatsapp_service.WhatsAppError as error:
         raise ApiError(str(error), 502, "whatsapp") from error
     return ok(result=result)
+
+
+@api_bp.post("/settings/test-telegram")
+def test_telegram_api():
+    settings = get_settings(get_db())
+    data = _payload()
+    school = settings.get("school_name") or "نظام الحضور"
+    text = str(data.get("message") or "").strip() or (
+        f"رسالة اختبار من {school} — {datetime.now().strftime('%Y-%m-%d %H:%M')}.\n"
+        "إذا وصلتك هذه الرسالة فقناة تيليغرام تعمل."
+    )
+    try:
+        bot = telegram_service.verify_bot(settings)
+        result = telegram_service.send_message(settings, text)
+    except telegram_service.TelegramConfigError as error:
+        raise ApiError(str(error), 400, "telegram_config") from error
+    except telegram_service.TelegramError as error:
+        raise ApiError(str(error), 502, "telegram") from error
+    return ok(result=result, bot=bot)
 
 
 @api_bp.post("/uploads/<kind>")
@@ -1984,6 +2043,8 @@ def send_message_campaign_api():
         if campaign["channel"] == "whatsapp":
             response["whatsapp_provider"] = "cloud"
             response["message"] = "بدأ إرسال رسائل واتساب عبر Meta Cloud API إلى الأولياء."
+        elif campaign["channel"] == "telegram":
+            response["message"] = "بدأ إرسال رسائل تيليغرام إلى المحادثة المضبوطة."
         else:
             response["message"] = "بدأ إرسال الرسائل إلى الأولياء."
     return ok(**response)
@@ -2212,6 +2273,76 @@ def heartbeat_api():
         tracker["last"] = time.time()
         tracker["seen"] = True
     return ok()
+
+
+_RESET_TABLES = (
+    "sms_logs",
+    "attendance_logs",
+    "entry_slips",
+    "exit_slips",
+    "summons",
+    "period_closures",
+    "message_outbox",
+    "message_campaigns",
+    "mobile_scans",
+    "mobile_devices",
+    "scan_connect_codes",
+)
+
+
+@api_bp.post("/system/reset")
+def reset_system_api():
+    _require_local()
+    data = _payload()
+    if squash(str(data.get("confirm") or "")) != "حذف":
+        raise ApiError("اكتب كلمة «حذف» لتأكيد مسح البيانات.", 400, "confirm_required")
+    manager = current_app.extensions.get("message_jobs")
+    if manager is not None and manager.current():
+        raise ApiError(
+            "هناك حملة رسائل قيد الإرسال. انتظر اكتمالها ثم أعد المحاولة.",
+            409,
+            "busy",
+        )
+    reset_periods = _as_bool(data.get("reset_periods", False), "إعادة الفترات الافتراضية")
+    conn = get_db()
+    counts: dict[str, int] = {}
+    with conn:
+        for table in _RESET_TABLES:
+            counts[table] = conn.execute(f"DELETE FROM {table}").rowcount
+        counts["students"] = conn.execute("DELETE FROM students").rowcount
+        sequence_tables = [*_RESET_TABLES, "students"]
+        if reset_periods:
+            counts["periods"] = conn.execute("DELETE FROM periods").rowcount
+            sequence_tables.append("periods")
+        placeholders = ",".join("?" for _ in sequence_tables)
+        conn.execute(
+            f"DELETE FROM sqlite_sequence WHERE name IN ({placeholders})",
+            tuple(sequence_tables),
+        )
+        if reset_periods:
+            for period in SEED_PERIODS:
+                conn.execute(
+                    """INSERT INTO periods
+                       (period_name, period_type, start_time, on_time_cutoff,
+                        absent_cutoff_time, sort_order)
+                       VALUES(?, ?, ?, ?, ?, ?)""",
+                    (
+                        period["period_name"],
+                        period.get("period_type", "CLASS"),
+                        period["start_time"],
+                        period["on_time_cutoff"],
+                        period["absent_cutoff_time"],
+                        period["sort_order"],
+                    ),
+                )
+    total = sum(counts.values())
+    message = (
+        "تم مسح بيانات التلاميذ والحضور والرسائل والربط بالهواتف. "
+        f"عدد السجلات المحذوفة: {total}."
+    )
+    if reset_periods:
+        message += " وأُعيدت الفترات الافتراضية."
+    return ok(counts=counts, message=message)
 
 
 @api_bp.post("/system/shutdown")

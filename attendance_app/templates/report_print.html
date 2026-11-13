@@ -89,6 +89,7 @@
             <th scope="col" style="width:14mm">متأخر</th>
             <th scope="col" style="width:14mm">غائب</th>
             <th scope="col" style="width:14mm">مبرر</th>
+            <th scope="col" style="width:16mm">غياب الإطعام</th>
             <th scope="col" style="width:16mm">السجلات</th>
             <th scope="col" style="width:20mm">نسبة الغياب</th>
           </tr>
@@ -106,12 +107,12 @@
               <td class="is-num">{{ item.late }}</td>
               <td class="is-num">{{ item.absent }}</td>
               <td class="is-num">{{ item.excused }}</td>
+              <td class="is-num">{{ item.meal_absent or 0 }}</td>
               <td class="is-num">{{ item.total }}</td>
               <td class="is-num">{{ (item.absent / item.total * 100) | round(1) if item.total else 0 }}%</td>
             </tr>
           {% else %}
-            <tr><td colspan="9" class="report-empty">لا توجد بيانات مسجلة خلال هذا الشهر للفلاتر المحددة.</td></tr>
-          {% endfor %}
+            <tr><td colspan="10" class="report-empty">لا توجد بيانات مسجلة خلال هذا الشهر للفلاتر المحددة.</td></tr>          {% endfor %}
         </tbody>
         <tfoot>
           <tr>
@@ -120,6 +121,7 @@
             <td class="is-num">{{ report.totals.late }}</td>
             <td class="is-num">{{ report.totals.absent }}</td>
             <td class="is-num">{{ report.totals.excused }}</td>
+            <td class="is-num">{{ report.totals.meal_absent or 0 }}</td>
             <td class="is-num">{{ report.totals.total }}</td>
             <td class="is-num">{{ (report.totals.absent / report.totals.total * 100) | round(1) if report.totals.total else 0 }}%</td>
           </tr>
@@ -167,6 +169,42 @@
           </tr>
         </tfoot>
       </table>
+    {% endif %}
+
+    {% if report.meal_absences %}
+      <section class="report-meal">
+        <h2>{{ report.meal_label }} — {{ "الغياب المسجّل" if report.kind == "daily" else "ملخص الغياب" }}</h2>
+        <table class="report-table report-table--meal">
+          <thead>
+            <tr>
+              <th scope="col" style="width:5mm">#</th>
+              <th scope="col">{{ report.student_noun or "التلميذ" }}</th>
+              <th scope="col" style="width:18mm">القسم</th>
+              {% if report.kind == "daily" %}
+                <th scope="col" style="width:24mm">الفترة</th>
+                <th scope="col" style="width:16mm">الوقت</th>
+              {% else %}
+                <th scope="col" style="width:20mm">عدد مرات الغياب</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in report.meal_absences %}
+              <tr>
+                <td class="is-num">{{ loop.index }}</td>
+                <td><strong>{{ item.full_name }}</strong><span class="report-nin">{{ item.student_nin }}</span></td>
+                <td>{{ item.class_group }}</td>
+                {% if report.kind == "daily" %}
+                  <td>{{ item.period_name }}</td>
+                  <td class="is-num">{{ item.scan_time or "—" }}</td>
+                {% else %}
+                  <td class="is-num">{{ item.count }}</td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
     {% endif %}
 
     <footer class="report-footer">

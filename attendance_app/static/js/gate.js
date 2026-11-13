@@ -162,7 +162,7 @@
     const period = data.selected_period;
     const total = Number(data.total_active_students || 0);
     const anti = Number(data.anti_passback_minutes || 0);
-    const bits = [A.t(`${A.formatInt(total)} تلميذ نشط`)];
+    const bits = [A.t(`${A.formatInt(total)} ${A.studentNoun} نشط`)];
     if (period) bits.push(A.t(`المجموع المسجل: ${A.formatInt((data.stats && data.stats.logged) || 0)}`));
     if (anti > 0) bits.push(A.t(`حماية التكرار: ${anti} دقائق`));
     $("gate-period-meta").textContent = bits.join(" · ");

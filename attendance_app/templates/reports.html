@@ -135,6 +135,22 @@
       </div>
     </div>
   </section>
+
+  <section class="card" id="reports-meal-card" hidden>
+    <div class="card-header">
+      <div>
+        <h2><svg class="ico"><use href="#i-list"></use></svg> <span id="reports-meal-title">غياب فترة الإطعام</span></h2>
+        <p id="reports-meal-label">—</p>
+      </div>
+      <div class="flex" id="reports-meal-meta" style="gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table report-table">
+        <thead id="reports-meal-head"></thead>
+        <tbody id="reports-meal-body"></tbody>
+      </table>
+    </div>
+  </section>
 {% endblock %}
 
 {% block scripts %}

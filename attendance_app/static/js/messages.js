@@ -114,7 +114,9 @@
   }
 
   function bodyLimit() {
-    return whatsappCloud() && state.channel === "whatsapp" ? 1024 : 2000;
+    if (state.channel === "whatsapp" && whatsappCloud()) return 1024;
+    if (state.channel === "telegram") return 4096;
+    return 2000;
   }
 
   function renderBodyCount() {
@@ -131,6 +133,7 @@
   }
 
   function eligible(student, channel) {
+    if (channel === "telegram") return true;
     return channel === "whatsapp" ? Boolean(student.whatsapp_ready) : Boolean(student.sms_ready);
   }
 
@@ -270,9 +273,10 @@
       `<span class="chip ${mobileTone}">${A.icon("phone")} الهاتف: ${mobileText}</span>`,
       `<span class="chip ${cloud.ready ? "" : "is-danger"}">${A.icon("dashboard")} الحاسوب: ${cloud.ready ? (cloud.configured ? "مهيأ" : "محاكاة") : "غير مهيأ"}</span>`,
       `<span class="chip ${waTone}">${A.icon("whatsapp")} واتساب: ${waText}</span>`,
+      `<span class="chip ${channelInfo("telegram").ready ? "is-accent" : "is-danger"}">${A.icon("send")} تيليغرام: ${channelInfo("telegram").ready ? (channelInfo("telegram").configured ? "مهيأ" : "محاكاة") : "معطّل"}</span>`,
     ];
     els.statusChips.innerHTML = chips.join("");
-    els.totalChip.innerHTML = `<strong>${A.formatInt(state.counts.total || 0)}</strong>&nbsp;تلميذ نشط`;
+    els.totalChip.innerHTML = `<strong>${A.formatInt(state.counts.total || 0)}</strong>&nbsp;${A.studentNoun} نشط`;
     els.testNote.classList.toggle("hidden", !testMode);
     els.scopeAllCount.textContent = A.formatInt(state.counts.total || 0);
   }
@@ -380,15 +384,24 @@
         warnings.push("تطبيق واتساب لسطح المكتب غير مثبّت على هذا الحاسوب. ثبّته من الرابط أسفل البطاقة قبل فتح المحادثات.");
       }
     }
+    if (state.channel === "telegram" && info.ready) {
+      warnings.push(
+        state.channels.test_mode
+          ? "وضع الاختبار مفعّل: ستُحاكى رسائل تيليغرام دون إرسال حقيقي."
+          : `سيُرسل تيليغرام رسالة لكل تلميذ إلى المحادثة ${info.chat_id || "المضبوطة"} بعد الموافقة، بحد أقصى 4096 حرفًا للرسالة.`
+      );
+    }
     els.channelWarning.classList.toggle("hidden", warnings.length === 0);
     els.channelWarningText.textContent = warnings.join(" ");
     const label = state.channel === "whatsapp"
       ? cloudMode
         ? "إرسال واتساب تلقائيًا"
         : "فتح محادثات واتساب"
-      : state.channel === "cloud"
-        ? "إرسال SMS عبر الحاسوب"
-        : "إرسال SMS عبر الهاتف";
+      : state.channel === "telegram"
+        ? "إرسال رسائل تيليغرام"
+        : state.channel === "cloud"
+          ? "إرسال SMS عبر الحاسوب"
+          : "إرسال SMS عبر الهاتف";
     els.send.querySelector("span").textContent = label;
   }
 
@@ -798,7 +811,11 @@
     const classCount = new Set(list.map((student) => student.class_group)).size;
     els.summaryTotal.textContent = A.formatInt(list.length);
     els.summaryEligible.textContent = A.formatInt(ready.length);
-    els.summaryEligibleLabel.textContent = state.channel === "whatsapp" ? "لديهم واتساب" : "سيصلهم SMS";
+    els.summaryEligibleLabel.textContent = state.channel === "whatsapp"
+      ? "لديهم واتساب"
+      : state.channel === "telegram"
+        ? "سيُرسل إلى محادثة تيليغرام"
+        : "سيصلهم SMS";
     els.summarySkipped.textContent = A.formatInt(list.length - ready.length);
     els.summaryClasses.textContent = A.formatInt(classCount);
     const skipped = list.length - ready.length;
@@ -970,6 +987,10 @@
         : `أوافق صراحةً على إرسال رسائل واتساب تلقائيًا عبر Meta Cloud API إلى المستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}).`;
     } else if (state.channel === "whatsapp") {
       els.approvalText.textContent = `أوافق على تجهيز محادثة واتساب لكل مستلم في النطاق المحدد (العدد: ${A.formatInt(count)})، وأتحمل مسؤولية مراجعة كل رسالة والضغط على «إرسال» داخل واتساب.`;
+    } else if (state.channel === "telegram") {
+      els.approvalText.textContent = state.channels.test_mode
+        ? `أوافق على محاكاة إرسال رسائل تيليغرام للمستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}) في وضع الاختبار، دون استخدام الشبكة.`
+        : `أوافق صراحةً على إرسال رسائل تيليغرام تلقائيًا إلى المحادثة المضبوطة للمستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}).`;
     } else if (state.channels.test_mode) {
       els.approvalText.textContent = `أوافق على محاكاة إرسال SMS إلى المستلمين في النطاق المحدد (العدد: ${A.formatInt(count)}) في وضع الاختبار، دون استخدام الشبكة أو استهلاك رصيد.`;
     } else {
@@ -1370,7 +1391,7 @@
         <div class="campaign-message"><strong>نص الحملة</strong><p>${safe(campaign.message_template)}</p></div>
         <div class="table-wrap" style="margin-top:12px">
           <table class="data-table">
-            <thead><tr><th scope="col">التلميذ</th><th scope="col">القسم</th><th scope="col">الهاتف</th><th scope="col">الرسالة</th><th scope="col">الحالة</th><th scope="col" style="width:1%">واتساب</th></tr></thead>
+            <thead><tr><th scope="col">${A.studentNounDef}</th><th scope="col">القسم</th><th scope="col">الهاتف</th><th scope="col">الرسالة</th><th scope="col">الحالة</th><th scope="col" style="width:1%">واتساب</th></tr></thead>
             <tbody>${rows || '<tr><td colspan="6" class="empty-cell">لا توجد عناصر.</td></tr>'}</tbody>
           </table>
         </div>

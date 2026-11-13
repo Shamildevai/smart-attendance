@@ -255,6 +255,27 @@
   text-align: start;
 }
 
+.report-meal {
+  margin-top: 6mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.report-meal h2 {
+  margin: 0 0 2mm;
+  padding: 1.6mm 2.5mm;
+  border-inline-start: 1mm solid var(--report-accent, #0e7c66);
+  background: var(--report-soft, #e7f3ee);
+  border-radius: 1mm;
+  font-size: 9.5pt;
+  color: var(--report-ink, #0b3b31);
+}
+
+.report-table--meal th,
+.report-table--meal td {
+  font-size: 7.6pt;
+}
+
 .report-footer {
   display: flex;
   align-items: flex-end;

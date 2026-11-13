@@ -49,9 +49,9 @@
         <a class="nav-link {% if active == 'summons' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.summons_page') }}">
           <svg class="ico"><use href="#i-bell"></use></svg><span>الاستدعاء</span>
         </a>
-        <div class="nav-label">إدارة التلاميذ</div>
+        <div class="nav-label">إدارة {{ student_nouns_def }}</div>
         <a class="nav-link {% if active == 'students' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.students_page') }}">
-          <svg class="ico"><use href="#i-users"></use></svg><span>التلاميذ</span>
+          <svg class="ico"><use href="#i-users"></use></svg><span>{{ student_nouns_def }}</span>
         </a>
         <a class="nav-link {% if active == 'import' %}is-active" aria-current="page{% endif %}" href="{{ url_for('views.import_page') }}">
           <svg class="ico"><use href="#i-upload"></use></svg><span>الاستيراد الذكي</span>

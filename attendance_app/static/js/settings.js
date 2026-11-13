@@ -84,6 +84,10 @@
     $("school-name").value = s.school_name || "";
     $("academic-year").value = s.academic_year || "";
     $("principal-name").value = s.principal_name || "";
+    $("student-noun").value = s.student_noun || "تلميذ";
+    $("student-noun-plural").value = s.student_noun_plural || "تلاميذ";
+    const mealLabel = $("meal-period-label");
+    if (mealLabel) mealLabel.value = s.meal_period_label || "فترة الإطعام";
     $("header-text").value = s.header_text || "";
 
     $("auto-sweep").checked = Boolean(s.auto_sweep);
@@ -123,6 +127,9 @@
     $("whatsapp-template-name").value = s.whatsapp_template_name || "absence_notice";
     $("whatsapp-template-lang").value = s.whatsapp_template_lang || "ar";
     $("whatsapp-api-version").value = s.whatsapp_api_version || "v23.0";
+    $("telegram-enabled").checked = Boolean(s.telegram_enabled);
+    $("telegram-bot-token").value = s.telegram_bot_token || "";
+    $("telegram-chat-id").value = s.telegram_chat_id || "";
 
     const colorTheme = THEME_OPTIONS.includes(s.color_theme) ? s.color_theme : "emerald";
     A.applyColorTheme(colorTheme);
@@ -306,6 +313,8 @@
           school_name: name,
           academic_year: $("academic-year").value.trim(),
           principal_name: $("principal-name").value.trim(),
+          student_noun: $("student-noun").value.trim() || "تلميذ",
+          student_noun_plural: $("student-noun-plural").value.trim() || "تلاميذ",
           header_text: $("header-text").value.trim(),
         },
         $("institution-form").querySelector('button[type="submit"]'),
@@ -533,11 +542,19 @@
     const whatsappCloudReady = Boolean(
       whatsappProvider === "cloud" && whatsappPhoneId && whatsappToken && whatsappTemplate
     );
-    if (!testMode && !activeUrl && !whatsappCloudReady) {
+    const telegramToken = $("telegram-bot-token").value.trim();
+    const telegramChat = $("telegram-chat-id").value.trim();
+    const telegramReady = Boolean($("telegram-enabled").checked && telegramToken && telegramChat);
+    if (telegramToken && !/^\d{5,20}:[A-Za-z0-9_-]{20,}$/.test(telegramToken)) {
+      A.toast("رمز بوت تيليغرام غير صالح. انسخه كاملًا من @BotFather.", "warning");
+      $("telegram-bot-token").focus();
+      return null;
+    }
+    if (!testMode && !activeUrl && !whatsappCloudReady && !telegramReady) {
       A.toast(
         gateway === "cloud"
-          ? "أدخل رابط واجهة الحاسوب/السحابة أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار."
-          : "أدخل رابط بوابة الهاتف أو أكمل بيانات Meta WhatsApp Cloud API قبل تعطيل وضع الاختبار.",
+          ? "أدخل رابط واجهة الحاسوب/السحابة أو أكمل بيانات Meta WhatsApp Cloud API أو تيليغرام قبل تعطيل وضع الاختبار."
+          : "أدخل رابط بوابة الهاتف أو أكمل بيانات Meta WhatsApp Cloud API أو تيليغرام قبل تعطيل وضع الاختبار.",
         "warning"
       );
       $(gateway === "cloud" ? "sms-cloud-url" : "sms-mobile-url").focus();
@@ -579,6 +596,9 @@
       whatsapp_template_name: whatsappTemplate,
       whatsapp_template_lang: whatsappLang,
       whatsapp_api_version: whatsappApiVersion,
+      telegram_enabled: $("telegram-enabled").checked,
+      telegram_bot_token: $("telegram-bot-token").value.trim(),
+      telegram_chat_id: $("telegram-chat-id").value.trim(),
     };
     if (gateway === "cloud") {
       payload.sms_api_key = cloudKey;
@@ -617,6 +637,7 @@
     [
       ["sms-cloud-key-toggle", "sms-cloud-key", "مفتاح واجهة الحاسوب/السحابة"],
       ["whatsapp-token-toggle", "whatsapp-access-token", "رمز وصول واتساب"],
+      ["telegram-token-toggle", "telegram-bot-token", "رمز بوت تيليغرام"],
     ].forEach(([toggleId, inputId, label]) => {
       const toggle = $(toggleId);
       if (!toggle) return;
@@ -686,6 +707,29 @@
         A.toast(result.message || "اكتمل اختبار واتساب.", result.sent ? "success" : "info", "اختبار واتساب");
       } catch (error) {
         A.toast(error.message || "فشل اختبار واتساب.", "error");
+      } finally {
+        A.setBusy(button, false);
+      }
+    });
+    $("telegram-test-send").addEventListener("click", async () => {
+      const payload = smsPayload();
+      if (!payload) return;
+      const button = $("telegram-test-send");
+      const saved = await saveSettings(payload, button, "تم حفظ الإعدادات قبل الاختبار.");
+      if (!saved) return;
+      A.setBusy(button, true);
+      try {
+        const data = await A.api("/api/settings/test-telegram", { method: "POST", body: {} });
+        const result = data.result || {};
+        const bot = data.bot || {};
+        const detail = [bot.detail, result.detail].filter(Boolean).join(" ");
+        A.toast(
+          detail || "اكتمل اختبار تيليغرام.",
+          result.simulated ? "info" : "success",
+          "اختبار تيليغرام"
+        );
+      } catch (error) {
+        A.toast(error.message || "فشل اختبار تيليغرام.", "error");
       } finally {
         A.setBusy(button, false);
       }
@@ -779,20 +823,58 @@
     list.innerHTML = rows.join("");
   }
 
+  function normalizeClock(value) {
+    const latin = A.latinDigits(String(value || ""))
+      .replace(/[.,٫،：]/g, ":")
+      .replace(/\s+/g, "")
+      .trim();
+    if (!latin) return "";
+    let match = latin.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if (!match) match = latin.match(/^(\d{2})(\d{2})$/);
+    if (!match) match = latin.match(/^(\d{1,2})$/);
+    if (!match) return "";
+    const hour = Number(match[1]);
+    const minute = match[2] === undefined ? 0 : Number(match[2]);
+    if (hour > 23 || minute > 59) return "";
+    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  }
+
   function toSeconds(value) {
-    const parts = String(value || "").split(":");
-    if (parts.length < 2) return NaN;
+    const clock = normalizeClock(value);
+    if (!clock) return NaN;
+    const parts = clock.split(":");
     return Number(parts[0]) * 3600 + Number(parts[1]) * 60;
   }
 
-  function openPeriodModal(period) {
+  function wireClockInput(input) {
+    if (!input) return;
+    const format = () => {
+      const text = String(input.value || "").trim();
+      if (!text) return;
+      const clock = normalizeClock(text);
+      if (clock) {
+        input.value = clock;
+      } else {
+        input.setCustomValidity("الوقت يجب أن يكون بين 00:00 و23:59");
+      }
+    };
+    input.addEventListener("input", () => {
+      input.setCustomValidity("");
+      const caret = input.value;
+      const latin = A.latinDigits(caret).replace(/[.,٫،：]/g, ":");
+      if (latin !== caret) input.value = latin;
+    });
+    input.addEventListener("blur", format);
+  }
+
+  function openPeriodModal(period, preset) {
     const isEdit = Boolean(period);
     const current = period || {
-      period_name: "",
-      period_type: "CLASS",
-      start_time: "08:00",
-      on_time_cutoff: "08:10",
-      absent_cutoff_time: "08:30",
+      period_name: (preset && preset.period_name) || "",
+      period_type: (preset && preset.period_type) || "CLASS",
+      start_time: (preset && preset.start_time) || "08:00",
+      on_time_cutoff: (preset && preset.on_time_cutoff) || "08:10",
+      absent_cutoff_time: (preset && preset.absent_cutoff_time) || "08:30",
       is_active: true,
       sort_order: state.periods.length + 1,
     };
@@ -812,6 +894,7 @@
             <select class="input" id="period-type">
               <option value="CLASS" ${current.period_type === "CLASS" ? "selected" : ""}>حصة دراسية</option>
               <option value="BREAKFAST" ${current.period_type === "BREAKFAST" ? "selected" : ""}>وقت الفطور</option>
+              <option value="MEAL" ${current.period_type === "MEAL" ? "selected" : ""}>فترة الإطعام</option>
               <option value="CANTEEN" ${current.period_type === "CANTEEN" ? "selected" : ""}>المطعم</option>
               <option value="SUPPORT" ${current.period_type === "SUPPORT" ? "selected" : ""}>دروس الدعم</option>
               <option value="OTHER" ${current.period_type === "OTHER" ? "selected" : ""}>فترة خاصة</option>
@@ -820,16 +903,17 @@
           </div>
           <div class="field">
             <label for="period-start">وقت البداية</label>
-            <input class="input mono" id="period-start" type="time" lang="en-GB" dir="ltr" value="${safe(current.start_time)}">
+            <input class="input mono" id="period-start" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="8" dir="ltr" placeholder="11:00" value="${safe(current.start_time)}">
+            <span class="field-hint">صيغة 24 ساعة بأرقام إنجليزية: 11:00 أو 12:30</span>
           </div>
           <div class="field">
             <label for="period-cutoff">حد الحضور</label>
-            <input class="input mono" id="period-cutoff" type="time" lang="en-GB" dir="ltr" value="${safe(current.on_time_cutoff)}">
+            <input class="input mono" id="period-cutoff" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="8" dir="ltr" placeholder="11:15" value="${safe(current.on_time_cutoff)}">
             <span class="field-hint">المسح بعد هذا الوقت يُسجّل متأخرًا.</span>
           </div>
           <div class="field">
             <label for="period-absent">حد الغياب</label>
-            <input class="input mono" id="period-absent" type="time" lang="en-GB" dir="ltr" value="${safe(current.absent_cutoff_time)}">
+            <input class="input mono" id="period-absent" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="8" dir="ltr" placeholder="11:30" value="${safe(current.absent_cutoff_time)}">
             <span class="field-hint">بعد هذا الوقت يصبح التلميذ غائبًا عند الرصد التلقائي.</span>
           </div>
           <div class="field">
@@ -852,11 +936,15 @@
         </button>`,
       onMount(modal, { close }) {
         const saveButton = modal.querySelector("[data-save-period]");
+        const startInput = modal.querySelector("#period-start");
+        const cutoffInput = modal.querySelector("#period-cutoff");
+        const absentInput = modal.querySelector("#period-absent");
+        [startInput, cutoffInput, absentInput].forEach(wireClockInput);
         const submit = async () => {
           const name = modal.querySelector("#period-name").value.trim();
-          const start = modal.querySelector("#period-start").value;
-          const cutoff = modal.querySelector("#period-cutoff").value;
-          const absent = modal.querySelector("#period-absent").value;
+          const start = normalizeClock(startInput.value);
+          const cutoff = normalizeClock(cutoffInput.value);
+          const absent = normalizeClock(absentInput.value);
           const sort = Number(modal.querySelector("#period-sort").value);
           if (!name) {
             A.toast("اسم الفترة مطلوب.", "warning");
@@ -864,9 +952,13 @@
             return;
           }
           if (!start || !cutoff || !absent) {
-            A.toast("أدخل جميع أوقات الفترة.", "warning");
+            A.toast("أدخل الأوقات بصيغة 24 ساعة مثل 11:00 أو 12:30.", "warning");
+            (!start ? startInput : !cutoff ? cutoffInput : absentInput).focus();
             return;
           }
+          startInput.value = start;
+          cutoffInput.value = cutoff;
+          absentInput.value = absent;
           if (!(toSeconds(start) <= toSeconds(cutoff) && toSeconds(cutoff) <= toSeconds(absent))) {
             A.toast("يجب أن يكون وقت البداية ≤ حد الحضور ≤ حد الغياب.", "warning");
             return;
@@ -910,6 +1002,24 @@
 
   function bindPeriods() {
     $("period-add").addEventListener("click", () => openPeriodModal(null));
+    const mealButton = $("period-add-meal");
+    if (mealButton) {
+      mealButton.addEventListener("click", () => {
+        const exists = state.periods.some((period) => period.period_type === "MEAL");
+        if (exists) {
+          A.toast("فترة الإطعام مضافة بالفعل. عدّلها من القائمة.", "info");
+          return;
+        }
+        const s = state.settings || {};
+        openPeriodModal(null, {
+          period_type: "MEAL",
+          period_name: s.meal_period_label || "فترة الإطعام",
+          start_time: "11:00",
+          on_time_cutoff: "11:15",
+          absent_cutoff_time: "12:30",
+        });
+      });
+    }
     $("periods-list").addEventListener("click", async (event) => {
       const edit = event.target.closest("[data-period-edit]");
       if (edit) {
@@ -942,11 +1052,68 @@
   /* Data + navigation                                                  */
   /* ------------------------------------------------------------------ */
 
+  function openResetModal() {
+    A.openModal({
+      title: "مسح جميع البيانات",
+      subtitle: "عملية نهائية لا يمكن التراجع عنها بعد التأكيد.",
+      icon: "trash",
+      danger: true,
+      body: `
+        <div class="info-banner is-danger">
+          <svg class="ico"><use href="#i-warning"></use></svg>
+          <div>سيُحذف نهائيًا: التلاميذ، سجلات الحضور، الرسائل والحملات، بطاقات الدخول والخروج، الاستدعاءات، وإقران الهواتف. ننصح بتنزيل نسخة احتياطية أولًا.</div>
+        </div>
+        <div class="form-grid" style="margin-top:14px">
+          <div class="field form-span-2">
+            <label for="reset-confirm">اكتب كلمة «حذف» للتأكيد</label>
+            <input class="input" id="reset-confirm" autocomplete="off" autofocus placeholder="حذف">
+          </div>
+          <label class="switch form-span-2">
+            <input type="checkbox" id="reset-periods">
+            <span class="switch-track"></span>
+            <span class="switch-text">
+              <strong>إعادة الفترات الافتراضية</strong>
+              <span>يحذف الفترات المخصّصة ويعيد الفترات الأصلية.</span>
+            </span>
+          </label>
+        </div>`,
+      footer: `
+        <button class="btn btn-secondary" type="button" data-modal-close>إلغاء</button>
+        <button class="btn btn-danger" type="button" id="reset-confirm-btn" disabled>مسح نهائي</button>`,
+      onMount(modal) {
+        const input = modal.querySelector("#reset-confirm");
+        const button = modal.querySelector("#reset-confirm-btn");
+        const sync = () => {
+          button.disabled = input.value.trim() !== "حذف";
+        };
+        input.addEventListener("input", sync);
+        button.addEventListener("click", async () => {
+          const resetPeriods = modal.querySelector("#reset-periods").checked;
+          A.setBusy(button, true);
+          try {
+            const data = await A.api("/api/system/reset", {
+              method: "POST",
+              body: { confirm: "حذف", reset_periods: resetPeriods },
+            });
+            A.closeModal();
+            A.toast(data.message || "تم مسح البيانات.", "success", "مسح البيانات");
+            await loadAll(true);
+          } catch (error) {
+            A.toast(error.message || "تعذر مسح البيانات.", "error");
+          } finally {
+            A.setBusy(button, false);
+          }
+        });
+      },
+    });
+  }
+
   function bindDataActions() {
     $("settings-backup").addEventListener("click", () => {
       A.download("/api/system/backup");
       A.toast("جارٍ تجهيز نسخة احتياطية من قاعدة البيانات.", "info", "نسخ احتياطي");
     });
+    $("settings-reset").addEventListener("click", openResetModal);
     $("settings-refresh").addEventListener("click", async () => {
       const button = $("settings-refresh");
       A.setBusy(button, true);
@@ -1145,6 +1312,25 @@
     });
   }
 
+  function bindMealForm() {
+    const form = $("meal-form");
+    if (!form) return;
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const label = $("meal-period-label").value.trim();
+      if (!label) {
+        A.toast("اسم فترة الإطعام مطلوب.", "warning");
+        $("meal-period-label").focus();
+        return;
+      }
+      saveSettings(
+        { meal_period_label: label },
+        form.querySelector('button[type="submit"]'),
+        "تم حفظ اسم فترة الإطعام."
+      );
+    });
+  }
+
   function init() {
     bindInstitutionForm();
     bindBranding();
@@ -1152,6 +1338,7 @@
     bindScheduleForm();
     bindSmsForm();
     bindPeriods();
+    bindMealForm();
     bindPhoneScanner();
     bindDataActions();
     initNavSpy();

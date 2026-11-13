@@ -90,12 +90,12 @@
       <div class="messages-step">
         <div class="messages-step-head">
           <span class="messages-step-number">1</span>
-          <div><h2>المستلمون</h2><p>اختر كل التلاميذ أو قسمًا أو أسماء محددة.</p></div>
+          <div><h2>المستلمون</h2><p>اختر كل {{ student_nouns_def }} أو قسمًا أو أسماء محددة.</p></div>
         </div>
         <div class="segmented messages-scope" id="msg-scope" role="group" aria-label="نطاق المستلمين">
           <button type="button" class="is-active" data-scope="all" aria-pressed="true">
             <svg class="ico"><use href="#i-users"></use></svg>
-            <span>كل التلاميذ</span>
+            <span>كل {{ student_nouns_def }}</span>
             <span class="count" id="msg-scope-all-count">0</span>
           </button>
           <button type="button" data-scope="class" aria-pressed="false">
@@ -119,7 +119,7 @@
             {% endfor %}
           </select>
           {% if not classes %}
-          <span class="field-hint">لا توجد أقسام بعد. أضف تلاميذ من صفحة التلاميذ أولًا.</span>
+          <span class="field-hint">لا توجد أقسام بعد. أضف {{ student_nouns }} من صفحة {{ student_nouns_def }} أولًا.</span>
           {% endif %}
         </div>
 
@@ -186,6 +186,16 @@
               <span class="chip" id="msg-whatsapp-desktop-chip">حالة واتساب لسطح المكتب: جارٍ الفحص…</span>
               <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a>
             </span>
+          </label>
+          <label class="channel-card" data-channel="telegram">
+            <input type="radio" name="msg-channel" value="telegram">
+            <div class="channel-head">
+              <span class="channel-icon"><svg class="ico"><use href="#i-send"></use></svg></span>
+              <div><strong>تيليغرام</strong><small>إرسال تلقائي إلى محادثة البوت</small></div>
+              <span class="channel-check"><svg class="ico"><use href="#i-check"></use></svg></span>
+            </div>
+            <p>يُرسل عبر بوت تيليغرام إلى المحادثة أو المجموعة المحددة في الإعدادات. أدخل رمز البوت ومعرّف المحادثة أولًا من إعدادات الرسائل.</p>
+            <span class="channel-state chip" data-channel-state="telegram">جارٍ التحقق…</span>
           </label>
         </div>
         <div class="test-mode-note hidden" id="msg-test-note">
@@ -280,7 +290,7 @@
             <div><strong>واتساب</strong><p>يدوي: يتطلب تطبيق واتساب لسطح المكتب، ويفتح النظام رابط wa.me لكل ولي برسالة جاهزة دون إرسال نيابة عنك. <a class="inline-link" href="{{ whatsapp_download_url }}" target="_blank" rel="noopener noreferrer">تحميل واتساب لسطح المكتب</a> أو تلقائي عبر Meta WhatsApp Cloud API بعد ضبط القالب والرمز من الإعدادات.</p></div>
           </li>
         </ul>
-        <p class="messages-help-foot">تبقى بيانات التلاميذ على هذا الجهاز. لا تُرسل إلا الرسائل التي توافق عليها.</p>
+        <p class="messages-help-foot">تبقى بيانات {{ student_nouns_def }} على هذا الجهاز. لا تُرسل إلا الرسائل التي توافق عليها.</p>
       </section>
     </aside>
   </div>

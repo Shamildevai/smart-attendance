@@ -10,7 +10,7 @@ from flask import current_app, g
 from . import config
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 9
+SCHEMA_VERSION = 11
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS periods (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     period_name TEXT NOT NULL,
     period_type TEXT NOT NULL DEFAULT 'CLASS'
-        CHECK (period_type IN ('CLASS', 'BREAKFAST', 'CANTEEN', 'SUPPORT', 'OTHER')),
+        CHECK (period_type IN ('CLASS', 'BREAKFAST', 'MEAL', 'CANTEEN', 'SUPPORT', 'OTHER')),
     start_time TEXT NOT NULL,
     on_time_cutoff TEXT NOT NULL,
     absent_cutoff_time TEXT NOT NULL,
@@ -203,7 +203,7 @@ CREATE INDEX IF NOT EXISTS idx_summons_status ON summons(status, due_date);
 
 CREATE TABLE IF NOT EXISTS message_campaigns (
     id TEXT PRIMARY KEY,
-    channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp')),
+    channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp', 'telegram')),
     scope TEXT NOT NULL CHECK (scope IN ('all', 'class', 'selected')),
     class_group TEXT,
     message_template TEXT NOT NULL,
@@ -227,7 +227,7 @@ CREATE TABLE IF NOT EXISTS message_outbox (
     class_group TEXT,
     parent_phone TEXT NOT NULL,
     message_body TEXT NOT NULL,
-    channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp')),
+    channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp', 'telegram')),
     delivery_status TEXT NOT NULL DEFAULT 'PENDING'
         CHECK (delivery_status IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED', 'MANUAL')),
     attempts INTEGER NOT NULL DEFAULT 0,
@@ -335,6 +335,12 @@ DEFAULT_SETTINGS: dict[str, str] = {
     "whatsapp_template_name": "absence_notice",
     "whatsapp_template_lang": "ar",
     "whatsapp_api_version": "v23.0",
+    "telegram_enabled": "0",
+    "telegram_bot_token": "",
+    "telegram_chat_id": "",
+    "meal_period_label": "فترة الإطعام",
+    "student_noun": "تلميذ",
+    "student_noun_plural": "تلاميذ",
     "school_weekdays": "0,1,2,3,4",
     "color_theme": "emerald",
     "auto_sweep": "1",
@@ -384,6 +390,132 @@ def init_app(app) -> None:
     app.teardown_appcontext(close_db)
 
 
+def _ensure_period_types(conn: sqlite3.Connection) -> None:
+    """Rebuild the periods table when its CHECK predates newer period types."""
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'periods'"
+    ).fetchone()
+    if row is None or "'MEAL'" in (row["sql"] or ""):
+        return
+    conn.commit()
+    conn.execute("PRAGMA foreign_keys = OFF")
+    try:
+        conn.execute(
+            """CREATE TABLE periods_new (
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   period_name TEXT NOT NULL,
+                   period_type TEXT NOT NULL DEFAULT 'CLASS'
+                       CHECK (period_type IN ('CLASS', 'BREAKFAST', 'MEAL', 'CANTEEN', 'SUPPORT', 'OTHER')),
+                   start_time TEXT NOT NULL,
+                   on_time_cutoff TEXT NOT NULL,
+                   absent_cutoff_time TEXT NOT NULL,
+                   is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+                   sort_order INTEGER NOT NULL DEFAULT 0,
+                   created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+                   updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+               )"""
+        )
+        conn.execute(
+            """INSERT INTO periods_new
+                   (id, period_name, period_type, start_time, on_time_cutoff,
+                    absent_cutoff_time, is_active, sort_order, created_at, updated_at)
+               SELECT id, period_name, period_type, start_time, on_time_cutoff,
+                      absent_cutoff_time, is_active, sort_order, created_at, updated_at
+               FROM periods"""
+        )
+        conn.execute("DROP TABLE periods")
+        conn.execute("ALTER TABLE periods_new RENAME TO periods")
+        conn.commit()
+    finally:
+        conn.execute("PRAGMA foreign_keys = ON")
+
+
+def _ensure_message_channels(conn: sqlite3.Connection) -> None:
+    """Rebuild message tables when their CHECK predates the telegram channel."""
+    tables = ("message_outbox", "message_campaigns")
+    outdated = []
+    for name in tables:
+        row = conn.execute(
+            "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = ?", (name,)
+        ).fetchone()
+        if row is None:
+            return
+        if "'telegram'" not in (row["sql"] or ""):
+            outdated.append(name)
+    if not outdated:
+        return
+    conn.commit()
+    conn.execute("PRAGMA foreign_keys = OFF")
+    try:
+        conn.executescript(
+            """
+            CREATE TABLE message_outbox_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                campaign_id TEXT NOT NULL,
+                student_nin TEXT NOT NULL,
+                student_name TEXT NOT NULL DEFAULT '',
+                class_group TEXT,
+                parent_phone TEXT NOT NULL,
+                message_body TEXT NOT NULL,
+                channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp', 'telegram')),
+                delivery_status TEXT NOT NULL DEFAULT 'PENDING'
+                    CHECK (delivery_status IN ('PENDING', 'SENT', 'FAILED', 'CANCELLED', 'MANUAL')),
+                attempts INTEGER NOT NULL DEFAULT 0,
+                error_msg TEXT,
+                gateway TEXT,
+                is_test INTEGER NOT NULL DEFAULT 0 CHECK (is_test IN (0, 1)),
+                sent_at TEXT,
+                created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+                FOREIGN KEY (campaign_id) REFERENCES message_campaigns(id) ON DELETE CASCADE
+            );
+            INSERT INTO message_outbox_new
+                (id, campaign_id, student_nin, student_name, class_group, parent_phone,
+                 message_body, channel, delivery_status, attempts, error_msg, gateway,
+                 is_test, sent_at, created_at, updated_at)
+            SELECT id, campaign_id, student_nin, student_name, class_group, parent_phone,
+                   message_body, channel, delivery_status, attempts, error_msg, gateway,
+                   is_test, sent_at, created_at, updated_at
+            FROM message_outbox;
+            DROP TABLE message_outbox;
+            ALTER TABLE message_outbox_new RENAME TO message_outbox;
+            CREATE INDEX IF NOT EXISTS idx_outbox_campaign ON message_outbox(campaign_id);
+            CREATE INDEX IF NOT EXISTS idx_outbox_status ON message_outbox(delivery_status);
+
+            CREATE TABLE message_campaigns_new (
+                id TEXT PRIMARY KEY,
+                channel TEXT NOT NULL CHECK (channel IN ('mobile', 'cloud', 'whatsapp', 'telegram')),
+                scope TEXT NOT NULL CHECK (scope IN ('all', 'class', 'selected')),
+                class_group TEXT,
+                message_template TEXT NOT NULL,
+                recipients_total INTEGER NOT NULL DEFAULT 0,
+                eligible_total INTEGER NOT NULL DEFAULT 0,
+                skipped_total INTEGER NOT NULL DEFAULT 0,
+                status TEXT NOT NULL DEFAULT 'PENDING'
+                    CHECK (status IN ('PENDING', 'RUNNING', 'DONE', 'PREPARED')),
+                test_mode INTEGER NOT NULL DEFAULT 0 CHECK (test_mode IN (0, 1)),
+                created_by TEXT,
+                created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+                finished_at TEXT
+            );
+            INSERT INTO message_campaigns_new
+                (id, channel, scope, class_group, message_template, recipients_total,
+                 eligible_total, skipped_total, status, test_mode, created_by,
+                 created_at, finished_at)
+            SELECT id, channel, scope, class_group, message_template, recipients_total,
+                   eligible_total, skipped_total, status, test_mode, created_by,
+                   created_at, finished_at
+            FROM message_campaigns;
+            DROP TABLE message_campaigns;
+            ALTER TABLE message_campaigns_new RENAME TO message_campaigns;
+            CREATE INDEX IF NOT EXISTS idx_campaigns_created ON message_campaigns(created_at DESC);
+            """
+        )
+        conn.commit()
+    finally:
+        conn.execute("PRAGMA foreign_keys = ON")
+
+
 def init_db(db_path: str | Path) -> None:
     db_path = Path(db_path)
     db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -397,6 +529,8 @@ def init_db(db_path: str | Path) -> None:
             conn.execute(
                 "ALTER TABLE periods ADD COLUMN period_type TEXT NOT NULL DEFAULT 'CLASS'"
             )
+        _ensure_period_types(conn)
+        _ensure_message_channels(conn)
         user_columns = {row["name"] for row in conn.execute("PRAGMA table_info(users)")}
         if "recovery_hash" not in user_columns:
             conn.execute("ALTER TABLE users ADD COLUMN recovery_hash TEXT")

@@ -23,7 +23,7 @@ from ..utils import (
     render_sms_template,
     sms_variables,
 )
-from . import whatsapp_service
+from . import telegram_service, whatsapp_service
 from .sms_service import (
     MAX_ERROR_LEN,
     SmsConnectionError,
@@ -39,6 +39,7 @@ CHANNEL_LABELS = {
     "mobile": "SMS عبر تطبيق الهاتف",
     "cloud": "SMS عبر الحاسوب أو السحابة",
     "whatsapp": "واتساب",
+    "telegram": "تيليغرام",
 }
 
 CAMPAIGN_STATUS_LABELS = {
@@ -69,6 +70,8 @@ def _sms_phone(value: Any) -> str:
 
 
 def _eligible(student: dict[str, Any], channel: str, settings: dict[str, str]) -> bool:
+    if channel == "telegram":
+        return True
     if channel == "whatsapp":
         return bool(
             whatsapp_service.normalize_whatsapp_number(
@@ -173,6 +176,19 @@ def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
             "mode": whatsapp_provider,
         }
     )
+    telegram = telegram_service.telegram_status(settings)
+    channels.append(
+        {
+            "id": "telegram",
+            "label": "تيليغرام",
+            "configured": telegram["configured"],
+            "ready": telegram["ready"],
+            "test_mode": test_mode,
+            "mode": "bot",
+            "chat_id": telegram["chat_id"],
+            "detail": telegram["detail"],
+        }
+    )
     return {
         "channels": channels,
         "default_channel": settings.get("sms_gateway", "local"),
@@ -180,6 +196,7 @@ def channels_payload(settings: dict[str, str]) -> dict[str, Any]:
         "whatsapp_enabled": whatsapp_enabled,
         "whatsapp_provider": whatsapp_provider,
         "whatsapp_cloud": cloud,
+        "telegram": telegram,
         "country_code": settings.get("whatsapp_country_code", "213"),
         "gateway_app": gateway_app_payload(),
     }
@@ -300,6 +317,7 @@ def preview_campaign(
     settings = get_settings(conn)
     whatsapp_provider = "cloud" if settings.get("whatsapp_provider") == "cloud" else "manual"
     is_whatsapp_cloud = channel == "whatsapp" and whatsapp_provider == "cloud"
+    is_telegram = channel == "telegram"
     recipients = fetch_recipients(
         conn,
         scope=scope,
@@ -339,12 +357,22 @@ def preview_campaign(
         "classes": class_summary(recipients),
         "samples": samples,
         "message_length": rendered_length,
-        "segments": _segment_count(text) if channel != "whatsapp" else 0,
+        "segments": (
+            _segment_count(text)
+            if channel not in ("whatsapp", "telegram")
+            else 0
+        ),
         "test_mode": settings.get("sms_test_mode", "1") == "1",
         "whatsapp_enabled": bool_setting(settings, "whatsapp_enabled", True),
         "whatsapp_provider": whatsapp_provider,
         "whatsapp_send_mode": "cloud" if is_whatsapp_cloud else ("manual" if channel == "whatsapp" else ""),
-        "cloud_body_limit": whatsapp_service.MAX_CLOUD_BODY if is_whatsapp_cloud else 0,
+        "cloud_body_limit": (
+            whatsapp_service.MAX_CLOUD_BODY
+            if is_whatsapp_cloud
+            else telegram_service.MAX_BODY
+            if is_telegram
+            else 0
+        ),
         "channels": channels_payload(settings),
     }
 
@@ -370,8 +398,11 @@ def create_campaign(
     whatsapp_provider = "cloud" if settings.get("whatsapp_provider") == "cloud" else "manual"
     is_whatsapp_cloud = channel == "whatsapp" and whatsapp_provider == "cloud"
     is_manual_whatsapp = channel == "whatsapp" and not is_whatsapp_cloud
+    is_telegram = channel == "telegram"
     if channel == "whatsapp" and not bool_setting(settings, "whatsapp_enabled", True):
         raise ValidationError("قناة واتساب معطّلة في الإعدادات. فعّلها أولًا من إعدادات الرسائل.")
+    if is_telegram and not bool_setting(settings, "telegram_enabled", False):
+        raise ValidationError("قناة تيليغرام معطّلة في الإعدادات. فعّلها أولًا من إعدادات الرسائل.")
     test_mode = settings.get("sms_test_mode", "1") == "1"
     if channel in ("mobile", "cloud") and not test_mode:
         resolved = resolve_channel_settings(settings, channel)
@@ -398,6 +429,13 @@ def create_campaign(
             + "، ".join(missing)
             + ". أكملها من إعدادات الرسائل قبل الإرسال الحقيقي."
         )
+    elif is_telegram and not test_mode and not telegram_service.telegram_configured(settings):
+        missing = telegram_service.telegram_status(settings)["missing"]
+        raise ValidationError(
+            "بيانات تيليغرام غير مكتملة: "
+            + "، ".join(missing)
+            + ". أكملها من إعدادات الرسائل قبل الإرسال الحقيقي."
+        )
     recipients = fetch_recipients(
         conn,
         scope=scope,
@@ -417,6 +455,11 @@ def create_campaign(
             raise ValidationError(
                 f"رسالة التلميذ {student['full_name']} أطول من حد واتساب "
                 f"({whatsapp_service.MAX_CLOUD_BODY} حرف). اختصر النص ثم أعد المحاولة."
+            )
+        if is_telegram and len(body) > telegram_service.MAX_BODY:
+            raise ValidationError(
+                f"رسالة التلميذ {student['full_name']} أطول من حد تيليغرام "
+                f"({telegram_service.MAX_BODY} حرف). اختصر النص ثم أعد المحاولة."
             )
         rendered.append((student, body))
     campaign_id = uuid.uuid4().hex[:12]
@@ -700,10 +743,11 @@ class MessageJobManager:
                     return
                 channel = campaign["channel"]
                 is_whatsapp = channel == "whatsapp"
+                is_telegram = channel == "telegram"
                 is_whatsapp_cloud = (
                     is_whatsapp and settings.get("whatsapp_provider") == "cloud"
                 )
-                if channel not in ("mobile", "cloud") and not is_whatsapp_cloud:
+                if channel not in ("mobile", "cloud") and not is_whatsapp_cloud and not is_telegram:
                     self._update(
                         job_id,
                         status="done",
@@ -713,7 +757,7 @@ class MessageJobManager:
                     return
                 send_settings = (
                     dict(settings)
-                    if is_whatsapp_cloud
+                    if (is_whatsapp_cloud or is_telegram)
                     else resolve_channel_settings(settings, channel)
                 )
                 test_mode = settings.get("sms_test_mode", "1") == "1"
@@ -775,6 +819,17 @@ class MessageJobManager:
                         + "، ".join(missing)
                         + ". أكملها من إعدادات الرسائل."
                     )[:MAX_ERROR_LEN]
+                elif (
+                    is_telegram
+                    and not test_mode
+                    and not telegram_service.telegram_configured(settings)
+                ):
+                    missing = telegram_service.telegram_status(settings)["missing"]
+                    preflight_error = (
+                        "بيانات تيليغرام غير مكتملة: "
+                        + "، ".join(missing)
+                        + ". أكملها من إعدادات الرسائل."
+                    )[:MAX_ERROR_LEN]
                 if preflight_error:
                     reason = preflight_error
                     with conn:
@@ -833,6 +888,14 @@ class MessageJobManager:
                                         int_setting(settings, "sms_timeout", 10, 3, 120), 60
                                     ),
                                 )
+                            elif is_telegram:
+                                result = telegram_service.send_message(
+                                    send_settings,
+                                    row["message_body"],
+                                    timeout=min(
+                                        int_setting(settings, "sms_timeout", 10, 3, 120), 60
+                                    ),
+                                )
                             else:
                                 result = send_via_gateway(
                                     send_settings, row["parent_phone"], row["message_body"]
@@ -841,7 +904,7 @@ class MessageJobManager:
                             simulated = bool(result.get("simulated"))
                             gateway_label = str(result.get("gateway") or "")
                             break
-                        except (SmsGatewayError, whatsapp_service.WhatsAppError) as exc:
+                        except (SmsGatewayError, whatsapp_service.WhatsAppError, telegram_service.TelegramError) as exc:
                             last_error = str(exc)[:MAX_ERROR_LEN]
                             connection_failed = isinstance(
                                 exc,
@@ -849,6 +912,8 @@ class MessageJobManager:
                                     SmsConnectionError,
                                     whatsapp_service.WhatsAppConfigError,
                                     whatsapp_service.WhatsAppConnectionError,
+                                    telegram_service.TelegramConfigError,
+                                    telegram_service.TelegramConnectionError,
                                 ),
                             )
                             app.logger.warning(
@@ -933,7 +998,13 @@ class MessageJobManager:
                                 finished_at=datetime.now().strftime("%H:%M:%S"),
                                 message=(
                                     "توقف الإرسال بعد انقطاع الاتصال بـ"
-                                    + ("خدمة واتساب. " if is_whatsapp_cloud else "البوابة. ")
+                                    + (
+                                        "خدمة واتساب. "
+                                        if is_whatsapp_cloud
+                                        else "خدمة تيليغرام. "
+                                        if is_telegram
+                                        else "البوابة. "
+                                    )
                                     + f"راجع الاتصال ثم أعد المحاولة. آخر خطأ: {first_error}"
                                 ),
                                 **counts,

@@ -51,7 +51,7 @@ def daily_report(
     where = " AND ".join(filters)
     rows = conn.execute(
         f"""SELECT a.*, s.first_name, s.last_name, s.class_group,
-                   p.period_name, p.start_time,
+                   p.period_name, p.period_type, p.start_time,
                    sm.delivery_status AS sms_status, sm.is_test AS sms_is_test
             FROM attendance_logs a
             JOIN students s ON s.student_nin = a.student_nin
@@ -76,6 +76,7 @@ def daily_report(
                 "full_name": f"{data['first_name']} {data['last_name']}".strip(),
                 "class_group": data["class_group"] or "بدون قسم",
                 "period_name": data["period_name"],
+                "period_type": data.get("period_type") or "CLASS",
                 "scan_time": (data["scan_time"] or "")[:5],
                 "status": data["status"],
                 "status_label": STATUS_AR.get(data["status"], data["status"]),
@@ -86,6 +87,34 @@ def daily_report(
             }
         )
     settings = get_settings(conn)
+    meal_label = (settings.get("meal_period_label") or "فترة الإطعام").strip()
+    meal_filters = ["a.attendance_date = ?", "p.period_type = 'MEAL'", "a.status = 'ABSENT'"]
+    meal_params: list[Any] = [day_iso]
+    if class_group == "__none__":
+        meal_filters.append("s.class_group = ''")
+    elif class_group:
+        meal_filters.append("s.class_group = ?")
+        meal_params.append(class_group)
+    meal_rows = conn.execute(
+        f"""SELECT a.student_nin, a.scan_time, s.first_name, s.last_name, s.class_group,
+                   p.period_name, p.start_time
+            FROM attendance_logs a
+            JOIN students s ON s.student_nin = a.student_nin
+            JOIN periods p ON p.id = a.period_id
+            WHERE {' AND '.join(meal_filters)}
+            ORDER BY s.class_group, s.last_name, s.first_name""",
+        meal_params,
+    ).fetchall()
+    meal_absences = [
+        {
+            "student_nin": row["student_nin"],
+            "full_name": f"{row['first_name']} {row['last_name']}".strip(),
+            "class_group": row["class_group"] or "بدون قسم",
+            "period_name": row["period_name"],
+            "scan_time": (row["scan_time"] or "")[:5],
+        }
+        for row in meal_rows
+    ]
     period_label = "كل الفترات"
     if period_id:
         period = conn.execute("SELECT period_name FROM periods WHERE id = ?", (period_id,)).fetchone()
@@ -105,6 +134,11 @@ def daily_report(
         "items": items,
         "summary": summary,
         "total": len(items),
+        "meal_label": meal_label,
+        "meal_absences": meal_absences,
+        "meal_absent_total": len(meal_absences),
+        "student_noun": settings.get("student_noun", "تلميذ") or "تلميذ",
+        "student_noun_plural": settings.get("student_noun_plural", "تلاميذ") or "تلاميذ",
         "school_name": settings.get("school_name", ""),
         "academic_year": settings.get("academic_year", ""),
         "header_text": settings.get("header_text", ""),
@@ -134,10 +168,12 @@ def monthly_report(
                    SUM(CASE WHEN a.status = 'LATE' THEN 1 ELSE 0 END) AS late,
                    SUM(CASE WHEN a.status = 'ABSENT' THEN 1 ELSE 0 END) AS absent,
                    SUM(CASE WHEN a.status = 'EXCUSED' THEN 1 ELSE 0 END) AS excused,
+                   SUM(CASE WHEN a.status = 'ABSENT' AND p.period_type = 'MEAL' THEN 1 ELSE 0 END) AS meal_absent,
                    COUNT(a.id) AS total
             FROM students s
             LEFT JOIN attendance_logs a ON a.student_nin = s.student_nin
                  AND a.attendance_date BETWEEN ? AND ?{period_clause}
+            LEFT JOIN periods p ON p.id = a.period_id
             WHERE (s.is_active = 1 OR a.id IS NOT NULL){class_clause}
             GROUP BY s.student_nin
             ORDER BY CASE WHEN s.class_group = '' THEN 1 ELSE 0 END, s.class_group,
@@ -145,7 +181,7 @@ def monthly_report(
         params,
     ).fetchall()
     items = []
-    totals = {"present": 0, "late": 0, "absent": 0, "excused": 0, "total": 0}
+    totals = {"present": 0, "late": 0, "absent": 0, "excused": 0, "meal_absent": 0, "total": 0}
     for row in rows:
         data = dict(row)
         data["full_name"] = f"{data['first_name']} {data['last_name']}".strip()
@@ -154,6 +190,18 @@ def monthly_report(
             totals[key] += int(data[key] or 0)
         items.append(data)
     settings = get_settings(conn)
+    meal_label = (settings.get("meal_period_label") or "فترة الإطعام").strip()
+    meal_absences = [
+        {
+            "student_nin": item["student_nin"],
+            "full_name": item["full_name"],
+            "class_group": item["class_group"],
+            "count": int(item.get("meal_absent") or 0),
+        }
+        for item in items
+        if int(item.get("meal_absent") or 0) > 0
+    ]
+    meal_absences.sort(key=lambda entry: entry["count"], reverse=True)
     period_label = "كل الفترات"
     if period_id:
         period = conn.execute("SELECT period_name FROM periods WHERE id = ?", (period_id,)).fetchone()
@@ -174,6 +222,11 @@ def monthly_report(
         "items": items,
         "totals": totals,
         "total_students": len(items),
+        "meal_label": meal_label,
+        "meal_absences": meal_absences,
+        "meal_absent_total": totals["meal_absent"],
+        "student_noun": settings.get("student_noun", "تلميذ") or "تلميذ",
+        "student_noun_plural": settings.get("student_noun_plural", "تلاميذ") or "تلاميذ",
         "school_name": settings.get("school_name", ""),
         "academic_year": settings.get("academic_year", ""),
         "header_text": settings.get("header_text", ""),
@@ -302,6 +355,31 @@ def daily_workbook(report: dict[str, Any]) -> bytes:
         note_cell = row[9] if len(row) > 9 else None
         if note_cell is not None:
             note_cell.alignment = Alignment(horizontal="right", vertical="center", wrap_text=True)
+    if report.get("meal_absences"):
+        meal_ws = wb.create_sheet("غياب الإطعام")
+        meal_columns = [("الرقم", 7), ("رقم التعريف", 22), ("اللقب", 18), ("الاسم", 18),
+                        ("القسم", 12), ("الفترة", 16)]
+        meal_header = 6
+        for index, (label, col_width) in enumerate(meal_columns, start=1):
+            meal_ws.cell(row=meal_header, column=index, value=label)
+            meal_ws.column_dimensions[get_column_letter(index)].width = col_width
+        meal_ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(meal_columns))
+        title_cell = meal_ws.cell(row=1, column=1, value=f"{report.get('meal_label', 'فترة الإطعام')} — الغياب")
+        title_cell.font = Font(name="Arial", bold=True, size=14, color="0B3B31")
+        title_cell.alignment = Alignment(horizontal="center")
+        meal_ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=len(meal_columns))
+        info_cell = meal_ws.cell(row=2, column=1, value=f"{report.get('date_display', '')} — {report.get('class_label', '')}")
+        info_cell.font = Font(name="Arial", size=10, color="536D66")
+        info_cell.alignment = Alignment(horizontal="center")
+        for index, item in enumerate(report["meal_absences"], start=1):
+            parts = item["full_name"].split(" ", 1)
+            values = [index, item["student_nin"],
+                      parts[1] if len(parts) > 1 else "", parts[0],
+                      item["class_group"], item["period_name"]]
+            for col, value in enumerate(values, start=1):
+                meal_ws.cell(row=meal_header + index, column=col, value=value)
+        meal_ws.sheet_view.rightToLeft = True
+        meal_ws.freeze_panes = meal_ws.cell(row=meal_header + 1, column=1)
     buffer = BytesIO()
     wb.save(buffer)
     return buffer.getvalue()
@@ -321,6 +399,7 @@ def monthly_workbook(report: dict[str, Any]) -> bytes:
         ("متأخر", 10),
         ("غائب", 10),
         ("غياب مبرر", 12),
+        ("غياب الإطعام", 12),
         ("مجموع السجلات", 14),
     ]
     header_row = 6
@@ -330,14 +409,16 @@ def monthly_workbook(report: dict[str, Any]) -> bytes:
         row_index = header_row + index
         values = [
             index, item["student_nin"], item["last_name"], item["first_name"], item["class_group"],
-            item["present"], item["late"], item["absent"], item["excused"], item["total"],
+            item["present"], item["late"], item["absent"], item["excused"],
+            item.get("meal_absent", 0), item["total"],
         ]
         for col, value in enumerate(values, start=1):
             ws.cell(row=row_index, column=col, value=value)
     _style_workbook(ws, report["title"], report, columns, header_row)
     totals_row = ws.max_row + 1
     totals = report["totals"]
-    values = ["", "", "", "المجموع", "", totals["present"], totals["late"], totals["absent"], totals["excused"], totals["total"]]
+    values = ["", "", "", "المجموع", "", totals["present"], totals["late"], totals["absent"],
+              totals["excused"], totals.get("meal_absent", 0), totals["total"]]
     for col, value in enumerate(values, start=1):
         cell = ws.cell(row=totals_row, column=col, value=value)
         cell.font = Font(name="Arial", bold=True)

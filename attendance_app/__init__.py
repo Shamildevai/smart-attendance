@@ -198,15 +198,17 @@ def create_app(test_config: dict | None = None) -> Flask:
     def inject_app_globals():
         lang = i18n.current_lang()
         try:
-            color_theme = get_settings(get_db()).get(
-                "color_theme", config.DEFAULT_COLOR_THEME
-            )
+            settings = get_settings(get_db())
+            color_theme = settings.get("color_theme", config.DEFAULT_COLOR_THEME)
         except Exception:
+            settings = {}
             color_theme = config.DEFAULT_COLOR_THEME
         if color_theme not in config.COLOR_THEMES:
             color_theme = config.DEFAULT_COLOR_THEME
+
         return {
             **config.app_metadata(lang),
+            **i18n.student_words(settings, lang),
             "lang": lang,
             "dir": i18n.lang_dir(lang),
             "color_theme": color_theme,

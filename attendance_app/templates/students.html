@@ -53,7 +53,7 @@
   <section class="card">
     <div class="card-header">
       <div>
-        <h2><svg class="ico"><use href="#i-users"></use></svg> قاعدة بيانات التلاميذ</h2>
+        <h2><svg class="ico"><use href="#i-users"></use></svg> قاعدة بيانات {{ student_nouns_def }}</h2>
         <p id="students-result-label">جارٍ تحميل القائمة…</p>
       </div>
       <button class="icon-btn" type="button" id="students-refresh" title="تحديث القائمة" aria-label="تحديث القائمة">
@@ -64,7 +64,7 @@
       <table class="data-table students-table">
         <thead>
           <tr>
-            <th scope="col">التلميذ</th>
+            <th scope="col">{{ student_noun_def }}</th>
             <th scope="col" class="col-class">القسم</th>
             <th scope="col" class="col-phone">هاتف الولي</th>
             <th scope="col" class="col-birth">تاريخ الميلاد</th>
@@ -75,7 +75,7 @@
         <tbody id="students-table-body">
           <tr>
             <td colspan="6" class="empty-cell">
-              <div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل التلاميذ…</span></div>
+              <div class="loading-state"><span class="spinner"></span><span>جارٍ تحميل {{ student_nouns_def }}…</span></div>
             </td>
           </tr>
         </tbody>

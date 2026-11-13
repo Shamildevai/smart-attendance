@@ -57,6 +57,7 @@ ADMIN_API_PREFIXES = (
 ADMIN_API_PATHS = {
     "/api/messages/gateway/pair",
     "/api/system/backup",
+    "/api/system/reset",
     "/api/system/shutdown",
     "/api/update/check",
     "/api/update/install",

@@ -140,7 +140,7 @@
               <strong>${A.escapeHtml(student.full_name)}</strong>
               <span>${A.escapeHtml(student.class_group || "بدون قسم")} · ${A.escapeHtml(student.student_nin)}</span>
             </button>`).join("")
-          : '<div class="cert-empty" style="margin:6px">لا يوجد تلميذ يطابق البحث.</div>';
+          : '<div class="cert-empty" style="margin:6px">' + `لا يوجد ${A.studentNoun} يطابق البحث.` + '</div>';
         results.querySelectorAll("[data-pick]").forEach((button) => {
           button.addEventListener("click", () => {
             const student = students.find((row) => row.student_nin === button.dataset.pick);

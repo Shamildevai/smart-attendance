@@ -87,11 +87,36 @@ def test_i18n_script_exposes_catalog(client):
     assert response.mimetype == "application/javascript"
     body = response.get_data(as_text=True)
     assert body.startswith("window.AppI18n=")
-    data = json.loads(body[len("window.AppI18n=") :].rstrip(";"))
+    catalog_js = body[len("window.AppI18n=") :].split(";window.", 1)[0].rstrip(";")
+    data = json.loads(catalog_js)
     assert data["lang"] == "en"
     assert data["dir"] == "ltr"
     assert data["strings"]["بوابة المسح"] == "Scan Gate"
     assert data["patterns"]
+    assert 'window.AppStudentNoun="' in body
+
+
+def test_student_words_follow_settings_in_arabic_only():
+    custom = {"student_noun": "طالب", "student_noun_plural": "طلبة"}
+    arabic = i18n.student_words(custom, "ar")
+    assert arabic["student_noun"] == "طالب"
+    assert arabic["student_noun_def"] == "الطالب"
+    assert arabic["student_nouns_def"] == "الطلبة"
+    english = i18n.student_words(custom, "en")
+    assert english["student_noun_def"] == "التلميذ"
+    assert english["student_nouns_def"] == "التلاميذ"
+
+
+def test_pages_use_custom_student_noun(client, csrf):
+    response = client.put(
+        "/api/settings",
+        json={"student_noun": "طالب", "student_noun_plural": "طلبة"},
+        headers=csrf,
+    )
+    assert response.status_code == 200
+    page = client.get("/students").get_data(as_text=True)
+    assert "قاعدة بيانات الطلبة" in page
+    assert "<span>الطلبة</span>" in page
 
 
 def test_bundled_font_is_served(client):
