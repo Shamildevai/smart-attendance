@@ -107,3 +107,127 @@ def test_unknown_device_is_rejected(client):
     )
     assert response.status_code == 401
     assert response.get_json()["error"]["code"] == "auth_required"
+
+
+def _set_privileges(client, csrf, *names):
+    response = client.put(
+        f"/api/scanner/mobile/devices/{DEVICE_ID}/privileges",
+        json={"privileges": list(names)},
+        headers=csrf,
+    )
+    assert response.status_code == 200, response.get_json()
+    assert response.get_json()["device"]["privileges"] == list(names)
+
+
+def test_session_reports_phone_privileges(client, csrf):
+    created = client.post("/api/scanner/mobile/code", headers=csrf)
+    passcode = created.get_json()["passcode"]
+    body = client.post(
+        "/api/mobile/login-code",
+        json={
+            "device_id": DEVICE_ID,
+            "device_name": "Test phone",
+            "platform": "android",
+            "app_version": "4.5.0",
+            "passcode": passcode,
+        },
+    ).get_json()
+    assert body["privileges"] == ["scan"]
+    assert body["device"]["privileges"] == ["scan"]
+
+    _set_privileges(client, csrf, "scan", "report", "entry", "exit", "summon")
+    again = client.post(
+        "/api/mobile/devices/session",
+        json={
+            "device_id": DEVICE_ID,
+            "secret": body["device_secret"],
+            "app_version": "4.5.0",
+        },
+    )
+    assert again.status_code == 200, again.get_json()
+    assert again.get_json()["privileges"] == [
+        "scan",
+        "report",
+        "entry",
+        "exit",
+        "summon",
+    ]
+
+
+def test_period_report_requires_and_honours_privilege(client, csrf, make_student, period):
+    headers = _pair(client, csrf)
+    make_student(student_nin="1099000010")
+    denied = client.get(
+        f"/api/mobile/report/period?period_id={period['id']}", headers=headers
+    )
+    assert denied.status_code == 403
+    assert denied.get_json()["error"]["code"] == "feature_denied"
+
+    _set_privileges(client, csrf, "scan", "report")
+    report = client.get(
+        f"/api/mobile/report/period?period_id={period['id']}", headers=headers
+    )
+    assert report.status_code == 200, report.get_json()
+    body = report.get_json()
+    assert body["period"]["id"] == period["id"]
+    assert body["stats"]["total"] == 1
+    assert body["stats"]["unscanned"] == 1
+
+
+def test_entry_slip_action_is_idempotent(client, csrf, make_student, period):
+    headers = _pair(client, csrf)
+    make_student(student_nin="1099000011")
+    _set_privileges(client, csrf, "scan", "entry")
+    action = {
+        "client_id": "entry-a1",
+        "kind": "entry",
+        "code": "1099000011",
+        "period_id": period["id"],
+        "reason": "تأخر عن الحصة",
+        "at": datetime.now().isoformat(timespec="seconds"),
+    }
+
+    def push():
+        response = client.post(
+            "/api/mobile/actions/sync",
+            json={"device_id": DEVICE_ID, "actions": [action]},
+            headers=headers,
+        )
+        assert response.status_code == 200, response.get_json()
+        return response.get_json()
+
+    first = push()
+    assert first["summary"]["processed"] == 1
+    assert first["results"][0]["ok"] is True
+    assert first["results"][0]["code"].startswith("ES-")
+    assert first["results"][0]["student"].startswith("أمين")
+
+    second = push()
+    assert second["summary"]["duplicates"] == 1
+    assert second["results"][0]["status"] == "duplicate"
+    assert second["results"][0]["code"] == first["results"][0]["code"]
+
+
+def test_summon_action_is_denied_without_privilege(client, csrf, make_student):
+    headers = _pair(client, csrf)
+    make_student(student_nin="1099000012")
+    response = client.post(
+        "/api/mobile/actions/sync",
+        json={
+            "device_id": DEVICE_ID,
+            "actions": [
+                {
+                    "client_id": "summon-a1",
+                    "kind": "summon",
+                    "code": "1099000012",
+                    "reason": "تأخر متكرر",
+                    "at": datetime.now().isoformat(timespec="seconds"),
+                }
+            ],
+        },
+        headers=headers,
+    )
+    assert response.status_code == 200, response.get_json()
+    result = response.get_json()["results"][0]
+    assert result["status"] == "denied"
+    assert response.get_json()["summary"]["rejected"] == 1

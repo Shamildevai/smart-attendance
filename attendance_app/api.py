@@ -312,6 +312,8 @@ def _qr_svg(payload: str) -> str:
 
 
 def _mobile_device_public(row) -> dict[str, Any]:
+    from .mobile_api import device_privileges
+
     return {
         "id": row["device_id"],
         "name": row["name"] or "هاتف",
@@ -322,6 +324,7 @@ def _mobile_device_public(row) -> dict[str, Any]:
         "last_seen": row["last_seen"],
         "last_sync": row["last_sync"],
         "scans": row["scans"] if "scans" in row.keys() else 0,
+        "privileges": device_privileges(row),
     }
 
 
@@ -405,6 +408,37 @@ def remove_mobile_device_api(device_id: str):
     with conn:
         conn.execute("DELETE FROM mobile_devices WHERE device_id = ?", (device_id,))
     return ok(message="تم فصل الهاتف. ستحتاج إلى رمز ربط جديد لإعادة توصيله.")
+
+
+@api_bp.put("/scanner/mobile/devices/<device_id>/privileges")
+def update_mobile_device_privileges_api(device_id: str):
+    from .mobile_api import PRIVILEGES
+
+    data = _payload()
+    raw = data.get("privileges")
+    if not isinstance(raw, list):
+        raise ApiError("أرسل قائمة الصلاحيات.", 400, "invalid_privileges")
+    chosen = [str(item).strip() for item in raw]
+    if any(item not in PRIVILEGES for item in chosen):
+        raise ApiError("صلاحية غير معروفة.", 400, "invalid_privileges")
+    chosen = [name for name in PRIVILEGES if name in chosen]
+    if not chosen:
+        raise ApiError("اختر صلاحية واحدة على الأقل لهذا الهاتف.", 400, "invalid_privileges")
+    conn = get_db()
+    row = conn.execute(
+        "SELECT * FROM mobile_devices WHERE device_id = ?", (device_id,)
+    ).fetchone()
+    if row is None:
+        raise ApiError("الهاتف غير مرتبط بهذا الحاسوب.", 404, "not_found")
+    with conn:
+        conn.execute(
+            "UPDATE mobile_devices SET privileges = ? WHERE device_id = ?",
+            (",".join(chosen), device_id),
+        )
+    row = conn.execute(
+        "SELECT * FROM mobile_devices WHERE device_id = ?", (device_id,)
+    ).fetchone()
+    return ok(device=_mobile_device_public(row), message="تم تحديث صلاحيات الهاتف.")
 
 
 def _public_settings(conn: sqlite3.Connection) -> dict[str, Any]:
@@ -2285,6 +2319,7 @@ _RESET_TABLES = (
     "message_outbox",
     "message_campaigns",
     "mobile_scans",
+    "mobile_actions",
     "mobile_devices",
     "scan_connect_codes",
 )

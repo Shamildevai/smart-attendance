@@ -10,7 +10,7 @@ from flask import current_app, g
 from . import config
 from .utils import academic_year_start, dump_json, parse_weekdays, safe_json_loads
 
-SCHEMA_VERSION = 11
+SCHEMA_VERSION = 12
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS app_meta (
@@ -254,7 +254,8 @@ CREATE TABLE IF NOT EXISTS mobile_devices (
         CHECK (status IN ('pending', 'approved', 'blocked')),
     secret_hash TEXT NOT NULL DEFAULT '',
     approved_at TEXT,
-    last_ip TEXT NOT NULL DEFAULT ''
+    last_ip TEXT NOT NULL DEFAULT '',
+    privileges TEXT NOT NULL DEFAULT 'scan'
 );
 
 CREATE TABLE IF NOT EXISTS mobile_scans (
@@ -272,6 +273,18 @@ CREATE TABLE IF NOT EXISTS mobile_scans (
 );
 CREATE INDEX IF NOT EXISTS idx_mobile_scans_device ON mobile_scans(device_id, received_at DESC);
 CREATE INDEX IF NOT EXISTS idx_mobile_scans_date ON mobile_scans(attendance_date);
+
+CREATE TABLE IF NOT EXISTS mobile_actions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_id TEXT NOT NULL,
+    client_id TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    request_json TEXT NOT NULL DEFAULT '',
+    result_json TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL,
+    UNIQUE (device_id, client_id)
+);
+CREATE INDEX IF NOT EXISTS idx_mobile_actions_kind ON mobile_actions(kind, created_at);
 
 CREATE TABLE IF NOT EXISTS scan_connect_codes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -534,6 +547,13 @@ def init_db(db_path: str | Path) -> None:
         user_columns = {row["name"] for row in conn.execute("PRAGMA table_info(users)")}
         if "recovery_hash" not in user_columns:
             conn.execute("ALTER TABLE users ADD COLUMN recovery_hash TEXT")
+        mobile_columns = {
+            row["name"] for row in conn.execute("PRAGMA table_info(mobile_devices)")
+        }
+        if "privileges" not in mobile_columns:
+            conn.execute(
+                "ALTER TABLE mobile_devices ADD COLUMN privileges TEXT NOT NULL DEFAULT 'scan'"
+            )
         current_version = conn.execute("PRAGMA user_version").fetchone()[0]
         if current_version < SCHEMA_VERSION:
             conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")

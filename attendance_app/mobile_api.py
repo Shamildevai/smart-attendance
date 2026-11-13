@@ -27,7 +27,10 @@ from . import auth
 from .config import APP_VERSION
 from .db import get_db, get_settings, int_setting
 from .services import attendance_service as attendance
-from .utils import ValidationError
+from .services import entry_slip_service as entry_slips
+from .services import exit_slip_service as exit_slips
+from .services import summon_service as summons
+from .utils import ValidationError, validate_iso_date
 
 mobile_bp = Blueprint("mobile", __name__)
 
@@ -46,6 +49,15 @@ CONNECT_CODE_RE = re.compile(r"[0-9]{8}")
 DIGITS_TABLE = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
 
 FEATURES = ["offline_roster", "offline_scans", "code_pairing"]
+PRIVILEGES = ("scan", "report", "entry", "exit", "summon")
+ACTION_KINDS = ("entry", "exit", "exit_return", "summon")
+ACTION_PRIVILEGE = {
+    "entry": "entry",
+    "exit": "exit",
+    "exit_return": "exit",
+    "summon": "summon",
+}
+MAX_SYNC_ACTIONS = 100
 PUBLIC_ENDPOINTS = {"mobile.ping", "mobile.hello", "mobile.login_code", "mobile.device_session"}
 
 
@@ -106,7 +118,30 @@ def _device_public(row) -> dict:
         "approved_at": row["approved_at"],
         "last_seen": row["last_seen"],
         "last_sync": row["last_sync"],
+        "privileges": device_privileges(row),
     }
+
+
+def device_privileges(row) -> list[str]:
+    """Tools this phone may use; older rows default to scanning only."""
+    raw = row["privileges"] if "privileges" in row.keys() else "scan"
+    chosen = [item.strip() for item in str(raw or "").split(",")]
+    allowed = [name for name in PRIVILEGES if name in chosen]
+    return allowed or ["scan"]
+
+
+def has_privilege(row, name: str) -> bool:
+    return name in device_privileges(row)
+
+
+def require_privilege(name: str):
+    if not has_privilege(g.mobile_device, name):
+        return error(
+            "هذه الميزة غير مسموحة لهذا الهاتف. راجع مدير النظام في الحاسوب.",
+            403,
+            "feature_denied",
+        )
+    return None
 
 
 def _matches(value, expected: str) -> bool:
@@ -200,14 +235,16 @@ def _server_info(settings: dict) -> dict:
 
 def _session_response(conn, row, secret: str = ""):
     settings = get_settings(conn)
+    public = _device_public(row)
     return jsonify(
         ok=True,
         token=_issue_token(row),
         expires_in=TOKEN_MAX_AGE,
-        user=_device_public(row),
+        user=public,
         server=_server_info(settings),
         features=FEATURES,
-        device=_device_public(row),
+        privileges=public["privileges"],
+        device=public,
         device_secret=secret,
         approval_required=False,
     )
@@ -496,6 +533,9 @@ def _cached_scan_result(conn, row) -> dict:
 @mobile_bp.post("/scans/sync")
 def sync_scans():
     """Accept a phone's offline queue; each client id is applied at most once."""
+    denied = require_privilege("scan")
+    if denied:
+        return denied
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         return error("أرسل القراءات بصيغة JSON.", 400, "invalid_request")
@@ -660,6 +700,256 @@ def sync_scans():
         server_time=now.strftime("%H:%M:%S"),
         summary={
             "received": len(scans),
+            "processed": processed,
+            "duplicates": duplicates,
+            "rejected": rejected,
+        },
+        results=results,
+    )
+
+
+@mobile_bp.get("/report/period")
+def period_report():
+    """Small period report a permitted phone can show while connected."""
+    denied = require_privilege("report")
+    if denied:
+        return denied
+    conn = get_db()
+    day_iso = validate_iso_date(
+        request.args.get("date") or date.today().isoformat(), "تاريخ التقرير"
+    )
+    raw_period = (request.args.get("period_id") or "").strip()
+    if not raw_period.isdigit():
+        return error("حدد الفترة المطلوبة.", 400, "period_required")
+    period = attendance.get_period(conn, int(raw_period))
+    if period is None:
+        return error("الفترة غير موجودة.", 404, "period_not_found")
+    stats = attendance.get_period_stats(conn, period["id"], day_iso)
+    classes = attendance.classes_breakdown(conn, period["id"], day_iso)
+    absentees = [
+        {
+            "student_nin": row["student_nin"],
+            "full_name": f"{row['first_name']} {row['last_name']}".strip(),
+            "class_group": row["class_group"] or "",
+            "scan_time": (row["scan_time"] or "")[:5],
+        }
+        for row in conn.execute(
+            """SELECT s.student_nin, s.first_name, s.last_name, s.class_group, a.scan_time
+               FROM attendance_logs a
+               JOIN students s ON s.student_nin = a.student_nin
+               WHERE a.period_id = ? AND a.attendance_date = ?
+                 AND a.status = 'ABSENT' AND s.is_active = 1
+               ORDER BY s.class_group, s.last_name, s.first_name""",
+            (period["id"], day_iso),
+        ).fetchall()
+    ]
+    closure = attendance.get_closure(conn, period["id"], day_iso)
+    return jsonify(
+        ok=True,
+        date=day_iso,
+        period={
+            "id": period["id"],
+            "name": period["period_name"],
+            "period_type": period.get("period_type", "CLASS"),
+            "start_time": period["start_time"],
+        },
+        stats=stats,
+        classes=classes,
+        absentees=absentees,
+        closed=bool(closure),
+        server_time=datetime.now().strftime("%H:%M:%S"),
+    )
+
+
+def _action_summary(kind: str, result: dict) -> dict:
+    """Only the fields a phone needs to confirm an issued document."""
+    if kind in ("entry", "exit", "exit_return"):
+        slip = result.get("slip") or {}
+        student = slip.get("student") or {}
+        return {
+            "code": slip.get("slip_code") or "",
+            "student": student.get("full_name") or "",
+            "class_group": student.get("class_group") or "",
+            "date": slip.get("slip_date") or slip.get("exit_date") or "",
+            "already": bool(result.get("already_issued") or result.get("already_returned")),
+            "message": result.get("message") or "",
+        }
+    summon = result.get("summon") or {}
+    student = summon.get("student") or {}
+    return {
+        "code": summon.get("summon_code") or "",
+        "student": student.get("full_name") or "",
+        "class_group": student.get("class_group") or "",
+        "date": summon.get("summon_date") or "",
+        "due_date": summon.get("due_date") or "",
+        "already": False,
+        "message": result.get("message") or "",
+    }
+
+
+def _run_action(conn, kind: str, item: dict, at: datetime) -> dict:
+    code = str(item.get("code") or "").strip()
+    if not code or len(code) > 128:
+        raise ValidationError("امسح بطاقة التلميذ أولًا.")
+    issued_by = (g.mobile_device["name"] or "ماسح الهاتف")[:80]
+    if kind == "entry":
+        period_id = item.get("period_id")
+        if period_id is not None and not isinstance(period_id, int):
+            raise ValidationError("الفترة غير صالحة.")
+        return entry_slips.issue_slip(
+            conn,
+            code,
+            period_id,
+            str(item.get("reason") or ""),
+            str(item.get("note") or ""),
+            issued_by,
+            str(current_app.config["SECRET_KEY"]),
+            now=at,
+        )
+    if kind == "exit":
+        return exit_slips.issue_slip(
+            conn,
+            code,
+            str(item.get("reason") or ""),
+            str(item.get("note") or ""),
+            str(item.get("guardian_name") or ""),
+            str(item.get("guardian_phone") or ""),
+            issued_by,
+            str(current_app.config["SECRET_KEY"]),
+            now=at,
+        )
+    if kind == "exit_return":
+        return exit_slips.mark_returned(conn, code, now=at)
+    return summons.issue_summon(
+        conn,
+        code,
+        str(item.get("reason") or ""),
+        str(item.get("due_date") or ""),
+        str(item.get("due_time") or ""),
+        str(item.get("guardian_name") or ""),
+        str(item.get("guardian_phone") or ""),
+        str(item.get("note") or ""),
+        issued_by,
+        str(current_app.config["SECRET_KEY"]),
+        now=at,
+    )
+
+
+@mobile_bp.post("/actions/sync")
+def sync_actions():
+    """Queue entry/exit slips and summons created on the phone; retries are safe."""
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return error("أرسل العمليات بصيغة JSON.", 400, "invalid_request")
+    device_id = str(data.get("device_id") or "").strip()
+    if device_id != g.mobile_device["device_id"]:
+        return error("الجلسة مرتبطة بهاتف آخر.", 403, "device_mismatch")
+    actions = data.get("actions")
+    if not isinstance(actions, list) or not actions:
+        return error("لا توجد عمليات للمزامنة.", 400, "empty_batch")
+    if len(actions) > MAX_SYNC_ACTIONS:
+        return error(
+            f"الحد الأقصى {MAX_SYNC_ACTIONS} عملية في الدفعة.", 413, "batch_too_large"
+        )
+
+    conn = get_db()
+    now_iso = _now()
+    results: list[dict] = []
+    processed = duplicates = rejected = 0
+    for item in actions:
+        if not isinstance(item, dict):
+            rejected += 1
+            continue
+        client_id = str(item.get("client_id") or "").strip()
+        kind = str(item.get("kind") or "").strip()
+        if not CLIENT_ID_RE.fullmatch(client_id) or kind not in ACTION_KINDS:
+            rejected += 1
+            results.append(
+                {
+                    "client_id": client_id[:64],
+                    "kind": kind[:20],
+                    "ok": False,
+                    "status": "invalid",
+                    "message": "عملية غير صالحة.",
+                }
+            )
+            continue
+        privilege = ACTION_PRIVILEGE[kind]
+        if not has_privilege(g.mobile_device, privilege):
+            rejected += 1
+            results.append(
+                {
+                    "client_id": client_id,
+                    "kind": kind,
+                    "ok": False,
+                    "status": "denied",
+                    "message": "هذه الميزة غير مسموحة لهذا الهاتف.",
+                }
+            )
+            continue
+        cached = conn.execute(
+            "SELECT * FROM mobile_actions WHERE device_id = ? AND client_id = ?",
+            (device_id, client_id),
+        ).fetchone()
+        if cached:
+            duplicates += 1
+            stored = json.loads(cached["result_json"] or "{}")
+            stored.update({"client_id": client_id, "kind": kind, "status": "duplicate"})
+            results.append(stored)
+            continue
+        try:
+            at = _parse_scan_time(item.get("at"))
+            outcome = _run_action(conn, kind, item, at)
+        except ValidationError as problem:
+            rejected += 1
+            results.append(
+                {
+                    "client_id": client_id,
+                    "kind": kind,
+                    "ok": False,
+                    "status": "invalid",
+                    "message": str(problem),
+                }
+            )
+            continue
+
+        summary = _action_summary(kind, outcome)
+        result = {
+            "client_id": client_id,
+            "kind": kind,
+            "ok": True,
+            "status": "created",
+            "at": at.isoformat(timespec="seconds"),
+            **summary,
+        }
+        with conn:
+            conn.execute(
+                """INSERT INTO mobile_actions
+                   (device_id, client_id, kind, request_json, result_json, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?)
+                   ON CONFLICT(device_id, client_id) DO NOTHING""",
+                (
+                    device_id,
+                    client_id,
+                    kind,
+                    json.dumps(item, ensure_ascii=False, default=str)[:4000],
+                    json.dumps(result, ensure_ascii=False, default=str)[:4000],
+                    now_iso,
+                ),
+            )
+        processed += 1
+        results.append(result)
+
+    with conn:
+        conn.execute(
+            "UPDATE mobile_devices SET last_seen = ?, last_sync = ? WHERE device_id = ?",
+            (now_iso, now_iso, device_id),
+        )
+    return jsonify(
+        ok=True,
+        device_id=device_id,
+        summary={
+            "received": len(actions),
             "processed": processed,
             "duplicates": duplicates,
             "rejected": rejected,

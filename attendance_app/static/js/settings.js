@@ -1170,6 +1170,13 @@
       list.innerHTML = '<div class="phone-empty">لا توجد هواتف مرتبطة بعد. ولّد رمز ربط وابدأ المسح من الهاتف.</div>';
       return;
     }
+    const tools = {
+      scan: "مسح الحضور",
+      report: "تقرير فترة",
+      entry: "ورقة دخول",
+      exit: "ورقة خروج",
+      summon: "استدعاء",
+    };
     list.innerHTML = devices.map((device) => {
       const approved = device.status === "approved";
       const statusChip = approved
@@ -1180,6 +1187,12 @@
         device.app_version ? `نسخة ${device.app_version}` : "",
         `${A.formatInt(device.scans || 0)} قراءة`,
       ].filter(Boolean).join(" · ");
+      const chosen = new Set(device.privileges && device.privileges.length ? device.privileges : ["scan"]);
+      const toggles = Object.entries(tools).map(([key, label]) => `
+        <label class="phone-priv">
+          <input type="checkbox" data-device-priv="${safe(device.id)}" data-priv="${key}" ${chosen.has(key) ? "checked" : ""}>
+          <span>${label}</span>
+        </label>`).join("");
       return `
         <div class="phone-device">
           <div class="phone-device-main">
@@ -1195,6 +1208,10 @@
               <svg class="ico"><use href="#i-trash"></use></svg>
               <span>فصل</span>
             </button>
+          </div>
+          <div class="phone-device-privs">
+            <span class="phone-privs-label">صلاحيات هذا الهاتف:</span>
+            ${toggles}
           </div>
         </div>`;
     }).join("");
@@ -1289,6 +1306,29 @@
     }
   }
 
+  async function savePhonePrivileges(deviceId) {
+    const list = $("phone-device-list");
+    const boxes = Array.from(list.querySelectorAll("[data-device-priv]")).filter(
+      (box) => box.dataset.devicePriv === deviceId
+    );
+    const chosen = boxes.filter((box) => box.checked).map((box) => box.dataset.priv);
+    if (!chosen.length) {
+      boxes.find((box) => box.dataset.priv === "scan").checked = true;
+      A.toast("يجب أن يحتفظ الهاتف بصلاحية المسح على الأقل.", "error");
+      return;
+    }
+    try {
+      await A.api(`/api/scanner/mobile/devices/${encodeURIComponent(deviceId)}/privileges`, {
+        method: "PUT",
+        body: { privileges: chosen },
+      });
+      A.toast("تم تحديث صلاحيات الهاتف. ستُطبّق عند مزامنته التالية.", "success", "صلاحيات الهاتف");
+    } catch (error) {
+      A.toast(error.message || "تعذر تحديث الصلاحيات.", "error");
+      await loadPhoneStatus(true);
+    }
+  }
+
   function bindPhoneScanner() {
     const create = $("phone-code-create");
     const revoke = $("phone-code-revoke");
@@ -1304,6 +1344,11 @@
       } finally {
         A.setBusy(refresh, false);
       }
+    });
+    list.addEventListener("change", (event) => {
+      const box = event.target.closest("[data-device-priv]");
+      if (!box) return;
+      savePhonePrivileges(box.dataset.devicePriv);
     });
     list.addEventListener("click", (event) => {
       const button = event.target.closest("[data-remove-device]");

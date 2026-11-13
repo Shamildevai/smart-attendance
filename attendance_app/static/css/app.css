@@ -3704,6 +3704,11 @@ output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--prim
 .phone-device-main strong { display: block; font-size: 12px; }
 .phone-device-main small { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 .phone-device-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.phone-device-privs { flex-basis: 100%; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-top: 8px; border-top: 1px dashed var(--border); }
+.phone-privs-label { font-size: 11px; color: var(--text-muted); }
+.phone-priv { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: 11.5px; cursor: pointer; min-height: 32px; }
+.phone-priv input { accent-color: var(--primary); width: 15px; height: 15px; margin: 0; }
+.phone-priv:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-strong, var(--primary)); }
 .phone-empty { padding: 14px; text-align: center; font-size: 11.5px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 10px; }
 
 @media (max-width: 640px) {
