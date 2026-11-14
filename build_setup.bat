@@ -29,13 +29,13 @@ echo [1/1] Compiling the distribution setup...
 "%ISCC%" "installer\SmartAttendance.iss"
 if errorlevel 1 goto :error
 
-if not exist "dist\SmartAttendance_Setup_1.1.31.exe" (
+if not exist "dist\SmartAttendance_Setup_1.1.32.exe" (
     echo [ERROR] The setup executable was not produced.
     goto :error
 )
 
 echo.
-echo Build complete: dist\SmartAttendance_Setup_1.1.31.exe
+echo Build complete: dist\SmartAttendance_Setup_1.1.32.exe
 exit /b 0
 
 :error

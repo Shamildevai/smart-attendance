@@ -308,7 +308,19 @@ def _qr_svg(payload: str) -> str:
     segno.make(payload, error="m").save(
         buffer, kind="svg", scale=6, border=2, dark="#0b3b31", light="#ffffff"
     )
-    return re.sub(r"<\?xml.*?\?>", "", buffer.getvalue().decode("utf-8"), flags=re.DOTALL)
+    svg = re.sub(r"<\?xml.*?\?>", "", buffer.getvalue().decode("utf-8"), flags=re.DOTALL).strip()
+    # segno writes fixed pixel width/height and no viewBox, so the panel CSS
+    # stretched and clipped the code. Keep the matrix coordinates and scale it.
+    size = re.search(r'<svg[^>]*?width="([\d.]+)"[^>]*?height="([\d.]+)"', svg)
+    if size:
+        width, height = size.group(1), size.group(2)
+        svg = re.sub(r'\s(?:width|height)="[\d.]+"', "", svg, count=2)
+        svg = svg.replace(
+            "<svg ",
+            f'<svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet" ',
+            1,
+        )
+    return svg
 
 
 def _mobile_device_public(row) -> dict[str, Any]:

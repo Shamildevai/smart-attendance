@@ -20,6 +20,8 @@ from attendance_app import create_app
 from attendance_app.config import APP_NAME, APP_TITLE, APP_VERSION, default_data_dir, ensure_data_layout
 
 DEFAULT_PORT = 8765
+DISCOVERY_PORT = 8866
+DISCOVERY_QUERY = b"SMARTATTENDANCE?"
 HEALTH_TIMEOUT = 1.2
 PORT_SCAN_SPAN = 30
 INSTANCE_FILE = ".instance.json"
@@ -346,6 +348,35 @@ def open_app_window(url: str, data_dir: Path) -> subprocess.Popen | None:
     return None
 
 
+def _start_discovery(port: int):
+    """Answer phone discovery broadcasts so the 8-digit code alone finds this PC."""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.bind(("", DISCOVERY_PORT))
+    except OSError:
+        return None
+    payload = json.dumps(
+        {"app": APP_NAME, "port": port, "version": APP_VERSION}, ensure_ascii=False
+    ).encode("utf-8")
+
+    def serve() -> None:
+        while True:
+            try:
+                data, address = sock.recvfrom(512)
+            except OSError:
+                return
+            if data.strip().upper() != DISCOVERY_QUERY:
+                continue
+            try:
+                sock.sendto(payload, address)
+            except OSError:
+                pass
+
+    threading.Thread(target=serve, daemon=True, name="lan-discovery").start()
+    return sock
+
+
 def show_error(message: str) -> None:
     try:
         import tkinter as tk
@@ -471,6 +502,7 @@ def main(argv: list[str] | None = None) -> int:
         show_error(f"تعذر تشغيل الخادم المحلي على المنفذ {port}:\n{error}")
         return 1
     _write_instance(data_dir, args.host, port)
+    discovery = _start_discovery(port)
 
     window = {"process": None}
     heartbeat = {"last": 0.0, "seen": False}
@@ -524,6 +556,11 @@ def main(argv: list[str] | None = None) -> int:
         shutdown()
     finally:
         _clear_instance(data_dir)
+        if discovery is not None:
+            try:
+                discovery.close()
+            except OSError:
+                pass
         try:
             server.close()
         except Exception:
